@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Tech_Resources</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <h1 id="project_title">Data Analytics Case Guidelines </h1>
+
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+   <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a></h3>
+
+<strong> Under Construction.</strong> Please explore the way past cases are organized in their corresponding github repositories. 
+
+<p></p>
+The raw files of every case are shared through a public github repository. Each repository has 2 branches: a <strong>master</strong> branch that holds all raw document files and code, and a <strong>gh-pages</strong> branch that holds all html files. 
+
+<h3> Master Branch Directory Structure </h3>
+<p>The raw document files and code  are oganized in the master branch in the following directories:</p>
+
+<p><strong>doc</strong> This directory only has the .Rmd or .Rnw files for the case report and slides. No html files are stored, as those are stored only in the gh-pages branch. </p>
+
+<p><strong>R</strong> This directory has all necessary R code files for code that is not included in the Rchunks of the .Rmd (or .Rnw) document files. It also has a file <strong>libraries.R</strong> which includes all R libraries necessary for the case
+
+<p><strong>tools</strong>This directory only has the server.R and ui.R files for the case web application tools.
+
+<p><strong>data</strong> All <i>public</i> data used in the case or shared as alternative data for the case analysis are stored in this directory. The directory also includes a README file describing the data. <strong>Note:</strong> Certain cases use proprietary data. In such situations this directory may not include any data. However, it is highly recommended that at least some set of data is included for users to be able to test the case methods and process. 
+
+<p>Finally, all cases have the following files in the parent directory:</p>
+<p><strong>REAMDE.md</strong> A file providing the case description and instructions for replication and reuse
+<p><strong>RunStudy.R</strong> An R-file which, when sourced, replicates the study and generates html report and slides. Moreover, the file includes all necessary user parameters of the case which, after modifying and sourcing the RunStudy.R file again, new slides and report for the chosen case parametes are generated
+
+<h3> Customized Case Web Application </h3>
+
+In general the case Web Application follows the structure of the report and study. Instructions to follow. 
+
+</p>
+Back to the <a href="http://inseaddataanalytics.github.io/INSEADjan2014/ProjectsMenu.html">Data Analytics Projects Page </a> 
+
+<br>
+
+  </body>
+</html>

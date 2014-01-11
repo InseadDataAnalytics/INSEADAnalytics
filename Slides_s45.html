@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>(Big) Data Analytics for Business</title>
+  <meta charset="utf-8">
+  <meta name="description" content="(Big) Data Analytics for Business">
+  <meta name="author" content="T. Evgeniou and J. Niessing">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/slides" 
+    src="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>(Big) Data Analytics for Business</h1>
+    <h2>Sessions 4-5, Clustering and Segmentation</h2>
+    <p>T. Evgeniou and J. Niessing<br/>INSEAD</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Clustering and Segmentation</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2AAAAGwCAMAAAD47faQAAAAq1BMVEX9/v0AAAAAADkAAGUAAGYAOTkAOY8AOpAAZAAAZrUAZrY5AAA5ADk5AGU5OY85j9o6OpA6kNtGgrRlAABlADllAGVltf1mAGZmtv+LAACPOQCPOTmPOWWPj2WPtY+P2/2QOgCQOmaQkLa1ZgC1/rW1/v22ZgC2///ajzna24/a/v3bkDrbtmbb///9tWX924/9/rX9/tr9/v3/tmb/wMv/25D//7b//9v///+GuascAAAAOXRSTlP//////////////////////////////////////////////////////////////////wD///////+FmMD9AAAACXBIWXMAAAsSAAALEgHS3X78AAASyElEQVR4nO3dD3/Txh2A8V1Zs9AMMpyS1mEb2zJoCltsi6z1+39ls+R/kvVfd7/T3f2e76eFAMH2nfwgWZLlP2QAxPxh7gcApIzAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEE2gRkAgoFZ/F0gDQQGCCIwQBCBAYIIDBBEYIAgAgMEERggiMBS8/LyMvdDwBmBJeblhcJCQmCJeXkxBBYQAkuMMazBQkJgaTGGFVhQCCwlfeduwzsCSwh9hYfA0pH3xaQHhsASsX9rH3MeGuvAVjf3mwdjrr6MvWm4xXQHyTawzcN99ni/6+xtrTCWuDeGl1+hsg1s/f7T5sPH4ufTTQ67GgGcMcfFyJQHx3oTcbf6er7NsufXY28a7tBXsOx3cjwWa6t6XyxuLwybh0FjL2L0mOeQEVjMKnvmme8QEVjETOXkDeY7RAQWNeY4dAQWKU7ciAOBRcy0fI1wEFiMiqk19BUBAouQOf2A0BFYpJjdOBBYZEx985CpDhiBxehyapnqYBFYHCqfmcjMxoPA4mC2O8UPW87tjQmBxWHf1j6w2p/N8YAw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" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>What is Clustering and Segmentation?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Processes and Tools to organize data in a few clusters with similar observations within each cluster</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Example Usage</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>Market Segmentation</p></li>
+<li><p>Co-Moving Asset Classes</p></li>
+<li><p>Geo-demographic segmentation</p></li>
+<li><p>Recommender Systems</p></li>
+<li><p>Text Mining</p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>A Segmentation Process</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li><p>Confirm the data are metric (interval scale), if necessary </p></li>
+<li><p>Decide whether to scale standardize the data, if necessary</p></li>
+<li><p>Decide which variables to use for clustering</p></li>
+<li><p>Define similarity or dissimilarity measures between observations</p></li>
+<li><p>Visualize Individual Attributes and  Pair-wise Distances between the Observations</p></li>
+<li><p>Select the clustering method to use and decide how many clusters to have</p></li>
+<li><p>Profile and interpret the clusters </p></li>
+<li><p>Assess the robustness of our clusters</p></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Example Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>V1: Shopping is fun (scale 1-7)</p>
+
+<p>V2: Shopping is bad for your budget (scale 1-7)</p>
+
+<p>V3: I combine shopping with eating out (scale 1-7)</p>
+
+<p>V4: I try to get the best buys while shopping (scale 1-7)</p>
+
+<p>V5: I don&#39;t care about shopping (scale 1-7)</p>
+
+<p>V6: You can save lot of money by comparingprices (scale 1-7)</p>
+
+<p>Income: the household income of the respondent (in dollars)</p>
+
+<p>Mall.Visits: how often they visit the mall (scale 1-7)</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Step 1: Summary Statistics</h2>
+  </hgroup>
+  <article data-timings="">
+    <TABLE class='table table-striped table-hover table-bordered'>
+<CAPTION ALIGN="top"> Summary Statistics: Mall Visits </CAPTION>
+<TR> <TH>       V1 </TH> <TH>       V2 </TH> <TH>       V3 </TH> <TH>       V4 </TH> <TH>       V5 </TH> <TH>       V6 </TH> <TH>     Income </TH> <TH>  Mall.Visits </TH>  </TR>
+  <TR> <TD> Min.   :1.00   </TD> <TD> Min.   :2.0   </TD> <TD> Min.   :1.00   </TD> <TD> Min.   :2.00   </TD> <TD> Min.   :1.00   </TD> <TD> Min.   :2.00   </TD> <TD> Min.   :25000   </TD> <TD> Min.   :0.00   </TD> </TR>
+  <TR> <TD> 1st Qu.:2.00   </TD> <TD> 1st Qu.:3.0   </TD> <TD> 1st Qu.:2.00   </TD> <TD> 1st Qu.:3.00   </TD> <TD> 1st Qu.:2.00   </TD> <TD> 1st Qu.:3.00   </TD> <TD> 1st Qu.:30000   </TD> <TD> 1st Qu.:2.00   </TD> </TR>
+  <TR> <TD> Median :4.00   </TD> <TD> Median :4.0   </TD> <TD> Median :4.00   </TD> <TD> Median :4.00   </TD> <TD> Median :3.50   </TD> <TD> Median :4.00   </TD> <TD> Median :42500   </TD> <TD> Median :3.00   </TD> </TR>
+  <TR> <TD> Mean   :3.85   </TD> <TD> Mean   :4.1   </TD> <TD> Mean   :3.95   </TD> <TD> Mean   :4.10   </TD> <TD> Mean   :3.45   </TD> <TD> Mean   :4.35   </TD> <TD> Mean   :46000   </TD> <TD> Mean   :3.25   </TD> </TR>
+  <TR> <TD> 3rd Qu.:5.25   </TD> <TD> 3rd Qu.:5.0   </TD> <TD> 3rd Qu.:6.00   </TD> <TD> 3rd Qu.:5.25   </TD> <TD> 3rd Qu.:4.25   </TD> <TD> 3rd Qu.:5.25   </TD> <TD> 3rd Qu.:60000   </TD> <TD> 3rd Qu.:4.25   </TD> </TR>
+  <TR> <TD> Max.   :7.00   </TD> <TD> Max.   :7.0   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :80000   </TD> <TD> Max.   :7.00   </TD> </TR>
+   </TABLE>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Step 2. Decide whether to scale standardize the data, if necessary</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Example Normalization</p>
+
+<pre><code class="r">ProjectData_scaled = apply(ProjectData, 2, function(r) {
+    if (sd(r) != 0) 
+        res = (r - mean(r))/sd(r) else res = 0 * r
+    res
+})
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Step 4. Define similarity or dissimilarity measures between observations</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>There are literally thousands of rigorous mathematical definitions of distance between observations/vectors! Moreover, as noted above, the user may manually define such distance metrics, as we show for example below - note however, that in doing so one has to be careful to make sure that the defined distances are indeed &quot;valid&quot; ones (in a mathematical sense, a topic beyond our scope).</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Some Histograms of our Segmentation Attributes</p>
+
+<p>[1] 21 22 23 24
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAqFBMVEX9/v0AAAAAADkAAGUAOTkAOY8AZrU5AAA5AGU5OQA5OTk5OWU5ZrU5j9plAABlADllAGVlOY9lZjllZmVlZrVltbVltdpltf2POQCPOTmPOWWPZmWPZo+PjzmPj2WPj9qP27WP29qP2/21ZgC1Zjm1ZmW1j4+1tWW124+1/rW1/v3ajznaj2XatWXatbXa29ra2/3a/rXa/v39tWX924/9/rX9/tr9/v2RIqIDAAAAOHRSTlP/////////////////////////////////////////////////////////////////////////ADtcEcoAAAAJcEhZcwAACxIAAAsSAdLdfvwAABBnSURBVHic7Z1pe9pGG4Vf2a2dxTglpSVO3TYBu4vlLkEI/f9/9moG7BJLs2ikkR7mnPuDL8wjgQ43o40Z6X8VgeR/Uy8AmQaKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigfFS3yenT/sPj7EXhYyIj7iy/mmfPeZ4pPCU3y1u3lL8Snht6q/qKrtK4pPiZCdu+yJr/9rMOySSsScXfwH4LWqv1YpzhstPjv624Lo3MNgjyj6A/Bq8YY9eopPXbwBBPH1jm2eZUtDleLN5ROnnH9ZVNW9YceW4s3lE4fiW0AQX20vz1brmaFI8eZyYrw4lLVPO8YChULxdgIPZT2qE0PxDsIOZT2qE0PxYVA8xTumEQrFh0HxFO+YRihe4tdqz/ai8TTFJy5edcRo27uleIpvQ3TuvkCI56q+CYb4F3iethSduy8Q4tkDpwmEePbAaYIh3gDFU7y5nCgUT/GOaYRC8WFQPMU7phEKxYdB8RTvmEYoFB8GxVO8YxqhUHwYFE/xjmmEQvFhUDzFO6YRCsWHgSE+z364zpoDByk+cfHlQo0Tbg4VpvgExJe/mqfR4o86Y/TteiXtakG27IH9DT2qE/Pc4vOWvlX/1QZd1YtbR1iyB/Yw9qhOzNGqXnWtM10BoJVkxFuyA4hfZ99uqr83HeZNR7wle+qr+vLyYvdh2W3eVMR3yd7pihiSL3/4LF5dr7bjdYqTEW/JHu+KGELE725xxVuzR7sihhDxVZGZr+NnIBXxEbL3rkZnilO24sQHkIx4vS0zH8m3kor4CNl7V6ND8eDiQ0hFfAgUT/GOacKq0Tk6V39RNE9QWUlG/PDZe1ej87yNX+x/fO1CKuIjZO9djc5Ri+/4E0064iNk712Njl8PnFnrXRqSER9AMuJthzTl/Mt8M2APHGnioQ/nbOF3t5vfjsX79sDp/LvUgC/VBWjxVraXrSezx2vx0tYRCYnf//zY7XufivgI2XtXo/PVz7K3XfrfpCM+Qvbe1eicRkeMyC1++Oy9q9E5/j3+bNVt3lTER8jeuxqd0zhXz527wTmNc/WRxfNcPeg2nufqu82binjoc/X1d74zqYiPkL13NTqn0fVqhBM4PGXrTyriQ6B4indME1aNzkF8vZnLl13nTUR8jOw+1T50XdwmFD+Z+GhVL57EG8YGerz96YuPkH3Sqhe+2/jtlentT158EBDih74LFcXHrXrh1+Jr9Ufnsr/exRhSY+edmZi7P5pyvgnpaDpp1YtUD+eGE/9lUXXvaDpp1QuKt/NSvOfabtKqFxTvYHt5tlp3vtTbpFUvKD4Mihfql+IdUHwYFC/UL8U7oPgwKF6oX4p3QPFhULxQvxTvgOLDoHihfineAcWHQfFC/VK8A8/bj50/dL89h8zCQECIL+eb8t1nim++fvriq93N2+FuPzZlYSAgxFf5RVVtX7HFN14/dfHWt5fpl+IdUHwYFC/UL8U7oPgwJhbff2QdxYchucVTfEQoXqhfindA8WFQvFC/FO+A4sOgeKF+Kd4BxYdB8UL9UrwDig+D4oX6pXgHXuLX6gRw87reEOLDsguuHvDtgdN27w4E8YHZBVcPhIh/0fVKJj7hkbP3WdVDkGr2Pjt35ISheFD6i592c2ZkgM8m6ewDiD+twqDI3G+n+OjIVEvx0ZGpluKjI1MtxUdHplqKj45MtRQfHZlqRxJPThKKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHpTe4stF+/Pq1pythSIzFNoGrBxequV2ztbCepSu8MaIGnNOjSns4ZUNwTyqntn7it9eGt7lblW0V/6pimX7LEXzFvX75w3T1+9hXK7cNM+AGCNqzDk1prD7om1OW2yNV/ZoLd689KbIu9uf2gu5oe3sbl6bGpV5qQYlXK0xrMaUeD+rObbGL3s88eb33161Pl0sm7dpt77W7mZlepMxGrzzIzbk1FjCul7aElvjlz2a+PI7Q7A702Lnpo2TcQ5jobJ/qgNhjKgxL5zCGNZjXnvVM3s08cZ9DMsukWGRjXMYC7vbjeEthsS+G2Xf9bP7sc9rr3pm5+EcKBQPCsWDQvGgUDwoFA8KxYNC8aBQPCgUDwrFg0LxoFA8KBQPCsWDQvGgUDwoFA8KxYNC8aBQPCgUDwrFgzKKeDXSqFgWM/XYPs6jyGZqNKG+95P+X8/zuHp6VI02Omoohszu6qrfhVHFF9nZp+vzP+rFL6/P3i+LN+c/Z9ny8f3ZL9lMx/p0XSerP55ilteFuv67fvD4vv5nto9tHKUplCGz20dpdmMc8epGKfXi3612/+bLu9X2Kl/uPuybQZ1zVlyoZqyeVx/T9kqPB60/q5n+rqsp6spM1avTa/FDZncMo+3CqC1eDezOf/z4UC7uH+ovd52sfmb2uCpmdfidel4Hu/9zoQs6/H6Kcv7X7DBi6dTEL2VmH1W8Gu339K2v1ir8/UPxFP75W18V3y91QYdXD/Ll/luvX+xExQ+R3T5Ksxujt/jisJ3L3qjwefbN1VN4tR3T4VU+VdDh9RSv64r+/lcnK36I7ENe6GO6wznXdR1SRkD2icQXSd6v1Q8Z2XkCBxSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQfESn2fnD7uPD7GXhYyIj/hyvinffab4pPAUX+1u3lJ8Svit6i+qavuK4lMiZOcue+Lr/xoMu6QSMWcX/wF4reqvVYrzRovPjv62IDr3MNgjiv4AvFq8YY+e4lMXbwBBfL1jm2fZ0lCleHP5xCnnXxZVdW/YsaV4c/nEofgWEMRX28uz1XpmKFK8uZwYLw5l7dOOsUChULydwENZj+rEULyDsENZj+rEUHwYFE/xjmmEQvFhUDzFO6YRipf4tdqzvWg8TfGJi1cdMdr2bime4tsQnbsvEOK5qm+CIf4FnqctRefuC4R49sBpAiGePXCaYIg3QPEUby4nCsVTvGMaoVB8GBRP8Y5phELxYVA8xTumEQrFh0HxFO+YRigUHwbFU7xjGqFQfBgUT/GOaYRC8WFgiM+zH66z5sBBik9cfLlQ44SbQ4UpPgHx5a/mabT4o84YfbteSbtakC17YH9Dj+rEPLf4vKVv1X+1QVf14tYRluyBPYw9qhNztKpXXetMVwBoJRnxluwA4tfZt5vq702HedMRb8me+qq+vLzYfVh2mzcV8V2yd7oihuTLHz6LV9er7Xid4mTEW7LHuyKGEPG7W1zx1uzRroghRHxVZObr+BlIRXyE7L2r0ZnilK048QEkI15vy8xH8q2kIj5C9t7V6FA8uPgQUhEfAsVTvGOasGp0js7VXxTNE1RWkhE/fPbe1eg8b+MX+x9fu5CK+AjZe1ejc9TiO/5Ek474CNl7V6Pj1wNn1nqXhmTEB5CMeNshTTn/Mt8M2ANHmnjowzlb+N3t5rdj8b49cDr/LhXwUkP89iVRfPRf9rxW9dvL1pPZ47V4eSuP6OJ7VL34qsV3/N6nIj5C9kmrXnz1s+xtl/436YiPkH3Sqhen0REjcosfPvukVS+Of48/W3WbNxXxEbJPWvXiNM7Vc+euS9WL0zhXH1m8wHP1423jRZ+rj7yNF3iufswWL/hcffQWL+5c/Ygtvvu8qYiPkH3Sqhen0fVqhBM40k7Z9qh6wb36MCheqF+Kd3AQX2/m8mXXeRMRHyP7pFUvKB5cvGFsoMfby/TbRXyE7JNWvfDdxm+vTG8v0y+38Q6muAsVxceteuHX4mv1R+eyfbteiSx0pJxvQjqaTlr1godzdsr5l0XVvaPppFUvKN7OS/Gea7tJq15QvIPt5dlq3flSb5NWvaD4MCheqF+Kd0DxYVC8UL8U74Diw6B4oX5PQHyP0XEUf8rio1W9oPgwKF6oX4p3QPFhULxQvxTvgOLDwBCv7tnS/fYcMgsDASG+nG/Kd58pvvn66Yuvdjdvh7v9mLHQ+XQGxYfit6q/qKrtK7b4xuunLt769jL9UrwDig+D4oX6pXgHFB/GxOL7X/eS4sOQ3OIpPiIUL9QvxTug+DAoXqhfindA8WFQvFC/FO+A4sOgeKF+Kd4BxYdB8UL9UrwDL/FrdQK4eV1vCPFh2QVXD/j2wGm7dweC+MDsgqsHQsS/6HolE5/wyNn7rOohSDV7n507csJQPCj9xU+7OTMywGeTdPYBxJ9WYVBk7rdTfHRkqqX46MhUS/HRkamW4qMjUy3FR0emWoqPjky1I4knJwnFg0LxoFA8KBQPCsWDQvGgUDwoFA8KxYNC8aBQPCgUD0pv8eWi/Xl1a87WQpEZCm0DVg4v1XI7Z2thPUpXeGNEjTmnxhT28MqGYB5Vz+x9xW8vDe9ytyraK/9UxbJ9lqJ5i/r984bp6/cwLldummdAjBE15pwaU9h90TanLbbGK3u0Fm9eelPk3e1P7YXc0HZ2N69Njcq8VIMSrtYYVmNKvJ/VHFvjlz2eePP7b69any6Wzdu0W19rd7MyvckYDd75ERtyaixhXS9tia3xyx5NfPmdIdidabFz08bJOIexUNk/1YEwRtSYF05hDOsxr73qmT2aeOM+hmWXyLDIxjmMhd3txvAWQ2LfjbLv+tn92Oe1Vz2z83AOFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQRlFvBppVCyLmXpsH+dRZDM1mlDf+0n/r+d5XD09co5FFMeQ2e0jLbsxqvha2qfr8z8uz1bl9dn7ZfHm/OcsWz6+P/slm+lxAp+ua6v1x1PM8rpQ13/XDx7f1//M9uMIHGMRxTFkdvtwvG6MI17dKKVe/LvV7t98ebfaXuXL3Yd9M6hzzooLNR5HPa8+pu2VHg9af1Yz/V1XU9SVmapXg4YfgyGz20dadmPUFq8Gduc/fnwoF/cP9Ze7TlY/M3tcFbM6/E49r1vz/Z8LXdDh91OU879mTyOWbGMR5TFkdtdIyy6MKl6N9nv61ldrFf7+oXgK//ytr4rvl7qgw6sH+XL/rVev5RgxKI4hs9tHWnZj9BZfHLZz2RsVPs++uXoKr7ZjOrwahaoKOrye4nVd0d9/91hEaQyZfchRwNMdzrmu65AyArJPJL5I8n6tfsjIzhM4oFA8KBQPCsWDQvGgUDwoFA8KxYNC8aBQPCgUDwrFg0LxoFA8KBQPCsWD8n9gfD4zr8XvgQAAAABJRU5ErkJggg==" alt="plot of chunk unnamed-chunk-5"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Histogram of Pairwise Distances</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAmVBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZo8AZrU5AAA5ADk5AGU5OQA5OWU5OY85ZrU5j9plAABlADllAGVlOQBlOTllOY9lZjllZmVlj49ltf2POQCPOTmPOWWPZgCPjzmPj2WPtY+P29qP2/21ZgC1Zjm124+1/rW1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v1ViJI5AAAAM3RSTlP//////////////////////////////////////////////////////////////////wBxnr2OAAAACXBIWXMAAAsSAAALEgHS3X78AAAOJUlEQVR4nO2di3qjNgJG60ybTZqdrNOZvTmz3XbjtvHsxo79/g+3CIERE2wjUITEf873tW79I8A+1gUC6LsDSPLd1DsA04B4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBflsvjd7cLw4TnC3kA0LorfP67K1+31y7vvDMTjovjXT8+tV5gH1HhRLvfxrw/08TOEUb0oiBelp/jdHS39vLg8qrddPJ38zOgzuCuUt2r8osZvU4tLeO46jKFPU//6cP21q6n3FT8yh5D06+N3t10NPeIzZsyoHvEZg3hREC8K4kUZcxyP+Iy5XOP3j8sTCeIzpkdT//rTU3eA+IyhjxcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvypiJChCfMWMeW474jBkzUQHiM4YaL8qYiQoQnzGM6kVBvCi9DueunhjczY1egzvzqDvEz4ueh3PrG0f80IkKRuYQkr6Hc5vv305VgPiM6XM4Vz7SdMOzbGcFo3pREC8K4kVBvChMVCAKExWIwkQFotDHi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF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" alt="plot of chunk unnamed-chunk-6"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Step 6. Select the clustering method to use and decide how many clusters to have</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>Hierarchical Methods</p></li>
+<li><p>Non-Hierarchical Methods (e.g. k-means)</p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Hierarchical Clustering: Dendrogram</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAwFBMVEX9/v0AAAAAADkAAEgAAGUAOTkAOWUAOXsAOY8AZpwAZrU5AAA5ADk5AGU5OWU5OWY5OY85ZoE5ZrU5j485j9pIAABIAGVXAABlAABlADllAEhlAGVlOQBlZgBlZmVlj49ltdpltf17OQCPOQCPOTmPOWWPZgCPjzmPj2WPj7WPtY+P29qP2/2cZgC1ZgC1Zjm1ZmW124+1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v3/AACV4PY2AAAAQHRSTlP//////////////////////////////////////////////////////////////////////////////////wD/fF2juwAAAAlwSFlzAAALEgAACxIB0t1+/AAAEwpJREFUeJztnQ1747h1RiNnkjpyp3Wnytbb2aZVNdOmGUfpzlo7Y32Q//9fhSAJAjJBEhKvLV7hnGf3EYYiiZc6BgmIH/pNBknym0sHgMuA+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4REF8oiA+URCfKIhPFMQnCuITBfGJgvhEQXyiID5REJ8oiE8UxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4REF8oiA+URCfKIhPFMQnCuITBfGJgvhEQXyiID5REJ8oiE8UxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4RBkjfiaWAt4cxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriE2VQ/P7jU7Z/mM1un1tvIV4xMeKN+2z3ofUW4hUTI353/1y1/Be8gviZWuQ/i9dlWPzDzZfPpsXft/b1ryFefpVvg7rgEZ27w2o2z7bvWg0e8R7qgk+sV6/u87OoC454GdQFHxa/uys7L+zqe1EXfFD8YbUsX7ftgTziHeqCR32B4796IN6hLjgtXgZ1wYeP8eb7Wo7xQ6gLTq9eBnXBES+DuuBx4tfL0FTEO9QFR7wM6oJHiK96d3M34RXPSKn7/CzqgtPiZVAXHPEyqAtOr14GdcERL4O64DHiD6vZ7bcfH1vTEe9QFzzqCpzF7v6Z7+p7URc8ZjhXXm7J2ble1AWPbvEbWnwf6oJHHuPf6oYKdZ+fRV1wevUyqAuO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" alt="plot of chunk unnamed-chunk-7"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>How Many Clusters?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Hierarchical Clustering Dendrogram Heights Plot</p>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAhFBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZrU5AAA5ADk5AGU5OWU5OY85ZrU5j9plAABlADllAGVlOQBlOY9lZmVlZrVltf2POQCPOTmPOWWPZgCPtY+P29qP2/21ZgC1ZmW1/rW1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v36/b7jAAAALHRSTlP/////////////////////////////////////////////////////////AMfWCYwAAAAJcEhZcwAACxIAAAsSAdLdfvwAABAWSURBVHic7Z2Ldtu4EUBX2tZSUsfabNvYaSOtrWwtyvr//yshWolbA9SMAIJDzb0nZx8RM4h9DeI1AH45gEt+GfsvAOOAeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgnin5IifgWUGFJ/xZ2FoEO8UxDtFIH6/+tEu/PpULjSMikT855Pun/9VIDSMCq96pyDeKYh3iqZzp+raId42khr/cn83QGgYFdGrfv/bunxoGBXaeKfkig9D+9AJuHk+F5qfA1PIXvXHiZvo9E37m8ffbz6dC414UxSo8c3tc/SnAvGWyRa/mn/7Gmr87bt3PeItIxO/O47jv0QfebmfLQ67yBgf8ZaRiN+1Zg9Hw3H1stCIN4Vk5u7vP97if2SsziHeFLm9+kOzTE3nIt4ymrn6yFi9ff93r//d+w8RbxlFjY9y+ojh3MTIHc5R4yeKZjgXXZZ9bQho4ydGvdU5xJsit41XhMa8JWSv+m1/JsYmOrGDeMsUSb1C/PTIT8Tofi4Wb0ImtuUh3hJFMnCo8dND1rlb9b/rET89ZDV+Ezp320VklkYRGvGWUC3SPGbtnUO8JUTiu8T67c3392k2x09nN39GpngQbxlh524TOu77Vawtb38qmtvn83P1iDdFgeHcMd3y/Ooc4k2RL76r8Vtq/LQQHYzwmFyBC7RtvGRDBeJN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" alt="plot of chunk unnamed-chunk-8"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Cluster Membership</h2>
+  </hgroup>
+  <article data-timings="">
+    <TABLE class='table table-striped table-hover table-bordered'>
+<CAPTION ALIGN="top"> Hierachical Clustering cluster membership of Sample Data: Mall Visits </CAPTION>
+<TR> <TH>  </TH> <TH> V1 </TH> <TH> V2 </TH> <TH> V3 </TH> <TH> V4 </TH> <TH> V5 </TH> <TH> V6 </TH> <TH> Income </TH> <TH> Mall.Visits </TH> <TH> Cluster_Membership </TH>  </TR>
+  <TR> <TD align="right"> ID_1 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  7 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right"> 60000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
+  <TR> <TD align="right"> ID_2 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  4 </TD> <TD align="right"> 30000 </TD> <TD align="right">  1 </TD> <TD align="right">  2 </TD> </TR>
+  <TR> <TD align="right"> ID_3 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right"> 70000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
+  <TR> <TD align="right"> ID_4 </TD> <TD align="right">  4 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  3 </TD> <TD align="right">  6 </TD> <TD align="right"> 30000 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> </TR>
+  <TR> <TD align="right"> ID_5 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right"> 60000 </TD> <TD align="right">  1 </TD> <TD align="right">  1 </TD> </TR>
+   </TABLE>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Kmeans: Cluster Membership</h2>
+  </hgroup>
+  <article data-timings="">
+    <TABLE class='table table-striped table-hover table-bordered'>
+<CAPTION ALIGN="top"> kMeans cluster membership of Sample Data: Mall Visits </CAPTION>
+<TR> <TH>  </TH> <TH> V1 </TH> <TH> V2 </TH> <TH> V3 </TH> <TH> V4 </TH> <TH> V5 </TH> <TH> V6 </TH> <TH> Income </TH> <TH> Mall.Visits </TH> <TH> Cluster_Membership </TH>  </TR>
+  <TR> <TD align="right"> ID_1 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  7 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right"> 60000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
+  <TR> <TD align="right"> ID_2 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  4 </TD> <TD align="right"> 30000 </TD> <TD align="right">  1 </TD> <TD align="right">  2 </TD> </TR>
+  <TR> <TD align="right"> ID_3 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right"> 70000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
+  <TR> <TD align="right"> ID_4 </TD> <TD align="right">  4 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  3 </TD> <TD align="right">  6 </TD> <TD align="right"> 30000 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> </TR>
+  <TR> <TD align="right"> ID_5 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right"> 60000 </TD> <TD align="right">  1 </TD> <TD align="right">  1 </TD> </TR>
+   </TABLE>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Step 7. Profile and interpret the clusters</h2>
+  </hgroup>
+  <article data-timings="">
+    <TABLE class='table table-striped table-hover table-bordered'>
+<CAPTION ALIGN="top"> Averages of the Profile Attributes for each segment: Mall Visits </CAPTION>
+<TR> <TH> Segment 1 </TH> <TH> Segment 2 </TH>  </TR>
+  <TR> <TD align="right"> 4.889 </TD> <TD align="right"> 3.000 </TD> </TR>
+  <TR> <TD align="right"> 3.556 </TD> <TD align="right"> 4.545 </TD> </TR>
+  <TR> <TD align="right"> 5.333 </TD> <TD align="right"> 2.818 </TD> </TR>
+  <TR> <TD align="right"> 2.889 </TD> <TD align="right"> 5.091 </TD> </TR>
+  <TR> <TD align="right"> 2.778 </TD> <TD align="right"> 4.000 </TD> </TR>
+  <TR> <TD align="right"> 3.778 </TD> <TD align="right"> 4.818 </TD> </TR>
+  <TR> <TD align="right"> 62777.778 </TD> <TD align="right"> 32272.727 </TD> </TR>
+  <TR> <TD align="right"> 2.556 </TD> <TD align="right"> 3.818 </TD> </TR>
+   </TABLE>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>Snake Plots</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="data:image/png;base64,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" title="plot of chunk Fig2" alt="plot of chunk Fig2" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Step 8. Assess the robustness of our clusters</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Are the clusters stable when we use:</p>
+
+<ul>
+<li>using different subsets of the original data;</li>
+<li>using variations of the original segmentation attributes</li>
+<li>using different distance metrics</li>
+<li>using different segmentation methods</li>
+<li>using different numbers of clusters</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Example Robustness Test: Different Methods</h2>
+  </hgroup>
+  <article data-timings="">
+    <TABLE class='table table-striped table-hover table-bordered'>
+<CAPTION ALIGN="top"> The percentage of observations belonging to the same segment is 75 %. </CAPTION>
+<TR> <TH> Segment 1 </TH> <TH> Segment 2 </TH>  </TR>
+  <TR> <TD align="right"> 88.9 </TD> <TD align="right"> 63.6 </TD> </TR>
+   </TABLE>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Key Lessons</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Next Class: Classification</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Clustering and Segmentation'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='What is Clustering and Segmentation?'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Example Usage'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='A Segmentation Process'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Example Data'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Step 1: Summary Statistics'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Step 2. Decide whether to scale standardize the data, if necessary'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Step 4. Define similarity or dissimilarity measures between observations'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Histogram of Pairwise Distances'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Step 6. Select the clustering method to use and decide how many clusters to have'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Hierarchical Clustering: Dendrogram'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='How Many Clusters?'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Cluster Membership'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Kmeans: Cluster Membership'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Step 7. Profile and interpret the clusters'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='Snake Plots'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Step 8. Assess the robustness of our clusters'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Example Robustness Test: Different Methods'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Key Lessons'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Next Class: Classification'>
+         21
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

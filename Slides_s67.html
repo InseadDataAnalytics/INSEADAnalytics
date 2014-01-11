@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>(Big) Data Analytics for Business</title>
+  <meta charset="utf-8">
+  <meta name="description" content="(Big) Data Analytics for Business">
+  <meta name="author" content="T. Evgeniou and J. Niessing">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/slides" 
+    src="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>(Big) Data Analytics for Business</h1>
+    <h2>Session 6-7, Classification</h2>
+    <p>T. Evgeniou and J. Niessing<br/>INSEAD</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Example Applications</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Who are most likely to click on an ad? </li>
+<li>Who are likely to respond to a direct mail campaign? What distinguishes those who responded to previous direct mail compared to those who do not?</li>
+<li>How are satisfied customers different from dissatisfied customers in terms of their demographics and attitudes towards your products’ characteristics?</li>
+<li>Who are likely to default on a loan?</li>
+<li>To whom should we offer a particular promotion?</li>
+<li>Which transaction is most likely a fraud?</li>
+<li>Which applicants are most likely to fit in our organization and succeed?</li>
+<li>Which drug development project should we mainly invest in?</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>What is common to these problems?</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li><p>There is a dependent variable which is categorical e.g. success vs failure (fit vs. non-fit; fraud vs. non-fraud, response vs. non-response, etc.)</p></li>
+<li><p>There are some independent variables which we can use to explain membership in the different categories</p></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Classification: A Process</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Create an estimation and two validation samples in a balanced way </li>
+<li>Set up the dependent variable (“what is a success? What is a failure?”)</li>
+<li>Assess and select the independent variables</li>
+<li>Estimate model (many methods, we do 2 here)</li>
+<li>Assess performance on first validation data, repeat steps 2-5 as necessary</li>
+<li>Assess performance on second validation data once</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Various Methods</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Logistic regression</li>
+<li>Classification trees</li>
+<li>Boosted Trees</li>
+<li>Nearest Neighbors</li>
+<li>Neural Networks</li>
+<li>Bayesian methods</li>
+<li>Support Vector Machines
+… </li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Target Advertisement</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Consider a vacation resort that has information on the following variables from a sample of its customers:</p>
+
+<ol>
+<li>Visit: Whether they visited (1) or not (0) the resort in the last 2 years</li>
+<li>Income: Income of Household</li>
+<li>Travel Attitude: Attitude towards travel</li>
+<li>Vacation Importance: Importance attached to Vacations</li>
+<li>HH Size: Size of Household</li>
+<li>HH Age: Age of the Head of the household</li>
+<li>Vacation Spending: Amount of money spent on vacations</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Summary Statistics</h2>
+  </hgroup>
+  <article data-timings="">
+    <TABLE class='table table-striped table-hover table-bordered'>
+<CAPTION ALIGN="top"> Sample Data Resort Customers </CAPTION>
+<TR> <TH>  </TH> <TH> Visit </TH> <TH> Income </TH> <TH> Travel.Attitude </TH> <TH> Vacation.Importance </TH> <TH> HH.Size </TH> <TH> HH.Head.Age </TH> <TH> Vacation.Spending </TH>  </TR>
+  <TR> <TD align="right"> 1 </TD> <TD align="right">  1 </TD> <TD align="right"> 50.2 </TD> <TD align="right">  5 </TD> <TD align="right">  8 </TD> <TD align="right">  3 </TD> <TD align="right"> 43 </TD> <TD align="right">  2 </TD> </TR>
+  <TR> <TD align="right"> 2 </TD> <TD align="right">  1 </TD> <TD align="right"> 70.3 </TD> <TD align="right">  6 </TD> <TD align="right">  7 </TD> <TD align="right">  4 </TD> <TD align="right"> 61 </TD> <TD align="right">  3 </TD> </TR>
+  <TR> <TD align="right"> 3 </TD> <TD align="right">  1 </TD> <TD align="right"> 62.9 </TD> <TD align="right">  7 </TD> <TD align="right">  5 </TD> <TD align="right">  6 </TD> <TD align="right"> 52 </TD> <TD align="right">  3 </TD> </TR>
+  <TR> <TD align="right"> 4 </TD> <TD align="right">  1 </TD> <TD align="right"> 48.5 </TD> <TD align="right">  7 </TD> <TD align="right">  5 </TD> <TD align="right">  5 </TD> <TD align="right"> 36 </TD> <TD align="right">  1 </TD> </TR>
+  <TR> <TD align="right"> 5 </TD> <TD align="right">  1 </TD> <TD align="right"> 52.7 </TD> <TD align="right">  6 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right"> 55 </TD> <TD align="right">  3 </TD> </TR>
+   </TABLE>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>...</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Example Applications'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='What is common to these problems?'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Classification: A Process'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Various Methods'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Target Advertisement'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Summary Statistics'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='...'>
+         7
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
