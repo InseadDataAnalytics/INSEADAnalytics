@@ -1,0 +1,290 @@
+---
+
+title : (Big) Data Analytics for Business
+subtitle : Sessions 4-5, Clustering and Segmentation
+author : T. Evgeniou and J. Niessing
+job : INSEAD
+widgets : []
+mode : standalone 
+
+---
+
+## Clustering and Segmentation
+
+```{r include=FALSE}
+## using dummy data to recreate cluster segmentation graphics
+library(vegan)
+require(vegan)
+data(dune)
+# kmeans
+kclus <- kmeans(dune,centers= 4, iter.max=1000)
+# distance matrix
+dune_dist <- dist(dune,method=distance_used)
+# Multidimensional scaling
+cmd <- cmdscale(dune_dist)
+```
+
+```{r fig.width=12, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
+# plot MDS, with colors by groups from kmeans
+groups <- levels(factor(kclus$cluster))
+ordiplot(cmd, type = "n")
+cols <- c("steelblue", "darkred", "darkgreen", "pink")
+for(i in seq_along(groups)){
+  points(cmd[factor(kclus$cluster) == groups[i], ], col = cols[i], pch = 16)
+  }
+
+# add spider and hull
+ordispider(cmd, factor(kclus$cluster), label = TRUE)
+ordihull(cmd, factor(kclus$cluster), lty = "dotted")
+```
+---
+
+## What is Clustering and Segmentation?
+
+Processes and Tools to organize data in a few clusters with similar observations within each cluster
+
+---
+
+## Example Usage
+
+- Market Segmentation
+
+- Co-Moving Asset Classes
+
+- Geo-demographic segmentation
+
+- Recommender Systems
+
+- Text Mining
+
+
+---
+
+## A Segmentation Process
+
+1. Confirm the data are metric (interval scale), if necessary 
+
+2. Decide whether to scale standardize the data, if necessary
+
+3. Decide which variables to use for clustering
+
+4. Define similarity or dissimilarity measures between observations
+
+5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+
+6. Select the clustering method to use and decide how many clusters to have
+
+7. Profile and interpret the clusters 
+
+8. Assess the robustness of our clusters
+
+
+
+---
+
+## Example Data
+
+V1: Shopping is fun (scale 1-7)
+
+V2: Shopping is bad for your budget (scale 1-7)
+
+V3: I combine shopping with eating out (scale 1-7)
+
+V4: I try to get the best buys while shopping (scale 1-7)
+
+V5: I don't care about shopping (scale 1-7)
+
+V6: You can save lot of money by comparingprices (scale 1-7)
+
+Income: the household income of the respondent (in dollars)
+
+Mall.Visits: how often they visit the mall (scale 1-7)
+
+
+---
+
+## Step 1: Summary Statistics
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+print(xtable(summary(ProjectData) ,caption=paste("Summary Statistics:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+---
+
+## Step 2. Decide whether to scale standardize the data, if necessary 
+
+Example Normalization
+
+```{r, results='asis'}
+ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+```
+
+---
+
+## Step 4. Define similarity or dissimilarity measures between observations
+
+There are literally thousands of rigorous mathematical definitions of distance between observations/vectors! Moreover, as noted above, the user may manually define such distance metrics, as we show for example below - note however, that in doing so one has to be careful to make sure that the defined distances are indeed "valid" ones (in a mathematical sense, a topic beyond our scope).
+
+---
+
+## Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+
+Some Histograms of our Segmentation Attributes
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, echo=FALSE,error=FALSE,results='asis'}
+split.screen(c(2, 2))
+screen(1); hist(ProjectData[,1], main = NULL, xlab="Histogram of Variable 1", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+screen(2); hist(ProjectData[,2], main = NULL, xlab="Histogram of Variable 2", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+screen(3); hist(ProjectData[,3], main = NULL, xlab="Histogram of Variable 3", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+screen(4); hist(ProjectData[,4], main = NULL, xlab="Histogram of Variable 4", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+```
+
+
+---
+
+## Histogram of Pairwise Distances
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Pairwise_Distances <- dist(ProjectData, method = distance_used) # distance matrix
+hist(Pairwise_Distances, main = NULL, xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency")
+```
+
+---
+
+## Step 6. Select the clustering method to use and decide how many clusters to have
+
+* Hierarchical Methods
+
+* Non-Hierarchical Methods (e.g. k-means)
+
+---
+
+
+## Hierarchical Clustering: Dendrogram
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Hierarchical_Cluster_distances<-dist(ProjectData_segment,method="euclidean")
+Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method="ward")
+plot(Hierarchical_Cluster,main = NULL, sub=NULL,labels = 1:nrow(ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) # display dendogram
+# draw dendogram with red borders around the 3 clusters
+rect.hclust(Hierarchical_Cluster, k=3, border="red") 
+```
+
+---
+
+## How Many Clusters?
+
+Hierarchical Clustering Dendrogram Heights Plot
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+plot(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1],type="l")
+```
+
+
+---
+
+## Cluster Membership
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=3)) # cut tree into 3 clusters
+cluster_ids_hclust=unique(cluster_memberships_hclust)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+ProjectData_with_hclust_membership <- cbind(ProjectData,cluster_memberships_hclust)
+colnames(ProjectData_with_hclust_membership)<-c(colnames(ProjectData),"Cluster_Membership")
+print(xtable(head(ProjectData_with_hclust_membership,5) ,caption="Hierachical Clustering cluster membership of Sample Data: Mall Visits", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+---
+
+## Kmeans: Cluster Membership
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm="Lloyd")
+
+ProjectData_with_kmeans_membership <- cbind(ProjectData,kmeans_clusters$cluster)
+colnames(ProjectData_with_kmeans_membership)<-c(colnames(ProjectData),"Cluster_Membership")
+print(xtable(head(ProjectData_with_kmeans_membership,5) ,caption="kMeans cluster membership of Sample Data: Mall Visits", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+---
+
+## Step 7. Profile and interpret the clusters 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships_kmeans <- kmeans_clusters$cluster 
+cluster_ids_kmeans=unique(cluster_memberships_kmeans)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships=cluster_memberships_kmeans
+cluster_ids = cluster_ids_kmeans
+Cluster_Profile_mean=sapply(cluster_ids,function(i) apply(ProjectData_profile[(cluster_memberships==i),],2,mean))
+colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids),sep=" ")
+Cluster_Profile_sd=sapply(cluster_ids,function(i) apply(ProjectData_profile[cluster_memberships==i,],2,sd))
+colnames(Cluster_Profile_sd)<- paste("Segment",1:length(cluster_ids),sep=" ")
+
+# XXXX HERE WE SHOULD SHOW BOTH THE MEANS AND THE STANDARD DEVIATIONS!!!...
+
+print(xtable(Cluster_Profile_mean ,caption=paste("Averages of the Profile Attributes for each segment:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+--- 
+
+## Snake Plots
+
+```{r Fig2, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
+
+# XXX Should be protted nicely, with different colors per cluster!
+
+plot(Cluster_Profile_mean[,1],type="l")
+for(i in 2:ncol(Cluster_Profile_mean)) lines(Cluster_Profile_mean[,i])
+```
+
+
+--- 
+## Step 8. Assess the robustness of our clusters
+
+Are the clusters stable when we use:
+
+- using different subsets of the original data;
+- using variations of the original segmentation attributes
+- using different distance metrics
+- using different segmentation methods
+- using different numbers of clusters
+
+
+--- 
+
+## Example Robustness Test: Different Methods
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+# first make sure the segment ids are correctly aligned
+max_cluster_overlap=sapply(1:length(cluster_ids_kmeans), function(i) {overlaps=sapply(1:length(cluster_ids_hclust), function(j) length(intersect(which(cluster_memberships_kmeans==i),which(cluster_memberships_hclust==j)))); which.max(overlaps)})
+
+cluster_memberships_kmeans_aligned=rep(0,length(cluster_memberships_kmeans))
+for (i in 1:length(cluster_ids_kmeans)) 
+  cluster_memberships_kmeans_aligned[(cluster_memberships_kmeans==i)]<-max_cluster_overlap[i]
+
+# Now calculate the overlaps: first the total overlap
+total_observations_overlapping=100*sum(cluster_memberships_kmeans_aligned==cluster_memberships_hclust)/length(cluster_memberships_hclust)
+# then per cluster:
+per_cluster_observations_overlapping=sapply(1:length(cluster_ids_kmeans), function(i) 100*length(intersect(which(cluster_memberships_kmeans_aligned==i),which(cluster_memberships_hclust==i)))/sum(cluster_memberships_kmeans_aligned==i))
+per_cluster_observations_overlapping=matrix(per_cluster_observations_overlapping,nrow=1)
+colnames(per_cluster_observations_overlapping)<-paste("Segment",1:length(per_cluster_observations_overlapping),sep=" ")
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+print(xtable(per_cluster_observations_overlapping ,caption = paste(paste("The percentage of observations belonging to the same segment is", total_observations_overlapping, sep=" "),"%."), digits=1), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+--- 
+
+## Key Lessons
+
+--- 
+
+## Next Class: Classification

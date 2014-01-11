@@ -1,0 +1,88 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
+
+
+Data Analytics: Some Key Lessons (**DRAFT**)
+========================================================
+
+T. Evgeniou, INSEAD
+
+
+
+```
+Factor analysis is a statistical approach to finding "hidden" derived attributes in data by combining together groups of the original raw attributes in such a way that the least information in the original data is lost - in a statistical sense. It is part of a general class of statistical methodologies used to do so called dimensionality reduction or data reduction. 
+```
+
+```
+Data reduction is a very useful step in helping us interpret the data and make decisions.
+```
+
+```
+It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and "finding results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
+```
+
+```
+Two Statistical criteria to select the number of factors/derived variables when using PCA are: a) select components with corresponding eigenvalue larger than 1; b) Select the components with the highest eigenvalues "up to the component" for which the cumulative total variance explained is relatively large (e.g. more than 50%).
+```
+
+
+```
+A third rule of thumb to decide how many components to use is to consider only the factors up to the "elbow" of the scree plot.
+```
+
+```
+What Factor Loads "Look Good"? Three Quality Criteria
+1. For each factor (column) only a few loadings are large (in absolute value)
+2. For each initial variable (row) only a few loadings are large (in absolute value)
+3. Any pair of factors (columns) should have different "patterns" of loading
+```
+
+```
+Data Analytics is an iterative process, therefore we may need to return to our original raw data at any point and select new raw attributes as well as new factors and derived variables
+```
+
+
+```
+Clustering techniques are used to group data/observations in a few segments so that data within any segment are similar while data across segments are different. Defining what we mean when we say "similar" or "different" observations is a key part of cluster analysis which often requires a lot of contextual knowledge and creativity beyond what statistical tools can provide.
+```
+
+```
+It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and "finding results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
+```
+
+```
+In general, a "best practice" for segmentation is to creatively define distance metrics between our observations. 
+```
+
+
+'''
+If the user does not have a good understanding of what makes two observations (e.g. customers, products, companies, assets, investments, etc) "similar", no statistical method will be able to discover the answer to this question. 
+
+'''
+
+'''
+There are literally thousands of rigorous mathematical definitions of distance between observations/vectors! Moreover, as noted above, the user may manually define such distance metrics, as we show for example below - note however, that in doing so one has to be careful to make sure that the defined distances are indeed "valid" ones (in a mathematical sense, a topic beyond our scope).
+'''
+
+
+```
+Visualization is very important for data analytics, as it can provide a first understanding of the data.
+```
+
+
+```
+Selecting the number of clusters requires a combination of statistical reasoning, judgment, interpretability of the clusters, actionable value of the clusters found, and many other quantitative and qualitative criteria. In practice different numbers of segments should be explored, and the final choice should be made based on both statistical and qualitative criteria. 
+```
+
+
+```
+The segments found should be relatively robust to changes in the clustering methodology. Most of the observations should belong in the same clusters independent on how the clusters are found. Large changes may indicate that our segmentation is not valid. Moreover, the profiles of the clusters found using different approaches should be as consistent across different approaches as possible. Judging the quality of segmentation is a matter of both robustness of the statistical characteristics of the segments (e.g. minor changes from different methods and data used) as well as a matter of many qualitative criteria: interpretation, actionability, stability over time, etc. 
+```
+
+```
+Data analytics is used for us to eventually take decisions, and that is feasible only when we are comfortable (enough) with our understanding of the analytics results, including our ability to clearly interpret them. 
+```
+
+```
+Much like any data analysis, segmentation is an iterative process with many variations of data, methods, number of clusters, and profiles generated until a satysfying solution is reached. 
+```

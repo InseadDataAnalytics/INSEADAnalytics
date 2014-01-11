@@ -1,0 +1,78 @@
+---
+title : (Big) Data Analytics for Business
+subtitle : Session 6-7, Classification
+author : T. Evgeniou and J. Niessing
+job : INSEAD
+widgets : []
+mode : standalone 
+---
+
+## Example Applications
+
+- Who are most likely to click on an ad? 
+- Who are likely to respond to a direct mail campaign? What distinguishes those who responded to previous direct mail compared to those who do not?
+- How are satisfied customers different from dissatisfied customers in terms of their demographics and attitudes towards your products’ characteristics?
+- Who are likely to default on a loan?
+- To whom should we offer a particular promotion?
+- Which transaction is most likely a fraud?
+- Which applicants are most likely to fit in our organization and succeed?
+- Which drug development project should we mainly invest in?
+
+---
+
+## What is common to these problems?
+
+1. There is a dependent variable which is categorical e.g. success vs failure (fit vs. non-fit; fraud vs. non-fraud, response vs. non-response, etc.)
+
+2. There are some independent variables which we can use to explain membership in the different categories
+
+---
+
+## Classification: A Process
+
+1. Create an estimation and two validation samples in a balanced way 
+2. Set up the dependent variable (“what is a success? What is a failure?”)
+3. Assess and select the independent variables
+4. Estimate model (many methods, we do 2 here)
+5. Assess performance on first validation data, repeat steps 2-5 as necessary
+6. Assess performance on second validation data once
+
+---
+## Various Methods
+
+- Logistic regression
+- Classification trees
+- Boosted Trees
+- Nearest Neighbors
+- Neural Networks
+- Bayesian methods
+- Support Vector Machines
+… 
+
+---
+
+## Target Advertisement 
+
+Consider a vacation resort that has information on the following variables from a sample of its customers:
+
+1. Visit: Whether they visited (1) or not (0) the resort in the last 2 years
+2. Income: Income of Household
+3. Travel Attitude: Attitude towards travel
+4. Vacation Importance: Importance attached to Vacations
+5. HH Size: Size of Household
+6. HH Age: Age of the Head of the household
+7. Vacation Spending: Amount of money spent on vacations
+
+---
+
+## Summary Statistics
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+print(xtable(head(ProjectData_used,5) ,caption=paste("Sample Data",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+---
+
+## ...
+

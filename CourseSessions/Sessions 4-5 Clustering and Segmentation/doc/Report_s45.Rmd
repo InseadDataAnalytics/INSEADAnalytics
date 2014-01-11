@@ -1,0 +1,415 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
+
+Cluster Analysis and Segmentation (**DRAFT**)
+========================================================
+**T. Evgeniou, INSEAD**
+
+```{r include=FALSE}
+## using dummy data to recreate cluster segmentation graphics
+library(vegan)
+require(vegan)
+data(dune)
+# kmeans
+kclus <- kmeans(dune,centers= 4, iter.max=1000)
+# distance matrix
+dune_dist <- dist(dune,method=distance_used)
+# Multidimensional scaling
+cmd <- cmdscale(dune_dist)
+```
+
+```{r Fig1, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
+# plot MDS, with colors by groups from kmeans
+groups <- levels(factor(kclus$cluster))
+ordiplot(cmd, type = "n")
+cols <- c("steelblue", "darkred", "darkgreen", "pink")
+for(i in seq_along(groups)){
+  points(cmd[factor(kclus$cluster) == groups[i], ], col = cols[i], pch = 16)
+  }
+
+# add spider and hull
+ordispider(cmd, factor(kclus$cluster), label = TRUE)
+ordihull(cmd, factor(kclus$cluster), lty = "dotted")
+```
+
+
+What is this for?
+---------------------------------------------------------
+
+In Data Analytics we often have very large data (many observations - "rows"), which are however similar to each other hence we may want to organize them in a few clusters with similar observations within each cluster. For example, in the case of customer data, even though we may have data from millions of customers, these customers may only belong to a few segments: customers are similar within each segment but different among segments. We may often want to analyze each segment separately, as they may behave differently (e.g. different market segments may have different product preferences and pricing implications).
+
+In such situations, to identify segments in the data one can use statistical techniques called **Clustering**. Based on how we define "similarities" and "differences" between data, which can be defined mathematically by defining **distance metrics**, one can find different segmentation solutions. A key ingredient of clustering and segmentation is exactly the definition of these distance metrics (between observations), which need to be defined creatively based on contextual knowledge and not only using "black box" mathematical equations and techniques. 
+
+
+<blockquote> <p>
+Clustering techniques are used to group data/observations in a few segments so that data within any segment are similar while data across segments are different. Defining what we mean when we say "similar" or "different" observations is a key part of cluster analysis which often requires a lot of contextual knowledge and creativity beyond what statistical tools can provide.
+</p> </blockquote>
+
+Cluster analysis is used in a variety of applications. For example it can be used to identify consumer segments, or competitive sets of products, or groups of assets whose prices co-move, or for geo-demographic segmentation, etc. In general it is often necessary to split our data into segments and perform any analysis within each segment in order to develop (potentially more refined) segment-specific insights. This may be the case even if there are no intuitively "natural" segments in our data. 
+
+
+Clustering and Segmentation using an Example
+--------------------------------------------
+
+In this note we discuss a process for clustering and segmentation using a simple dataset that describes attitudes of people to shopping in a shopping mall. As this is a small dataset, one could also "manually" explore the data to find "visually" customer segments - which may be feasible for this small dataset, although clustering is in general a very difficult problem even when the data is very small.  
+
+Before reading further, do try to think (possibly using simple data analyses) what segments one could define using this example data. As always, you will see that even in this relatively simple case it is not as obvious what the derived attributes should be, and you will most likely disagree with your colleagues about them: the goal afternall is to let the numbers and statistics help us be more *objective and statistically correct*.
+
+
+### The "Business Decision"" 
+
+The management team of a large shopping mall would like to understand the types of people who are, or could be, visiting their mall. They have good reasons to believe that there are a few different market segments, and they are considering designing and positioning the shopping mall services better in order to attract mainly a few profitable market segments, or to differentiate their services  (e.g. invitations to events, discounts, etc) across market segments. 
+
+### The Data
+
+To make these decisions, the management team run a market research survey of a few potential customers. In this case this was a small survey to only a few people, where each person answered six attitudinal questions and a question regarding how often they visit the mall, all on a scale 1-7, as well as one question regarding their household income:
+
+** Market Research Survey Questions**
+
+V1: Shopping is fun (scale 1-7)
+
+V2: Shopping is bad for your budget (scale 1-7)
+
+V3: I combine shopping with eating out (scale 1-7)
+
+V4: I try to get the best buys while shopping (scale 1-7)
+
+V5: I don't care about shopping (scale 1-7)
+
+V6: You can save lot of money by comparingprices (scale 1-7)
+
+Income: the household income of the respondent (in dollars)
+
+Mall.Visits: how often they visit the mall (scale 1-7)
+
+Forty people responded to these 6 questions. Here are for example the responses of the first 5 people:
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+print(xtable(head(ProjectData,5) ,caption=paste("Sample Data:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+We will see some descriptive statistics of the data later, when we get into the statistical analysis.
+
+How can the company segment these 40 people in order to better target (or not) each segment? Are there really segments in this market? 
+
+Let's see **a** process for clustering and segmentation, the goal of this report. 
+
+
+### A Process for Clustering and Segmentation
+
+As always: 
+
+<blockquote> <p>
+It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and "finding results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
+</p> </blockquote>
+
+There is *not one* process for clustering and segmentation. However, we have to start somewhere, so we will use the following process:
+
+#### Clustering and Segmentation in 9 steps
+
+1. Confirm the data are metric (interval scale), if necessary 
+
+2. Decide whether to scale standardize the data, if necessary
+
+3. Decide which variables to use for clustering
+
+4. Define similarity or dissimilarity measures between observations
+
+5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+
+6. Select the clustering method to use and decide how many clusters to have
+
+7. Profile and interpret the clusters 
+
+8. Assess the robustness of our clusters
+
+Let's follow these steps.
+
+#### Step 1. Confirm the data are metric (interval scale), if necessary  
+
+While one can cluster data even if they are not metric, many of the statistical methods available for clustering require that the data are **metric**: this means not only that all data are numbers, but also that the numbers have an actual numerical meaning, that is, 1 is less than 2, which is less than 3 etc. The main reason for this is that one needs to define distances between observations (see step 4 below), and often these distances (e.g. the "Euclideal distance") are defined only with metric data. 
+
+However, one could potentially define distances also for non-metric data. For example, if our data are names of people, one could simply define the distance between two people to be 0 when these people have the same name and 1 otherwise - one can easily think of generalizations of this. This is why, although most of the statistical methods available (which we will also use below) require that the data is metric, this is not necessary as long as we are willing to "intervene in the clustering methods manually, e.g. to define the distance metrics between our observations manually". We will show a simple example of such a manual intervention below.
+
+<blockquote> <p>
+In general, a "best practice" for segmentation is to creatively define distance metrics between our observations. 
+</p> </blockquote>
+ 
+In our case the data are in any case metric, so we continue to the next step. Before doing so, we see the descriptive statistics of our data to get, as always, a first feeling for the data (note that one should spend a lot of time getting a feeling for the data based on simple summary statistics and visualizations: good data analytics require that we know a lot about the data):
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+print(xtable(summary(ProjectData) ,caption=paste("Summary Statistics:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+
+#### Step 2. Decide whether to scale standardize the data, if necessary 
+
+Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger (can you see which one?): this is the Income variable. Having some variables with a very different range/scale can often create problems: most of the "results" may be driven by such large valued attributes, more so than we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. scaledIncome = (Income-mean(Income))/sd(Income) ), or scaling them between 0 and 1 (e.g. scaledIncome=(Income-min(Income))/(max(Income)-min(Income))). Here is for example the R code for the first approach, if we want to standardize all attributes:
+
+```{r, results='asis'}
+ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+```
+
+Notice below the summary statistics of the scaled dataset: as expected all variables have mean 0 and standard deviation 1. 
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+print(xtable(summary(ProjectData_scaled) ,caption=paste("Summary Statistics of Normalized Data:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+
+While this is typically a necessary step, one has to always do it with care: some times you may want your analytics findings to be driven mainly by a few attributes that take large values; other times having attributes with different scales may imply something about those attributes. In many such cases one may choose to skip step 2 for some of the raw attributes.  For example, when students rate their schools on various factors on a 1-7 scale, if the variability is minimal on a certain variable (e.g. satisfaction about the IT infrastructure of the school) but very high on another one (e.g. satisfaction with job placement), then standardization will reduce the real big differences in placement satisfaction and magnify the small differences in IT infrastructure satisfaction.  Hence standardization is not a necessary data transformation step, and you should use it judiciously. 
+
+#### Step 3. Decide which variables to use for clustering
+
+The decision about which variables to use for clustering is a **critically important decision** that will have a big impact on the clustering solution. So we need to think carefully about the variables we will choose for clustering. Good exploratory research that gives us a good sense of what variables may distinguish people or products or assets or regions for our final decisions at hand is critical. Clearly this is a place where a lot of contextual knowledge, creativity, and experimentation/iterations are needed. 
+
+Moreover, we often use only a few of the data attributes for segmentation (the **segmentation attributes**) and use some of the remaining ones (the **profiling attributes**) only to profile the clusters, as discussed in Step 8. For example, in market research and market segmentation, one may use attitudinal data for segmentation (to segment the customers based on their needs and attitudes towards the products/services) and then demographic and behavioral data for profiling the segments found. 
+
+In our case, we can use the 6 attitudinal questions for segmentation, and the other 2 (Income and Mall.Visits) for profiling later. 
+
+#### Step 4. Define similarity or dissimilarity measures between observations
+
+Remember that the goal of clustering and segmentation is to group observations based on how similar they are. It is therefore **crucial** that we have a good undestanding of what makes two observations (e.g. customers, products, companies, assets, investments, etc) "similar". 
+
+<blockquote> <p>
+If the user does not have a good understanding of what makes two observations (e.g. customers, products, companies, assets, investments, etc) "similar", no statistical method will be able to discover the answer to this question. 
+</p> </blockquote>
+
+Most statistical methods for clustering and segmentation use common mathematical measures of distance. Typical measures are, for example, the **Euclidean distance** or the **Manhattan distance** (see *help(dist)* in R). 
+
+<blockquote> <p>
+There are literally thousands of rigorous mathematical definitions of distance between observations/vectors! Moreover, as noted above, the user may manually define such distance metrics, as we show for example below - note however, that in doing so one has to be careful to make sure that the defined distances are indeed "valid" ones (in a mathematical sense, a topic beyond our scope).
+</p> </blockquote>
+
+In our case we explore two distance metrics: the commonly used **Euclidean distance** as well a a simple one we define manually. 
+
+The Euclidean distance between two observations (in our case, customers) is simply the square root of the average of the square difference between the attributes of the two observations (in our case, customers). For example, the distance of the first customer in our data from customers 2-5 (summarized above), using their responses to the 6 attitudinal questions is:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+euclidean_pairwise=as.matrix(dist(head(ProjectData_segment,5),method="euclidean"))
+euclidean_pairwise=euclidean_pairwise*lower.tri(euclidean_pairwise)+euclidean_pairwise*diag(euclidean_pairwise)+10e10*upper.tri(euclidean_pairwise)
+euclidean_pairwise[euclidean_pairwise==10e10]<- NA
+print(xtable(euclidean_pairwise,caption=paste("Pairwise Distances between the first 5 observations using the Euclidean Distance Metric:",data_name,sep=" "), digits=1), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+Notice for example that if we use, say, the Manhattan distance metric, these distances change as follows:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+manhattan_pairwise=as.matrix(dist(head(ProjectData_segment,5),method="manhattan"))
+manhattan_pairwise=manhattan_pairwise*lower.tri(manhattan_pairwise)+manhattan_pairwise*diag(manhattan_pairwise)+10e10*upper.tri(manhattan_pairwise)
+manhattan_pairwise[manhattan_pairwise==10e10]<- NA
+print(xtable(manhattan_pairwise,caption=paste("Pairwise Distances between the first 5 observations using the Manhattan Distance Metric:",data_name,sep=" "), digits=1), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+In general two obervations (e.g. customers in this case) may look more similar to each other than to a third observation with one distance metric, but more different from each other than to that same third observation when using another distance metric! 
+
+Let's now define our own distance metric, as an example. Let's say that the management team of the company believes that two customers are similar if they do not differ in their ratings of the attitudinal questions by more than 2 points. We can manually assign a distance of 1 for every question for which two customers gave an answer that differs by more than 2 points, and 0 otherwise. It is easy to write this distance function in R:
+
+```{r ,results='asis'}
+My_Distance_function<-function(x,y){sum(abs(x-y)>2)}
+Manual_Pairwise=apply(head(ProjectData_segment,5),1,function(i) apply(head(ProjectData_segment,5),1,function(j) My_Distance_function(i,j) ))
+
+```
+
+Here is how the pairwise distances between the respondents now look like.
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Manual_Pairwise=Manual_Pairwise*lower.tri(Manual_Pairwise)+Manual_Pairwise*diag(Manual_Pairwise)+10e10*upper.tri(Manual_Pairwise)
+Manual_Pairwise[Manual_Pairwise==10e10]<- NA
+print(xtable(Manual_Pairwise,caption=paste("Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric:",data_name,sep=" "), digits=1), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+In general a lot of creative thinking and exploration should be spent in this step, and as always one may need to come back to this step even after finishing the complete segmentation process - multiple times. 
+
+#### Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+
+Having seen the data and defined what we mean "two observations are similar", the next step is to get a first understanding of the data through visualizing for example individual attributes as well the pairwise distances (using the distance metric we chose) between the observations. If there are indeed multiple segments in our data, some of these plots should show "mountains and valleys", with the mountains being potential segments. 
+
+For example, in our case we can see the histogram of, say, the first 4 variables:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, echo=FALSE,error=FALSE,results='asis'}
+split.screen(c(2, 2))
+screen(1); hist(ProjectData[,1], main = NULL, xlab="Histogram of Variable 1", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+screen(2); hist(ProjectData[,2], main = NULL, xlab="Histogram of Variable 2", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+screen(3); hist(ProjectData[,3], main = NULL, xlab="Histogram of Variable 3", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+screen(4); hist(ProjectData[,4], main = NULL, xlab="Histogram of Variable 4", ylab="Frequency", cex.lab=0.7, cex.axis=0.7); 
+```
+
+or the histogram of all pairwise distances:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Pairwise_Distances <- dist(ProjectData, method = distance_used) # distance matrix
+hist(Pairwise_Distances, main = NULL, xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency")
+```
+
+<blockquote> <p>
+Visualization is very important for data analytics, as it can provide a first understanding of the data.
+</p> </blockquote>
+
+#### Step 6. Select the clustering method to use and decide how many clusters to have
+
+There are many statistical methods for clustering and segmentation. In practice one may use various approaches and then eventually select the solution that is statistically robust (see last step below), interpretable, and actionable - among other criteria.
+
+In this note we will use two widely used methods: the **Kmeans Clustering Method**, and the **Hierarchical Clustering Method**. Like all clustering methods, these two also require that we have decided how to measure the distance/similarity between our observations.  Explaining how these methods work is beyond our scope. The only difference to highlight is that Kmeans requires the user to define how many segments to create, while Hierarchical Clustering does not. 
+
+Let's fist use the **Hierarchial Clustering** method, as we do not know for now how many segments there are in our data. Hierarchical clustering is a  method that also helps us visualise how the data may be clustering together. It generates a plot called the **Dendrogram** which is often helpful for visualization - but should be used with care. For example, in this case the dendrogram, using the Euclidean distance metric from the earlier steps, is as follows:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Hierarchical_Cluster_distances<-dist(ProjectData_segment,method="euclidean")
+Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method="ward")
+plot(Hierarchical_Cluster,main = NULL, sub=NULL,labels = 1:nrow(ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) # display dendogram
+# draw dendogram with red borders around the 3 clusters
+rect.hclust(Hierarchical_Cluster, k=3, border="red") 
+```
+
+The Dendrogram indicates how this clustering method works: observations are "grouped together",starting from pairs of individual observations which are the closest to each other, and merging smaller groups into larger ones depending on which groups are closest to each other. Eventually all our data are merged into one segment. The heigths of the branches of the tree indicate how different the clusters merged at that level of the tree are. Longer lines indicate that the clusters below are very different. As expected, the heights of the tree branches increase as we traverse the tree from the end leaves to the tree root: the method merges data points/groups from the closest ones to the furthest ones. 
+
+Dendrograms are a helpful visualization tool for segmentation, even if the number of observations is very large - the tree typically grows logarithmically with the number of data. However, they can be very misleading. Notice that once two data points are merged into the same segment they remain in the same segment throughout the tree, This "rigidity" of the Hierarchical Clustering method may lead to segmentations which are suboptimal in many ways. However, the dendrograms are useful in practice to help us get some understanding of the data, including the potential number of segments we have in the data. Moreover, there are various ways to construct the dendrograms, not only depending on the distance metric we defined in the earlier steps above, but also depending on how the data are aggregated into clusters (see helt(hclust) in R, for example, which provides the following options for the way the tree is constructed: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
+
+We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+plot(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1],type="l")
+```
+
+As a rule of thumb, one can select the number of clusters as the "elbow" of this plot: this is the place in the tree where, if we traverse the tree from the leaves to its root, we need to make the "longest jump" before we merge further the segments at that tree level. In this case, as we can also see from the dendrogram  this is at 3 clusters: merging any of these three clusters together requires that we "traverse a long branch of the tree". Of course the actual number of segments can be very different from 3: in practice we explore different numbers of segments, possibly starting with what a hierarchical Clustering dendrogram indicates, and eventually we select the final segmentation solution using both statistical and qualitative criteria, as discussed below. 
+
+<blockquote> <p>
+Selecting the number of clusters requires a combination of statistical reasoning, judgment, interpretability of the clusters, actionable value of the clusters found, and many other quantitative and qualitative criteria. In practice different numbers of segments should be explored, and the final choice should be made based on both statistical and qualitative criteria. 
+</p> </blockquote>
+
+For now let's consider the 3-segments solution found by the Hierarchical Clustering method (using the Euclidean distance and the default R agglomeration method of "ward"). We can also see the segment each observation (respondent in this case) belongs to. For example the first 5 respondents belong to the 3 selected segments as follows:
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=3)) # cut tree into 3 clusters
+cluster_ids_hclust=unique(cluster_memberships_hclust)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+ProjectData_with_hclust_membership <- cbind(ProjectData,cluster_memberships_hclust)
+colnames(ProjectData_with_hclust_membership)<-c(colnames(ProjectData),"Cluster_Membership")
+print(xtable(head(ProjectData_with_hclust_membership,5) ,caption="Hierachical Clustering cluster membership of Sample Data: Mall Visits", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+We can now also use Kmeans to find clusters using a different approach. As always, much like Hierarchical Clustering can be performed using various distance metrics, so can Kmeans. Moreover, there are variations of Kmeans (e.g. "Hartigan-Wong", "Lloyd", or "MacQueen" - see help(kmeans) in R) one can explore, which are beyond the scope of this note.
+
+Here are the clusters the first 5 observations belong to when we use Kmeans to find 3 segments:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm="Lloyd")
+
+ProjectData_with_kmeans_membership <- cbind(ProjectData,kmeans_clusters$cluster)
+colnames(ProjectData_with_kmeans_membership)<-c(colnames(ProjectData),"Cluster_Membership")
+print(xtable(head(ProjectData_with_kmeans_membership,5) ,caption="kMeans cluster membership of Sample Data: Mall Visits", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+Note that the observations do not need to be in the same clusters as we use different methods, neither do the segment profiles that we will find next. However, a characteristic of **statistically robust segmentation** is that the profiles of the segments do not vary much when we find the segments using different approaches or variations of the data. We will examine this issue in the last step, after we first discuss how to profile segments. 
+
+<blockquote> <p>
+The segments found should be relatively robust to changes in the clustering methodology. Most of the observations should belong in the same clusters independent on how the clusters are found. Large changes may indicate that our segmentation is not valid. Moreover, the profiles of the clusters found using different approaches should be as consistent across different approaches as possible. Judging the quality of segmentation is a matter of both robustness of the statistical characteristics of the segments (e.g. minor changes from different methods and data used) as well as a matter of many qualitative criteria: interpretation, actionability, stability over time, etc. 
+</p> </blockquote>
+
+#### Step 7. Profile and interpret the clusters 
+
+Having decided (for now) how many clusters to use, we would like to get a better understanding of their meaning.
+
+<blockquote> <p>
+Data analytics is used for us to eventually take decisions, and that is feasible only when we are comfortable (enough) with our understanding of the analytics results, including our ability to clearly interpret them. 
+</p> </blockquote>
+
+To this purpose, one needs to spend time visualizing and understanding the data within each of the selected segments. For example, one can see how the summary statistics (e.g. averages, standard deviations, etc) of the **profiling attributes** differ across the segments. 
+
+In our case, assuming we decided we use 3 segments found using Kmeans as outlined above (similar profiling can be done with the results of hierarchical clustering or other segmentation methods), we can see how the answers of our respondents to our questions differ across segments. The summary statistics of the survey responses within each customer segment in our case are:
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships_kmeans <- kmeans_clusters$cluster 
+cluster_ids_kmeans=unique(cluster_memberships_kmeans)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships=cluster_memberships_kmeans
+cluster_ids = cluster_ids_kmeans
+Cluster_Profile_mean=sapply(cluster_ids,function(i) apply(ProjectData_profile[(cluster_memberships==i),],2,mean))
+colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids),sep=" ")
+Cluster_Profile_sd=sapply(cluster_ids,function(i) apply(ProjectData_profile[cluster_memberships==i,],2,sd))
+colnames(Cluster_Profile_sd)<- paste("Segment",1:length(cluster_ids),sep=" ")
+
+# XXXX HERE WE SHOULD SHOW BOTH THE MEANS AND THE STANDARD DEVIATIONS!!!...
+
+print(xtable(Cluster_Profile_mean ,caption=paste("Averages of the Profile Attributes for each segment:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+We can also "visualize" the segments using **snake plots** for each cluster. For example, we can plot the means for the 6 attitudinal attributes for each of the 3 clusters to better visualize differences between segments. 
+
+```{r Fig2, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
+
+# XXX Should be protted nicely, with different colors per cluster!
+
+plot(Cluster_Profile_mean[,1],type="l")
+for(i in 2:ncol(Cluster_Profile_mean)) lines(Cluster_Profile_mean[,i])
+```
+
+
+Can we see differences between the segments? For example, in this case, could we say that there are three customer segments, which we could call as "Economical Shoppers", "Apathetic Shoppers", and "Enjoyment Shoppers"? Do the segments differ in terms of their average household income and in terms of how often they visit the mall? What else can we say about the different segments?
+
+
+#### Step 8. Assess the robustness of our clusters
+
+The segmentation process outlined so far can be done with many different approaches, for example:
+
+- using different subsets of the original data;
+- using variations of the original segmentation attributes
+- using different distance metrics
+- using different segmentation methods
+- using different numbers of clusters
+
+<blockquote> <p>
+Much like any data analysis, segmentation is an iterative process with many variations of data, methods, number of clusters, and profiles generated until a satysfying solution is reached. 
+</p> </blockquote>
+
+Clearly exploring all variations is beyond the scope of this note. We discuss, however, an example of how to test the **statistical robustness** and **stability of interpretation** of the clusters found using two different approaches: Kmeans and Hierarchical Clustering, as outlined above. 
+
+Two basic  tests to perform are:
+
+1. How much overlap is there between the clusters found using different approaches? Specifically, for what percentage of our observations the clusters they belong to are the same across different clustering solutions?
+
+2. How similar are the profiles of the segments found? Specifically, how similar are the averages of the profiling attributes of the clusters found using different approaches?
+
+Remember that we have the cluster memberships of our observations for all cluster methods. We can therefore measure both the total percentage of observations that remain in the same cluster, as well as this percentage for each cluster separately. For example, for the two 3-segments solutions found above (one using Kmeans and the other using Hierarchical Clustering), these percentages are as follows:
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+# first make sure the segment ids are correctly aligned
+max_cluster_overlap=sapply(1:length(cluster_ids_kmeans), function(i) {overlaps=sapply(1:length(cluster_ids_hclust), function(j) length(intersect(which(cluster_memberships_kmeans==i),which(cluster_memberships_hclust==j)))); which.max(overlaps)})
+
+cluster_memberships_kmeans_aligned=rep(0,length(cluster_memberships_kmeans))
+for (i in 1:length(cluster_ids_kmeans)) 
+  cluster_memberships_kmeans_aligned[(cluster_memberships_kmeans==i)]<-max_cluster_overlap[i]
+
+# Now calculate the overlaps: first the total overlap
+total_observations_overlapping=100*sum(cluster_memberships_kmeans_aligned==cluster_memberships_hclust)/length(cluster_memberships_hclust)
+# then per cluster:
+per_cluster_observations_overlapping=sapply(1:length(cluster_ids_kmeans), function(i) 100*length(intersect(which(cluster_memberships_kmeans_aligned==i),which(cluster_memberships_hclust==i)))/sum(cluster_memberships_kmeans_aligned==i))
+per_cluster_observations_overlapping=matrix(per_cluster_observations_overlapping,nrow=1)
+colnames(per_cluster_observations_overlapping)<-paste("Segment",1:length(per_cluster_observations_overlapping),sep=" ")
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+print(xtable(per_cluster_observations_overlapping ,caption = paste(paste("The percentage of observations belonging to the same segment is", total_observations_overlapping, sep=" "),"%."), digits=1), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+Clearly in this case the two segmentation approaches lead to exactly the same segmentation solution, indicating that our segmentation is statistically robust (this is a simple dataset). Moreover, clearly in this case if we were to compare the profiles of the two segmentation solutions they would be the same, since the clusters are exactly the same. 
+
+Only after a number of such robustness checks, profilings, and interpretations, we can end with our final segmentation. During the segmentation analysis we may need to repeat multiple times the process outlined in this note,  with many variations of the choices we make at each step of the process, before reaching a final solution (if there are indeed segments in our data) - which of course can be revisited at any point in the future. 
+
+<blockquote> <p>
+Data Analytics is an iterative process, therefore we may need to return to our original raw data at any point and select new raw attibutes as well as new clusters.
+</p> </blockquote>
+
+**Till then...**
+

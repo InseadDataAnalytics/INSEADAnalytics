@@ -1,0 +1,240 @@
+---
+title : (Big) Data Analytics for Business
+subtitle : Session 1, Introduction to Data Analytics for Business
+author : T. Evgeniou and J. Niessing
+job : INSEAD
+widgets : []
+mode : standalone 
+---
+
+## Today's Plan
+  
+  
+  
+Course Introduction
+
+Example Applications
+
+Data Analytics Processes
+
+Introduction to the Tools
+
+---
+
+## Why this class? Three goals
+  
+  
+  
+  
+1. <b>Organizational Level:</b> Develop your intuition about identifying data analytics opportunities and their implementation challenges  
+  
+  
+2. <b>Project Level:</b> Learn how to approach data analytics projects  
+  
+  
+3. <b>Analysis Level:</b> Learn how to perform, read, and use key data analytics methods. 
+  
+
+---
+
+## Course Grading
+
+
+  
+  
+Class Group Project (one):  	40%
+
+Group Assignment (one):		30%
+
+Class Participation: 			30%
+
+
+---
+
+## Example Uses of Data Analytics
+
+Marketing (i.e. acquisition, cross-sell, churn, etc)
+
+Personalization (i.e. targeted advertisement)
+
+Market positioning
+
+Fraud detection
+
+Monitoring of processes
+
+Credit scoring and risk management
+
+Financial modeling
+
+Knowledge management and text mining
+
+...
+
+---
+
+## Is Data Analytics Disruptive for an Organization?
+  
+  
+  
+  
+  
+What <b>changes</b> could it potentially imply for an organization?
+  
+  
+For an industry?
+
+
+---
+
+## Group Project: Deliverable #1
+
+Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  <b>github pages before the day of sessions 4-5</b>. Delayed reports will cut 20% of the group project grade. 
+
+For this report you need to answer the following questions:
+
+- Name of the company you are studying (if it is for a new venture, please describe the business model, market, and key processes)
+
+- What is the business objective of the data analytics project? 
+
+- Which business processes and management decisions are affected from the data analytics project?
+
+---
+
+## Group Project: Deliverable #1 (contd)
+
+- What changes (e.g. organizational, processes, systems) do you expect the company will need to make order to effectively use the results of data analytics? What types of resistance do you expect, and why?
+
+- How will you measure the value of your proposed data analytics project (e.g. process efficiency, predictive improvement with specific business impact, etc)?  
+
+- What data will you use? Provide summary statistics of the data, as well as any initial visual/graphic summaries.
+
+Also be prepared to briefly present your project in class 
+
+---
+
+## Project Level: The Data Analytics Project
+  
+  
+  
+  
+Example: Detecting most likely customers to churn…
+  
+  
+  
+Goal: Minimize churn rate  
+  
+  
+  
+  <center>How would you proceed?</center>
+
+
+
+---
+
+## Data Analytics Processes
+
+
+  
+Step 1: Defining the Objective(s)  
+  
+  
+Step 2: Data Preparation and Exploration
+  
+  
+Step 3: Analysis
+  
+  
+Step 4: Performance Assessment
+
+---
+
+## Step 2: Data Preparation and Exploration: Many Questions
+
+What is available?
+
+How much data is needed?
+
+How much history is required?
+
+What Data Quality issues do we have?
+
+Which variables should be used?
+
+What Derived Variables do we need?
+
+What is the right level of granularity?
+
+Is our Data Representative?
+
+...
+
+---
+
+## Group Project: Deliverable #2
+  
+  
+  
+By Session 6 you need to have your first draft of the report and slides for your project, including some (basic) analysis of the data. 
+  
+  
+  
+<b>Your report and slides need to be public on your github before session 6. </b> 
+
+---
+
+## Some Data Analytics Tools Covered
+
+1. Finding important factors that summarize your data, and visualizing your data: 
+<b>Factor Analysis and Perceptual Maps</b> (Sessions 2 and 3)
+  
+  
+  
+2. Finding a few clusters of similar data: 
+<b>Cluster Analysis</b> (Sessions 4 and 5) 
+  
+  
+  
+3. Discriminating among and predicting successes vs failures: 
+<b>Logistic Regression and Tree Analyses</b> (Sessions 6 and 7)
+
+
+---
+
+## Software Tools for the Course
+  
+  
+ See course website for instructions and links to various resources
+  
+  
+- <b>Github</b>
+  
+  
+- <b>Rstudio</b>
+  
+  
+- <b>Knitr</b>
+  
+  
+- <b>Slidify</b>
+  
+  
+- <b>Web Application</b>
+
+
+---
+
+## To Do Before Next Class
+
+1. Become familiar with the <i>pull - commit - push</i> github process
+  
+  
+2. Create a new R project on your individual server by pulling the material at the 
+<a href="https://github.com/tevgeniou/Data_Analytics_Case_MarketSegmentation_LuxuryGoods" target="_blank">Segmentation </a> repository, and explore it (e.g. generate reports and slides as well as use the web application)
+  
+  
+3. Read the Boats case as well as the report and slides you get in your Data_Analytics_Case_MarketSegmentation_LuxuryGoods R project
+  
+  
+4. Let Cecile know by email about your groups (3-5 people): we will work in groups next time
+

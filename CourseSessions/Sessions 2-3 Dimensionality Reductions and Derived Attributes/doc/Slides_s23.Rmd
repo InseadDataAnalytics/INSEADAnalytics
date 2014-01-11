@@ -1,0 +1,262 @@
+---
+
+title : (Big) Data Analytics for Business
+subtitle : Session 2-3, Dimensionality Reduction and Derived Attributes
+author : T. Evgeniou and J. Niessing
+job : INSEAD
+widgets : []
+mode : standalone 
+
+---
+
+## What is Dimensionality Deduction and Factor Analysis?
+
+Derive new data variables which are linear combinations of the original ones and capture most of the information in the data. 
+
+Is typically used as a first step in Data Analytics
+
+Can also be used to solve multicollinearity issues in regression.
+
+---
+
+## Factor Analysis: Key idea
+
+
+1. Transform the original variables (ONLY the x's) into a smaller set of factors
+
+2. Understand the underlying structure of the data and the new factors
+
+3. Use the factors for subsequent analysis
+
+
+```{r Fig1, fig.width=12, fig.height=6, warning=FALSE, echo=FALSE, fig.align='center', fig=TRUE}
+img <- readPNG("All3.png")
+grid.raster(img, vjust=0)
+```
+
+---
+
+## Key Questions
+
+1. Can we really simplify the data by grouping the columns?
+
+2. How many factors should we use?
+
+3. How good are the factors we found?
+
+4. How interpretable are the factors we found? 
+
+---
+
+## Dimensionality Reduction and Factor Analysis: 8 (Easy) Steps
+
+1. Confirm the data are metric (interval scale) 
+
+2. Decide whether to scale standardize the data
+
+3. Check the correlation matrix to see if Factor Analysis makes sense
+
+4. Develop a scree plot and decide on the number of factors to be derived
+
+5. Interpret the factors and Consider rotation of factors (technical but useful)
+
+6. Save factor scores for subsequent analyses
+
+---
+
+## Applying Factor Analysis: Evaluating MBA Applications
+
+Variables available:
+* GPA
+* GMAT score
+* Scholarships, fellowships won
+* Evidence of Communications skills 
+* Prior Job Experience
+* Organizational Experience
+* Other extra curricular achievements
+
+Which variables do you believe correlate with  each other?
+What do these variables capture?
+
+---
+
+## Step 1: Confirm the data are metric (interval scale) 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+print(xtable(summary(ProjectData) ,caption=paste("Summary Statistics:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+---
+
+## Step 2: Decide whether to scale standardize the data
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+print(xtable(summary(ProjectData_scaled) ,caption=paste("Summary Statistics of Normalized Data:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = FALSE)
+```
+
+---
+
+## Step 3:  Check correlation matrix to see if Factor Analysis makes sense
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+correl<-corstars(ProjectData)
+## printing the result in a clean-slate table
+print(xtable(correl ,caption=paste("Correlation Matrix:",data_name,sep=" "), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+** = correlation is significant at 1% level; * = correlation is significant at 5% level
+
+#### Even if the data is not as neatly correlated as here, Factor analysis can be helpful
+
+---
+
+## Step 4. Develop a scree plot and decide on the number of factors to be derived
+
+* Factors
+* If there are n variables we will have n factors in total
+* First factor will explain most variance, second next and so on.
+
+* Variance Explained by Factors
+* with standardized variables each variable has a variance of 1, so the total variance in n variables is n
+* each factor will have an associated eigen value which is the amount of variance explained by that factor
+
+--- 
+
+## Example Factors
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Unrotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none")
+Unrotated_Factors<-Unrotated_Results$loadings
+Unrotated_Factors<-as.data.frame(unclass(Unrotated_Factors))
+colnames(Unrotated_Factors)<-paste("Component",1:ncol(Unrotated_Factors),sep=" ")
+Unrotated_Factors[abs(Unrotated_Factors) < MIN_VALUE]<-NA
+print(xtable(Unrotated_Factors, caption=paste(paste("All PCA factors available (values less than",MIN_VALUE),"are not shown)"), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE,include.colnames = TRUE)
+```
+
+--- 
+
+## How Many Factors? Eigenvalues and Variance Explained
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
+Variance_Explained_Table<-Variance_Explained_Table_results$eig
+## print result in a clean-slate table
+#Variance_Explained_Table[abs(Variance_Explained_Table)<MIN_VALUE]<-NA
+print(xtable(Variance_Explained_Table, caption="Eigenvalues and Variance Explained", digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+--- 
+
+## How Many Factors? Scree Plot
+
+```{r Fig2, echo=FALSE, comment=NA, results='asis', message=FALSE, echo=FALSE, fig.align='center', fig=TRUE}
+eigenvalues<-Unrotated_Results$values
+## plot eigenvalues
+plot(eigenvalues, type="o", main="Scree Plot",xlab="Component Number", ylab="Eigenvalue", col=colors()[26], lwd=2)
+## add minor ticks
+minor.tick(nx=5, ny=2)
+## add abline at y = 1
+abline(h=1,lty=2,col=colors()[34]) 
+```
+
+--- 
+
+## How many factors?
+
+* The maximal number of factors is the number of original variables Eigenvalue>1
+* "Elbow" in the Scree plot
+* Cumulative variance explained
+
+---
+
+## Step 5. Interpret the factors and Consider rotation of factors (technical but useful)
+
+Rotated Factors
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Rotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate=rotation_used,score=TRUE)
+Rotated_Factors<-Rotated_Results$loadings
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+
+Rotated_Factors[abs(Rotated_Factors) < MIN_VALUE]<-NA
+
+print(xtable(Rotated_Factors, caption=paste(paste(paste("All PCA factors available with Rotation",rotation_used),"(values less than",MIN_VALUE),"are not shown)"), digits=3), type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE,include.colnames = TRUE)
+```
+
+---
+
+## What Factor Loads "Look Good"? Three Quality Criteria
+
+1. For each factor (column) only a few loadings are large (in absolute value)
+
+2. For each initial variable (row) only a few loadings are large (in absolute value)
+
+3. Any pair of factors (columns) should have different "patterns" of loading
+
+---
+
+## Step 6. Save factor scores for subsequent analyses
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+NEW_ProjectData <- Rotated_Results$scores[,1:sum(eigenvalues>=1), drop=F]
+colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
+print(xtable(head(NEW_ProjectData,5) ,paste("Sample Data described using the selected Factors:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+---
+
+## Using the Factor Scores: Pereptual Maps
+
+```{r Fig3, echo=FALSE, comment=NA, results='asis', message=FALSE, echo=FALSE, fig.align='center', fig=TRUE}
+if (ncol(NEW_ProjectData)>=2){
+  plot(NEW_ProjectData[,1],NEW_ProjectData[,2], main="Data Visualization Using the top 2 Derived Attributes (Factors)",xlab="Derived Variable (Factor) 1", ylab="Derived Variable (Factor) 2", col=colors()[26], lwd=2) 
+  } else {
+    plot(NEW_ProjectData[,1],ProjectData[,2], 
+         main="Only 1 Derived Variable: Using Initial Variable",
+         xlab="Derived Variable (Factor) 1", 
+         ylab="Initial Variable (Factor) 2")    
+    }
+```
+
+
+## Factor Analysis: Key (Technical) Notions 
+
+1. Correlation
+2. Variance explained (eigenvalues)
+3. Scree plot
+4. Varimax rotation
+5. Factor Loadings ("components")
+6. Factor scores
+
+---
+
+## Next Class: Cluster Analysis for Segmentation
+
+```{r include=FALSE}
+## using dummy data to recreate cluster segmentation graphics
+library(vegan)
+require(vegan)
+data(dune)
+# kmeans
+kclus <- kmeans(dune,centers= 4, iter.max=1000)
+# distance matrix
+dune_dist <- dist(dune,method="euclidian")
+# Multidimensional scaling
+cmd <- cmdscale(dune_dist)
+```
+
+```{r fig.width=12, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
+# plot MDS, with colors by groups from kmeans
+groups <- levels(factor(kclus$cluster))
+ordiplot(cmd, type = "n")
+cols <- c("steelblue", "darkred", "darkgreen", "pink")
+for(i in seq_along(groups)){
+  points(cmd[factor(kclus$cluster) == groups[i], ], col = cols[i], pch = 16)
+  }
+
+# add spider and hull
+ordispider(cmd, factor(kclus$cluster), label = TRUE)
+ordihull(cmd, factor(kclus$cluster), lty = "dotted")
+```

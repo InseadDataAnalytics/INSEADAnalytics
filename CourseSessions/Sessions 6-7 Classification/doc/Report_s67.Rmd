@@ -1,0 +1,331 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
+
+
+
+Classification Methods (DRAFT)
+========================================================
+
+**T. Evgeniou, INSEAD**
+
+What is this for?
+---------------------------------------------------------
+
+A bank is interested in knowing which customers are likely to default on loan payments and which customers are most likely to pay up. The bank is also interested in knowing what characteristics of customers will be useful to explain their loan payment behavior. An advertiser is interested in choosing the set of customers who are most likely to respond to a direct mail campaign. The advertiser is also interested in knowing what characteristics of consumers are most likely to explain responsiveness to a direct mail campaign. A procurement manager is interested in knowing which orders will be delayed. 
+
+Classification (or categorization) techniques are useful to help answer such questions. They help predict the group membership (or class - hence called **classification techniques**) of individuals (data), for predefined group memberships, and also to describe which characteristics of individuals can predict their group membership. Examples of group memberships/classes could be: (1) loyal versus non-loyal customers; (2) price sensitive versus price-insensitive customers; (3) satisfied versus dissatisfied customers; (4) purchasers versus non-purchasers etc. Characteristics that are useful in classifying individuals into groups/classes could include for example (1) demographics; (2) psychographics; (3) past behavior; and (4) attitudes towards specific products. The choice of characteristics for classification should be based on the usefulness for solving the managerial problem in hand and on its ability to discriminate between the two groups.
+
+There are many techniques for solving classification problems: classification trees, logistic regression, discriminant analysis, neural networks, boosted trees, nearest neighbor, support vector machines, etc, (e.g. see the R packages "e1071" for more example methods). In this report, for simplicity  we focus on the first two, although one can always use some of the other methods instead of the ones discussed here. The focus on this note is not do describe any specific ("black box") classification method, but to describe a process for classification independent of the method used (e.g. independent of the method selected in one of the steps in the process outlined below).
+
+An important question when using classification methods is to assess the relative performance of all available ("black box") methods i.e. in order to use the best one according to some criterion. To this purpose there are standard performance **classification assessment metrics**, which we discuss below - this is a key focus of this note.  
+
+
+Classification using an Example
+--------------------------------------------
+
+
+### The "Business Decision"" 
+
+A vacation resort would like to understand who would be the most likely customers as well as what would be the **key purchase drivers** that affect people's decision to visit or re-visit the resort. 
+
+### The Data
+
+Consider a vacation resort that has information on the following variables from a sample of its customers:
+
+1. Visit: Whether they visited (1) or not (0) the resort in the last 2 years
+2. Income: Income of Household
+3. Travel Attitude: Attitude towards travel
+4. Vacation Importance: Importance attached to Vacations
+5. HH Size: Size of Household
+6. HH Age: Age of the Head of the household
+7. Vacation Spending: Amount of money spent on vacations
+
+Let's get the data and see it for a few customers. The data may look like this for the first 5 customers:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+print(xtable(head(ProjectData_used,5) ,caption=paste("Sample Data",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+We will see some descriptive statistics of the data later, when we get into statistical analysis.
+
+### A Process for Classification
+
+```
+It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness in data and finding "results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
+```
+There is *not a single best* process for classification. However, we have to start somewhere, so we will use the following process:
+
+#### Classification in 6 steps
+
+1. Create an estimation sample and two validation samples by splitting the data into three groups. Steps 2-5 below will then be performed only on the estimation and the first validation data. You should only do step 6 once on the second validation data, and report/use the performance on that (second validation) data only to make decisions. 
+
+2.  Set up the dependent variable (as a categorical 0-1 variable; multi-class classification is also feasible, and similar, but we do not explore it in this note). 
+
+3. Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics. 
+
+4.  Run discriminant analysis using the estimation data, and interpret the results.
+
+5. Assess the accuracy of classification in the first validation sample, possibly repeating steps 2-5 a few times in different ways to increase performance.
+
+6. Finally, assess the accuracy of classification in the second validation sample.  You should eventually use/report all relevant performance measures/plots on this second validation sample only.
+
+Let's follow these steps.
+
+#### Step 1: Splitting the data into estimation and validation samples
+
+It is very important that you finally measure and report (or expect to see from the data scientists working on the project) the performance of the models on **data that have not been used at all during the analysis, called "out-of-sample" data** (steps 2-5 above). The idea is that in practice we want our models to be used for predicting the class of observations/data we have not seen yet (e.g. "the future data"): although the performance of a classification method may be high in the data used to estimate the model parameters, it may be significantly poorer on data not used for parameter estimation, such as the **out-of-sample** (future) data in practice. The second validation data mimic such out-of-sample data, and the performance on this validation set is a better approximation of the performance one should expect in practice from the selected classification method.  This is why we split the data into an estimation sample and two validation samples  - using some kind of randomized splitting technique.  The estimation data and the first validation data are used during steps 2-5 (with a few iterations of these steps), while the second validation data is only used once at the very end. The split can be, for example, 80% estimation, 10% validation 1, and 10% validation 2, depending on the number of data observations - for example, when there is a lot of data, you may only keep a few hundreds of them for each validation set, and use the rest for estimation. While setting up the estimation and validation samples, you should check that the same proportion of data from each class, i.e. people who visit versus not-visit the resort, are maintained in each sample, i.e., you should maintain the same balance of the dependent variable categories as in the overall dataset. 
+
+Although it is important to have two validation data samples, in this case we will only create one validation sample because: a) we don't have enough data, b) we will not iterate steps 2-5 here for simplicity, c) we will not make any "real" decisions based on our analysis, hence we will not perform step 6 in this note.  Again, this should **not** be done in practice, as we should usually iterate steps 2-5 a number of times using the first validation sample each time, and make our final assessment of the classification model using the second validation sample only once (ideally). 
+
+Let's call the data **estimation_data** (e.g. 80% of the data, randomly sampled) and **validation_data** (e.g. the remaining 20% of the data).
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+estimation_data=sample.int(nrow(ProjectData_used),estimation_data_percent*nrow(ProjectData_used)/100)
+validation_data=setdiff(1:nrow(ProjectData_used),estimation_data)
+estimation_data=ProjectData_used[estimation_data,]
+validation_data=ProjectData_used[validation_data,]
+cat("There are",nrow(estimation_data), "observations in the estimation data, and", nrow(validation_data), "in the validation data.")
+```
+
+#### Step 2: Setting up the dependent variable
+
+First, make sure the dependent variable is set up as a categorical 0-1 variable. In this illustrative example, the visit variable is a 0-1 variable and this is what will be our dependent variable. The data however may not be always readily available with a categorical dependent variable. Suppose a grocery store wants to understand what discriminates consumers who are store loyal versus those who are not. If they have data on the percentage of grocery dollars that customers spend at their store, they can create a categorical variable ("loyal vs not-loyal") by using a classification rule like: "A loyal customer is one who spends more than 80% of their grocery dollars at their store". They can then code these loyal customers as "1" and the others as "0". But they can also change the 80% threshold, i.e. to 50%, which may have a big impact in the overall analysis. This decision can be the most crucial one of the whole data analysis: a wrong choice at this step may lead both to poor performance later as well as to no valuable insights. Hence, you are advised to revisit the choice you make at this step several times, iterating steps 2-3 and 2-5.
+
+```
+Carefully deciding what the dependent 0/1 variable is can be the most critical choice of a classification analysis. This decision typically depends on contextual knowledge and needs to be revisited multiple times throughout a data analytics project. 
+```
+In our data the percentages of 0/1's in our estimation sample is as follows:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+class_percentages=matrix(c(sum(estimation_data[,dependent_variable]==1),sum(estimation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
+rownames(class_percentages)<-"# of Observation"
+print(xtable(class_percentages ,caption=paste("Number of Observations per class in the Estimation Sample:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+
+#### Step 3: Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics.
+
+Good data analytics starts with good contextual knowledge as well as a simple statistical and visualization exploration of the data. In the case of classification, one can explore "simple classifications" by assessing how the  classes differ along any of the independent variables. For example, these are the statistics of our independent variables across all classes:
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+# XXXX Need to make these into one table that looks nicer
+
+for (iter in unique(estimation_data[,dependent_variable]))
+  print(xtable(summary(estimation_data[estimation_data[,dependent_variable]==iter,]) ,caption=paste("Summary Statistics per Class: Class",iter,sep=" ") , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+
+The purpose of such an analysis by class is to get an initial idea about whether the classes are indeed separable as well as to understant which of the independent variables have most discriminatory power. Can you see any differences across the two classes in the table above? 
+
+Notice however that:
+
+```
+Even though each independent variable may not differ across classes, classification may still be feasible as a (linear or nonlinear) combination of independent variables may still be discriminatory. 
+```
+
+A simple visualization tool to assess the discriminatory power of the independent variables are the **box plots**. These visually indicate simple summary statistics of an independent variable (e.g. mean, median, )
+For example consider the box plots for our data for the first 4 independent variables are:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+split.screen(c(2, 2))
+screen(1); boxplot(estimation_data[,2]~estimation_data[,dependent_variable],data=estimation_data, main=colnames(estimation_data)[2], xlab=dependent_variable)
+screen(2); boxplot(estimation_data[,3]~estimation_data[,dependent_variable],data=estimation_data, main=colnames(estimation_data)[3], xlab=dependent_variable)
+screen(3); boxplot(estimation_data[,4]~estimation_data[,dependent_variable],data=estimation_data, main=colnames(estimation_data)[4], xlab=dependent_variable)
+screen(4); boxplot(estimation_data[,5]~estimation_data[,dependent_variable],data=estimation_data, main=colnames(estimation_data)[5], xlab=dependent_variable)
+```
+
+Can you see which variables appear to be most discrimatory?
+
+
+
+#### Step 4: Run discriminant analysis using the estimation data, and interpret the results.
+
+Once we decide which the dependent and independent variables are, one can use a number of classification methods to develop a model that discriminated the different classes. 
+
+```
+Some of the widely used classification methods are:  classification and regression trees, boosted trees,support vector machines, neural networks, nearest neighbors, logistic regression, lasso, etc.
+```
+
+In this note we will consider only two classification methods: **logistic regression** and **classification and regression trees (CART)**. Understanding how these methods work is beyond the scope of this note - there are many references available online for all these classification methods. 
+
+CART is a widely used classification method largely because the estimated classification models are easy to interpret. This classification tool iteratively "splits" the data using the most discriminatory independent variable at each step, building a "tree" - as shown below - on the way. The CART methods limit the size of the tree using various statistical techniques in order to avoid **overfitting the data**. 
+
+```
+The biggest risk of developing classification models is overfitting: while it is always trivial to develop a model (e.g. a tree) that classifies any (estimation) dataset with no misclassification error at all, there is no guarantee that the quality of a classifier in out-of-sample data (e.g. in the validation data) will be close to that in the estimation data. Finding the right balance between "over-fitting" and "under-fitting" is one of the most important aspects in data analytics. While there are a number of statistical techniques to help us find this balance - including the use of validation data - it is largely a combination of good statistical analysis with qualitative criteria (e.g. regarding the interpretability or simplicity of the estimated models) that leads to classification models which can work well in practice. 
+```
+
+Running a basic CART model (with default parameters) on our data leads to the following tree:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+independent_variables=which(colnames(estimation_data)!=dependent_variable)
+formula=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
+CART_tree<-rpart(formula, data=estimation_data,method="class")
+
+# XXX NEED TO MAKE BETTER LOOKING TREES HERE!
+
+plot(CART_tree, uniform=TRUE, main=paste("Classification Tree for", data_name,sep=" "))
+text(CART_tree, use.n = TRUE)
+```
+
+The leaves of the tree indicate the number of estimation data observations that belong to each class which "reach that leaf". A perfect classification would only have data from one class in each of the tree leaves. However, such a perfect classification of the estimation data would most likely not be able to classify well out-of-sample data due to over-fitting the estimation data.
+
+One can use the percentage of data in each leaf of the tree to have an estimate that an observation (e.g. person) belongs to a given class. Specifically, given a new observation (e.g .person), the tree can be used to understand the leaf this observation would belong to. The **purity of the leaf** can indicate the probability am observation belongs to a class. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to visit the resort) for the first few validation data observations,using the CART above, is:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# XXX NEED TO CHANGE THIS LINE with the correct one
+Probability_class1<-rep(1,nrow(validation_data))
+
+Classification_Table=rbind(validation_data[,dependent_variable],Probability_class1)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- rownames(validation_data)
+print(xtable(Classification_Table,caption=paste("Probability",iter,sep=" ") , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+
+
+**Logistic Regression** is the second method we will consider in this note. This is a method similar to linear regression except that the dependent variable can be discrete (e.g. 0 or 1). **Linear** logistic regression estimates the coefficients of a linear regression using the selected independent variables while optimizing a classification criterion. For example, this is the logistic regression equation for our data:
+
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+logreg_solution <- glm(formula, family=binomial(link="logit"), data=estimation_data)
+print(summary(logreg_solution))
+
+```
+
+Given a set of independent variables, the output of the estimated logistic regression (the sum of the products of the independent variables with the corresponding regression coefficients) can be used to assess the probability an observation belongs to one of the classes. Specifically, the regression output can be transformed into a probability of belonging to, say, class 1 for each observation. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to visit the resort) for the first few validation data observations, using the logistic regression above, is:
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+Probability_class1<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+
+Classification_Table=rbind(validation_data[,dependent_variable],Probability_class1)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- rownames(validation_data)
+print(xtable(head(t(Classification_Table),5),caption=paste("Probability",iter,sep=" ") , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+The default decision is to put each observation in the group with the highest probability - but we will relax this below. Hence observation 4 was misclassified. 
+
+
+Selecting the best subset of independent variables for logistic regression, a special case of the general problem of **feature selection**, is an iterative process where both the significance of the regression coefficients as well as the performance of the estimated logistic regression equation on the first validation data are used as guidance. A number of variations are tested in practice, each leading to different performance, which we discuss next. 
+
+#### Step 5: Assess the accuracy of classification in the first validation sample
+
+
+Using the predicted class probabilities  of the validation data, as outlined above, we can then generate four basic measures of classification performance. Before discussing them, note that given the probability an observation belongs to a class, **a reasonable class prediction choice is to predict the class that has the highest probability**. However, this does not need to be the only choice.
+
+```
+Selecting the probability threshold based on which we predict the class of an observation is a decision the user needs to make. While in some cases a reasonable probability threshold is 50%, in other cases it may be 99.9%. Can you think of such cases?
+```
+For different choices of the probability threshold, one can measure a number of classification performance metrics. Specifically: 
+
+1.  **Hit ratio**: This is simply the percentage of the observations that have been correctly classified (the posterior is the same as the prior classification). We can just count the number of the (first) validation data correctly classified and divide this number with the total number of the (fist) validation data. 
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+validation_prediction_class=as.vector(ifelse(Probability_class1 > Probability_Threshold, 1, 0))
+validation_actual=validation_data[,dependent_variable]
+```
+
+
+In our case this leads to `r 100*sum(validation_prediction_class==validation_actual)/length(validation_actual)`% hit ratio.
+
+Is the Validation Data Hit Rate Any Good? What should be the benchmark against which to compare the hit rate? There is one basic benchmark to be used: the Maximum Chance Criterion.
+
+The **Maximum Chance Criterion** suggests that the hit rate should exceed the proportion of the class with the largest size. For our validation data the largest group is people who did not visit the resort: ` r sum(validation_actual)` out of `r length(validation_actual)` people). Clearly without doing any discriminant analysis, if we classified all individuals into the largest group, then we could get a hit-rate of `r sum(validation_actual)/length(validation_actual)`% without doing any work. This is the Maximum Chance Criterion. Clearly, discriminant analysis should get a hit rate of at least the Maximum Chance Criterion. 
+
+2.	The **confusion matrix**, with the false positive and false negative errors. The confusion matrix shows the percentage of the estimation data that are put in the right group, for each group. 
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+cmp<-table(validation_data[,dependent_variable], validation_prediction_class,
+           dnn=c("Actual", "Predicted"))
+confp<-xtable(cmp,caption="Confusion matrix percentages: Validation Data")
+print(confp,type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top")
+
+```
+
+These numbers are different for the estimation data:	
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+estimation_prediction_class=as.vector(ifelse(predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables]) > Probability_Threshold, 1, 0))
+cmp<-table(estimation_data[,dependent_variable], estimation_prediction_class,
+           dnn=c("Actual", "Predicted"))
+confp<-xtable(cmp,caption="Confusion matrix percentages: Estimation Data")
+print(confp,type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top")
+
+```
+
+
+3.	The **ROC curve**: Remember that each observation is put in a group by our model according to the probabilities Pr(0) and Pr(1). Typically we set the threshold to 0.5 - so that observations for which Pr(0) > 0.5 are classified as 0's. However, we can vary this threshold, for example if we are interested in correctly predicting all 1's but do not mind missing some 0's (and vice-versa) as may be the case of security alarms - what threshold for Pr(1) should we use in that case? When we change this threshold we get different values of hit rate, false positive, and false negative. We can plot the false positive versus false negative values we get this way, and generate the so called ROC curve. The proportion of well-classified positive events is called the sensitivity. The specificity is the proportion of well-classified negative events.  
+
+The ROC curve for the estimation data is the following:
+
+```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
+
+# XXX Needs to be fixed!
+#Probability_class1<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+#no.miss <- na.omit(ProjectData_used[,dependent_variable])###Here change the target column####
+#miss.list <- attr(no.miss, "na.action")
+#attributes(no.miss) <- NULL
+
+#plot(performance(prediction(Probability_class1,no.miss), "tpr", "fpr"), col="#CC0000FF", lty=1, add=FALSE)
+#performance(Probability_class1, "auc")
+#legend("bottomright", c("glm"), col=rainbow(1, 1, .8), lty=1:1, title="Models", inset=c(0.05, 0.05))
+#title(main="ROC Curve")
+#grid()
+```
+
+
+How should a good ROC curve look like? The rule of thumb in assessing ROC curves, is that the "higher" the curve (hence the larger the area under the curve) the better. You may also select one point on the ROC curve (the "best one" for your purpose) and use that false positive/false negative performances (and corresponding threshold for P(0)) to assess your model. 
+
+
+
+4.	The **Lift curve**: changing the threshold, we can also generate the so called lift curve, which is useful for certain applications. For example, consider the case of capturing fraud by checking only a few transactions instead of every single one. In this case we may want to examine as few transactions as possible and capture the maximum number of frauds possible. We can measure the percentage of all frauds we capture if we only examine, say, x% of cases (the top x% in terms of Pr(1)). If we plot these points [percentage captured vs total examined] while we change the threshold, we get a curve that is called a lift curve. 
+
+The Lift curve for the validation data is the following:
+
+
+```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
+# XXX Needs to be fixed
+
+#per <- performance(Probability_class1, "lift", "rpp")
+#per@x.values[[1]] <- Probability_class1@x.values[[1]]*100
+#plot(per, col="#CC0000FF", lty=1, xlab="Caseload (%)", add=FALSE)
+#legend("topright", c("glm"), col=rainbow(1, 1, .8), lty=1:1, title="Models", inset=c(0.05, 0.05))
+#title(main="Lift Chart")
+#grid()
+```
+
+How should a good Lift Curve look like? Notice that if we were to randomly examine transactions, the lift curve would be a 45 degrees straight diagonal line (why?)! So the further up from this 45o line the curve is, the better the "lift". 
+
+4. Assessing the **Profit Curve** 
+
+Finally, we can generate the so called profit curve, which we often use to make our final decisions.  The intuition, from a direct marketing example, is as follows. Suppose it costs $ 1 to send a mailing. Suppose the expected profit from a person who responds is $45. Suppose you have a database of 1 million people to whom you could potentially send the mailings. What fraction of the 1 million people should you send mails (typical response rates are 0.05%)? To answer this type of questions we need to create the profit curve, which is generated by changing again the threshold for classifying observations as 0 or 1. For each threshold we can simply measure the total cost (or revenue) we would generate. This is simply equal to:
+(% of 1's correctly predicted)*(value of capturing a 1) + (% of 0's correctly predicted)*(value of capturing a 0) + (% of 1's incorrectly predicted)*(cost of missing a 1) + (% of 0's incorrectly predicted)*(cost of missing a 0)
+We can then plot the total value (or cost) as we change the threshold. We can then simply select the threshold that corresponds to the maximum profit (or minimum cost). How do you expect the profit curve to look like in practice? Generate a profit curve for our example.
+
+```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
+# XXX Need to do this one
+
+```
+
+Notice that for this we need to have the cost/value for each of the 4 cases! This can be difficult to assess, hence typically some sensitivity analysis to our assumptions about the cost/value needs to be done: we can generate different profit curves (i.e. worst case, best case, average case scenario) and see how much the best profit we get varies. 
+
+
+
+#### Step 6: Finally, assess the accuracy of classification in the second validation sample.
+
+In this step the performance analysis outlined in step 5 needs to be done with the second validation sample. This is the performance that "mimics" what one should expect in practice upon deployment of the classification solution, assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed. 
+
+Of course, as always, remember that 
+
+```
+Data Analytics is an iterative process, therefore we may need to return to our original raw data at any point and select new raw attributes as well as a different classification solution.
+```
+
+**Till then...**
+
