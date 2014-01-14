@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Cluster Analysis and Segmentation (<strong>DRAFT</strong>)</title>
+<title>Cluster Analysis and Segmentation </title>
 
 <!-- Styles for R syntax highlighter -->
 <style type="text/css">
@@ -5049,31 +5049,31 @@ button.close {
 
 <style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
 
-<h1>Cluster Analysis and Segmentation (<strong>DRAFT</strong>)</h1>
+<h1>Cluster Analysis and Segmentation </h1>
 
 <p><strong>T. Evgeniou, INSEAD</strong></p>
 
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbAAAAGwCAMAAAD/kMAYAAAArlBMVEX9/v0AAAAAADkAAGUAAGYAOTkAOY8AOpAAZAAAZrUAZrY5AAA5ADk5AGU5OY85ZrU5j9o6OpA6kNtGgrRlAABlADllAGVltf1mAGZmtv+LAACPOQCPOTmPOWWPj2WPtY+P29qP2/2QOgCQOmaQkLa1ZgC1/rW1/v22ZgC2///ajzna/v3bkDrbtmbb///9tWX924/9/rX9/tr9/v3/tmb/wMv/25D//7b//9v///+c7ZcGAAAAOnRSTlP///////////////////////////////////////////////////////////////////8A////////iPRatwAAAAlwSFlzAAALEgAACxIB0t1+/AAAEDlJREFUeJztnYl63LYVRgO7VUdO46iWbMeS08RtXTlSWi1jNdb7v1iHpGbEBcsFiOVe4D/fZ0saglh4BpcgiOF8twWi+K50BYAfECYMCBMGhAkDwoQBYcKAMGFAmDAgTBgQJgwIEwaECQPChAFhwoAwYUCYMCBMGBAmDAgTBoQJA8KEAWHCgDBhQJgwIEwYECYMCBMGhAkDwoQBYcKAMGFAmDAgTBgQJgwIEwaECQPChAFhwoAwYUCYMCBMGBAmDAgTBoQJA8KEAWHCgDBhQJgwIEwYECYMCBMGhAkDwoQBYcKAMGFAmDAgTBgQJow1whRIQUJhK/YFJiBMGBAmDAgTBoQJA8KEAWHCgDBhQJgwIEwYECYMCBMGhAkDwoQBYcKAMGFAmDAgTBgNCzs/Py9dhQDaFXZ+LtJYy8KUgjCPrEtz3hnjXskl7Qrbql1ElGesXWHq8L9rrR8r2hX2hHoWJ4LmhY27mgRaFTau3D4kigiNEDb9i3WlO1oVNkOOMQgbGIdD1qGxTWG6qpmCJDOaFKav2bRjca19k8JMzGrMMjRC2JilInaNaFCYtV7sjUGYeyur0NigMAd6PWwaA2FLWBtrThilVoYYyCI0tiaMWCljsuKNak0YFbbGIMyAJf4VDY1tCfOqkt/1Wi4gzJLalrxU6+oUttlsli8GrBt1XGOXaOFaYXfvLrd3Z0odXftmnZDNRmMsaKWvsw3ZGxlBWOdse/ujb9YJ2WyUTljISl9nL8rdygjCbl9fDz1tnyXtyX4JUUrfw4Iq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" title="plot of chunk Fig1" alt="plot of chunk Fig1" style="display: block; margin: auto;" /></p>
+<p><img src="data:image/png;base64,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" title="plot of chunk Fig1" alt="plot of chunk Fig1" style="display: block; margin: auto;" /></p>
 
 <h2>What is this for?</h2>
 
-<p>In Data Analytics we often have very large data (many observations - &ldquo;rows&rdquo;), which are however similar to each other hence we may want to organize them in a few clusters with similar observations within each cluster. For example, in the case of customer data, even though we may have data from millions of customers, these customers may only belong to a few segments: customers are similar within each segment but different among segments. We may often want to analyze each segment separately, as they may behave differently (e.g. different market segments may have different product preferences and pricing implications).</p>
+<p>In Data Analytics we often have very large data (many observations - &ldquo;rows in a flat file&rdquo;), which are however similar to each other hence we may want to organize them in a few clusters with similar observations within each cluster. For example, in the case of customer data, even though we may have data from millions of customers, these customers may only belong to a few segments: customers are similar within each segment but different across segments. We may often want to analyze each segment separately, as they may behave differently (e.g. different market segments may have different product preferences and behavioral patterns).</p>
 
-<p>In such situations, to identify segments in the data one can use statistical techniques called <strong>Clustering</strong>. Based on how we define &ldquo;similarities&rdquo; and &ldquo;differences&rdquo; between data, which can be defined mathematically by defining <strong>distance metrics</strong>, one can find different segmentation solutions. A key ingredient of clustering and segmentation is exactly the definition of these distance metrics (between observations), which need to be defined creatively based on contextual knowledge and not only using &ldquo;black box&rdquo; mathematical equations and techniques. </p>
+<p>In such situations, to identify segments in the data one can use statistical techniques broadly called <strong>Clustering</strong> techniques. Based on how we define &ldquo;similarities&rdquo; and &ldquo;differences&rdquo; between data observations (e.g. customers or assets), which can also be defined mathematically using <strong>distance metrics</strong>, one can find different segmentation solutions. A key ingredient of clustering and segmentation is exactly the definition of these distance metrics (between observations), which need to be defined creatively based on contextual knowledge and not only using &ldquo;black box&rdquo; mathematical equations and techniques. </p>
 
 <blockquote> <p>
 Clustering techniques are used to group data/observations in a few segments so that data within any segment are similar while data across segments are different. Defining what we mean when we say &ldquo;similar&rdquo; or &ldquo;different&rdquo; observations is a key part of cluster analysis which often requires a lot of contextual knowledge and creativity beyond what statistical tools can provide.
 </p> </blockquote>
 
-<p>Cluster analysis is used in a variety of applications. For example it can be used to identify consumer segments, or competitive sets of products, or groups of assets whose prices co-move, or for geo-demographic segmentation, etc. In general it is often necessary to split our data into segments and perform any analysis within each segment in order to develop (potentially more refined) segment-specific insights. This may be the case even if there are no intuitively &ldquo;natural&rdquo; segments in our data. </p>
+<p>Cluster analysis is used in a variety of applications. For example it can be used to identify consumer segments, or competitive sets of products, or groups of assets whose prices co-move, or for geo-demographic segmentation, etc. In general it is often necessary to split our data into segments and perform any subsequent analysis within each segment in order to develop (potentially more refined) segment-specific insights. This may be the case even if there are no intuitively &ldquo;natural&rdquo; segments in our data. </p>
 
 <h2>Clustering and Segmentation using an Example</h2>
 
 <p>In this note we discuss a process for clustering and segmentation using a simple dataset that describes attitudes of people to shopping in a shopping mall. As this is a small dataset, one could also &ldquo;manually&rdquo; explore the data to find &ldquo;visually&rdquo; customer segments - which may be feasible for this small dataset, although clustering is in general a very difficult problem even when the data is very small.  </p>
 
-<p>Before reading further, do try to think (possibly using simple data analyses) what segments one could define using this example data. As always, you will see that even in this relatively simple case it is not as obvious what the derived attributes should be, and you will most likely disagree with your colleagues about them: the goal afternall is to let the numbers and statistics help us be more <em>objective and statistically correct</em>.</p>
+<p>Before reading further, do try to think what segments one could define using this example data. As always, you will see that even in this relatively simple case it is not as obvious what the segments should be, and you will most likely disagree with your colleagues about them: the goal afternall is to let the numbers and statistics help us be more <em>objective and statistically correct</em>.</p>
 
-<h3>The &ldquo;Business Decision&rdquo;&ldquo;</h3>
+<h3>The &ldquo;Business Decision&rdquo;</h3>
 
 <p>The management team of a large shopping mall would like to understand the types of people who are, or could be, visiting their mall. They have good reasons to believe that there are a few different market segments, and they are considering designing and positioning the shopping mall services better in order to attract mainly a few profitable market segments, or to differentiate their services  (e.g. invitations to events, discounts, etc) across market segments. </p>
 
@@ -5081,7 +5081,7 @@ Clustering techniques are used to group data/observations in a few segments so t
 
 <p>To make these decisions, the management team run a market research survey of a few potential customers. In this case this was a small survey to only a few people, where each person answered six attitudinal questions and a question regarding how often they visit the mall, all on a scale 1-7, as well as one question regarding their household income:</p>
 
-<p>** Market Research Survey Questions**</p>
+<p><strong>The Market Research Survey Questions</strong></p>
 
 <p>V1: Shopping is fun (scale 1-7)</p>
 
@@ -5099,21 +5099,595 @@ Clustering techniques are used to group data/observations in a few segments so t
 
 <p>Mall.Visits: how often they visit the mall (scale 1-7)</p>
 
-<p>Forty people responded to these 6 questions. Here are for example the responses of the first 5 people:</p>
+<p><br>
+Forty people responded to these 6 questions. Here are their responses:</p>
 
-<TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Sample Data: Mall Visits </CAPTION>
-<TR> <TH>  </TH> <TH> V1 </TH> <TH> V2 </TH> <TH> V3 </TH> <TH> V4 </TH> <TH> V5 </TH> <TH> V6 </TH> <TH> Income </TH> <TH> Mall.Visits </TH>  </TR>
-  <TR> <TD align="right"> ID_1 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  7 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right"> 60000 </TD> <TD align="right">  3 </TD> </TR>
-  <TR> <TD align="right"> ID_2 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  4 </TD> <TD align="right"> 30000 </TD> <TD align="right">  1 </TD> </TR>
-  <TR> <TD align="right"> ID_3 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right"> 70000 </TD> <TD align="right">  3 </TD> </TR>
-  <TR> <TD align="right"> ID_4 </TD> <TD align="right">  4 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  3 </TD> <TD align="right">  6 </TD> <TD align="right"> 30000 </TD> <TD align="right">  7 </TD> </TR>
-  <TR> <TD align="right"> ID_5 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right"> 60000 </TD> <TD align="right">  1 </TD> </TR>
-   </TABLE>
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Tue Jan 14 23:04:12 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID707c4211423b () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+1,
+6,
+4,
+7,
+3,
+2,
+3,
+60000,
+3 
+],
+[
+ "2",
+2,
+2,
+3,
+1,
+4,
+5,
+4,
+30000,
+1 
+],
+[
+ "3",
+3,
+7,
+2,
+6,
+4,
+1,
+3,
+70000,
+3 
+],
+[
+ "4",
+4,
+4,
+6,
+4,
+5,
+3,
+6,
+30000,
+7 
+],
+[
+ "5",
+5,
+1,
+3,
+2,
+2,
+6,
+4,
+60000,
+1 
+],
+[
+ "6",
+6,
+6,
+4,
+6,
+3,
+3,
+4,
+50000,
+2 
+],
+[
+ "7",
+7,
+5,
+3,
+6,
+3,
+3,
+4,
+65000,
+3 
+],
+[
+ "8",
+8,
+7,
+3,
+7,
+4,
+1,
+4,
+55000,
+4 
+],
+[
+ "9",
+9,
+2,
+4,
+3,
+3,
+6,
+3,
+70000,
+0 
+],
+[
+ "10",
+10,
+3,
+5,
+3,
+6,
+4,
+6,
+25000,
+6 
+],
+[
+ "11",
+11,
+1,
+3,
+2,
+3,
+5,
+3,
+40000,
+0 
+],
+[
+ "12",
+12,
+5,
+4,
+5,
+4,
+2,
+4,
+45000,
+4 
+],
+[
+ "13",
+13,
+2,
+2,
+1,
+5,
+4,
+4,
+25000,
+2 
+],
+[
+ "14",
+14,
+4,
+6,
+4,
+6,
+4,
+7,
+35000,
+5 
+],
+[
+ "15",
+15,
+6,
+5,
+4,
+2,
+1,
+4,
+55000,
+3 
+],
+[
+ "16",
+16,
+3,
+5,
+4,
+6,
+4,
+7,
+40000,
+4 
+],
+[
+ "17",
+17,
+4,
+4,
+7,
+2,
+2,
+5,
+80000,
+4 
+],
+[
+ "18",
+18,
+3,
+7,
+2,
+6,
+4,
+3,
+25000,
+5 
+],
+[
+ "19",
+19,
+4,
+6,
+3,
+7,
+2,
+7,
+30000,
+6 
+],
+[
+ "20",
+20,
+2,
+3,
+2,
+4,
+7,
+2,
+30000,
+2 
+],
+[
+ "21",
+21,
+6,
+4,
+7,
+3,
+2,
+3,
+60000,
+3 
+],
+[
+ "22",
+22,
+2,
+3,
+1,
+4,
+5,
+4,
+30000,
+1 
+],
+[
+ "23",
+23,
+7,
+2,
+6,
+4,
+1,
+3,
+70000,
+3 
+],
+[
+ "24",
+24,
+4,
+6,
+4,
+5,
+3,
+6,
+30000,
+7 
+],
+[
+ "25",
+25,
+1,
+3,
+2,
+2,
+6,
+4,
+60000,
+1 
+],
+[
+ "26",
+26,
+6,
+4,
+6,
+3,
+3,
+4,
+50000,
+2 
+],
+[
+ "27",
+27,
+5,
+3,
+6,
+3,
+3,
+4,
+65000,
+3 
+],
+[
+ "28",
+28,
+7,
+3,
+7,
+4,
+1,
+4,
+55000,
+4 
+],
+[
+ "29",
+29,
+2,
+4,
+3,
+3,
+6,
+3,
+70000,
+0 
+],
+[
+ "30",
+30,
+3,
+5,
+3,
+6,
+4,
+6,
+25000,
+6 
+],
+[
+ "31",
+31,
+1,
+3,
+2,
+3,
+5,
+3,
+40000,
+0 
+],
+[
+ "32",
+32,
+5,
+4,
+5,
+4,
+2,
+4,
+45000,
+4 
+],
+[
+ "33",
+33,
+2,
+2,
+1,
+5,
+4,
+4,
+25000,
+2 
+],
+[
+ "34",
+34,
+4,
+6,
+4,
+6,
+4,
+7,
+35000,
+5 
+],
+[
+ "35",
+35,
+6,
+5,
+4,
+2,
+1,
+4,
+55000,
+3 
+],
+[
+ "36",
+36,
+3,
+5,
+4,
+6,
+4,
+7,
+40000,
+4 
+],
+[
+ "37",
+37,
+4,
+4,
+7,
+2,
+2,
+5,
+80000,
+4 
+],
+[
+ "38",
+38,
+3,
+7,
+2,
+6,
+4,
+3,
+25000,
+5 
+],
+[
+ "39",
+39,
+4,
+6,
+3,
+7,
+2,
+7,
+30000,
+6 
+],
+[
+ "40",
+40,
+2,
+3,
+2,
+4,
+7,
+2,
+30000,
+2 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','ID');
+data.addColumn('number','V1');
+data.addColumn('number','V2');
+data.addColumn('number','V3');
+data.addColumn('number','V4');
+data.addColumn('number','V5');
+data.addColumn('number','V6');
+data.addColumn('number','Income');
+data.addColumn('number','Mall.Visits');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID707c4211423b() {
+var data = gvisDataTableID707c4211423b();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID707c4211423b')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID707c4211423b);
+})();
+function displayChartTableID707c4211423b() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID707c4211423b"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID707c4211423b"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div>
+<br> <br></p>
 
 <p>We will see some descriptive statistics of the data later, when we get into the statistical analysis.</p>
 
-<p>How can the company segment these 40 people in order to better target (or not) each segment? Are there really segments in this market? </p>
+<p>How can the company segment these 40 people? Are there really segments in this market? </p>
 
 <p>Let&#39;s see <strong>a</strong> process for clustering and segmentation, the goal of this report. </p>
 
@@ -5122,7 +5696,7 @@ Clustering techniques are used to group data/observations in a few segments so t
 <p>As always: </p>
 
 <blockquote> <p>
-It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and &quot;finding results and patterns&rdquo; that are mainly driven by our own biases and not by the facts/data themselves.
+It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and &ldquo;finding results and patterns&rdquo; that are mainly driven by our own biases and not by the facts/data themselves.
 </p> </blockquote>
 
 <p>There is <em>not one</em> process for clustering and segmentation. However, we have to start somewhere, so we will use the following process:</p>
@@ -5130,8 +5704,8 @@ It is important to remember that Data Analytics Projects require a delicate bala
 <h4>Clustering and Segmentation in 9 steps</h4>
 
 <ol>
-<li><p>Confirm the data are metric (interval scale), if necessary </p></li>
-<li><p>Decide whether to scale standardize the data, if necessary</p></li>
+<li><p>Confirm the data in metric </p></li>
+<li><p>Decide whether to scale or standardize the data</p></li>
 <li><p>Decide which variables to use for clustering</p></li>
 <li><p>Define similarity or dissimilarity measures between observations</p></li>
 <li><p>Visualize Individual Attributes and  Pair-wise Distances between the Observations</p></li>
@@ -5142,33 +5716,218 @@ It is important to remember that Data Analytics Projects require a delicate bala
 
 <p>Let&#39;s follow these steps.</p>
 
-<h4>Step 1. Confirm the data are metric (interval scale), if necessary</h4>
+<h4>Step 1. Confirm the data in metric</h4>
 
-<p>While one can cluster data even if they are not metric, many of the statistical methods available for clustering require that the data are <strong>metric</strong>: this means not only that all data are numbers, but also that the numbers have an actual numerical meaning, that is, 1 is less than 2, which is less than 3 etc. The main reason for this is that one needs to define distances between observations (see step 4 below), and often these distances (e.g. the &ldquo;Euclideal distance&rdquo;) are defined only with metric data. </p>
+<p>While one can cluster data even if they are not metric, many of the statistical methods available for clustering require that the data are so: this means not only that all data are numbers, but also that the numbers have an actual numerical meaning, that is, 1 is less than 2, which is less than 3 etc. The main reason for this is that one needs to define distances between observations (see step 4 below), and often (&ldquo;black box&rdquo; mathematical) distances (e.g. the &ldquo;Euclideal distance&rdquo;) are defined only with metric data. </p>
 
-<p>However, one could potentially define distances also for non-metric data. For example, if our data are names of people, one could simply define the distance between two people to be 0 when these people have the same name and 1 otherwise - one can easily think of generalizations of this. This is why, although most of the statistical methods available (which we will also use below) require that the data is metric, this is not necessary as long as we are willing to &ldquo;intervene in the clustering methods manually, e.g. to define the distance metrics between our observations manually&rdquo;. We will show a simple example of such a manual intervention below.</p>
+<p>However, one could potentially define distances also for non-metric data. For example, if our data are names of people, one could simply define the distance between two people to be 0 when these people have the same name and 1 otherwise - one can easily think of generalizations. This is why, although most of the statistical methods available (which we will also use below) require that the data is metric, this is not necessary as long as we are willing to &ldquo;intervene in the clustering methods manually, e.g. to define the distance metrics between our observations manually&rdquo;. We will show a simple example of such a manual intervention below. It is possible (e.g. in this report). </p>
 
 <blockquote> <p>
 In general, a &ldquo;best practice&rdquo; for segmentation is to creatively define distance metrics between our observations. 
 </p> </blockquote>
+
+<p>In our case the data are metric, so we continue to the next step. Before doing so, we see the descriptive statistics of our data to get, as always, a better understanding of the data. 
+Our data have the following descriptive statistics: </p>
+
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Tue Jan 14 23:04:12 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
  
+// jsData 
+function gvisDataTableID707c189b3bbe () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "ID",
+1,
+10.75,
+20.5,
+20.5,
+30.25,
+40,
+11.69 
+],
+[
+ "V1",
+1,
+2,
+4,
+3.85,
+5.25,
+7,
+1.87 
+],
+[
+ "V2",
+2,
+3,
+4,
+4.1,
+5,
+7,
+1.39 
+],
+[
+ "V3",
+1,
+2,
+4,
+3.95,
+6,
+7,
+1.99 
+],
+[
+ "V4",
+2,
+3,
+4,
+4.1,
+5.25,
+7,
+1.5 
+],
+[
+ "V5",
+1,
+2,
+3.5,
+3.45,
+4.25,
+7,
+1.74 
+],
+[
+ "V6",
+2,
+3,
+4,
+4.35,
+5.25,
+7,
+1.48 
+],
+[
+ "Income",
+25000,
+30000,
+42500,
+46000,
+60000,
+80000,
+17216.57 
+],
+[
+ "Mall.Visits",
+0,
+2,
+3,
+3.25,
+4.25,
+7,
+1.94 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','min');
+data.addColumn('number','X25.percent');
+data.addColumn('number','median');
+data.addColumn('number','mean');
+data.addColumn('number','X75.percent');
+data.addColumn('number','max');
+data.addColumn('number','std');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID707c189b3bbe() {
+var data = gvisDataTableID707c189b3bbe();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
 
-<p>In our case the data are in any case metric, so we continue to the next step. Before doing so, we see the descriptive statistics of our data to get, as always, a first feeling for the data (note that one should spend a lot of time getting a feeling for the data based on simple summary statistics and visualizations: good data analytics require that we know a lot about the data):</p>
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID707c189b3bbe')
+    );
+    chart.draw(data,options);
+    
 
-<TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Summary Statistics: Mall Visits </CAPTION>
-<TR> <TH>       V1 </TH> <TH>       V2 </TH> <TH>       V3 </TH> <TH>       V4 </TH> <TH>       V5 </TH> <TH>       V6 </TH> <TH>     Income </TH> <TH>  Mall.Visits </TH>  </TR>
-  <TR> <TD> Min.   :1.00   </TD> <TD> Min.   :2.0   </TD> <TD> Min.   :1.00   </TD> <TD> Min.   :2.00   </TD> <TD> Min.   :1.00   </TD> <TD> Min.   :2.00   </TD> <TD> Min.   :25000   </TD> <TD> Min.   :0.00   </TD> </TR>
-  <TR> <TD> 1st Qu.:2.00   </TD> <TD> 1st Qu.:3.0   </TD> <TD> 1st Qu.:2.00   </TD> <TD> 1st Qu.:3.00   </TD> <TD> 1st Qu.:2.00   </TD> <TD> 1st Qu.:3.00   </TD> <TD> 1st Qu.:30000   </TD> <TD> 1st Qu.:2.00   </TD> </TR>
-  <TR> <TD> Median :4.00   </TD> <TD> Median :4.0   </TD> <TD> Median :4.00   </TD> <TD> Median :4.00   </TD> <TD> Median :3.50   </TD> <TD> Median :4.00   </TD> <TD> Median :42500   </TD> <TD> Median :3.00   </TD> </TR>
-  <TR> <TD> Mean   :3.85   </TD> <TD> Mean   :4.1   </TD> <TD> Mean   :3.95   </TD> <TD> Mean   :4.10   </TD> <TD> Mean   :3.45   </TD> <TD> Mean   :4.35   </TD> <TD> Mean   :46000   </TD> <TD> Mean   :3.25   </TD> </TR>
-  <TR> <TD> 3rd Qu.:5.25   </TD> <TD> 3rd Qu.:5.0   </TD> <TD> 3rd Qu.:6.00   </TD> <TD> 3rd Qu.:5.25   </TD> <TD> 3rd Qu.:4.25   </TD> <TD> 3rd Qu.:5.25   </TD> <TD> 3rd Qu.:60000   </TD> <TD> 3rd Qu.:4.25   </TD> </TR>
-  <TR> <TD> Max.   :7.00   </TD> <TD> Max.   :7.0   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :7.00   </TD> <TD> Max.   :80000   </TD> <TD> Max.   :7.00   </TD> </TR>
-   </TABLE>
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID707c189b3bbe);
+})();
+function displayChartTableID707c189b3bbe() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID707c189b3bbe"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID707c189b3bbe"
+  style="width: 1220px; height: 400px;">
+</div>
 
-<h4>Step 2. Decide whether to scale standardize the data, if necessary</h4>
+<p></div>
+</div></p>
 
-<p>Note that for this data, while 6 of the &ldquo;survey&rdquo; data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger (can you see which one?): this is the Income variable. Having some variables with a very different range/scale can often create problems: most of the &ldquo;results&rdquo; may be driven by such large valued attributes, more so than we would like. To avoid such issues, one has to consider whether or not to <strong>standardize the data</strong> by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. scaledIncome = (Income-mean(Income))/sd(Income) ), or scaling them between 0 and 1 (e.g. scaledIncome=(Income-min(Income))/(max(Income)-min(Income))). Here is for example the R code for the first approach, if we want to standardize all attributes:</p>
+<blockquote> <p>
+Note that one should spend a lot of time getting a feeling of the data based on simple summary statistics and visualizations: good data analytics require that we understand our data very well.
+</p> </blockquote>
+
+<h4>2. Decide whether to scale or standardize the data</h4>
+
+<p>Note that for this data, while 6 of the &ldquo;survey&rdquo; data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the Income variable. </p>
+
+<p>Having some variables with a very different range/scale can often create problems: <strong>most of the &ldquo;results&rdquo; may be driven by a few large values</strong>, more so that we would like. To avoid such issues, one has to consider whether or not to <strong>standardize the data</strong> by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. scaledIncome = (Income-mean(Income))/sd(Income) ), or scaling them between 0 and 1 (e.g. scaledIncome=(Income-min(Income))/(max(Income)-min(Income))). Here is for example the R code for the first approach, if we want to standardize all attributes:</p>
 
 <pre><code class="r">ProjectData_scaled = apply(ProjectData, 2, function(r) {
     if (sd(r) != 0) 
@@ -5177,28 +5936,212 @@ In general, a &ldquo;best practice&rdquo; for segmentation is to creatively defi
 })
 </code></pre>
 
-<p>Notice below the summary statistics of the scaled dataset: as expected all variables have mean 0 and standard deviation 1. </p>
+<p>Notice now the summary statistics of the scaled dataset:</p>
 
-<TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Summary Statistics of Normalized Data: Mall Visits </CAPTION>
-<TR> <TH>       V1 </TH> <TH>       V2 </TH> <TH>       V3 </TH> <TH>       V4 </TH> <TH>       V5 </TH> <TH>       V6 </TH> <TH>     Income </TH> <TH>  Mall.Visits </TH>  </TR>
-  <TR> <TD> Min.   :-1.520   </TD> <TD> Min.   :-1.5083   </TD> <TD> Min.   :-1.4850   </TD> <TD> Min.   :-1.4012   </TD> <TD> Min.   :-1.4091   </TD> <TD> Min.   :-1.591   </TD> <TD> Min.   :-1.220   </TD> <TD> Min.   :-1.671   </TD> </TR>
-  <TR> <TD> 1st Qu.:-0.987   </TD> <TD> 1st Qu.:-0.7901   </TD> <TD> 1st Qu.:-0.9816   </TD> <TD> 1st Qu.:-0.7340   </TD> <TD> 1st Qu.:-0.8340   </TD> <TD> 1st Qu.:-0.914   </TD> <TD> 1st Qu.:-0.929   </TD> <TD> 1st Qu.:-0.643   </TD> </TR>
-  <TR> <TD> Median : 0.080   </TD> <TD> Median :-0.0718   </TD> <TD> Median : 0.0252   </TD> <TD> Median :-0.0667   </TD> <TD> Median : 0.0288   </TD> <TD> Median :-0.237   </TD> <TD> Median :-0.203   </TD> <TD> Median :-0.129   </TD> </TR>
-  <TR> <TD> Mean   : 0.000   </TD> <TD> Mean   : 0.0000   </TD> <TD> Mean   : 0.0000   </TD> <TD> Mean   : 0.0000   </TD> <TD> Mean   : 0.0000   </TD> <TD> Mean   : 0.000   </TD> <TD> Mean   : 0.000   </TD> <TD> Mean   : 0.000   </TD> </TR>
-  <TR> <TD> 3rd Qu.: 0.747   </TD> <TD> 3rd Qu.: 0.6464   </TD> <TD> 3rd Qu.: 1.0320   </TD> <TD> 3rd Qu.: 0.7673   </TD> <TD> 3rd Qu.: 0.4601   </TD> <TD> 3rd Qu.: 0.609   </TD> <TD> 3rd Qu.: 0.813   </TD> <TD> 3rd Qu.: 0.514   </TD> </TR>
-  <TR> <TD> Max.   : 1.680   </TD> <TD> Max.   : 2.0829   </TD> <TD> Max.   : 1.5354   </TD> <TD> Max.   : 1.9350   </TD> <TD> Max.   : 2.0418   </TD> <TD> Max.   : 1.794   </TD> <TD> Max.   : 1.975   </TD> <TD> Max.   : 1.928   </TD> </TR>
-   </TABLE>
+<p><br></p>
 
-<p>While this is typically a necessary step, one has to always do it with care: some times you may want your analytics findings to be driven mainly by a few attributes that take large values; other times having attributes with different scales may imply something about those attributes. In many such cases one may choose to skip step 2 for some of the raw attributes.  For example, when students rate their schools on various factors on a 1-7 scale, if the variability is minimal on a certain variable (e.g. satisfaction about the IT infrastructure of the school) but very high on another one (e.g. satisfaction with job placement), then standardization will reduce the real big differences in placement satisfaction and magnify the small differences in IT infrastructure satisfaction.  Hence standardization is not a necessary data transformation step, and you should use it judiciously. </p>
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Tue Jan 14 23:04:12 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID707c5caa4407 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "ID",
+-1.67,
+-0.83,
+0,
+0,
+0.83,
+1.67,
+1 
+],
+[
+ "V1",
+-1.52,
+-0.99,
+0.08,
+0,
+0.75,
+1.68,
+1 
+],
+[
+ "V2",
+-1.51,
+-0.79,
+-0.07,
+0,
+0.65,
+2.08,
+1 
+],
+[
+ "V3",
+-1.49,
+-0.98,
+0.03,
+0,
+1.03,
+1.54,
+1 
+],
+[
+ "V4",
+-1.4,
+-0.73,
+-0.07,
+0,
+0.77,
+1.93,
+1 
+],
+[
+ "V5",
+-1.41,
+-0.83,
+0.03,
+0,
+0.46,
+2.04,
+1 
+],
+[
+ "V6",
+-1.59,
+-0.91,
+-0.24,
+0,
+0.61,
+1.79,
+1 
+],
+[
+ "Income",
+-1.22,
+-0.93,
+-0.2,
+0,
+0.81,
+1.97,
+1 
+],
+[
+ "Mall.Visits",
+-1.67,
+-0.64,
+-0.13,
+0,
+0.51,
+1.93,
+1 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','min');
+data.addColumn('number','X25.percent');
+data.addColumn('number','median');
+data.addColumn('number','mean');
+data.addColumn('number','X75.percent');
+data.addColumn('number','max');
+data.addColumn('number','std');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID707c5caa4407() {
+var data = gvisDataTableID707c5caa4407();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID707c5caa4407')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID707c5caa4407);
+})();
+function displayChartTableID707c5caa4407() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID707c5caa4407"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID707c5caa4407"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div></p>
+
+<p><br>
+As expected all variables have mean 0 and standard deviation 1. </p>
+
+<p>While this is typically a necessary step, one has to always do it with care: some times you may want your analytics findings to be driven mainly by a few attributes that take large values; other times having attributes with different scales may imply something about those attributes. In many such cases one may choose to skip step 2 for some of the raw attributes.  </p>
 
 <h4>Step 3. Decide which variables to use for clustering</h4>
 
-<p>The decision about which variables to use for clustering is a <strong>critically important decision</strong> that will have a big impact on the clustering solution. So we need to think carefully about the variables we will choose for clustering. Good exploratory research that gives us a good sense of what variables may distinguish people or products or assets or regions for our final decisions at hand is critical. Clearly this is a place where a lot of contextual knowledge, creativity, and experimentation/iterations are needed. </p>
+<p>The decision about which variables to use for clustering is a <strong>critically important decision</strong> that will have a big impact on the clustering solution. So we need to think carefully about the variables we will choose for clustering. Good exploratory research that gives us a good sense of what variables may distinguish people or products or assets or regions is critical. Clearly this is a step where a lot of contextual knowledge, creativity, and experimentation/iterations are needed. </p>
 
 <p>Moreover, we often use only a few of the data attributes for segmentation (the <strong>segmentation attributes</strong>) and use some of the remaining ones (the <strong>profiling attributes</strong>) only to profile the clusters, as discussed in Step 8. For example, in market research and market segmentation, one may use attitudinal data for segmentation (to segment the customers based on their needs and attitudes towards the products/services) and then demographic and behavioral data for profiling the segments found. </p>
 
-<p>In our case, we can use the 6 attitudinal questions for segmentation, and the other 2 (Income and Mall.Visits) for profiling later. </p>
+<p>In our case, we can use the 6 attitudinal questions for segmentation, and the remaining 2 (Income and Mall.Visits) for profiling later. </p>
 
 <h4>Step 4. Define similarity or dissimilarity measures between observations</h4>
 
@@ -5208,79 +6151,94 @@ In general, a &ldquo;best practice&rdquo; for segmentation is to creatively defi
 If the user does not have a good understanding of what makes two observations (e.g. customers, products, companies, assets, investments, etc) &ldquo;similar&rdquo;, no statistical method will be able to discover the answer to this question. 
 </p> </blockquote>
 
-<p>Most statistical methods for clustering and segmentation use common mathematical measures of distance. Typical measures are, for example, the <strong>Euclidean distance</strong> or the <strong>Manhattan distance</strong> (see <em>help(dist)</em> in R). </p>
+<p>Most statistical methods for clustering and segmentation use common mathematical measures of distance. Typical measures are, for example, the <strong>Euclidean distance</strong> or the <strong>Manhattan distance</strong> (see <em>help(dist)</em> in R for more examples). </p>
 
 <blockquote> <p>
-There are literally thousands of rigorous mathematical definitions of distance between observations/vectors! Moreover, as noted above, the user may manually define such distance metrics, as we show for example below - note however, that in doing so one has to be careful to make sure that the defined distances are indeed &ldquo;valid&rdquo; ones (in a mathematical sense, a topic beyond our scope).
+There are literally thousands of rigorous mathematical definitions of distance between observations/vectors! Moreover, as noted above, the user may manually define such distance metrics, as we show for example below - note however, that in doing so one has to make sure that the defined distances are indeed &ldquo;valid&rdquo; ones (in a mathematical sense, a topic beyond the scope of this note).
 </p> </blockquote>
 
-<p>In our case we explore two distance metrics: the commonly used <strong>Euclidean distance</strong> as well a a simple one we define manually. </p>
+<p>In our case we explore two distance metrics: the commonly used <strong>Euclidean distance</strong> as well as a simple one we define manually. </p>
 
 <p>The Euclidean distance between two observations (in our case, customers) is simply the square root of the average of the square difference between the attributes of the two observations (in our case, customers). For example, the distance of the first customer in our data from customers 2-5 (summarized above), using their responses to the 6 attitudinal questions is:</p>
 
+<div class="row">
+<div class="col-md-4">
 <TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Pairwise Distances between the first 5 observations using the Euclidean Distance Metric: Mall Visits </CAPTION>
-<TR> <TH> ID_1 </TH> <TH> ID_2 </TH> <TH> ID_3 </TH> <TH> ID_4 </TH> <TH> ID_5 </TH>  </TR>
+<CAPTION ALIGN="top"> Pairwise Distances between the first 5 observations using The Euclidean Distance Metric: Mall Visits </CAPTION>
+<TR> <TH> 1 </TH> <TH> 2 </TH> <TH> 3 </TH> <TH> 4 </TH> <TH> 5 </TH>  </TR>
   <TR> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 30000.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 10000.0 </TD> <TD align="right"> 40000.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 30000.0 </TD> <TD align="right"> 8.2 </TD> <TD align="right"> 40000.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 8.5 </TD> <TD align="right"> 30000.0 </TD> <TD align="right"> 10000.0 </TD> <TD align="right"> 30000.0 </TD> <TD align="right"> 0.0 </TD> </TR>
+  <TR> <TD align="right"> 8.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 2.8 </TD> <TD align="right"> 8.2 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 5.6 </TD> <TD align="right"> 5.6 </TD> <TD align="right"> 6.6 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 8.3 </TD> <TD align="right"> 2.6 </TD> <TD align="right"> 9.1 </TD> <TD align="right"> 6.6 </TD> <TD align="right"> 0.0 </TD> </TR>
    </TABLE>
+
+</div>
+
+<p></div></p>
 
 <p>Notice for example that if we use, say, the Manhattan distance metric, these distances change as follows:</p>
 
+<div class="row">
+<div class="col-md-4">
 <TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Pairwise Distances between the first 5 observations using the Manhattan Distance Metric: Mall Visits </CAPTION>
-<TR> <TH> ID_1 </TH> <TH> ID_2 </TH> <TH> ID_3 </TH> <TH> ID_4 </TH> <TH> ID_5 </TH>  </TR>
+<CAPTION ALIGN="top"> Pairwise Distances between the first 5 observations using The Manhattan Distance Metric: Mall Visits </CAPTION>
+<TR> <TH> 1 </TH> <TH> 2 </TH> <TH> 3 </TH> <TH> 4 </TH> <TH> 5 </TH>  </TR>
   <TR> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 30018.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 10006.0 </TD> <TD align="right"> 40018.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 30017.0 </TD> <TD align="right"> 19.0 </TD> <TD align="right"> 40019.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 19.0 </TD> <TD align="right"> 30005.0 </TD> <TD align="right"> 10021.0 </TD> <TD align="right"> 30022.0 </TD> <TD align="right"> 0.0 </TD> </TR>
+  <TR> <TD align="right"> 16.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 6.0 </TD> <TD align="right"> 16.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 13.0 </TD> <TD align="right"> 13.0 </TD> <TD align="right"> 15.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 17.0 </TD> <TD align="right"> 5.0 </TD> <TD align="right"> 19.0 </TD> <TD align="right"> 16.0 </TD> <TD align="right"> 0.0 </TD> </TR>
    </TABLE>
 
-<p>In general two obervations (e.g. customers in this case) may look more similar to each other than to a third observation with one distance metric, but more different from each other than to that same third observation when using another distance metric! </p>
+</div>
+
+<p></div></p>
 
 <p>Let&#39;s now define our own distance metric, as an example. Let&#39;s say that the management team of the company believes that two customers are similar if they do not differ in their ratings of the attitudinal questions by more than 2 points. We can manually assign a distance of 1 for every question for which two customers gave an answer that differs by more than 2 points, and 0 otherwise. It is easy to write this distance function in R:</p>
 
 <pre><code class="r">My_Distance_function &lt;- function(x, y) {
     sum(abs(x - y) &gt; 2)
 }
-Manual_Pairwise = apply(head(ProjectData_segment, 5), 1, function(i) apply(head(ProjectData_segment, 
-    5), 1, function(j) My_Distance_function(i, j)))
 </code></pre>
 
 <p>Here is how the pairwise distances between the respondents now look like.</p>
 
+<div class="row">
+<div class="col-md-4">
 <TABLE class='table table-striped table-hover table-bordered'>
 <CAPTION ALIGN="top"> Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric: Mall Visits </CAPTION>
-<TR> <TH> ID_1 </TH> <TH> ID_2 </TH> <TH> ID_3 </TH> <TH> ID_4 </TH> <TH> ID_5 </TH>  </TR>
+<TR> <TH> 1 </TH> <TH> 2 </TH> <TH> 3 </TH> <TH> 4 </TH> <TH> 5 </TH>  </TR>
   <TR> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 4.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 1.0 </TD> <TD align="right"> 4.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 4.0 </TD> <TD align="right"> 3.0 </TD> <TD align="right"> 5.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> </TR>
-  <TR> <TD align="right"> 3.0 </TD> <TD align="right"> 1.0 </TD> <TD align="right"> 4.0 </TD> <TD align="right"> 6.0 </TD> <TD align="right"> 0.0 </TD> </TR>
+  <TR> <TD align="right"> 3.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 0.0 </TD> <TD align="right"> 3.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 2.0 </TD> <TD align="right"> 2.0 </TD> <TD align="right"> 3.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right">  </TD> </TR>
+  <TR> <TD align="right"> 3.0 </TD> <TD align="right"> 0.0 </TD> <TD align="right"> 3.0 </TD> <TD align="right"> 4.0 </TD> <TD align="right"> 0.0 </TD> </TR>
    </TABLE>
+
+</div>
+
+<p></div></p>
 
 <p>In general a lot of creative thinking and exploration should be spent in this step, and as always one may need to come back to this step even after finishing the complete segmentation process - multiple times. </p>
 
 <h4>Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations</h4>
 
-<p>Having seen the data and defined what we mean &ldquo;two observations are similar&rdquo;, the next step is to get a first understanding of the data through visualizing for example individual attributes as well the pairwise distances (using the distance metric we chose) between the observations. If there are indeed multiple segments in our data, some of these plots should show &ldquo;mountains and valleys&rdquo;, with the mountains being potential segments. </p>
+<p>Having defined what we mean &ldquo;two observations are similar&rdquo;, the next step is to get a first understanding of the data through visualizing for example individual attributes as well the pairwise distances (using various distance metrics) between the observations. If there are indeed multiple segments in our data, some of these plots should show &ldquo;mountains and valleys&rdquo;, with the mountains being potential segments. </p>
 
 <p>For example, in our case we can see the histogram of, say, the first 4 variables:</p>
 
-<p>[1] 25 26 27 28
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAqFBMVEX9/v0AAAAAADkAAGUAOTkAOY8AZrU5AAA5AGU5OQA5OTk5OWU5ZrU5j9plAABlADllAGVlOY9lZjllZmVlZrVltbVltdpltf2POQCPOTmPOWWPZmWPZo+PjzmPj2WPj9qP27WP29qP2/21ZgC1Zjm1ZmW1j4+1tWW124+1/rW1/v3ajznaj2XatWXatbXa29ra2/3a/rXa/v39tWX924/9/rX9/tr9/v2RIqIDAAAAOHRSTlP/////////////////////////////////////////////////////////////////////////ADtcEcoAAAAJcEhZcwAACxIAAAsSAdLdfvwAABBnSURBVHic7Z1pe9pGG4Vf2a2dxTglpSVO3TYBu4vlLkEI/f9/9moG7BJLs2ikkR7mnPuDL8wjgQ43o40Z6X8VgeR/Uy8AmQaKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigeF4kGheFAoHhSKB4XiQaF4UCgeFIoHheJBoXhQKB4UigfFS3yenT/sPj7EXhYyIj7iy/mmfPeZ4pPCU3y1u3lL8Snht6q/qKrtK4pPiZCdu+yJr/9rMOySSsScXfwH4LWqv1YpzhstPjv624Lo3MNgjyj6A/Bq8YY9eopPXbwBBPH1jm2eZUtDleLN5ROnnH9ZVNW9YceW4s3lE4fiW0AQX20vz1brmaFI8eZyYrw4lLVPO8YChULxdgIPZT2qE0PxDsIOZT2qE0PxYVA8xTumEQrFh0HxFO+YRihe4tdqz/ai8TTFJy5edcRo27uleIpvQ3TuvkCI56q+CYb4F3iethSduy8Q4tkDpwmEePbAaYIh3gDFU7y5nCgUT/GOaYRC8WFQPMU7phEKxYdB8RTvmEYoFB8GxVO8YxqhUHwYFE/xjmmEQvFhUDzFO6YRCsWHgSE+z364zpoDByk+cfHlQo0Tbg4VpvgExJe/mqfR4o86Y/TteiXtakG27IH9DT2qE/Pc4vOWvlX/1QZd1Ytb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" alt="plot of chunk unnamed-chunk-10"/> </p>
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
 
-<p>or the histogram of all pairwise distances:</p>
+<p>or the histogram of all pairwise distances for the euclidean distance:</p>
 
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAmVBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZo8AZrU5AAA5ADk5AGU5OQA5OWU5OY85ZrU5j9plAABlADllAGVlOQBlOTllOY9lZjllZmVlj49ltf2POQCPOTmPOWWPZgCPjzmPj2WPtY+P29qP2/21ZgC1Zjm124+1/rW1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v1ViJI5AAAAM3RSTlP//////////////////////////////////////////////////////////////////wBxnr2OAAAACXBIWXMAAAsSAAALEgHS3X78AAAOJUlEQVR4nO2di3qjNgJG60ybTZqdrNOZvTmz3XbjtvHsxo79/g+3CIERE2wjUITEf873tW79I8A+1gUC6LsDSPLd1DsA04B4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBflsvjd7cLw4TnC3kA0LorfP67K1+31y7vvDMTjovjXT8+tV5gH1HhRLvfxrw/08TOEUb0oiBelp/jdHS39vLg8qrddPJ38zOgzuCuUt2r8osZvU4tLeO46jKFPU//6cP21q6n3FT8yh5D06+N3t10NPeIzZsyoHvEZg3hREC8K4kUZcxyP+Iy5XOP3j8sTCeIzpkdT//rTU3eA+IyhjxcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvypiJChCfMWMeW474jBkzUQHiM4YaL8qYiQoQnzGM6kVBvCi9DueunhjczY1egzvzqDvEz4ueh3PrG0f80IkKRuYQkr6Hc5vv305VgPiM6XM4Vz7SdMOzbGcFo3pREC8K4kVBvChMVCAKExWIwkQFotDHi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF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" alt="plot of chunk unnamed-chunk-11"/> </p>
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" /></p>
 
 <blockquote> <p>
 Visualization is very important for data analytics, as it can provide a first understanding of the data.
 </p> </blockquote>
+
+<p><br> </p>
 
 <h4>Step 6. Select the clustering method to use and decide how many clusters to have</h4>
 
@@ -5288,93 +6246,1817 @@ Visualization is very important for data analytics, as it can provide a first un
 
 <p>In this note we will use two widely used methods: the <strong>Kmeans Clustering Method</strong>, and the <strong>Hierarchical Clustering Method</strong>. Like all clustering methods, these two also require that we have decided how to measure the distance/similarity between our observations.  Explaining how these methods work is beyond our scope. The only difference to highlight is that Kmeans requires the user to define how many segments to create, while Hierarchical Clustering does not. </p>
 
-<p>Let&#39;s fist use the <strong>Hierarchial Clustering</strong> method, as we do not know for now how many segments there are in our data. Hierarchical clustering is a  method that also helps us visualise how the data may be clustering together. It generates a plot called the <strong>Dendrogram</strong> which is often helpful for visualization - but should be used with care. For example, in this case the dendrogram, using the Euclidean distance metric from the earlier steps, is as follows:</p>
+<p>Let&#39;s fist use the <strong>Hierarchial Clustering</strong> method, as we do not know for now how many segments there are in our data. Hierarchical clustering is a  method that also helps us visualise how the data may be clustering together. It generates a plot called the <strong>Dendrogram</strong> which is often helpful for visualization - but should be used with care. For example, in this case the dendrogram, using the euclidean distance metric from the earlier steps and the ward hierarchical clustering option (see below as well as help(hclust) in R for more information), is as follows:</p>
 
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAwFBMVEX9/v0AAAAAADkAAEgAAGUAOTkAOWUAOXsAOY8AZpwAZrU5AAA5ADk5AGU5OWU5OWY5OY85ZoE5ZrU5j485j9pIAABIAGVXAABlAABlADllAEhlAGVlOQBlZgBlZmVlj49ltdpltf17OQCPOQCPOTmPOWWPZgCPjzmPj2WPj7WPtY+P29qP2/2cZgC1ZgC1Zjm1ZmW124+1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v3/AACV4PY2AAAAQHRSTlP//////////////////////////////////////////////////////////////////////////////////wD/fF2juwAAAAlwSFlzAAALEgAACxIB0t1+/AAAEwpJREFUeJztnQ1747h1RiNnkjpyp3Wnytbb2aZVNdOmGUfpzlo7Y32Q//9fhSAJAjJBEhKvLV7hnGf3EYYiiZc6BgmIH/pNBknym0sHgMuA+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4REF8oiA+URCfKIhPFMQnCuITBfGJgvhEQXyiID5REJ8oiE8UxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4REF8oiA+URCfKIhPFMQnCuITBfGJgvhEQXyiID5REJ8oiE8UxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4RBkjfiaWAt4cxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriE2VQ/P7jU7Z/mM1un1tvIV4xMeKN+2z3ofUW4hUTI353/1y1/Be8gviZWuQ/i9dlWPzDzZfPpsXft/b1ryFefpVvg7rgEZ27w2o2z7bvWg0e8R7qgk+sV6/u87OoC454GdQFHxa/uys7L+zqe1EXfFD8YbUsX7ftgTziHeqCR32B4796IN6hLjgtXgZ1wYeP8eb7Wo7xQ6gLTq9eBnXBES+DuuBx4tfL0FTEO9QFR7wM6oJHiK96d3M34RXPSKn7/CzqgtPiZVAXHPEyqAtOr14GdcERL4O64DHiD6vZ7bcfH1vTEe9QFzzqCpzF7v6Z7+p7URc8ZjhXXm7J2ble1AWPbvEbWnwf6oJHHuPf6oYKdZ+fRV1wevUyqAuOeBnUBY8Uv3vfvg4D8R7qgkfcSVOfkWlfgoN4h7rgMZdeFcpp8QOoCx6zq98/3P6K+H7UBY87xu/uAtdaIt5DXXB69TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1waN+W9Y8645n2faiLniM+PKJ5bsPrbcQ71AXPEb87v6ZX5MeQF3wiEea3nz5bFr8Pc+r70Fd8KgfKpjNsy2/Jt2LuuD06mVQFxzxMqgLPix+d9fx1HLEe6gLPij+sFqWr/z8WC/qgkd9geO/eiDeoS44LV4GdcFjfqGCY/ww6oLTq5dBXXDEy6AueJz49TI0FfEOdcERL4O64DG/Jl327uZuwswiH0fd52dRF5wWL4O64IiXQV1wevUyqAuOeBnUBY8Rf1jNbr/9+NiajniHuuBRV+AsdvfPfFffi7rgMcO58nJLzs71oi54dIvf0OL7UBc88hjPDRUDqAtOr14GdcERL4O64FEXWy7WXIgxgLrgUZderQvr3EnTi7rgURdbbhdcbDmAuuDRF1vS4ntRFzzmYktjfsMxvhd1wenVy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oJHPefO/A4VDzHuRV3wGPHlsw13H1pvId6hLniM+PLZhjzZshd1wYfFP9x8+fzEky0HUBc86hcqZvNsy5Mte1EXnF69DOqCI14GdcGjfqjAwK6+F3XBox9bzu/O9aIueNQXOP6rB+Id6oLT4mVQFzzmhwo4xg+jLji9ehnUBUe8DOqCx4lfL0NTEe9QFxzxMqgLHvMz4mXvbu4mzCzycdR9fhZ1wSvx1SA9MFSvocUPoS64EV8P2IJX2VQgfgh1wf0WfyqId6gLznBOBnXBa/Hbrm/nDIfV7Pbbj4+t6Yh3qAte7+oDWhsOq8Xu/pnv6ntRFzziGF9dbsnZuV7UBa939ZtF9yxVi9/Q4vtQF/xoONd9jOeGigHUBadXL4O64IiXQV3wunP30L2v393Nbh659GoAdcHrFr82nbvNPDBmM5deFd07xPejLvjxSZqvbbvVW+s54ntRF7wSb5p00eJvf23fIFdfbLn53XvE96AuuO3crc0p9/1D4Czc/qEc42/ax3/EO9QFp1cvg7rgiJdBXfDym7uPXzuvne8D8Q51wWnxMqgLjngZ1AWvxXdda9EL4h3qgjfj+PC1Fr0g3qEuePPNXfhai14Q71AX3G/xgWstekG8Q11wd4zvuay+A8Q71AWnVy+DuuCIl0Fd8Jhr7rpAvENdcNviTx3KGRDvUBcc8TKoC454GdQFR7wM6oIjXgZ1wenVy6AuOON4GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFR7wM6oIjXgZ1wREvg7rgiJdBXXDEy6AuOOJlUBcc8TKoC454GdQFj/ptWXOJDs+y7UVd8Bjx5V20uw+ttxDvUBc8RvzOPP2OBxz2oi74sPiHmy+fTYtvP/sQ8Q51wSM6d4fVbJ5tU/g16dmFuMS20qu/fO2IR/zbMSx+d9d1swXiFVc7KL5+enXoHivEK6426gsc/9UD8YqrpcVfvvZpire3VHKMv65q6dVfvnbEI/7tiBO/XoamIl5xtYi/fO1TFV/17uZuwit+x4z4t4IWf/naVYvPp8vrh5vO9kuLD3MkfsR6OlYpRB4f7sza82zc9sttNOI9EB8kRnzXD9YgvqnhKsV3/mAN4psarlJ85w/WIL6p4SrFd/5gDeKbGq5SfOcP1iC+qeE6xXeB+KYGxI8E8aNAvAfigyB+fO3XKb7nYfaIb2q4QvFmNNfxDuKbGq5RfLbv+nnxk8Vf5D4zxAd502O8wBYivg/EeyA+COJHrdzWgPjoBQTqjAPxQRA/auW2BsRHLyBQZxyID4L4USu3NSA+egGBOuNAfBDEj1q5rQHx0QsI1BkH4oMgftTKbQ2Ij15AoM44EB8E8aNWbmtAfPQCAnXGgfggiB+1clsD4qMXEKgzDsQHQfyoldsaEB+9gECdcSA+COJHrdzWgPjoBQTqjAPxQRA/auW2BsRHLyBQZxyID4L4USu3NSA+egGBOuNAfBDEj1q5rQHx0QsI1BkH4oMgftTKbQ2Ij15AoM44EB8E8aNWbmtAfPQCAnXGcVHxEvcHn3CXMOI9guJFP/Q+8SfH7SA18QJNISz+pBDDNSA+eoHTqzhzDsQHQfz4EIg/ZYHTqzhzDsQHQfz4EIg/ZYHTqzhzDsQHkfoZccSftahYBpckEqkfFUb8WYuKZXBJIpH6GfHzvyPprR3xJ61oEi0+cpsRL5LBJYlE6mfEEX/WomIZXJJIXq9Xj/hT6xmTwSWJBPHDJCr+3OHca4k/ta94hvjTa7hC8ZPr3J26wDniT67hCsWfP5yLC/CW4mOHk4jPrqvFx0pGvGFqwznEd3PVvXrEd4N4D8QHiRO/Xg6FQXzkzGeCeMT3ICu+6t3NvRCBkVAe/bVH7BcwgWlnrS5/Ga6vhjOqaMQPJAkuGrcR0at7oxbvk/t/lIFS75uxpbMWzYfDjazfihePfvJKEO+VEB9kTK/eZxobHiohPgjix9d/teIPq9ntt67fGa2ZxoaHSogPEiH+sFrs7p8D39X7TGPDQyXEB4kZzn18KsQHzs75TGPDQyXEB4lu8RtafGrizTF+Nuv3PpEND5UQH4Re/fj6ER8M0zkJ8UL1HyeJZMzFlj7T2PBQCfFBxlx65TONDQ+VEB9kzMWWPtPY8FAJ8UFo8ePrv07xPRdb+kxjw0MlxAehVz++fsQHw3ROQrxQ/cdJIkH8+PoRHwzTOQnxQvUfJ4kE8ePrR3wwTOckxAvVf5wkEsSPrx/xwTCdkxAvVP9xkkgQP75+xAfDdE5CvFD9x0kiQfz4+hEfDNM5CfFC9R8niQTx4+tPXfxEyV89XC1+AiDeA/FBEC9Sw0S2H/EeiA+CeJEaJrL9iPdAfBDEi9Qwke1HvAfigyBepIaJbD/iPRAfBPEiNUxk+99c/O4un2/Kmy52d7OqZG65Mvdi3H6zheCdOM1sz17pYWHftaXApPJ2zsXa1lqXsnV5+8cya0p5Ec7c4V/Uv7tbNqXZzWP1sI+mVK3zvb1xxJVebuvyxepys/2tJM3Npu6u0+bD8UrBWlsbEQx8tOKy9NbiD58e8828SH3//dNjVpUK3+WHufsXW/gQWnTfvOuX/rfcaPNuXQpMKm/uWputvv/elJ7NE/k2xb/mmS3lq2VuyvVsTemwWhQr+6UpfX2oHxD5zpUC6g9HKylL+XdTxYsk3+2tZ//w33Xh1n043scUqrW9EX8IBP6lubmtqSvvf3qFj4j4Qli+WZjXr4W6plR4KEr//kNdCH60zWwfj0rFX7r51Pe2tG9PKkvbplZXyson9jSl/Ien/NNj/eahKRWx13O/9LR/MMZMi2tKe5vzt3/0Ah9erC4vSnkwSVZtf/0hHX04dSlYa3sjqpUcB25qcKW8/z43cfHBFv9w8+Wzif3P/1YX7p/NX2q9hC3t7WxuAbOzKN8pP+Wq9NsfWpPe2b9417qq+rPtvG5eZSn/67K0si3bT1Wq7wTd/O79L02p/Ohvf612urbU5HTRm5U0peJIssxbSeJa/HOg1kN7I+qVHAWeQIsvj3HNwasumUfnFJGLUlPI9s3T8lzJvWtL7o7sphSYZD4ns70bs0PwSubwuy2OgraUF3t701bNU5irI+a86SkUS7hStSHNYbcqNTld4GYltpQXq8uDScodt7vr1H043scUqLW9EY+hwG7FtkSv3oNefRDEi9Qwke2/oPgXo6N6kh1r+dNeztY17eWyJyxaTis6PD3hutIFau2czRd/4qIRn0n39rdHopcTf2gGG01UN+pyPY/AbJ3TXix7yqLlNCc+soauWjtnM12q/LxFIz6Tzu0PjETfulefNRu+d4ONZiT0gx3huFRuttC0o8Hey2X7Fw1Mc+L7a+id5jYiMFteTMvPW3TM9gdGopdt8Vk1OrIDoEMzwjn+687sIKo9zRtEtZYdWLQ97bjF99TQN613tryYlp+3aPgzidv+wEj0gsd4b3RkB0BuhOM4HkR1LhpadmDR1jTvGD9QQ9+0vtly0+rPW7TjM4nb/vZIlF69B736IIgXqWEi2494D8QHQbxIDRPZfsR7ID4I4kVqmMj2I94D8UEQL1LDRLYf8R6ID4J4kRomsv2I90B8EDHx0+X1w01n+99ePCgD8YmC+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4REF8oiA+URCfKIhPFMQnCuITBfGJgvhEQXyiID5REJ8oiE8UxCcK4hMF8YmC+ERBfKIgPlEQnyiITxTEJwriEwXxiYL4REF8oiA+URCfKIhPFMQnCuITBfGJgvhEQXyiID5REJ8oiE8UxCfKVYvfzGazZffkdeC9l+zeP+3ePw3Pp45rFr+5fba/vRycHCn+NaJdnisWv/9onNVN1rz800/lT3nbydn6T2XL385m5fQH81LMNCv+MA6fHnd3xbtm4s/FrPWb9//jL6GaKxa/LQRm2WG1tOLvlkeTs/XtczHZ/CFs5kX7X5iXYqZCeqH424+P9R9N+TeyMMvt7soXu4Rqrll85WbdiK/22s3kcle/Xu4LwwXmpTBqZtoszH9ZVv+7/uMoZqhXVC+hm6sX77V4X7xp8X97LP0X+/SbR7MznxWv5bz33z+Zt8wO3TV6s/evVlQvoZsrFt86xlfivWP8svSfZXb/XU8/fPrL/fP+Yel29cctvl7iUtslwxWLzzbvnsruu9k1b941wzI7OVvPjUaj0PxfH8bNTJvZomrZ//h4fIyvxNslVHPN4k3vuxywFwP3f/3oxuN2ctGrv7G79LJXf/NYNehCeLnQ739aHlZ+r75u8Wt69aAVxCcK4hMF8YmC+ES5bvFHp1ha51ua8d0iO3y2720Wm9ZpHUsx6jdv7+6VD+UMiM8Kj5vf/+mn+lRdhPisew49XLv4/yiH7OUY3X2HV51eq8bm1dnZcuResl1u/2u1LCeUp2XM8uV5vWL2YlxfvL2sv/zTzZWLr06nmS9mt7e/NuLr02tViy+/jv341XdpGnXhe7PY16fozHk98+Wdvawj5kz+xLly8f639K7F16fX6sntI3Yx6W9/npvTs5k9RVf+fdTf7GfXsK9PQ3zp1tvVV6fXKvGBb93NDuDn9+VOwJ6iq2ZeI14HHS3evGVPyIRafLb+zw+HT3+eZ+4UHS1eFbVoI2z3/udqH795Z0+vuWP8S7az6ijvTtFxjFeFbeG2V1+fp6tPrx1WTa/ezmyXM336d0/2FF35zmFliuXb9OqvgmZf//+xOq9gT4/4rPF4+L/I+fnmDvSC+ET5O8C5jJ1Hqcd1AAAAAElFTkSuQmCC" alt="plot of chunk unnamed-chunk-12"/> </p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAulBMVEX9/v0AAAAAADkAAEgAAGUAOTkAOWUAOY8AZrU5AAA5ADk5AGU5OWU5OWY5OXs5OY85ZrU5j485j9pIAABIAGVXAABlAABlADllAEhlAGVlOQBlZgBlZmVlj49ltdpltf1mOQB7OTmPOQCPOTmPOWWPZgCPjzmPj2WPj7WPtY+P29qP2/21ZgC1Zjm1ZmW124+1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v3/AADfOPX/AAAAPnRSTlP///////////////////////////////////////////////////////////////////////////////8A/wTdY8kAAAAJcEhZcwAACxIAAAsSAdLdfvwAABDxSURBVHic7Z0Nd9u2FUCrLK2dZZs7tXPqrps2p1u3Wl0TK40ti/r/f2sEP0TKeoBAEbT4+O496REKfjw8XYEERB34iwxM8sW5GwDnAfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRukjfpasFfDiIN4oiDcK4o2CeKMg3iiINwrijYJ4oyDeKIg3CuKNgnijvLz42STp8TaehzOI7xFxtOhLCvFJ0JcU4pOgLynEJ0FfUohPgr6kEJ8EfUkhPgn6kkJ8EvQlhfgk6EsK8UnQlxTik6AvKcQnQV9SiE+CvqQQnwR9SSE+CfqSQnwS9CWF+CToS+q4+PWb4icmr+8PtiB+h76kjorf3C6K18eLh+ebEL9DX1JHxT/d3O+9tkD8Dn1J0eOToC+p4/f4p2vu8UfRlxSj+iToS+oU8f1+TK7vPYpAX1Ix07nF5nY2O7zF0+Mb9CUVNbhb5uO79RWDOz/6koqZzm3e3zGdC6MvqeOX+ry7P87z6dzlwRbE79CXVMTgblkM5A69I75BX1JM55KgLynEJ0FfUohPgr6kEJ8EfUkhPgn6kkJ8EvQlhfgk6EsK8UnQlxTi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" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" /></p>
+
+<p>Note that we can draw as many clusters are we choose (e.g. in this case we chose 3 clusters) around the branches of the Dendrogram.</p>
 
 <p>The Dendrogram indicates how this clustering method works: observations are &ldquo;grouped together&rdquo;,starting from pairs of individual observations which are the closest to each other, and merging smaller groups into larger ones depending on which groups are closest to each other. Eventually all our data are merged into one segment. The heigths of the branches of the tree indicate how different the clusters merged at that level of the tree are. Longer lines indicate that the clusters below are very different. As expected, the heights of the tree branches increase as we traverse the tree from the end leaves to the tree root: the method merges data points/groups from the closest ones to the furthest ones. </p>
 
-<p>Dendrograms are a helpful visualization tool for segmentation, even if the number of observations is very large - the tree typically grows logarithmically with the number of data. However, they can be very misleading. Notice that once two data points are merged into the same segment they remain in the same segment throughout the tree, This &ldquo;rigidity&rdquo; of the Hierarchical Clustering method may lead to segmentations which are suboptimal in many ways. However, the dendrograms are useful in practice to help us get some understanding of the data, including the potential number of segments we have in the data. Moreover, there are various ways to construct the dendrograms, not only depending on the distance metric we defined in the earlier steps above, but also depending on how the data are aggregated into clusters (see helt(hclust) in R, for example, which provides the following options for the way the tree is constructed: &ldquo;ward&rdquo;, &ldquo;single&rdquo;, &ldquo;complete&rdquo;, &ldquo;average&rdquo;, &ldquo;mcquitty&rdquo;, &ldquo;median&rdquo; or &ldquo;centroid&rdquo;).</p>
+<p>Dendrograms are a helpful visualization tool for segmentation, even if the number of observations is very large - the tree typically grows logarithmically with the number of data. However, they can be very misleading. Notice that once two data points are merged into the same segment they remain in the same segment throughout the tree. This &ldquo;rigidity&rdquo; of the Hierarchical Clustering method may lead to segmentations which are suboptimal in many ways. However, the dendrograms are useful in practice to help us get some understanding of the data, including the potential number of segments we have in the data. Moreover, there are various ways to construct the dendrograms, not only depending on the distance metric we defined in the earlier steps above, but also depending on how the data are aggregated into clusters (see helt(hclust) in R, for example, which provides the following options for the way the tree is constructed: &ldquo;ward&rdquo;, &ldquo;single&rdquo;, &ldquo;complete&rdquo;, &ldquo;average&rdquo;, &ldquo;mcquitty&rdquo;, &ldquo;median&rdquo; or &ldquo;centroid&rdquo;).</p>
 
 <p>We can also plot the &ldquo;distances&rdquo; traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. </p>
 
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAhFBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZrU5AAA5ADk5AGU5OWU5OY85ZrU5j9plAABlADllAGVlOQBlOY9lZmVlZrVltf2POQCPOTmPOWWPZgCPtY+P29qP2/21ZgC1ZmW1/rW1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v36/b7jAAAALHRSTlP/////////////////////////////////////////////////////////AMfWCYwAAAAJcEhZcwAACxIAAAsSAdLdfvwAABAWSURBVHic7Z2Ldtu4EUBX2tZSUsfabNvYaSOtrWwtyvr//yshWolbA9SMAIJDzb0nZx8RM4h9DeI1AH45gEt+GfsvAOOAeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgninIN4piHcK4p2CeKcg3imIdwrinYJ4pyDeKYh3CuKdgnin5IifgWUGFJ/xZ2FoEO8UxDtFIH6/+tEu/PpULjSMikT855Pun/9VIDSMCq96pyDeKYh3iqZzp+raId42khr/cn83QGgYFdGrfv/bunxoGBXaeKfkig9D+9AJuHk+F5qfA1PIXvXHiZvo9E37m8ffbz6dC414UxSo8c3tc/SnAvGWyRa/mn/7Gmr87bt3PeItIxO/O47jv0QfebmfLQ67yBgf8ZaRiN+1Zg9Hw3H1stCIN4Vk5u7vP97if2SsziHeFLm9+kOzTE3nIt4ymrn6yFi9ff93r//d+w8RbxlFjY9y+ojh3MTIHc5R4yeKZjgXXZZ9bQho4ydGvdU5xJsit41XhMa8JWSv+m1/JsYmOrGDeMsUSb1C/PTIT8Tofi4Wb0ImtuUh3hJFMnCo8dND1rlb9b/rET89ZDV+Ezp320VklkYRGvGWUC3SPGbtnUO8JUTiu8T67c3392k2x09nN39GpngQbxlh524TOu77Vawtb38qmtvn83P1iDdFgeHcMd3y/Ooc4k2RL76r8Vtq/LQQHYzwmFyBC7RtvGRDBeJN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" alt="plot of chunk unnamed-chunk-13"/> </p>
+<!-- LineChart generated in R 3.0.2 by googleVis 0.4.7 package -->
 
-<p>As a rule of thumb, one can select the number of clusters as the &ldquo;elbow&rdquo; of this plot: this is the place in the tree where, if we traverse the tree from the leaves to its root, we need to make the &ldquo;longest jump&rdquo; before we merge further the segments at that tree level. In this case, as we can also see from the dendrogram  this is at 3 clusters: merging any of these three clusters together requires that we &ldquo;traverse a long branch of the tree&rdquo;. Of course the actual number of segments can be very different from 3: in practice we explore different numbers of segments, possibly starting with what a hierarchical Clustering dendrogram indicates, and eventually we select the final segmentation solution using both statistical and qualitative criteria, as discussed below. </p>
+<!-- Tue Jan 14 23:04:18 2014 -->
+
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataLineChartID707c5a6f5f40 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+65.38040421 
+],
+[
+ "2",
+45.09618005 
+],
+[
+ "3",
+11.99746394 
+],
+[
+ "4",
+11.38325339 
+],
+[
+ "5",
+10.08471639 
+],
+[
+ "6",
+8.429505207 
+],
+[
+ "7",
+6.74653889 
+],
+[
+ "8",
+6.395153465 
+],
+[
+ "9",
+6.075978164 
+],
+[
+ "10",
+4.851640529 
+],
+[
+ "11",
+4.740085147 
+],
+[
+ "12",
+4.472135955 
+],
+[
+ "13",
+4.348016005 
+],
+[
+ "14",
+3.464101615 
+],
+[
+ "15",
+3.464101615 
+],
+[
+ "16",
+3.464101615 
+],
+[
+ "17",
+3.464101615 
+],
+[
+ "18",
+2.828427125 
+],
+[
+ "19",
+2.828427125 
+],
+[
+ "20",
+0 
+],
+[
+ "21",
+0 
+],
+[
+ "22",
+0 
+],
+[
+ "23",
+0 
+],
+[
+ "24",
+0 
+],
+[
+ "25",
+0 
+],
+[
+ "26",
+0 
+],
+[
+ "27",
+0 
+],
+[
+ "28",
+0 
+],
+[
+ "29",
+0 
+],
+[
+ "30",
+0 
+],
+[
+ "31",
+0 
+],
+[
+ "32",
+0 
+],
+[
+ "33",
+0 
+],
+[
+ "34",
+0 
+],
+[
+ "35",
+0 
+],
+[
+ "36",
+0 
+],
+[
+ "37",
+0 
+],
+[
+ "38",
+0 
+],
+[
+ "39",
+0 
+] 
+];
+data.addColumn('string','index');
+data.addColumn('number','distances');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartLineChartID707c5a6f5f40() {
+var data = gvisDataLineChartID707c5a6f5f40();
+var options = {};
+options["allowHtml"] = true;
+options["title"] = "Distances plot";
+options["legend"] = "right";
+options["width"] =    900;
+options["height"] =    600;
+options["hAxis"] = {title:'Number of Components', titleTextStyle:{color:'black'}};
+options["vAxes"] = [{title:'Distances'}];
+options["series"] = [{color:'green',pointSize:12, targetAxisIndex: 0}];
+
+    var chart = new google.visualization.LineChart(
+    document.getElementById('LineChartID707c5a6f5f40')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartLineChartID707c5a6f5f40);
+})();
+function displayChartLineChartID707c5a6f5f40() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+
+<!-- jsChart -->  
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartLineChartID707c5a6f5f40"></script>
+ 
+
+<!-- divChart -->
+
+<div id="LineChartID707c5a6f5f40"
+  style="width: 900px; height: 600px;">
+</div>
+
+<p>As a rule of thumb, one can select the number of clusters as the &ldquo;elbow&rdquo; of this plot: this is the place in the tree where, if we traverse the tree from the leaves to its root, we need to make the &ldquo;longest jump&rdquo; before we merge further the segments at that tree level.  Of course the actual number of segments can be very different from what this rule of thumb may indicate: in practice we explore different numbers of segments, possibly starting with what a hierarchical clustering dendrogram may indicate, and eventually we select the final segmentation solution using both statistical and qualitative criteria, as discussed below. </p>
 
 <blockquote> <p>
 Selecting the number of clusters requires a combination of statistical reasoning, judgment, interpretability of the clusters, actionable value of the clusters found, and many other quantitative and qualitative criteria. In practice different numbers of segments should be explored, and the final choice should be made based on both statistical and qualitative criteria. 
 </p> </blockquote>
 
-<p>For now let&#39;s consider the 3-segments solution found by the Hierarchical Clustering method (using the Euclidean distance and the default R agglomeration method of &ldquo;ward&rdquo;). We can also see the segment each observation (respondent in this case) belongs to. For example the first 5 respondents belong to the 3 selected segments as follows:</p>
+<p>For now let&#39;s consider the 3-segments solution found by the Hierarchical Clustering method (using the euclidean distance and the hclust option ward). We can also see the segment each observation (respondent in this case) belongs to:</p>
 
-<TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Hierachical Clustering cluster membership of Sample Data: Mall Visits </CAPTION>
-<TR> <TH>  </TH> <TH> V1 </TH> <TH> V2 </TH> <TH> V3 </TH> <TH> V4 </TH> <TH> V5 </TH> <TH> V6 </TH> <TH> Income </TH> <TH> Mall.Visits </TH> <TH> Cluster_Membership </TH>  </TR>
-  <TR> <TD align="right"> ID_1 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  7 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right"> 60000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
-  <TR> <TD align="right"> ID_2 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  4 </TD> <TD align="right"> 30000 </TD> <TD align="right">  1 </TD> <TD align="right">  2 </TD> </TR>
-  <TR> <TD align="right"> ID_3 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right"> 70000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
-  <TR> <TD align="right"> ID_4 </TD> <TD align="right">  4 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  3 </TD> <TD align="right">  6 </TD> <TD align="right"> 30000 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> </TR>
-  <TR> <TD align="right"> ID_5 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right"> 60000 </TD> <TD align="right">  1 </TD> <TD align="right">  1 </TD> </TR>
-   </TABLE>
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Tue Jan 14 23:04:18 2014 -->
 
-<p>We can now also use Kmeans to find clusters using a different approach. As always, much like Hierarchical Clustering can be performed using various distance metrics, so can Kmeans. Moreover, there are variations of Kmeans (e.g. &ldquo;Hartigan-Wong&rdquo;, &ldquo;Lloyd&rdquo;, or &ldquo;MacQueen&rdquo; - see help(kmeans) in R) one can explore, which are beyond the scope of this note.</p>
 
-<p>Here are the clusters the first 5 observations belong to when we use Kmeans to find 3 segments:</p>
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID707c743566bd () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+1,
+1,
+6,
+4,
+7,
+3,
+2,
+3,
+60000,
+3 
+],
+[
+ "2",
+2,
+2,
+2,
+3,
+1,
+4,
+5,
+4,
+30000,
+1 
+],
+[
+ "3",
+1,
+3,
+7,
+2,
+6,
+4,
+1,
+3,
+70000,
+3 
+],
+[
+ "4",
+3,
+4,
+4,
+6,
+4,
+5,
+3,
+6,
+30000,
+7 
+],
+[
+ "5",
+2,
+5,
+1,
+3,
+2,
+2,
+6,
+4,
+60000,
+1 
+],
+[
+ "6",
+1,
+6,
+6,
+4,
+6,
+3,
+3,
+4,
+50000,
+2 
+],
+[
+ "7",
+1,
+7,
+5,
+3,
+6,
+3,
+3,
+4,
+65000,
+3 
+],
+[
+ "8",
+1,
+8,
+7,
+3,
+7,
+4,
+1,
+4,
+55000,
+4 
+],
+[
+ "9",
+2,
+9,
+2,
+4,
+3,
+3,
+6,
+3,
+70000,
+0 
+],
+[
+ "10",
+3,
+10,
+3,
+5,
+3,
+6,
+4,
+6,
+25000,
+6 
+],
+[
+ "11",
+2,
+11,
+1,
+3,
+2,
+3,
+5,
+3,
+40000,
+0 
+],
+[
+ "12",
+1,
+12,
+5,
+4,
+5,
+4,
+2,
+4,
+45000,
+4 
+],
+[
+ "13",
+2,
+13,
+2,
+2,
+1,
+5,
+4,
+4,
+25000,
+2 
+],
+[
+ "14",
+3,
+14,
+4,
+6,
+4,
+6,
+4,
+7,
+35000,
+5 
+],
+[
+ "15",
+1,
+15,
+6,
+5,
+4,
+2,
+1,
+4,
+55000,
+3 
+],
+[
+ "16",
+3,
+16,
+3,
+5,
+4,
+6,
+4,
+7,
+40000,
+4 
+],
+[
+ "17",
+1,
+17,
+4,
+4,
+7,
+2,
+2,
+5,
+80000,
+4 
+],
+[
+ "18",
+3,
+18,
+3,
+7,
+2,
+6,
+4,
+3,
+25000,
+5 
+],
+[
+ "19",
+3,
+19,
+4,
+6,
+3,
+7,
+2,
+7,
+30000,
+6 
+],
+[
+ "20",
+2,
+20,
+2,
+3,
+2,
+4,
+7,
+2,
+30000,
+2 
+],
+[
+ "21",
+1,
+21,
+6,
+4,
+7,
+3,
+2,
+3,
+60000,
+3 
+],
+[
+ "22",
+2,
+22,
+2,
+3,
+1,
+4,
+5,
+4,
+30000,
+1 
+],
+[
+ "23",
+1,
+23,
+7,
+2,
+6,
+4,
+1,
+3,
+70000,
+3 
+],
+[
+ "24",
+3,
+24,
+4,
+6,
+4,
+5,
+3,
+6,
+30000,
+7 
+],
+[
+ "25",
+2,
+25,
+1,
+3,
+2,
+2,
+6,
+4,
+60000,
+1 
+],
+[
+ "26",
+1,
+26,
+6,
+4,
+6,
+3,
+3,
+4,
+50000,
+2 
+],
+[
+ "27",
+1,
+27,
+5,
+3,
+6,
+3,
+3,
+4,
+65000,
+3 
+],
+[
+ "28",
+1,
+28,
+7,
+3,
+7,
+4,
+1,
+4,
+55000,
+4 
+],
+[
+ "29",
+2,
+29,
+2,
+4,
+3,
+3,
+6,
+3,
+70000,
+0 
+],
+[
+ "30",
+3,
+30,
+3,
+5,
+3,
+6,
+4,
+6,
+25000,
+6 
+],
+[
+ "31",
+2,
+31,
+1,
+3,
+2,
+3,
+5,
+3,
+40000,
+0 
+],
+[
+ "32",
+1,
+32,
+5,
+4,
+5,
+4,
+2,
+4,
+45000,
+4 
+],
+[
+ "33",
+2,
+33,
+2,
+2,
+1,
+5,
+4,
+4,
+25000,
+2 
+],
+[
+ "34",
+3,
+34,
+4,
+6,
+4,
+6,
+4,
+7,
+35000,
+5 
+],
+[
+ "35",
+1,
+35,
+6,
+5,
+4,
+2,
+1,
+4,
+55000,
+3 
+],
+[
+ "36",
+3,
+36,
+3,
+5,
+4,
+6,
+4,
+7,
+40000,
+4 
+],
+[
+ "37",
+1,
+37,
+4,
+4,
+7,
+2,
+2,
+5,
+80000,
+4 
+],
+[
+ "38",
+3,
+38,
+3,
+7,
+2,
+6,
+4,
+3,
+25000,
+5 
+],
+[
+ "39",
+3,
+39,
+4,
+6,
+3,
+7,
+2,
+7,
+30000,
+6 
+],
+[
+ "40",
+2,
+40,
+2,
+3,
+2,
+4,
+7,
+2,
+30000,
+2 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','Cluster_Membership');
+data.addColumn('number','ID');
+data.addColumn('number','V1');
+data.addColumn('number','V2');
+data.addColumn('number','V3');
+data.addColumn('number','V4');
+data.addColumn('number','V5');
+data.addColumn('number','V6');
+data.addColumn('number','Income');
+data.addColumn('number','Mall.Visits');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID707c743566bd() {
+var data = gvisDataTableID707c743566bd();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
 
-<TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> kMeans cluster membership of Sample Data: Mall Visits </CAPTION>
-<TR> <TH>  </TH> <TH> V1 </TH> <TH> V2 </TH> <TH> V3 </TH> <TH> V4 </TH> <TH> V5 </TH> <TH> V6 </TH> <TH> Income </TH> <TH> Mall.Visits </TH> <TH> Cluster_Membership </TH>  </TR>
-  <TR> <TD align="right"> ID_1 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  7 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right"> 60000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
-  <TR> <TD align="right"> ID_2 </TD> <TD align="right">  2 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  4 </TD> <TD align="right"> 30000 </TD> <TD align="right">  1 </TD> <TD align="right">  2 </TD> </TR>
-  <TR> <TD align="right"> ID_3 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right"> 70000 </TD> <TD align="right">  3 </TD> <TD align="right">  1 </TD> </TR>
-  <TR> <TD align="right"> ID_4 </TD> <TD align="right">  4 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right">  5 </TD> <TD align="right">  3 </TD> <TD align="right">  6 </TD> <TD align="right"> 30000 </TD> <TD align="right">  7 </TD> <TD align="right">  2 </TD> </TR>
-  <TR> <TD align="right"> ID_5 </TD> <TD align="right">  1 </TD> <TD align="right">  3 </TD> <TD align="right">  2 </TD> <TD align="right">  2 </TD> <TD align="right">  6 </TD> <TD align="right">  4 </TD> <TD align="right"> 60000 </TD> <TD align="right">  1 </TD> <TD align="right">  1 </TD> </TR>
-   </TABLE>
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID707c743566bd')
+    );
+    chart.draw(data,options);
+    
 
-<p>Note that the observations do not need to be in the same clusters as we use different methods, neither do the segment profiles that we will find next. However, a characteristic of <strong>statistically robust segmentation</strong> is that the profiles of the segments do not vary much when we find the segments using different approaches or variations of the data. We will examine this issue in the last step, after we first discuss how to profile segments. </p>
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID707c743566bd);
+})();
+function displayChartTableID707c743566bd() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID707c743566bd"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID707c743566bd"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div>
+<br> <br></p>
+
+<p><strong>Using Kmean Clustering</strong></p>
+
+<p>As always, much like Hierarchical Clustering can be performed using various distance metrics, so can Kmeans. Moreover, there are variations of Kmeans (e.g. &ldquo;Hartigan-Wong&rdquo;, &ldquo;Lloyd&rdquo;, or &ldquo;MacQueen&rdquo; - see help(kmeans) in R) one can explore, which are beyond the scope of this note.</p>
+
+<p>Here are the clusters our observations belong to when we select 3 clusters and the Lloyd kmeans method:</p>
+
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Tue Jan 14 23:04:19 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID707c173a70d8 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+1,
+1,
+6,
+4,
+7,
+3,
+2,
+3,
+60000,
+3 
+],
+[
+ "2",
+3,
+2,
+2,
+3,
+1,
+4,
+5,
+4,
+30000,
+1 
+],
+[
+ "3",
+1,
+3,
+7,
+2,
+6,
+4,
+1,
+3,
+70000,
+3 
+],
+[
+ "4",
+2,
+4,
+4,
+6,
+4,
+5,
+3,
+6,
+30000,
+7 
+],
+[
+ "5",
+3,
+5,
+1,
+3,
+2,
+2,
+6,
+4,
+60000,
+1 
+],
+[
+ "6",
+1,
+6,
+6,
+4,
+6,
+3,
+3,
+4,
+50000,
+2 
+],
+[
+ "7",
+1,
+7,
+5,
+3,
+6,
+3,
+3,
+4,
+65000,
+3 
+],
+[
+ "8",
+1,
+8,
+7,
+3,
+7,
+4,
+1,
+4,
+55000,
+4 
+],
+[
+ "9",
+3,
+9,
+2,
+4,
+3,
+3,
+6,
+3,
+70000,
+0 
+],
+[
+ "10",
+2,
+10,
+3,
+5,
+3,
+6,
+4,
+6,
+25000,
+6 
+],
+[
+ "11",
+3,
+11,
+1,
+3,
+2,
+3,
+5,
+3,
+40000,
+0 
+],
+[
+ "12",
+1,
+12,
+5,
+4,
+5,
+4,
+2,
+4,
+45000,
+4 
+],
+[
+ "13",
+3,
+13,
+2,
+2,
+1,
+5,
+4,
+4,
+25000,
+2 
+],
+[
+ "14",
+2,
+14,
+4,
+6,
+4,
+6,
+4,
+7,
+35000,
+5 
+],
+[
+ "15",
+1,
+15,
+6,
+5,
+4,
+2,
+1,
+4,
+55000,
+3 
+],
+[
+ "16",
+2,
+16,
+3,
+5,
+4,
+6,
+4,
+7,
+40000,
+4 
+],
+[
+ "17",
+1,
+17,
+4,
+4,
+7,
+2,
+2,
+5,
+80000,
+4 
+],
+[
+ "18",
+2,
+18,
+3,
+7,
+2,
+6,
+4,
+3,
+25000,
+5 
+],
+[
+ "19",
+2,
+19,
+4,
+6,
+3,
+7,
+2,
+7,
+30000,
+6 
+],
+[
+ "20",
+3,
+20,
+2,
+3,
+2,
+4,
+7,
+2,
+30000,
+2 
+],
+[
+ "21",
+1,
+21,
+6,
+4,
+7,
+3,
+2,
+3,
+60000,
+3 
+],
+[
+ "22",
+3,
+22,
+2,
+3,
+1,
+4,
+5,
+4,
+30000,
+1 
+],
+[
+ "23",
+1,
+23,
+7,
+2,
+6,
+4,
+1,
+3,
+70000,
+3 
+],
+[
+ "24",
+2,
+24,
+4,
+6,
+4,
+5,
+3,
+6,
+30000,
+7 
+],
+[
+ "25",
+3,
+25,
+1,
+3,
+2,
+2,
+6,
+4,
+60000,
+1 
+],
+[
+ "26",
+1,
+26,
+6,
+4,
+6,
+3,
+3,
+4,
+50000,
+2 
+],
+[
+ "27",
+1,
+27,
+5,
+3,
+6,
+3,
+3,
+4,
+65000,
+3 
+],
+[
+ "28",
+1,
+28,
+7,
+3,
+7,
+4,
+1,
+4,
+55000,
+4 
+],
+[
+ "29",
+3,
+29,
+2,
+4,
+3,
+3,
+6,
+3,
+70000,
+0 
+],
+[
+ "30",
+2,
+30,
+3,
+5,
+3,
+6,
+4,
+6,
+25000,
+6 
+],
+[
+ "31",
+3,
+31,
+1,
+3,
+2,
+3,
+5,
+3,
+40000,
+0 
+],
+[
+ "32",
+1,
+32,
+5,
+4,
+5,
+4,
+2,
+4,
+45000,
+4 
+],
+[
+ "33",
+3,
+33,
+2,
+2,
+1,
+5,
+4,
+4,
+25000,
+2 
+],
+[
+ "34",
+2,
+34,
+4,
+6,
+4,
+6,
+4,
+7,
+35000,
+5 
+],
+[
+ "35",
+1,
+35,
+6,
+5,
+4,
+2,
+1,
+4,
+55000,
+3 
+],
+[
+ "36",
+2,
+36,
+3,
+5,
+4,
+6,
+4,
+7,
+40000,
+4 
+],
+[
+ "37",
+1,
+37,
+4,
+4,
+7,
+2,
+2,
+5,
+80000,
+4 
+],
+[
+ "38",
+2,
+38,
+3,
+7,
+2,
+6,
+4,
+3,
+25000,
+5 
+],
+[
+ "39",
+2,
+39,
+4,
+6,
+3,
+7,
+2,
+7,
+30000,
+6 
+],
+[
+ "40",
+3,
+40,
+2,
+3,
+2,
+4,
+7,
+2,
+30000,
+2 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','Cluster_Membership');
+data.addColumn('number','ID');
+data.addColumn('number','V1');
+data.addColumn('number','V2');
+data.addColumn('number','V3');
+data.addColumn('number','V4');
+data.addColumn('number','V5');
+data.addColumn('number','V6');
+data.addColumn('number','Income');
+data.addColumn('number','Mall.Visits');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID707c173a70d8() {
+var data = gvisDataTableID707c173a70d8();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID707c173a70d8')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID707c173a70d8);
+})();
+function displayChartTableID707c173a70d8() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID707c173a70d8"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID707c173a70d8"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div>
+<br> <br></p>
+
+<p>Note that the observations do not need to be in the same clusters as we use different methods, neither do the segment profiles that we will find next. However, a characteristic of <strong>statistically robust segmentation</strong> is that our observations are grouped in similar segments independent of the approach we use. Moreover, the profiles of the segments should not vary much when we use different approaches or variations of the data. We will examine this issue in the last step, after we first discuss how to profile segments. </p>
 
 <blockquote> <p>
-The segments found should be relatively robust to changes in the clustering methodology. Most of the observations should belong in the same clusters independent on how the clusters are found. Large changes may indicate that our segmentation is not valid. Moreover, the profiles of the clusters found using different approaches should be as consistent across different approaches as possible. Judging the quality of segmentation is a matter of both robustness of the statistical characteristics of the segments (e.g. minor changes from different methods and data used) as well as a matter of many qualitative criteria: interpretation, actionability, stability over time, etc. 
+The segments found should be relatively robust to changes in the clustering methodology and data subsets used. Most of the observations should belong in the same clusters independent of how the clusters are found. Large changes may indicate that our segmentation is not valid. Moreover, the profiles of the clusters found using different approaches should be as consistent across different approaches as possible. Judging the quality of segmentation is a matter of both robustness of the statistical characteristics of the segments (e.g. changes from different methods and data used) as well as a matter of many qualitative criteria: interpretability, actionability, stability over time, etc. 
 </p> </blockquote>
 
 <h4>Step 7. Profile and interpret the clusters</h4>
 
-<p>Having decided (for now) how many clusters to use, we would like to get a better understanding of their meaning.</p>
+<p>Having decided (for now) how many clusters to use, we would like to get a better understanding of who the customers in those clusters are and interpret the segments. </p>
 
 <blockquote> <p>
-Data analytics is used for us to eventually take decisions, and that is feasible only when we are comfortable (enough) with our understanding of the analytics results, including our ability to clearly interpret them. 
+Data analytics is used to eventually make decisions, and that is feasible only when we are comfortable (enough) with our understanding of the analytics results, including our ability to clearly interpret them. 
 </p> </blockquote>
 
 <p>To this purpose, one needs to spend time visualizing and understanding the data within each of the selected segments. For example, one can see how the summary statistics (e.g. averages, standard deviations, etc) of the <strong>profiling attributes</strong> differ across the segments. </p>
 
-<p>In our case, assuming we decided we use 3 segments found using Kmeans as outlined above (similar profiling can be done with the results of hierarchical clustering or other segmentation methods), we can see how the answers of our respondents to our questions differ across segments. The summary statistics of the survey responses within each customer segment in our case are:</p>
+<p>In our case, assuming we decided we use the 3 segments found using Kmeans as outlined above (similar profiling can be done with the results of hierarchical clustering or other segmentation methods), we can see how the responses to our survey differ across segments. The summary statistics of our data for the total population as well as within each customer segment are:</p>
 
-<TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> Averages of the Profile Attributes for each segment: Mall Visits </CAPTION>
-<TR> <TH> Segment 1 </TH> <TH> Segment 2 </TH>  </TR>
-  <TR> <TD align="right"> 4.889 </TD> <TD align="right"> 3.000 </TD> </TR>
-  <TR> <TD align="right"> 3.556 </TD> <TD align="right"> 4.545 </TD> </TR>
-  <TR> <TD align="right"> 5.333 </TD> <TD align="right"> 2.818 </TD> </TR>
-  <TR> <TD align="right"> 2.889 </TD> <TD align="right"> 5.091 </TD> </TR>
-  <TR> <TD align="right"> 2.778 </TD> <TD align="right"> 4.000 </TD> </TR>
-  <TR> <TD align="right"> 3.778 </TD> <TD align="right"> 4.818 </TD> </TR>
-  <TR> <TD align="right"> 62777.778 </TD> <TD align="right"> 32272.727 </TD> </TR>
-  <TR> <TD align="right"> 2.556 </TD> <TD align="right"> 3.818 </TD> </TR>
-   </TABLE>
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Tue Jan 14 23:04:20 2014 -->
 
-<p>We can also &ldquo;visualize&rdquo; the segments using <strong>snake plots</strong> for each cluster. For example, we can plot the means for the 6 attitudinal attributes for each of the 3 clusters to better visualize differences between segments. </p>
 
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbAAAAGwCAMAAAD/kMAYAAAAe1BMVEX9/v0AAAAAADkAAGUAOWUAOY8AZrU5AAA5ADk5AGU5OWU5OY85ZrU5j9plAABlADllAGVlOQBlOY9lZmVltf2POQCPOTmPOWWPZgCPtY+P29qP2/21ZgC1/rW1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v32nDEGAAAAKXRSTlP/////////////////////////////////////////////////////AFL0IIcAAAAJcEhZcwAACxIAAAsSAdLdfvwAABEHSURBVHic7Z2Lehu3EYWzam0ldSQ7reS0kRKlNSny/Z+wXIp0JGovczkDYHbP+RKbsoAZLH7iNovF/rCnUumH2gWgdCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZPIA66gIBQJz5KXGRGDJRGDJRGDJRGDJRGDJRGDJRGDJRGDJRGDJtA5gDRXFKwJLplUAm4uYZtI6gDVUFq8ILJnWAKxrqCxuEVgyrQRYO4XxagXAuu9/LEEElkwElkzLB9a9+Su9CCyZCCyZFg+su/g7u1YDrJHiuEVgybR0YN3Ap9QisGRaD7A2yuPWwoF1I5/zisCSicCSadnAuomfkorAkonAkonA9HaqatHALktgLlFDO1EJTGSn/rWc5Qa2vT6eHvG3P7SmCwgHrIGLOckLbHd/d/x78+Gb0nS83hWAwPb75y9/vPlbbjpeSGD1r+akVbUwY5Ga2nblHsOeb1sdwwb8O4BVv5yTFjxLJDCs6XCBgVW/nhehgL2adAgPiovWoHtLmdrad7XcFgYHVvuCXkRgckOLANZ3hf1E8f2svvL1DXt3AWuCGADYcfja/qw1HawR7/pCNbaNBwBs++lbg5GOCGAtEHMDu7367de+hX1qK9Ix5twHrAFi/knH7r77uN+0FukgMLjpWI0615aqm/yxvBYKbNw3gVlNhyoMWHViBKa0tBJghS9zyp2uKKh7ajARmNbSOoAVvsxIYG0GBM7KCWzSGYHJTJe8zGlfmpLAQv4wEZg+7TqAFbzMGU9uYI0uWI5aOTBYyB+nggvnYpc550heEFwI2SXFAikjsFk/fmAVJ70EZkq5CmClrhIHbCJhQWKq2XZCYPNecgHTzd2w0foiVylwIi0HLsJll3Jg6YGdHncYeeRB7orALLIA+74hamBrlMLVvDeEJC6ExcAFTOzSjivgG5gEppS6l0LfcY6/SpEHWTGAIS6j9N/5dMAgKGSpmgX2fdKhmnLkBwZcgBtlqMFjC9vd36DchV/kkoBZKvClS3z+/FDIn1eICbs8TY2LKTyGRV/kkoCZ6m/FwIDrA5NGbBcHVuMiTQmB6wOLxiyvFBiqvyMwn4oDC7uaUbsKYIf12EeEz0BiQGCQ8JVZ42bLt7AK3YglKXK+qdaE0QrA4ohpDM+lzQxse323ux882cHmdVHAIq5myqQAWH/C3uPd4HPnRrfFO359YuT0RatJi5Lg75c/dl8ftLcvVwMMfzVeYH3z2tzs9xvVHNHTERulszqduiIwV8FeJh2Px7srSl7FgSmNer7HLsc+a95Zou2sKQIzGwMAs5w1FUGsGjDo1UCAvUw3BicdxrOmtJeICtZKM1QD5l3Qh501hWwOJovQLhtGzB3iDDtrSvsVRgVrZRmgrRVrpkZoSuL4MjEs9ifKQWBqx5dpGweGISYxIol0SLa56U/VVi5NYbE/QRakLbQNSQtDbnMT//oyKc7afB6oMbAJ2bQet81N/OvLlMsHJrOAGcO2Pw30lrBOrBMkrw7MTUyYXxatP/00sDqeGOBKArPV1kguqDF0ds2kY3Da8Xx7+EdTC1N+p1oH5iQGBDan59sPfxYAFhCbbAiYsrsZlWwM214PzfhBwYnu3QejIXE2a807iClnYOM6AdugHjfSptiHAhvOZ653OzDlEmdCp2n97V1MKXRL+/HUbQArgloGTLmbQ1wKXRLsNHw0Y5GezZxN1iU+WkIdBBaRS9glxoxh2nFuLDW0Eysz2TNnwkQ6zOXQTf3Bs7rhrMWB6fJUBqYLh7QPzJBbmUMG7CmqS1TGdIdTpwamzSAbwz4/bD7un3AbScWpJMCwfZgzJIgGoE3/fVp/3s4GL8rKgaFb5Auw3deHw3+DEV53WXQx3aHUbQGDzvn0OU5j2IHVpuuUizFhYVQx3fAxx80LuQo2ZCnwOipViBAOTDat8VgEJRVmKfH+MFWIUMRQo5rAAlZtJ2C7++7Df7UbO8oAA08SAMAAF27PdJp03N9sP33bKJ+ZFZdHE3EKBobg1QCwlyceYqb1EwlFk3jsrA4CDLKgMeZ63cKeolqYKuQE78ICgGHCqKZsf41hwFMEhClF/5oWmNVTA7NEZYgQPeh0I59hRq0pTPli93RMJhWNbOBZeDlgZk+ySUfEVu25pKWAvbYBAzZnye5IOkvEm55LO5od3SQqAHP4kXWJT0F7OibSypbTWGA4XjO24oEFj2GqBTG6RZQH5vHTxhimi2Cga7h79wFqVfEbl9mjSo1hqvUVgY2r1BhmAwZe5kJ5KSNubqsnRe9LHEstm2SlBOb00kSk433yosDOdsDARLFQjNG/dAFso3koIhwYOi5BYOaizGXtTA5KmbuwO/dPbpuvRWAAw1P/4Df5ViWBKWZ/ncl+OXtv7E78DDB5oUaBHVMkAKZZrNgsXqooMMXsLwBYBC/VYsVi8Z2qABNk7PCBvxBgb6yCI5+DKrgO22uA7SUnKOo8LwpY6L7Ed1mqAIvhFRj4HNb8vsTt9VjYygpMlG/ucD+143Bg4DjaiGb3Jfbv+eg1QNNSQvlgkgUYOoyiaGGD+xLPFJWnak8UR5gNHaldFLCJfYngFib+qqMrOIwXepHnniWO33qJBQbvE8OEXTM0Na3fy1tOImDYsgqAiQ5p1pt25YKvm+LGsPLARNKfqm0r0KtU2FBHbBMrZqt8lyhchlnt+9w2IEmX+OX3Ans6vmeSxTms9l1uW5AI2Cwo25m/I8WRxX6NDsYNJiEma2HjyBynao8VpwKwuGg9XJIx7HFqlug4VXusOLMZwcGDxQGb6RTNp2qPZZECw4YPlgRsTtZTtUeyENiEvLFEu+mJHDM50Xcs8HOYQEmj9Yc/404RuMwhBYa9x7QgYBMvLbWbnsoxnZXAxlW0hQlBdIMfPVocsEJjmJBEN/LZLPgcJlItxRIJTCDAOsxoejr9eGZhMoPj5QDbfQ1/xvkyvRAYpJKXB6zEE5hiEHBg8ElnqNoZw7rJH7XJTI4JzJFcCAxQycsD1m/uNbxATHf571KPZCewSfXA+q2H2jPrBabnUg9nl3K1OU5ATACsn9Rb5olOYMP5hcmMjhcE7F7fJ6qufiAxgQ2pYWBCiM5Kxq/DYyUBVmAjqbA1SbmaPbdJTNEJlJrWE9iENJ1AqWechVNCAmsEmHDNJeZq9twiMNVXqi4w4SoZCKxFYg0CG01JYNo+oDIw4bfLUcvNA1MWcOnA8JEutFoENpGwOLDWiGm/UUW2CEwllK0ZzbW8UGDBWwQIbFTq8pXYIjCdrhv8aHQlyLcIYChnlnTdwCe7r/lsTQHTl6/ua4Hf/r4MsJaIGYpX4DQ3CDBjNS8VWOhbZmeTdZJ0pmoezNQOMEvx4t8yO5+KwGb/8S/Fv2UWBMxUz/jQJFKm0sU/vSJI1UnSLQ7YSDFqzxIliaKA2aqklDzAAp/AFCeSzk0UahqYMW76ZhNOwBgm7jbFQ51C+FgyUA5gkcFf8dR/bcBGy1B5DAMCU9eztU5KyBw2Pb9S8cO3p+EHIvrG1/eZA90lso6B8OfT5wf2/Pnh8N/gAxEHYMcOc/uz1rQwiTwhDFh9YhMFkI5hhzY2BuywpjYegw6uGJ05e6XEywts/9RdPWyGu8Tbq99+7VvYJ8Mx6ASm9++fdOzuu4/7jekYdALT+685S4TXi8qgo1aC5bmPFLpFoCowT63EynVb4nULm3xduuUYdAIzOFcAQ8cSA2pFYbJZYL7bSK+BDU0sHKZbBlaTGALYaQwb3Pa7ve5uHi0vy4moE7nNCoWTyfk1n50l9g8/P/bnaqvXYSF1ggqdVAPmHfhngfUD2+bGEukgMJNjzf2woTHsfLyAuoXFVAksOFmJmDvYIHnhW0/sST2GBdWI+H4Nxg5aBYBZTROYzasI2OPHc0uCeY+qEALbn4/Tfr6dinRoTYdViMxwm8AAd/2Ok47TpvqBeYXZdFx9iCwj763ihCj66/eHIUNTBGZ1KQA28apms+nA6gD0K1IzWEE685cTSX/s+8TttXLWUekOIYGdls7K0G/LwFDdJlSY+W3MOiy2LtyLT0UinKTuCMyVCCcCc6WQJoIJFQQNARZdFaDAblFiBOb4vS4ZRLA7rwRWRApXFYDFVwTmPgGByVwCBLqxU4yYxlF5YAWqgcCQxShRDZg7O6WAqfysDxhsQgZT28CK1ALoRkEZYjovywQGCjxX/3LpkxNYuBoHVmhcwMQxaw+3hvRZgYHCLNWXIOr0aGD1lzaNAVN7IDCTFZT0DpYKDLMKXD2w+vFU7JzMK4N5ArNYQal1YA3cw20KmMX6yoCBJ9E+mYwTmN4ISs0DK8oLNEsNLLPNNIHpjYBEYPPu4Mseh4yWCwIrzAsziBJYQUFmPVGlttotB6w4r6aBmc0uGRikjS8O2PZ67NAVAouw6gU28TxtN/FTGUFG0ZCC1wM28cR6fWCQIkQU3GFz0S2sVWAek+4xbPw84G70h2IiMLPpOsAgZYAX3WWwELBKvCBlWCawmVO1CQxlr+j9sArqBj9aTUBEYFMCAANfiNMaItJhO1W7jLqBT3YbAHmNIdZhtlO1C6l798FuAqHawOynahdSY8DctlCRjiW3MOSVVAdmPlW7mLo3f3lMAOS3tPRZYlvAAIYITG7CLwKTqHv1p8uEWwgzawEWGl4oaYbARCbmXzcoLUiwkSUAOxbEP52WvCRythh+EZjKkgcbgUnVoaNLJmplxsFFADuUBF8WNTUCkysC2IthOTVUCQjMb73oS6tXAaxEUWaolQqWEJjOzxi1YuHjhQArqiFqBNa63g5s5W6oEZhLZ2oElkmYQOR3a9O/JrDWRGDJRGDJRGDJRGDJRGDJRGDJRGDJRGDJRGDJFAmMilAcsDfw6uZfj3sCS+aewJK5J7Bk7gksmXsCS+aewJK5RwGjConAkonAkonAkonAkonAkonAkonAkonAkonAkgkEbPvT+8PeFLmvu+7Onn0zeF6qRuczBk166nz+d/fd1YM4NQbYxlXi588P++2P8jJfqP+yPH20u9/3de4A9ujIe8o/8NqNMUGAPV79x9PCNn1t+y7b2cL/8Yvd++6r+at21MBRr1Nqokvcv7Qyh1wtbPf1N0eXeHzViePbtv307/JdohvY7v7G4/1accXv9XTjGcP6ztzTyrbXd0Pn846pDWDPtx5ee18DPdSWa9LRy9Gh97AUxW8CWP8lc8pRY0/H3YC+b4zD/fM/0wFz8uqnWM4h0NPCeve7Xx2X/5iuS3z5iruaiGsM86/DXO4PsxbFooiRjmQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGQisGRaKrC3u4Lc+w7bEYEl04KB9ZvW+81zz7fd33+5O+0me7zxPulSWUsGdn1z3OV5YLQ5gHtB9fzld93TIq1pycAOveLh//5xnkOX2O8N7j8+OTdl19bygR1Hs8e741NBV64nB5vQ8oGdW9ipJ3z8V+ohbAXAXo1hhxFt++l/zicmK2sFwHb351ni1UM/v1c8UNyglgpssSKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZCKwZPo/y6rA8+X/jfcAAAAASUVORK5CYII=" title="plot of chunk Fig2" alt="plot of chunk Fig2" style="display: block; margin: auto;" /></p>
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID707c78726ce2 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "V1",
+3.85,
+1.87,
+5.75,
+1.67,
+3.5,
+1,
+0.49,
+0.52 
+],
+[
+ "V2",
+4.1,
+1.39,
+3.62,
+3,
+5.83,
+0.89,
+0.6,
+0.72 
+],
+[
+ "V3",
+3.95,
+1.99,
+6,
+1.83,
+3.33,
+1.03,
+0.72,
+0.78 
+],
+[
+ "V4",
+4.1,
+1.5,
+3.12,
+3.5,
+6,
+0.81,
+1,
+0.6 
+],
+[
+ "V5",
+3.45,
+1.74,
+1.88,
+5.5,
+3.5,
+0.81,
+1,
+0.8 
+],
+[
+ "V6",
+4.35,
+1.48,
+3.88,
+3.33,
+6,
+0.62,
+0.78,
+1.48 
+],
+[
+ "Income",
+46000,
+17216.57,
+60000,
+42500,
+30833.33,
+10954.45,
+17516.23,
+5573.2 
+],
+[
+ "Mall.Visits",
+3.25,
+1.94,
+3.25,
+1,
+5.5,
+0.68,
+0.85,
+1 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','Population..AVG.');
+data.addColumn('number','Population..SD.');
+data.addColumn('number','Segment..AVG..1');
+data.addColumn('number','Segment..AVG..2');
+data.addColumn('number','Segment..AVG..3');
+data.addColumn('number','Segment..SD..1');
+data.addColumn('number','Segment..SD..2');
+data.addColumn('number','Segment..SD..3');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID707c78726ce2() {
+var data = gvisDataTableID707c78726ce2();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
 
-<p>Can we see differences between the segments? For example, in this case, could we say that there are three customer segments, which we could call as &ldquo;Economical Shoppers&rdquo;, &ldquo;Apathetic Shoppers&rdquo;, and &ldquo;Enjoyment Shoppers&rdquo;? Do the segments differ in terms of their average household income and in terms of how often they visit the mall? What else can we say about the different segments?</p>
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID707c78726ce2')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID707c78726ce2);
+})();
+function displayChartTableID707c78726ce2() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID707c78726ce2"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID707c78726ce2"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div></p>
+
+<p>We can also &ldquo;visualize&rdquo; the segments using <strong>snake plots</strong> for each cluster. For example, we can plot the means of the profiling variables for each of our clusters to better visualize differences between segments. For better visualization we plot the standardized profiling variables.</p>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbAAAAGwCAMAAAD/kMAYAAAAnFBMVEX9/v0AAAAAADkAAGUAAP8AOWUAOY8AZo8AZrU5AAA5ADk5AGU5OQA5OWU5OY85ZmU5ZrU5j9plAABlADllAGVlOQBlOTllOY9lZjllZmVltbVltf2POQCPOTmPOWWPZgCPjzmPtY+P29qP2/21ZgC1Zjm1tWW124+1/rW1/v3ajzna/rXa/tra/v39tWX924/9/rX9/tr9/v3/AADRzdl3AAAANHRSTlP//////////////////////////////////////////////////////////////////wD/9XEwmgAAAAlwSFlzAAALEgAACxIB0t1+/AAAGDFJREFUeJztnQ1/47aRxitH3bO7ra/eJHdt7U2vWd2lq9aSRX3/73YEQVKkiJdnhgCJkeb5JWsJBAfA/AUQbyR/V6lE6XdrZ0BFkwITJgUmTApMmBSYMCkwYVJgwqTAhEmBCZMCEyYFJkwKTJgUmDApMGFSYMKkwIRJgQmTAhMmBSZMCkyYFJgwKTBhUmDCpMCESYEJUznAPr5sNp/eXeE/fA+dNTq6e7V/j0+bh2+ExE9vjkQ8KXdprKNigBlem82j6wAObLd5vfoAigCMajqxigF2fPr0bjxUu+7/NhvjqUMNsK4mNtB4aV8HtM7qY1mnmiMvdWCLvPlQ11YbXH99+EtX4TobrfEmam2htvfb06bj0wa22TEfamN1pd00OWnSaO0MTS+jgoBZGI1HjE9slbMU9+bYrjnwUg1i2aPtkcdrYG1wz6+62OiMWzsth66Cd4EjYO0Z/7ZpdHYGphdSMcCaoje/9doPh9YJxmX1/789vdgq2DddTazah68mxvGpqYj1P6MmsQ+uI7dN7ciGPbXh/drYa442sWzgCFh3sDXd2rmYXkrFALO/fuOCxs3GO+ZHbYA9/NFwODQ/6rb9sU7fb16MUw+N00wtHAHrgxuTjQY2rPFDX2P7VE0sGzitYSZRa7q1czG9lAoCZpvFwU+6a5isp5IC64wf+lawu1Q1sWzg9Bq2aWuxAjOOfaxs49R6aN80UvZKsh80WI2ITWLn1d5GZ7xp/eovI2BdYN/d2W8GzWHfJNp83C2w7jffu87+ii2wQdfCesrZ6WhaVVs5dpdeyuPQq52Nzvil0zEA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" title="plot of chunk Fig2" alt="plot of chunk Fig2" style="display: block; margin: auto;" /></p>
+
+<p>Can we see differences between the segments? Do the segments differ in terms of their average household income and in terms of how often they visit the mall? What else can we say about these segments?</p>
+
+<p>We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. avg(cluster)/avg(population)) and explore a matrix as the following one:</p>
+
+<table border="1" class="data table table-bordered table-condensed">
+  <thead class="thead">
+    <tr>
+      <th></th>
+      <th>Segment 1</th>
+      <th>Segment 2</th>
+      <th>Segment 3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="right">V1</td>
+      <td align="right" style="background-color: rgb(30,255,30)">1.494</td>
+      <td align="right" style="background-color: rgb(190,255,190)">0.4329</td>
+      <td align="right" style="background-color: rgb(118,255,118)">0.9091</td>
+    </tr>
+    <tr>
+      <td align="right">V2</td>
+      <td align="right" style="background-color: rgb(122,255,122)">0.8841</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.7317</td>
+      <td align="right" style="background-color: rgb(40,255,40)">1.423</td>
+    </tr>
+    <tr>
+      <td align="right">V3</td>
+      <td align="right" style="background-color: rgb(26,255,26)">1.519</td>
+      <td align="right" style="background-color: rgb(185,255,185)">0.4641</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.8439</td>
+    </tr>
+    <tr>
+      <td align="right">V4</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.7622</td>
+      <td align="right" style="background-color: rgb(126,255,126)">0.8537</td>
+      <td align="right" style="background-color: rgb(34,255,34)">1.463</td>
+    </tr>
+    <tr>
+      <td align="right">V5</td>
+      <td align="right" style="background-color: rgb(173,255,173)">0.5435</td>
+      <td align="right" style="background-color: rgb(14,255,14)">1.594</td>
+      <td align="right" style="background-color: rgb(102,255,102)">1.014</td>
+    </tr>
+    <tr>
+      <td align="right">V6</td>
+      <td align="right" style="background-color: rgb(121,255,121)">0.8908</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.7663</td>
+      <td align="right" style="background-color: rgb(47,255,47)">1.379</td>
+    </tr>
+    <tr>
+      <td align="right">Income</td>
+      <td align="right" style="background-color: rgb(58,255,58)">1.304</td>
+      <td align="right" style="background-color: rgb(116,255,116)">0.9239</td>
+      <td align="right" style="background-color: rgb(154,255,154)">0.6703</td>
+    </tr>
+    <tr>
+      <td align="right">Mall.Visits</td>
+      <td align="right" style="background-color: rgb(104,255,104)">1.00</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.3077</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.692</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>The further a ratio is from 1, the more important that attribute is for a segment relative to the total population.</strong></p>
+
+<p>Both the snake plot as well as this matrix of relative values of the profiling attributes for each cluster are some of the many ways to visualize our segments and interpret them. </p>
 
 <h4>Step 8. Assess the robustness of our clusters</h4>
 
-<p>The segmentation process outlined so far can be done with many different approaches, for example:</p>
+<p>The segmentation process outlined so far can be followed with many different approaches, for example:</p>
 
 <ul>
-<li>using different subsets of the original data;</li>
+<li>using different subsets of the original data</li>
 <li>using variations of the original segmentation attributes</li>
 <li>using different distance metrics</li>
 <li>using different segmentation methods</li>
@@ -5394,15 +8076,25 @@ Much like any data analysis, segmentation is an iterative process with many vari
 <li><p>How similar are the profiles of the segments found? Specifically, how similar are the averages of the profiling attributes of the clusters found using different approaches?</p></li>
 </ol>
 
-<p>Remember that we have the cluster memberships of our observations for all cluster methods. We can therefore measure both the total percentage of observations that remain in the same cluster, as well as this percentage for each cluster separately. For example, for the two 3-segments solutions found above (one using Kmeans and the other using Hierarchical Clustering), these percentages are as follows:</p>
+<p>As we can have the cluster memberships of our observations for all clustering methods, we can  measure both the total percentage of observations that remain in the same cluster, as well as this percentage for each cluster separately. For example, for the two 3-segments solutions found above (one using Kmeans and the other using Hierarchical Clustering), these percentages are as follows:</p>
 
+<div class="row">
+<div class="col-md-3">
 <TABLE class='table table-striped table-hover table-bordered'>
-<CAPTION ALIGN="top"> The percentage of observations belonging to the same segment is 75 %. </CAPTION>
-<TR> <TH> Segment 1 </TH> <TH> Segment 2 </TH>  </TR>
-  <TR> <TD align="right"> 88.9 </TD> <TD align="right"> 63.6 </TD> </TR>
+<CAPTION ALIGN="top"> The percentage of observations belonging to the same segment is 100 %. </CAPTION>
+<TR> <TH> Segment 1 </TH> <TH> Segment 2 </TH> <TH> Segment 3 </TH>  </TR>
+  <TR> <TD align="right"> 100.0 </TD> <TD align="right"> 100.0 </TD> <TD align="right"> 100.0 </TD> </TR>
    </TABLE>
 
-<p>Clearly in this case the two segmentation approaches lead to exactly the same segmentation solution, indicating that our segmentation is statistically robust (this is a simple dataset). Moreover, clearly in this case if we were to compare the profiles of the two segmentation solutions they would be the same, since the clusters are exactly the same. </p>
+</div>
+
+<p></div></p>
+
+<p>Clearly using different numbers of clusters may lead to different percentages of overlap (try  for example using 2 clusters): the robustness of our solution may also indicate how many clusters there are in our data - <strong>if any</strong>. However, in general there is no &ldquo;correct percentage of overlap&rdquo;, as this depends on how difficult clustering may be (e.g. consider the case where one clusters time series of asset prices): the robustness of our solution is often &ldquo;relative to other solutions&rdquo;. Moreover:</p>
+
+<blockquote> <p>
+Sound segmentation requires eventually robustness of our decisions across many &ldquo;good&rdquo; clustering approaches used. 
+</p> </blockquote>
 
 <p>Only after a number of such robustness checks, profilings, and interpretations, we can end with our final segmentation. During the segmentation analysis we may need to repeat multiple times the process outlined in this note,  with many variations of the choices we make at each step of the process, before reaching a final solution (if there are indeed segments in our data) - which of course can be revisited at any point in the future. </p>
 
