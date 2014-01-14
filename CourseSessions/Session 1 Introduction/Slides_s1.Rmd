@@ -26,13 +26,13 @@ Introduction to the Tools
   
   
   
-1. <b>Organizational Level:</b> Develop your intuition about identifying data analytics opportunities and their implementation challenges  
+1. <b style="color:#000;">Organizational Level:</b> Develop your intuition about identifying data analytics opportunities and their implementation challenges  
   
   
-2. <b>Project Level:</b> Learn how to approach data analytics projects  
+2. <b style="color:#000;">Project Level:</b> Learn how to approach data analytics projects  
   
   
-3. <b>Analysis Level:</b> Learn how to perform, read, and use key data analytics methods. 
+3. <b style="color:#000;">Analysis Level:</b> Learn how to perform, read, and use key data analytics methods. 
   
 
 ---
@@ -42,7 +42,7 @@ Introduction to the Tools
 
   
   
-Class Group Project (one):  	40%
+Class Group Project (one):    40%
 
 Group Assignment (one):		30%
 
@@ -79,7 +79,7 @@ Knowledge management and text mining
   
   
   
-What <b>changes</b> could it potentially imply for an organization?
+What <b style="color:#000;">changes</b> could it potentially imply for an organization?
   
   
 For an industry?
@@ -89,7 +89,7 @@ For an industry?
 
 ## Group Project: Deliverable #1
 
-Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  <b>github pages before the day of sessions 4-5</b>. Delayed reports will cut 20% of the group project grade. 
+Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  <b style="color:#000;">github pages before the day of sessions 4-5</b>. Delayed reports will lose 20% of the group project grade. 
 
 For this report you need to answer the following questions:
 
@@ -179,24 +179,24 @@ By Session 6 you need to have your first draft of the report and slides for your
   
   
   
-<b>Your report and slides need to be public on your github before session 6. </b> 
+<b style="color:#000;">Your report and slides need to be public on your github before session 6. </b> 
 
 ---
 
 ## Some Data Analytics Tools Covered
 
 1. Finding important factors that summarize your data, and visualizing your data: 
-<b>Factor Analysis and Perceptual Maps</b> (Sessions 2 and 3)
+<b style="color:#000;">Factor Analysis and Perceptual Maps</b> (Sessions 2 and 3)
   
   
   
 2. Finding a few clusters of similar data: 
-<b>Cluster Analysis</b> (Sessions 4 and 5) 
+<b style="color:#000;">Cluster Analysis</b> (Sessions 4 and 5) 
   
   
   
 3. Discriminating among and predicting successes vs failures: 
-<b>Logistic Regression and Tree Analyses</b> (Sessions 6 and 7)
+<b style="color:#000;">Logistic Regression and Tree Analysis</b> (Sessions 6 and 7)
 
 
 ---
@@ -207,19 +207,22 @@ By Session 6 you need to have your first draft of the report and slides for your
  See course website for instructions and links to various resources
   
   
-- <b>Github</b>
+- <b style="color:#000;">Great visualization examples</b>
+
+
+- <b style="color:#000;">Github for collaboration</b>
   
   
-- <b>Rstudio</b>
+- <b style="color:#000;">R and Rstudio</b>
   
   
-- <b>Knitr</b>
+- <b style="color:#000;">Knitr and creating nice reports</b>
   
   
-- <b>Slidify</b>
+- <b style="color:#000;">Slidify</b>
   
   
-- <b>Web Application</b>
+- <b style="color:#000;">Customized Data Analytics Web Application Tools</b>
 
 
 ---
@@ -233,8 +236,7 @@ By Session 6 you need to have your first draft of the report and slides for your
 <a href="https://github.com/tevgeniou/Data_Analytics_Case_MarketSegmentation_LuxuryGoods" target="_blank">Segmentation </a> repository, and explore it (e.g. generate reports and slides as well as use the web application)
   
   
-3. Read the Boats case as well as the report and slides you get in your Data_Analytics_Case_MarketSegmentation_LuxuryGoods R project
+3. Read the Boats case as well as the documents in your Data_Analytics_Case_MarketSegmentation_LuxuryGoods R project
   
   
-4. Let Cecile know by email about your groups (3-5 people): we will work in groups next time
-
+4. Let us know by email about your groups if you have not done so yet (3-5 people): we will work in groups next time

@@ -1,6 +1,6 @@
 Data Analytics Course Session (Case): 
 ---------------------------------------------------------
-"Session 2 of INSEAD Big Data Analytics for Business Course: "Introduction to Data Analytics"
+Sessions 2-3 of INSEAD Big Data Analytics for Business Course: "Introduction to Data Analytics
 ---------------------------------------------------------
 
 

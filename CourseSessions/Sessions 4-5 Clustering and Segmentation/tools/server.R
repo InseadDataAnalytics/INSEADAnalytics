@@ -1,205 +1,386 @@
 
+if (0){
+  
+  if (!exists("local_directory")) {  
+    local_directory <- "~/CourseSessions/Sessions 4-5 Clustering and Segmentation"
+    source(paste(local_directory,"R/library.R",sep="/"))
+    source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
+  } 
+}
+
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
+options(rgl.useNULL=TRUE)
+options(scipen = 50)
 
 shinyServer(function(input, output,session) {
   
   ############################################################
-  # STEP 1: Create the place to keep track of all the new variables 
-  # based on the inputs of the user 
+  # STEP 1: Read the data 
+  read_dataset <- reactive({
+    input$datafile_name_coded
+    
+    # First read the pre-loaded file, and if the user loads another one then replace 
+    # ProjectData with the filethe user loads
+    ProjectData <- read.csv(paste("../data", paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+    ProjectData=data.matrix(ProjectData)
+    
+    updateSelectInput(session, "segmentation_attributes_used","Segmentation variables used",  colnames(ProjectData), selected=colnames(ProjectData)[1])
+    updateSelectInput(session, "profile_attributes_used","Profiling variables used",  colnames(ProjectData), selected=colnames(ProjectData)[1])
+    
+    ProjectData
+  })
   
-  new_values<-reactiveValues()  
+  user_inputs <- reactive({
+    input$datafile_name_coded
+    input$segmentation_attributes_used
+    input$profile_attributes_used
+    input$numb_clusters_used
+    input$distance_used
+    input$hclust_method
+    input$kmeans_method
+    input$MIN_VALUE
+    
+    ProjectData = read_dataset()
+    
+    list(ProjectData = read_dataset(), 
+         segmentation_attributes_used = input$segmentation_attributes_used, 
+         profile_attributes_used = input$profile_attributes_used,
+         numb_clusters_used = input$numb_clusters_used,
+         distance_used = input$distance_used,
+         hclust_method = input$hclust_method,
+         kmeans_method = input$kmeans_method,
+         MIN_VALUE = input$MIN_VALUE    
+    )
+  }) 
   
   ############################################################
-  # STEP 2:  Read all the input variables, which are the SAME as in RunStudy.R
-  # Note: When we use these variables we need to take them from input$ and
-  # NOT from new_values$ !
+  # STEP 2: create a "reactive function" as well as an "output" 
+  # for each of the R code chunks in the report/slides to use in the web application. 
+  # These also correspond to the tabs defined in the ui.R file. 
   
+  # The "reactive function" recalculates everything the tab needs whenever any of the inputs 
+  # used (in the left pane of the application) for the calculations in that tab is modified by the user 
+  # The "output" is then passed to the ui.r file to appear on the application page/
+  
+  ########## The Parameters Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  the_parameters_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$segmentation_attributes_used
+    input$profile_attributes_used
+    input$numb_clusters_used
+    input$distance_used
+    input$hclust_method
+    input$kmeans_method
+    input$MIN_VALUE
+    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData 
+    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
+    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    segmentation_attributes_used = all_inputs$segmentation_attributes_used 
+    profile_attributes_used = all_inputs$profile_attributes_used
+    numb_clusters_used = all_inputs$numb_clusters_used
+    distance_used = all_inputs$distance_used
+    hclust_method = all_inputs$hclust_method
+    kmeans_method = all_inputs$kmeans_method
+    MIN_VALUE = all_inputs$MIN_VALUE                    
+    
+    
+    allparameters=c(nrow(ProjectData), ncol(ProjectData),
+                    ncol(ProjectData_segment), ncol(ProjectData_profile),
+                    numb_clusters_used, distance_used,hclust_method,kmeans_method,
+                    segmentation_attributes_used,profile_attributes_used
+    )
+    allparameters<-matrix(allparameters,ncol=1)    
+    theparameter_names <- c("Total number of observations", "Total number of attributes", 
+                            "Number of segmentation attributes used", "Number of profiling attributes used", 
+                            "Number of clusters to get", "Distance Metric", "Hclust Method", "Kmeans Method",
+                            paste("SEGMENTATION Attribute:",1:length(segmentation_attributes_used), sep=" "),
+                            paste("PROFILING Attrbute:",1:length(profile_attributes_used), sep=" ")
+    )
+    if (length(allparameters) == length(theparameter_names))
+      rownames(allparameters)<- theparameter_names
+    colnames(allparameters)<-NULL
+    allparameters<-as.data.frame(allparameters)
+    
+    allparameters
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
   output$parameters<-renderTable({
+    the_parameters_tab()
+  })
+  
+  ########## The Summary Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_summary_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
     
-    inFile <- input$datafile_name
-    if (is.null(inFile))
-      return(NULL)    
-    load(inFile$datapath)
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
     
-    new_values$numb_clusters_used<-reactive({
-      input$numb_factors_used
-    }) 
-    new_values$distance_used<-reactive({
-      input$rotation_used
-    })  
-    new_values$MIN_VALUE<-reactive({
-      input$MIN_VALUE
-    })    
+    my_summary(ProjectData)
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$summary <- renderTable({        
+    t(the_summary_tab())
+  })
+  
+  
+  ########## The hisotgrams Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_histogram_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$var_chosen
     
-    new_values$segmentation_attributes_used<-reactive({
-      eval(parse(text=paste("c(",input$segmentation_attributes_used,")",sep="")))
-    })    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    var_chosen = max(0,min(input$var_chosen,ncol(ProjectData)))
     
-    new_values$profile_attributes_used<-reactive({
-      eval(parse(text=paste("c(",input$profile_attributes_used,")",sep="")))
-    })    
+    ProjectData[,var_chosen,drop=F]
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$histograms <- renderPlot({  
+    data_used = unlist(the_histogram_tab())
+    numb_of_breaks = ifelse(length(unique(data_used)) < 10, length(unique(data_used)), length(data_used)/5)
+    hist(data_used, breaks=numb_of_breaks,main = NULL, xlab=paste("Histogram of Variable: ",colnames(data_used)), ylab="Frequency", cex.lab=1.2, cex.axis=1.2)
+  })
+  
+  
+  ########## The pairwise distances Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_pairwise_dist_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$segmentation_attributes_used
+    input$dist_chosen
+    input$obs_shown
     
-    ############################################################
-    # STEP 3: Create the new dataset that will be used in Step 3, using 
-    # the new inputs. Note that it uses only input$ variables
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
+    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
     
-    new_values$ProjectData <- ProjectData
-    tmp_segmentation_attributes_used<-eval(parse(text=paste("c(",input$segmentation_attributes_used,")",sep="")))  
-    tmp_profile_attributes_used<-eval(parse(text=paste("c(",input$profile_attributes_used,")",sep="")))  
-    new_values$tmp_segmentation_attributes_used <- tmp_segmentation_attributes_used
-    new_values$tmp_profile_attributes_used <- tmp_profile_attributes_used    
+    pairwise_dist=as.matrix(dist(ProjectData_segment,method=input$dist_chosen))
+    pairwise_dist=pairwise_dist*lower.tri(pairwise_dist)+pairwise_dist*diag(pairwise_dist)+10e10*upper.tri(pairwise_dist)
+    pairwise_dist[pairwise_dist==10e10]<- NA
     
-    new_values$ProjectData_segment=new_values$ProjectData[,tmp_segmentation_attributes_used]
-    new_values$ProjectData_profile=new_values$ProjectData[,tmp_profile_attributes_used]
+    pairwise_dist
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$dist_histogram <- renderPlot({  
+    hist(the_pairwise_dist_tab(), main = NULL, 
+         xlab=paste(paste("Histogram of all pairwise Distances for",input$dist_chosen,sep=" "),"distance between observtions",sep=" "), ylab="Frequency")
+  })
+  
+  output$pairwise_dist<-renderTable({
+    the_pairwise_dist_tab()[1:input$obs_shown, 1:input$obs_shown]
+  })  
+  
+  
+  ########## The next few tabs use the same "heavy computation" results for Hclust, so we do these only once
+  
+  the_computations<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$segmentation_attributes_used
+    input$numb_clusters_used
+    input$distance_used
+    input$MIN_VALUE    
+    input$hclust_method
     
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
+    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    distance_used = all_inputs$distance_used
+    numb_clusters_used = all_inputs$numb_clusters_used
+    hclust_method = all_inputs$hclust_method
     
-    ############################################################
-    # STEP 4: Compute all the variables used in the Report and Slides: this
-    # is more or less a "cut-and-paste" from the R chunks of the reports
+    Hierarchical_Cluster_distances<-dist(ProjectData_segment,method=distance_used)
+    Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
     
-    # MOTE: again, for the input variables we must use input$ on the right hand side, 
-    # and not the new_values$ !
-    
-    euclidean_pairwise=as.matrix(dist(head(new_values$ProjectData_segment,5),method="euclidean"))
-    euclidean_pairwise=euclidean_pairwise*lower.tri(euclidean_pairwise)+euclidean_pairwise*diag(euclidean_pairwise)+10e10*upper.tri(euclidean_pairwise)
-    euclidean_pairwise[euclidean_pairwise==10e10]<- NA
-    
-    manhattan_pairwise=as.matrix(dist(head(new_values$ProjectData_segment,5),method="manhattan"))
-    manhattan_pairwise=manhattan_pairwise*lower.tri(manhattan_pairwise)+manhattan_pairwise*diag(manhattan_pairwise)+10e10*upper.tri(manhattan_pairwise)
-    manhattan_pairwise[manhattan_pairwise==10e10]<- NA
-    
-    Pairwise_Distances <- dist(new_values$ProjectData, method = input$distance_used) # distance matrix
-    
-    Hierarchical_Cluster_distances<-dist(new_values$ProjectData_segment,method=input$distance_used)
-    Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method="ward")
-    
-    cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=input$numb_clusters_used)) # cut tree into 3 clusters
+    cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
     cluster_ids_hclust=unique(cluster_memberships_hclust)
-    ProjectData_with_hclust_membership <- cbind(new_values$ProjectData,cluster_memberships_hclust)
-    colnames(ProjectData_with_hclust_membership)<-c(colnames(new_values$ProjectData),"Cluster_Membership")
+    ProjectData_with_hclust_membership <- cbind(ProjectData,cluster_memberships_hclust)
+    colnames(ProjectData_with_hclust_membership)<-c(colnames(ProjectData),"Cluster_Membership")
+    Cluster_Profile_mean=sapply(cluster_ids_hclust,function(i) apply(ProjectData_profile[(cluster_memberships_hclust==i),,drop=F],2,mean))
+    colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids_hclust),sep=" ")
     
-    kmeans_clusters <- kmeans(new_values$ProjectData_segment,centers= input$numb_clusters_used, iter.max=1000, algorithm="Lloyd")
-    ProjectData_with_kmeans_membership <- cbind(new_values$ProjectData,kmeans_clusters$cluster)
-    colnames(ProjectData_with_kmeans_membership)<-c(colnames(new_values$ProjectData),"Cluster_Membership")
+    list(
+      ProjectData_segment = ProjectData_segment,
+      Hierarchical_Cluster = Hierarchical_Cluster,
+      cluster_memberships_hclust = cluster_memberships_hclust,
+      cluster_ids_hclust = cluster_ids_hclust,
+      Cluster_Profile_mean = Cluster_Profile_mean,
+      ProjectData_with_hclust_membership = ProjectData_with_hclust_membership
+    )
+  })
+  
+  ########## The Hcluster related Tabs now
+  
+  output$dendrogram <- renderPlot({  
+    data_used = the_computations()
+    
+    plot(data_used$Hierarchical_Cluster,main = NULL, sub=NULL,labels = 1:nrow(data_used$ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
+    rect.hclust(data_used$Hierarchical_Cluster, k=input$numb_clusters_used, border="red") 
+  })
+  
+  output$dendrogram_heights <- renderPlot({  
+    data_used = the_computations()
+    
+    plot(data_used$Hierarchical_Cluster$height[length(data_used$Hierarchical_Cluster$height):1],type="l")
+  })
+  
+  
+  ########## The  Hcluster Membership Tab  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_Hcluster_member_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$hclust_obs_chosen
+    data_used = the_computations()    
+    
+    hclust_obs_chosen=matrix(data_used$ProjectData_with_hclust_membership[input$hclust_obs_chosen,"Cluster_Membership"],ncol=1)
+    rownames(hclust_obs_chosen)<-"Cluster Membership"
+    colnames(hclust_obs_chosen)<-input$hclust_obs_chosen
+    hclust_obs_chosen
+  })
+  
+  output$hclust_membership<-renderTable({
+    data_used = the_Hcluster_member_tab()
+    data_used    
+  })  
+  
+  
+  ########## The next few tabs use the same "heavy computation" results for kmeans, so we do these only once
+  
+  the_kmeans_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$segmentation_attributes_used
+    input$numb_clusters_used
+    input$kmeans_method
+    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
+    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    numb_clusters_used = all_inputs$numb_clusters_used
+    kmeans_method = all_inputs$kmeans_method
+    
+    kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm=kmeans_method)
+    ProjectData_with_kmeans_membership <- cbind(ProjectData,kmeans_clusters$cluster)
+    colnames(ProjectData_with_kmeans_membership)<-c(colnames(ProjectData),"Cluster_Membership")
     
     cluster_memberships_kmeans <- kmeans_clusters$cluster 
     cluster_ids_kmeans=unique(cluster_memberships_kmeans)
     cluster_memberships=cluster_memberships_kmeans
     cluster_ids = cluster_ids_kmeans
-    Cluster_Profile_mean=sapply(cluster_ids,function(i) apply(new_values$ProjectData_profile[(cluster_memberships==i),],2,mean))
+    Cluster_Profile_mean=sapply(cluster_ids,function(i) apply(ProjectData_profile[(cluster_memberships==i),,drop=F],2,mean))
     colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids),sep=" ")
-    Cluster_Profile_sd=sapply(cluster_ids,function(i) apply(new_values$ProjectData_profile[cluster_memberships==i,],2,sd))
-    colnames(Cluster_Profile_sd)<- paste("Segment",1:length(cluster_ids),sep=" ")
+    Cluster_Profile_sd=sapply(cluster_ids,function(i) apply(ProjectData_profile[cluster_memberships==i,,drop=F],2,sd))
+    colnames(Cluster_Profile_sd)<- paste("Segment",1:length(cluster_ids),sep=" ")  
     
-    ############################################################
-    # STEP 5: Store all new calculated variables in new_values$ so that the tabs 
-    # read them directly. 
-    # NOTE: the tabs below do not do many calculations as they are all done in Step 4
-    
-    new_values$euclidean_pairwise <- euclidean_pairwise
-    new_values$manhattan_pairwise <- manhattan_pairwise
-    new_values$Pairwise_Distances <- Pairwise_Distances
-    new_values$Hierarchical_Cluster <- Hierarchical_Cluster
-    new_values$cluster_memberships_hclust <- cluster_memberships_hclust
-    new_values$cluster_ids_hclust <- cluster_ids_hclust
-    new_values$ProjectData_with_hclust_membership <- ProjectData_with_hclust_membership
-    new_values$kmeans_clusters <- kmeans_clusters
-    new_values$ProjectData_with_kmeans_membership <- ProjectData_with_kmeans_membership
-    new_values$Cluster_Profile_mean <- Cluster_Profile_mean
-    new_values$Cluster_Profile_sd <- Cluster_Profile_sd
-    
-    #############################################################
-    # STEP 5b: Print whatever basic information about the selected data needed. 
-    # THese will show in the first tab of the application (called "parameters")
-    
-    allparameters=c(nrow(new_values$ProjectData), ncol(new_values$ProjectData),
-                    ncol(new_values$ProjectData_segment), ncol(new_values$ProjectData_profile),
-                    input$numb_clusters_used, input$distance_used,
-                    colnames(new_values$ProjectData)[new_values$tmp_segmentation_attributes_used],
-                    colnames(new_values$ProjectData)[new_values$tmp_profile_attributes_used]
+    list(
+      kmeans_clusters = kmeans_clusters,
+      ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership,
+      cluster_memberships_kmeans = cluster_memberships_kmeans,
+      ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership,
+      Cluster_Profile_mean = Cluster_Profile_mean
     )
-    allparameters<-matrix(allparameters,ncol=1)    
-    rownames(allparameters)<-c("Total number of observations", "Total number of attributes", 
-                               "Number of segmentation used", "Number of profiling attributes used", 
-                               "Number of clusters to get", "Distance Metric",
-                               paste("Attrbute Used for Segmentation:",1:length(new_values$tmp_segmentation_attributes_used)),
-                               paste("Attrbute Used for Profiling:",1:length(new_values$tmp_profile_attributes_used))
-    )
-    colnames(allparameters)<-NULL
-    allparameters<-as.data.frame(allparameters)
-    return(allparameters)   
   })
   
-  ############################################################
-  # STEP 6: These are now just the outputs of the various tabs. There
-  # is one output per tab, plot or table or... (type help(renredPlot) for example
-  # to see various options) 
+  ########## The Kmeans related Tabs now
   
-  output$summary<-renderTable({
-    t(summary(new_values$ProjectData))
-  })  
-  
-  output$euclidean_pairwise<-renderTable({
-    new_values$euclidean_pairwise
-  })  
-  
-  output$manhattan_pairwise<-renderTable({
-    new_values$manhattan_pairwise
+  kmeans_membership<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$kmeans_obs_chosen
+    data_used = the_kmeans_tab()    
+    
+    kmeans_obs_chosen=matrix(data_used$ProjectData_with_kmeans_membership[input$kmeans_obs_chosen,"Cluster_Membership"],ncol=1)
+    rownames(kmeans_obs_chosen)<-"Cluster Membership"
+    colnames(kmeans_obs_chosen)<-input$kmeans_obs_chosen
+    kmeans_obs_chosen
   })
-  
-  output$histograms <- renderPlot({  
-    hist(new_values$ProjectData[,input$var_chosen], main = NULL, xlab="Histogram of Variable 1", ylab="Frequency", cex.lab=0.7, cex.axis=0.7)
-  })
-  
-  output$dist_histogram <- renderPlot({  
-    hist(new_values$Pairwise_Distances, main = NULL, 
-         xlab=paste(paste("Histogram of all pairwise histogram of all pairwise Distances for",input$distance_used,sep=" "),"distance between observtions",sep=" "), ylab="Frequency")
-  })
-  
-  output$dendrogram <- renderPlot({  
-    plot(new_values$Hierarchical_Cluster,main = NULL, sub=NULL,labels = 1:nrow(new_values$ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
-    rect.hclust(new_values$Hierarchical_Cluster, k=input$numb_clusters_used, border="red") 
-  })
-  
-  output$dendrogram_heights <- renderPlot({  
-    plot(new_values$Hierarchical_Cluster$height[length(new_values$Hierarchical_Cluster$height):1],type="l")
-  })
-  
-  output$hclust_membership<-renderTable({
-    tmp=matrix(new_values$ProjectData_with_hclust_membership[input$hclust_obs_chosen,"Cluster_Membership"],ncol=1)
-    rownames(tmp)<-"Cluster Membership"
-    colnames(tmp)<-input$hclust_obs_chosen
-    tmp    
-  })  
   
   output$kmeans_membership<-renderTable({
-    tmp=matrix(new_values$ProjectData_with_kmeans_membership[input$kmeans_obs_chosen,"Cluster_Membership"],ncol=1)
-    rownames(tmp)<-"Cluster Membership"
-    colnames(tmp)<-input$kmeans_obs_chosen
-    tmp    
+    data_used = kmeans_membership()
+    data_used    
   })  
   
   output$kmeans_profiling<-renderTable({
+    data_used = the_kmeans_tab()    
     # Must also show the standard deviations...!
-    new_values$Cluster_Profile_mean
+    data_used$Cluster_Profile_mean
   })  
   
   output$snake_plot <- renderPlot({  
-    plot(new_values$Cluster_Profile_mean[,1],type="l")
-    for(i in 2:ncol(new_values$Cluster_Profile_mean)) lines(new_values$Cluster_Profile_mean[,i])
+    input$clust_method_used
+    
+    data_used_kmeans = the_kmeans_tab()    
+    data_used_hclust = the_Hcluster_member_tab()
+    
+    if (input$clust_method_used == "hclust"){ 
+      Cluster_Profile_mean = data_used_hclust$Cluster_Profile_mean
+    } else {
+      Cluster_Profile_mean = data_used_kmeans$Cluster_Profile_mean      
+    }
+    
+    plot(Cluster_Profile_mean[,1],type="l")
+    for(i in 2:ncol(Cluster_Profile_mean)) lines(Cluster_Profile_mean[,i])
   })  
   
+  # Now the report and slides  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
   
-  ############################################################
-  # STEP 7: There are again outputs, but they are "special" one as
-  # they produce the reports and slides. See the internal structure 
-  # for both of them - which is the same for both.
+  the_slides_and_report <-reactive({
+    input$datafile_name_coded
+    input$segmentation_attributes_used
+    input$profile_attributes_used
+    input$numb_clusters_used
+    input$distance_used
+    input$hclust_method
+    input$kmeans_method
+    input$MIN_VALUE
+    
+    all_inputs <- user_inputs()
+    
+    #############################################################
+    # A list of all the (SAME) parameters that the report takes from RunStudy.R
+    list(
+      ProjectData = all_inputs$ProjectData,
+      ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F],
+      ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F],
+      segmentation_attributes_used = all_inputs$segmentation_attributes_used, 
+      profile_attributes_used = all_inputs$profile_attributes_used,
+      numb_clusters_used = all_inputs$numb_clusters_used,
+      distance_used = all_inputs$distance_used,
+      hclust_method = all_inputs$hclust_method,
+      kmeans_method = all_inputs$kmeans_method,
+      MIN_VALUE = all_inputs$MIN_VALUE,
+    )    
+  })
   
   # The new report 
   
   output$report = downloadHandler(
-    filename <- function() {paste(paste('Report_s23',Sys.time() ),'.html')},
+    filename <- function() {paste(paste('Report_s45',Sys.time() ),'.html')},
     
     content = function(file) {
       
@@ -209,12 +390,18 @@ shinyServer(function(input, output,session) {
       
       #############################################################
       # All the (SAME) parameters that the report takes from RunStudy.R
-      ProjectData<-new_values$ProjectData
-      ProjectData_segment<- new_values$ProjectData_segment
-      ProjectData_profile <- new_values$ProjectData_profile
-      numb_clusters_used<-input$numb_clusters_used
-      distance_used <- input$distance_used
-      MIN_VALUE<- input$MIN_VALUE
+      reporting_data<- the_slides_and_report()
+      
+      ProjectData = reporting_data$ProjectData
+      segmentation_attributes_usedreporting_datareporting_data$segmentation_attributes_used
+      profile_attributes_used = input$profile_attributes_used
+      numb_clusters_used = reporting_data$numb_clusters_used
+      distance_used = reporting_data$distance_used
+      hclust_method = reporting_data$hclust_method
+      kmeans_method = reporting_data$kmeans_method
+      MIN_VALUE = reporting_data$MIN_VALUE
+      ProjectData_segment = reporting_data$ProjectData_segment
+      ProjectData_profile = reporting_data$ProjectData_profile            
       #############################################################
       
       if (file.exists(filename.html))
@@ -223,7 +410,8 @@ shinyServer(function(input, output,session) {
       unlink("assets", recursive=TRUE)      
       unlink("figures", recursive=TRUE)      
       
-      file.copy("../doc/Report_s45.rmd",filename.Rmd,overwrite=T)
+      file.copy(paste(local_directory,"doc/Report_s45.Rmd",sep="/"),filename.Rmd,overwrite=T)
+      file.copy(paste(local_directory,"doc/All3.png",sep="/"),"All3.png",overwrite=T)
       out = knit2html(filename.Rmd,quiet=TRUE)
       
       unlink(".cache", recursive=TRUE)      
@@ -237,7 +425,7 @@ shinyServer(function(input, output,session) {
     contentType = 'application/pdf'
   )
   
-  # The new slide 
+  # The new slides 
   
   output$slide = downloadHandler(
     filename <- function() {paste(paste('Slides_s45',Sys.time() ),'.html')},
@@ -250,12 +438,18 @@ shinyServer(function(input, output,session) {
       
       #############################################################
       # All the (SAME) parameters that the report takes from RunStudy.R
-      ProjectData<-new_values$ProjectData
-      ProjectData_segment<- new_values$ProjectData_segment
-      ProjectData_profile <- new_values$ProjectData_profile
-      numb_clusters_used<-input$numb_clusters_used
-      distance_used <- input$distance_used
-      MIN_VALUE<- input$MIN_VALUE
+      reporting_data<- the_slides_and_report()
+      
+      ProjectData = reporting_data$ProjectData
+      segmentation_attributes_usedreporting_datareporting_data$segmentation_attributes_used
+      profile_attributes_used = input$profile_attributes_used
+      numb_clusters_used = reporting_data$numb_clusters_used
+      distance_used = reporting_data$distance_used
+      hclust_method = reporting_data$hclust_method
+      kmeans_method = reporting_data$kmeans_method
+      MIN_VALUE = reporting_data$MIN_VALUE
+      ProjectData_segment = reporting_data$ProjectData_segment
+      ProjectData_profile = reporting_data$ProjectData_profile            
       #############################################################
       
       if (file.exists(filename.html))
@@ -264,7 +458,8 @@ shinyServer(function(input, output,session) {
       unlink("assets", recursive=TRUE)    
       unlink("figures", recursive=TRUE)      
       
-      file.copy("../doc/Slides_s45.Rmd",filename.Rmd,overwrite=T)
+      file.copy(paste(local_directory,"doc/Slides_s45.Rmd",sep="/"),filename.Rmd,overwrite=T)
+      file.copy(paste(local_directory,"doc/All3.png",sep="/"),"All3.png",overwrite=T)
       slidify(filename.Rmd)
       
       unlink(".cache", recursive=TRUE)     
@@ -278,5 +473,6 @@ shinyServer(function(input, output,session) {
   )
   
 })
+
 
 

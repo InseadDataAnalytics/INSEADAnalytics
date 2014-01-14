@@ -1,62 +1,76 @@
 # Project Name: "Sessions 2-3 of INSEAD Big Data Analytics for Business Course: "Dimensionality Reduction and Derived Attributes"
 
-rm( list = ls( ) ) # clean up the workspace
+rm(list = ls( )) # clean up the workspace
 
 ######################################################################
 
 # THESE ARE THE PROJECT PARAMETERS NEEDED TO GENERATE THE REPORT
 
-# Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
-datafile_name="DefaultData"
+# When running the case on a local computer, modify this in case you saved the case in a different directory 
+# (e.g. local_directory <- "C:/user/MyDocuments" )
+# type in the Console below help(getwd) and help(setwd) for more information
+local_directory <- "~CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
+local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
 
-# Please ENTER a name that describes the data for this project
+cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
+
+
+# Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
+datafile_name="MBAadmin" # do not add .csv at the end!
+
+# this loads the selected data: DO NOT EDIT THIS LINE
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) # make sure the data are numeric!!!! check your file!
+
+# Please ENTER a name that describes the data for this project (which will appear on the titles of the plots)
 data_name="MBA Applicants"
 
-load(paste("data",datafile_name,sep="/")) # this contains only the matrix ProjectData
-
-# Please ENTER the number of factors to eventually use for this report
-numb_factors_used = 2
 
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
 
+# Please ENTER the selection criterions for the factors to use. 
+# Choices: "eigenvalue", "variance", "manual"
+factor_selectionciterion = "eigenvalue"
+
+# Please ENTER the desired minumum variance explained (in case "variance" is the factor selection criterion used). 
+minimum_variance_explained = 65  # between 1 and 100
+
+# Please ENTER the number of factors to use in case "manual" is the factor selection criterion used
+manual_numb_factors_used = 2
+
 # Please ENTER then original raw attributes to use (default is 1:ncol(ProjectData), namely all of them)
-attributes_used=1:ncol(ProjectData)
+factor_attributes_used= (min(ncol(ProjectData),2)):(min(ncol(ProjectData),30))
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
 
-# Would you like to also start a web application once the report and slides are generated?
-# 1: start application, 0: do not start it. 
-# Note: starting the web application will open a new browser 
-# with the application running
-start_webapp <- 1
+###########################
+# Would you like to also start a web application on YOUR LOCAL COMPUTER once the report and slides are generated?
+# Select start_webapp <- 1 ONLY if you run the case on your local computer
+# NOTE: Running the web application on your LOCAL computer will open a new browser tab
+# Otherwise, when running on a server the application will be automatically available
+# through the ShinyApps directory
 
-######################################################################
+# 1: start application on LOCAL computer, 0: do not start it
+# SELECT 0 if you are running the application on a server 
+# (DEFAULT is 0). 
+start_local_webapp <- 0
 
-ProjectDataFactor=ProjectData[,attributes_used]
-source("R/library.R")
+################################################
+# Now run everything
 
+source(paste(local_directory,"R/library.R", sep="/"))
+source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
+source(paste(local_directory,"R/runcode.R", sep = "/"))
 
-unlink( "TMPdirSlides", recursive = TRUE )      
-dir.create( "TMPdirSlides" )
-setwd( "TMPdirSlides" )
-file.copy( "../doc/Slides_s23.Rmd","Slides_s23.Rmd", overwrite = T )
-file.copy( "../doc/All3.png","All3.png", overwrite = T )
-slidify( "Slides_s23.Rmd" )
-file.copy( 'Slides_s23.html', "../doc/Slides_s23.html", overwrite = T )
-setwd( "../" )
-unlink( "TMPdirSlides", recursive = TRUE )      
+if (start_local_webapp){
+  # first load the data files in the data directory so that the App see them
+  MBAadmin <- read.csv(paste(local_directory, "data/MBAadmin.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boats <- read.csv(paste(local_directory, "data/Boats.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boats=data.matrix(Boats) # this file needs to be converted to "numeric"....
+  
+  # now run the app
+  runApp(paste(local_directory,"tools", sep="/"))  
+}
 
-unlink( "TMPdirReport", recursive = TRUE )      
-dir.create( "TMPdirReport" )
-setwd( "TMPdirReport" )
-file.copy( "../doc/Report_s23.Rmd","Report_s23.Rmd", overwrite = T )
-file.copy( "../doc/All3.png","All3.png", overwrite = T )
-knit2html( 'Report_s23.Rmd', quiet = TRUE )
-file.copy( 'Report_s23.html', "../doc/Report_s23.html", overwrite = T )
-setwd( "../" )
-unlink( "TMPdirReport", recursive = TRUE )      
-
-if (start_webapp)
-  runApp("tools")

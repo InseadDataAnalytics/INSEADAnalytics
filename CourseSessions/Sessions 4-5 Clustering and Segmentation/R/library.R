@@ -35,3 +35,12 @@ corstars <- function(x){
   Rnew <- as.data.frame(Rnew)
   return(Rnew)
 }
+
+
+my_summary <- function(thedata){
+  res = apply(thedata, 2, function(r) c(min(r), quantile(r, 0.25), quantile(r, 0.5), mean(r), quantile(r, 0.75), max(r), sd(r)))
+  colnames(res) <- colnames(thedata)
+  rownames(res) <- c("min", "25%", "median", "mean", "75%", "max", "std")
+  res
+}
+

@@ -1,164 +1,317 @@
-
+if (0){
+  
+  
+  if (!exists("local_directory")) {  
+    local_directory <- "~/CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
+    source(paste(local_directory,"R/library.R",sep="/"))
+    source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
+  } 
+  
+}
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
+options(rgl.useNULL=TRUE)
+options(scipen = 50)
 
 shinyServer(function(input, output,session) {
   
   ############################################################
-  # STEP 1: Create the place to keep track of all the new variables 
-  # based on the inputs of the user 
-  new_values<-reactiveValues()  
+  # STEP 1: Read the data 
+  read_dataset <- reactive({
+    input$datafile_name_coded
+    
+    # First read the pre-loaded file, and if the user loads another one then replace 
+    # ProjectData with the filethe user loads
+    ProjectData <- read.csv(paste("../data", paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+    ProjectData=data.matrix(ProjectData)
+    
+    updateSelectInput(session, "factor_attributes_used","Variables used for Factor Analysis",  colnames(ProjectData), selected=colnames(ProjectData)[1])
+    
+    ProjectData
+  })
+  
+  user_inputs <- reactive({
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$manual_numb_factors_used
+    input$rotation_used
+    input$MIN_VALUE
+    
+    ProjectData = read_dataset()
+    ProjectDataFactor = as.matrix(ProjectData[,input$factor_attributes_used, drop=F])
+    
+    list(ProjectData = read_dataset(), 
+         ProjectDataFactor = ProjectDataFactor,
+         factor_attributes_used = input$factor_attributes_used, 
+         manual_numb_factors_used = max(1,min(input$manual_numb_factors_used,length(input$factor_attributes_used))),
+         rotation_used = input$rotation_used,
+         MIN_VALUE = input$MIN_VALUE
+    )
+  }) 
   
   ############################################################
-  # STEP 2:  Read all the input variables, which are the SAME as in RunStudy.R
-  # Note: When we use these variables we need to take them from input$ and
-  # NOT from new_values$ !
+  # STEP 2: create a "reactive function" as well as an "output" 
+  # for each of the R code chunks in the report/slides to use in the web application. 
+  # These also correspond to the tabs defined in the ui.R file. 
+  
+  # The "reactive function" recalculates everything the tab needs whenever any of the inputs 
+  # used (in the left pane of the application) for the calculations in that tab is modified by the user 
+  # The "output" is then passed to the ui.r file to appear on the application page/
+  
+  ########## The Parameters Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  the_parameters_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$manual_numb_factors_used
+    input$rotation_used
+    input$MIN_VALUE
+    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData 
+    ProjectDataFactor = all_inputs$ProjectDataFactor
+    factor_attributes_used = all_inputs$factor_attributes_used
+    manual_numb_factors_used = all_inputs$manual_numb_factors_used
+    rotation_used = all_inputs$rotation_used
+    MIN_VALUE = all_inputs$MIN_VALUE
+    
+    
+    allparameters=c(nrow(ProjectData), ncol(ProjectData),
+                    ncol(ProjectDataFactor),
+                    manual_numb_factors_used, rotation_used,factor_attributes_used
+    )
+    allparameters<-matrix(allparameters,ncol=1)    
+    theparameter_names <- c("Total number of observations", "Total number of attributes", 
+                            "Number of attrubutes used",  
+                            "Number of factors to get", "Rotation used",
+                            paste("Used Attribute:",1:length(factor_attributes_used), sep=" ")
+    )
+    if (length(allparameters) == length(theparameter_names))
+      rownames(allparameters)<- theparameter_names
+    colnames(allparameters)<-NULL
+    allparameters<-as.data.frame(allparameters)
+    
+    allparameters
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
   output$parameters<-renderTable({
+    the_parameters_tab()
+  })
+  
+  ########## The Summary Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_summary_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
     
-    inFile <- input$datafile_name
-    if (is.null(inFile))
-      return(NULL)    
-    load(inFile$datapath)
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    ProjectDataFactor = all_inputs$ProjectDataFactor
+    factor_attributes_used = all_inputs$factor_attributes_used
     
-    new_values$numb_factors_used<-reactive({
-      input$numb_factors_used
-    }) 
-    new_values$rotation_used<-reactive({
-      input$rotation_used
-    })  
-    new_values$MIN_VALUE<-reactive({
-      input$MIN_VALUE
-    })    
+    my_summary(ProjectDataFactor)
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$summary <- renderTable({        
+    the_summary_tab()
+  })
+  
+  
+  ########## The hisotgrams Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_histogram_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$var_chosen
     
-    new_values$attributes_used<-reactive({
-      eval(parse(text=paste("c(",input$attributes_used,")",sep="")))
-    })    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
     
-    ############################################################
-    # STEP 3: Create the new dataset that will be used in Step 3, using 
-    # the new inputs. Note that it uses only input$ variables
+    var_chosen = max(0,min(input$var_chosen,ncol(ProjectData)))
+    ProjectData[,var_chosen,drop=F]
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$histograms <- renderPlot({  
+    data_used = unlist(the_histogram_tab())
+    numb_of_breaks = ifelse(length(unique(data_used)) < 10, length(unique(data_used)), length(data_used)/5)
+    hist(data_used, breaks=numb_of_breaks,main = NULL, xlab=paste("Histogram of Variable: ",colnames(data_used)), ylab="Frequency", cex.lab=1.2, cex.axis=1.2)
+  })
+  
+  ########## The next few tabs use the same "heavy computation" results for Hclust, so we do these only once
+  
+  the_computations<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)    
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$manual_numb_factors_used
+    input$rotation_used
+    input$unrot_number
+    input$MIN_VALUE
+    input$show_colnames_unrotate    
+    input$show_colnames_rotate
     
-    new_values$ProjectData <- ProjectData
-    tmp_attributes_used<-eval(parse(text=paste("c(",input$attributes_used,")",sep="")))  
-    new_values$tmp_attributes_used <- tmp_attributes_used
-    new_values$ProjectDataFactor <- new_values$ProjectData[,tmp_attributes_used]
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData 
+    ProjectDataFactor = all_inputs$ProjectDataFactor
+    factor_attributes_used = all_inputs$factor_attributes_used
+    manual_numb_factors_used = all_inputs$manual_numb_factors_used
+    rotation_used = all_inputs$rotation_used
+    MIN_VALUE = all_inputs$MIN_VALUE
     
-    ############################################################
-    # STEP 4: Compute all the variables used in the Report and Slides: this
-    # is more or less a "cut-and-paste" from the R chunks of the reports
+
+    unrot_number = max(1, min(input$unrot_number, length(factor_attributes_used)))
+
+    correl<-cor(ProjectDataFactor)
     
-    # MOTE: again, for the input variables we must use input$ on the right hand side, 
-    # and not the new_values$ !
+    Unrotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none")
+    Unrotated_Factors<-Unrotated_Results$loadings[,1:unrot_number,drop=F]
     
-    correl<-corstars(new_values$ProjectDataFactor)
-    
-    Unrotated_Results<-principal(new_values$ProjectDataFactor, nfactors=ncol(new_values$ProjectDataFactor), rotate="none")
-    Unrotated_Factors<-Unrotated_Results$loadings
     Unrotated_Factors<-as.data.frame(unclass(Unrotated_Factors))
     colnames(Unrotated_Factors)<-paste("Component",1:ncol(Unrotated_Factors),sep=" ")
-    Unrotated_Factors[abs(Unrotated_Factors) < input$MIN_VALUE]<-NA
+    rownames(Unrotated_Factors) <- colnames(ProjectDataFactor)
+
+    if (input$show_colnames_unrotate==0)
+      rownames(Unrotated_Factors)<- NULL
     
-    Variance_Explained_Table_results<-PCA(new_values$ProjectDataFactor, graph=FALSE)
+    Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
     Variance_Explained_Table<-Variance_Explained_Table_results$eig
     
     eigenvalues<-Unrotated_Results$values
-    
-    Rotated_Results<-principal(new_values$ProjectDataFactor, nfactors=ncol(new_values$ProjectDataFactor), rotate=input$rotation_used,score=TRUE)
-    Rotated_Factors<-Rotated_Results$loadings
+
+
+    Rotated_Results<-principal(ProjectDataFactor, nfactors=manual_numb_factors_used, rotate=rotation_used,score=TRUE)
+    Rotated_Factors<-round(Rotated_Results$loadings,2)
     Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
     colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
     
-    Rotated_Factors[abs(Rotated_Factors) < input$MIN_VALUE]<-NA
-    if (sum(eigenvalues>=1) >=1){
-      NEW_ProjectData <- Rotated_Results$scores[,1:sum(eigenvalues>=1),drop=F]
-      colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
-    } else {
-      NEW_ProjectData <- Rotated_Results$scores[,1,drop=F]
-      colnames(NEW_ProjectData)<-"Derived Variable (Factor) eigenvalue <1"
-    }
+    sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+    Rotated_Factors <- Rotated_Factors[sorted_rows,]
     
-    ############################################################
-    # STEP 5: Store all new calculated variables in new_values$ so that the tabs 
-    # read them directly. 
-    # NOTE: the tabs below do not do many calculations as they are all done in Step 4
+    Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+    colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+    rownames(Rotated_Factors) <- colnames(ProjectDataFactor)
+
+    if (input$show_colnames_rotate==0)
+      rownames(Rotated_Factors)<- NULL
     
-    new_values$correl <- correl
-    new_values$Unrotated_Results <- Unrotated_Results
-    new_values$Unrotated_Factors <- Unrotated_Factors
-    new_values$Variance_Explained_Table_results <- Variance_Explained_Table_results
-    new_values$Variance_Explained_Table <- Variance_Explained_Table
-    new_values$eigenvalues <- eigenvalues
-    new_values$Rotated_Results <- Rotated_Results
-    new_values$Rotated_Factors <- Rotated_Factors
-    new_values$NEW_ProjectData <- NEW_ProjectData
+    NEW_ProjectData <- Rotated_Results$scores
+    colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
     
-    #############################################################
-    # STEP 5b: Print whatever basic information about the selected data needed. 
-    # THese will show in the first tab of the application (called "parameters")
-    
-    allparameters=c(nrow(new_values$ProjectData), ncol(new_values$ProjectData),
-                    nrow(new_values$ProjectDataFactor), ncol(new_values$ProjectDataFactor),
-                    input$numb_factors_used, input$rotation_used,
-                    colnames(new_values$ProjectData)[new_values$tmp_attributes_used])
-    allparameters<-matrix(allparameters,ncol=1)    
-    rownames(allparameters)<-c("Total number of observations", "Total number of attributes", 
-                               "Number of observations used", "Number of attributes used", 
-                               "Number of factors", "Rotation",
-                               paste("Attrbute Used for Factors:",1:length(new_values$tmp_attributes_used)))
-    colnames(allparameters)<-NULL
-    allparameters<-as.data.frame(allparameters)
-    return(allparameters)   
-    
+    list( 
+      correl = correl,
+      Unrotated_Results = Unrotated_Results,
+      Unrotated_Factors = Unrotated_Factors,
+      Variance_Explained_Table_results = Variance_Explained_Table_results,
+      Variance_Explained_Table = Variance_Explained_Table,
+      eigenvalues = eigenvalues,
+      Rotated_Results = Rotated_Results,
+      Rotated_Factors = Rotated_Factors,
+      NEW_ProjectData = NEW_ProjectData
+    )
   })
   
-  ############################################################
-  # STEP 6: These are now just the outputs of the various tabs. There
-  # is one output per tab, plot or table or... (type help(renredPlot) for example
-  # to see various options) 
+  # Now get the rest of the tabs
   
-  output$summary<-renderTable({
-    t(summary(new_values$ProjectData))
-  })  
+  the_correlation_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)    
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$show_colnames
+    
+    data_used = the_computations()    
+    the_data = data_used$correl
+    if (input$show_colnames == "0"){
+      colnames(the_data) <- NULL
+      rownames(the_data) <- NULL
+    }
+    round(the_data,2)
+  })
   
-  output$correlation<-renderTable({
-    corstars(new_values$ProjectDataFactor)
-  })  
-  
-  output$Unrotated_Factors<-renderTable({
-    new_values$Unrotated_Factors
+  output$correlation <- renderHeatmap({  
+    round(the_correlation_tab(),2)   
   })
   
   output$Variance_Explained_Table<-renderTable({
-    new_values$Variance_Explained_Table
+    data_used = the_computations()    
+    round(data_used$Variance_Explained_Table,2)
+  })
+    
+  output$Unrotated_Factors<-renderHeatmap({
+
+    data_used = the_computations()        
+    
+    the_data = round(data_used$Unrotated_Factors,2)
+    the_data[abs(the_data) < input$MIN_VALUE] <- 0
+    the_data
   })
   
-  output$Rotated_Factors<-renderTable({
-    new_values$Rotated_Factors
+  output$Rotated_Factors<-renderHeatmap({
+    data_used = the_computations()        
+  
+    the_data = round(data_used$Rotated_Factors,2)
+    the_data[abs(the_data) < input$MIN_VALUE] <- 0
+    the_data
   })
   
   output$scree <- renderPlot({  
-    plot(new_values$eigenvalues)
+    data_used = the_computations()    
+    plot(data_used$eigenvalues, type="l")
   })
   
-  output$NEW_ProjectData<-renderPlot({   
-    NEW_ProjectData <- new_values$NEW_ProjectData
-    if (ncol(NEW_ProjectData)>=2){
-      plot(NEW_ProjectData[,1],NEW_ProjectData[,2], 
-           main="Data Visualization Using the top 2 Derived Attributes (Factors)",
-           xlab="Derived Variable (Factor) 1", 
-           ylab="Derived Variable (Factor) 2")
+  output$NEW_ProjectData<-renderPlot({  
+    input$factor1
+    input$factor
+    data_used = the_computations()    
+    NEW_ProjectData <- data_used$NEW_ProjectData
+    
+    factor1 = max(1,min(input$factor1,ncol(NEW_ProjectData)))
+    factor2 = max(1,min(input$factor2,ncol(NEW_ProjectData)))
+    
+    if (ncol(NEW_ProjectData)>=2 ){
+      plot(NEW_ProjectData[,factor1],NEW_ProjectData[,factor2], 
+           main="Data Visualization Using the Derived Attributes (Factors)",
+           xlab=colnames(NEW_ProjectData)[factor1], 
+           ylab=colnames(NEW_ProjectData)[factor2])
     } else {
-      plot(NEW_ProjectData[,1],ProjectData[,2], 
+      plot(NEW_ProjectData[,1],ProjectData[,1], 
            main="Only 1 Derived Variable: Using Initial Variable",
            xlab="Derived Variable (Factor) 1", 
            ylab="Initial Variable (Factor) 2")    
     }
   })
   
-  ############################################################
-  # STEP 7: There are again outputs, but they are "special" one as
-  # they produce the reports and slides. See the internal structure 
-  # for both of them - which is the same for both.
+  # Now the report and slides  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_slides_and_report <-reactive({
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$manual_numb_factors_used
+    input$rotation_used
+    input$MIN_VALUE
+    
+    all_inputs <- user_inputs()
+    
+    #############################################################
+    # A list of all the (SAME) parameters that the report takes from RunStudy.R
+    list(
+      ProjectData = all_inputs$ProjectData,
+      ProjectDataFactor = all_inputs$ProjectDataFactor,
+      factor_attributes_used = all_inputs$factor_attributes_used,
+      manual_numb_factors_used = all_inputs$manual_numb_factors_used,
+      rotation_used = all_inputs$rotation_used,
+      MIN_VALUE = all_inputs$MIN_VALUE
+    )    
+  })
   
   # The new report 
   
@@ -167,84 +320,92 @@ shinyServer(function(input, output,session) {
     
     content = function(file) {
       
-      filename.Rmd <- paste('Report_s23', 'Rmd', sep=".")
-      filename.md <- paste('Report_s23', 'md', sep=".")
-      filename.html <- paste('Report_s23', 'html', sep=".")
+      filename.Rmd <- paste(local_directory, 'tools/Report_s23.Rmd', sep="/")
+      filename.md <- paste(local_directory, 'tools/Report_s23.md', sep="/")
+      filename.html <- paste(local_directory, 'tools/Report_s23.html', sep="/")
       
       #############################################################
       # All the (SAME) parameters that the report takes from RunStudy.R
-      ProjectData<-new_values$ProjectData
-      ProjectDataFactor<- new_values$ProjectDataFactor
-      numb_factors_used<-input$numb_factors_used
-      rotation_used <- input$rotation_used
-      attributes_used <- new_values$tmp_attributes_used
-      MIN_VALUE<- input$MIN_VALUE
+      reporting_data<- the_slides_and_report()
+      
+      ProjectData = reporting_data$ProjectData
+      ProjectDataFactor = reporting_data$ProjectDataFactor
+      factor_attributes_used = reporting_data$factor_attributes_used
+      manual_numb_factors_used = reporting_data$manual_numb_factors_used
+      rotation_used = reporting_data$rotation_used
+      MIN_VALUE = reporting_data$MIN_VALUE
+      
+      minimum_variance_explained = 65 # it is not used in the app anyway
+      factor_selectionciterion = "manual" # this is manual as the user defines everything via the app
       #############################################################
       
       if (file.exists(filename.html))
         file.remove(filename.html)
-      unlink(".cache", recursive=TRUE)      
-      unlink("assets", recursive=TRUE)      
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       
-      file.copy("../doc/Report_s23.rmd",filename.Rmd,overwrite=T)
-      file.copy("../doc/All3.png","All3.png",overwrite=T)
+      file.copy(paste(local_directory,"doc/Report_s23.Rmd",sep="/"),filename.Rmd,overwrite=T)
       out = knit2html(filename.Rmd,quiet=TRUE)
       
-      unlink(".cache", recursive=TRUE)      
-      unlink("assets", recursive=TRUE)      
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       file.remove(filename.Rmd)
       file.remove(filename.md)
-      file.remove("All3.png")
       
       file.rename(out, file) # move pdf to file for downloading
     },    
     contentType = 'application/pdf'
   )
   
-  # The new slide 
+  # The new slides 
   
   output$slide = downloadHandler(
     filename <- function() {paste(paste('Slides_s23',Sys.time() ),'.html')},
     
     content = function(file) {
       
-      filename.Rmd <- paste('Slides_s23', 'Rmd', sep=".")
-      filename.md <- paste('Slides_s23', 'md', sep=".")
-      filename.html <- paste('Slides_s23', 'html', sep=".")
-      
+      filename.Rmd <- paste(local_directory, 'tools/Slides_s23.Rmd', sep="/")
+      filename.md <- paste(local_directory, 'tools/Slides_s23.md', sep="/")
+      filename.html <- paste(local_directory, 'tools/Slides_s23.html', sep="/")
       #############################################################
       # All the (SAME) parameters that the report takes from RunStudy.R
-      ProjectData<-new_values$ProjectData
-      ProjectDataFactor<- new_values$ProjectDataFactor
-      numb_factors_used<-input$numb_factors_used
-      rotation_used <- input$rotation_used
-      attributes_used <- new_values$tmp_attributes_used
-      MIN_VALUE<- input$MIN_VALUE
+      reporting_data<- the_slides_and_report()
+      
+      ProjectData = reporting_data$ProjectData
+      ProjectDataFactor = reporting_data$ProjectDataFactor
+      factor_attributes_used = reporting_data$factor_attributes_used
+      manual_numb_factors_used = reporting_data$manual_numb_factors_used
+      rotation_used = reporting_data$rotation_used
+      MIN_VALUE = reporting_data$MIN_VALUE
+      
+      minimum_variance_explained = 65 # it is not used in the app anyway
+      factor_selectionciterion = "manual" # this is manual as the user defines everything via the app
       #############################################################
       
       if (file.exists(filename.html))
         file.remove(filename.html)
-      unlink(".cache", recursive=TRUE)     
-      unlink("assets", recursive=TRUE)    
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       
-      file.copy("../doc/Slides_s23.Rmd",filename.Rmd,overwrite=T)
-      file.copy("../doc/All3.png","All3.png",overwrite=T)
+      file.copy(paste(local_directory,"doc/Slides_s23.Rmd",sep="/"),filename.Rmd,overwrite=T)
       slidify(filename.Rmd)
       
-      unlink(".cache", recursive=TRUE)     
-      unlink("assets", recursive=TRUE)    
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       file.remove(filename.Rmd)
       file.remove(filename.md)
-      file.remove("All3.png")
       file.rename(filename.html, file) # move pdf to file for downloading      
     },    
     contentType = 'application/pdf'
   )
   
 })
+
+
+
 
 
