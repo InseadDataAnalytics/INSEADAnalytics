@@ -81,7 +81,7 @@ Which variables are correlated? What do these variables capture?
 
 ---
 
-## Step 1: Confirm the data are metric (interval scale) 
+## Step 1: Confirm the data are metric 
 
 (Pls scroll to see the data)
 

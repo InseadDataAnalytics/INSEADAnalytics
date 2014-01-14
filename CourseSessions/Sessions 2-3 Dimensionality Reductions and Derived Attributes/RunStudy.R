@@ -10,7 +10,7 @@ rm(list = ls( )) # clean up the workspace
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
 local_directory <- "~CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
-local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
+#local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 

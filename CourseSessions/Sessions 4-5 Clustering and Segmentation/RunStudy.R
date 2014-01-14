@@ -10,19 +10,23 @@ rm(list = ls( )) # clean up the workspace
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
-local_directory <- paste(getwd(),"COurseSessions/Sessions 4-5 Clustering and Segmentation", sep="/")
+local_directory <- "~CourseSessions/Sessions 4-5 Clustering and Segmentation"
+local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions 4-5 Clustering and Segmentation"
+
+cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 
 # Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
-datafile_name <- "Mall Visits.csv"
+datafile_name="Mall_Visits" # do not add .csv at the end!
 
-# Please ENTER a name that describes the data for this project
+# this loads the selected data: DO NOT EDIT THIS LINE
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) # make sure the data are numeric!!!! check your file!
+
+# Please ENTER a name that describes the data for this project (which will appear on the titles of the plots)
 data_name="Mall Visits"
 
-# this loads the selected data
-ProjectData <- read.csv(paste("data", datafile_name, sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-
 # Please ENTER the number of clusters to eventually use for this report
-numb_clusters_used = 2
+numb_clusters_used = 3
 
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
 # (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
@@ -30,10 +34,10 @@ numb_clusters_used = 2
 distance_used="euclidean"
 
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
-segmentation_attributes_used=1:ncol(ProjectData)
+segmentation_attributes_used = 2:7
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
-profile_attributes_used=1:ncol(ProjectData)
+profile_attributes_used = 2:ncol(ProjectData)
 
 # Please ENTER the hierarchical clustering method to use (options are:
 # "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
@@ -47,6 +51,7 @@ kmeans_method = "Lloyd"
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
+
 
 
 ###########################
@@ -63,8 +68,17 @@ start_local_webapp <- 0
 
 ################################################
 # Now run everything
-source("R/library.R")
-source("R/runcode.R")
 
-if (start_local_webapp)
-  runApp("tools")
+source(paste(local_directory,"R/library.R", sep="/"))
+source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
+source(paste(local_directory,"R/runcode.R", sep = "/"))
+
+if (start_local_webapp){
+  # first load the data files in the data directory so that the App see them
+  Mall_Visits <- read.csv(paste("data", "Mall_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boats <- read.csv(paste("data", "Boats.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boats=data.matrix(Boats)
+  
+  # now run the app
+  runApp(paste(local_directory,"tools", sep="/"))  
+}
