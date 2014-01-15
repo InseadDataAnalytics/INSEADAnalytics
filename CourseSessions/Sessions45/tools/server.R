@@ -1,5 +1,5 @@
 if (!exists("local_directory")) {  
-  local_directory <- "~/CourseSessions/Sessions 4-5 Clustering and Segmentation"
+  local_directory <- "~/CourseSessions/Sessions45"
   source(paste(local_directory,"R/library.R",sep="/"))
   source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 } 
