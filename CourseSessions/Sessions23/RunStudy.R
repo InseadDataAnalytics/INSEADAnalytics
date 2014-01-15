@@ -61,6 +61,7 @@ max_data_report = 50 # can also chance in server.R
 # SELECT 0 if you are running the application on a server 
 # (DEFAULT is 0). 
 start_local_webapp <- 0
+# NOTE: You need to make sure the shiny library is installing (see below)
 
 ################################################
 # Now run everything
@@ -70,6 +71,12 @@ source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 
 if (start_local_webapp){
+  
+  # MAKE SURE THIS INSTALLS FINE if a local web app is to be use - the local computer needs
+  # to have the shiny library to run the shiny apps
+  if (require(shiny) == FALSE) 
+    install_libraries("shiny")
+  
   # first load the data files in the data directory so that the App see them
   MBAadmin <- read.csv(paste(local_directory, "data/MBAadmin.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
   Boats <- read.csv(paste(local_directory, "data/Boats.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
@@ -79,3 +86,4 @@ if (start_local_webapp){
   runApp(paste(local_directory,"tools", sep="/"))  
 }
 
+  
