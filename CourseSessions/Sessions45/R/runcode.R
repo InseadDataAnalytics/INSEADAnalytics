@@ -1,7 +1,8 @@
 
 
-ProjectData_segment=ProjectData[,segmentation_attributes_used]
-ProjectData_profile=ProjectData[,profile_attributes_used]
+######################################################################
+# generate the report, slides, and if needed start the web application
+
 
 unlink( "TMPdirReport", recursive = TRUE )      
 dir.create( "TMPdirReport" )

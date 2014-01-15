@@ -1,7 +1,7 @@
 
 
-
-ProjectDataFactor=ProjectData[,factor_attributes_used]
+######################################################################
+# generate the report, slides, and if needed start the web application
 
 
 unlink( "TMPdirReport", recursive = TRUE )      

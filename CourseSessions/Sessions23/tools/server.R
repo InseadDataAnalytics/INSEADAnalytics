@@ -1,3 +1,4 @@
+
 if (!exists("local_directory")) {  
   local_directory <- "~/INSEADjan2014/CourseSessions/Sessions23"
   source(paste(local_directory,"R/library.R",sep="/"))
