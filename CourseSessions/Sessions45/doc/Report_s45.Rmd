@@ -468,8 +468,12 @@ colnames(population_average) <- c("Population (AVG)", "Population (SD)")
 cluster_memberships <- cluster_memberships_kmeans
 cluster_ids <-  cluster_ids_kmeans
 Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
+if (ncol(ProjectData_profile) <2)
+  Cluster_Profile_mean=t(Cluster_Profile_mean)
 colnames(Cluster_Profile_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
 Cluster_Profile_sd <- sapply(cluster_ids, function(i) apply(ProjectData_profile[cluster_memberships==i,], 2, sd))
+if (ncol(ProjectData_profile) <2)
+  Cluster_Profile_sd=t(Cluster_Profile_sd)
 colnames(Cluster_Profile_sd)<- paste("Segment (SD)", 1:length(cluster_ids), sep=" ")
 cluster.profile <- cbind (population_average,Cluster_Profile_mean, Cluster_Profile_sd)
 ```
@@ -497,7 +501,9 @@ We can also "visualize" the segments using **snake plots** for each cluster. For
 ```{r Fig2, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
 ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F]
 
-Cluster_Profile_standar_mean <- sapply(cluster_ids, function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ], 2, mean))
+Cluster_Profile_standar_mean <- sapply(cluster_ids, function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
+if (ncol(ProjectData_scaled_profile) < 2)
+  Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
 colnames(Cluster_Profile_standar_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
 
 plot(Cluster_Profile_standar_mean[, 1,drop=F], type="l", col="red", main="Snake plot for each cluster", ylab="mean of cluster", xlab="profiling variables (standardized)",ylim=c(min(Cluster_Profile_standar_mean),max(Cluster_Profile_standar_mean))) 

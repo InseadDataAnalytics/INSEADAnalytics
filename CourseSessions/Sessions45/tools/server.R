@@ -42,15 +42,15 @@ shinyServer(function(input, output,session) {
     
     ProjectData = read_dataset()
     
-    ProjectData_segment=ProjectData[,input$segmentation_attributes_used,drop=F]
-    ProjectData_profile=ProjectData[,input$profile_attributes_used,drop=F]
+    ProjectData_segment = ProjectData[,input$segmentation_attributes_used,drop=F]
+    ProjectData_profile = ProjectData[,input$profile_attributes_used,drop=F]
     
     list(ProjectData = read_dataset(), 
          ProjectData_segment = ProjectData_segment,
          ProjectData_profile = ProjectData_profile,
          segmentation_attributes_used = input$segmentation_attributes_used, 
          profile_attributes_used = input$profile_attributes_used,
-         numb_clusters_used = input$numb_clusters_used,
+         numb_clusters_used = min(nrow(ProjectData_segment), max(2,input$numb_clusters_used)),
          distance_used = input$distance_used,
          hclust_method = input$hclust_method,
          kmeans_method = input$kmeans_method,
@@ -199,7 +199,7 @@ shinyServer(function(input, output,session) {
   
   ########## The next few tabs use the same "heavy computation" results for Hclust, so we do these only once
   
-  the_computations<-reactive({
+  the_hclust_computations<-reactive({
     # list the user inputs the tab depends on (easier to read the code)
     input$datafile_name_coded
     input$segmentation_attributes_used
@@ -220,22 +220,24 @@ shinyServer(function(input, output,session) {
     
     Hierarchical_Cluster_distances<-dist(ProjectData_segment,method=distance_used)
     Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
+
     
-    cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
-    cluster_ids_hclust=unique(cluster_memberships_hclust)
-    ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData)
+    cluster_memberships <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
+    cluster_ids <- unique(cluster_memberships)
+
+    ProjectData_with_hclust_membership <- cbind(cluster_memberships, ProjectData)
     colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData))
-    Cluster_Profile_mean=sapply(cluster_ids_hclust,function(i) {
-      useonly = which((cluster_memberships_hclust==i))
-      apply(ProjectData_profile[useonly,,drop=F],2,mean)
-    })
-    colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids_hclust),sep=" ")
+
+    Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ,drop=F], 2, mean))
+    if (ncol(ProjectData_profile) <2)
+      Cluster_Profile_mean=t(Cluster_Profile_mean)
+    colnames(Cluster_Profile_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
     
     list(
       ProjectData_segment = ProjectData_segment,
       Hierarchical_Cluster = Hierarchical_Cluster,
-      cluster_memberships = cluster_memberships_hclust,
-      cluster_ids = cluster_ids_hclust,
+      cluster_memberships = cluster_memberships,
+      cluster_ids = cluster_ids,
       Cluster_Profile_mean = Cluster_Profile_mean,
       ProjectData_with_hclust_membership = ProjectData_with_hclust_membership
     )
@@ -244,14 +246,14 @@ shinyServer(function(input, output,session) {
   ########## The Hcluster related Tabs now
   
   output$dendrogram <- renderPlot({  
-    data_used = the_computations()
+    data_used = the_hclust_computations()
     
     plot(data_used$Hierarchical_Cluster,main = NULL, sub=NULL,labels = 1:nrow(data_used$ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
     rect.hclust(data_used$Hierarchical_Cluster, k=input$numb_clusters_used, border="red") 
   })
   
   output$dendrogram_heights <- renderPlot({  
-    data_used = the_computations()
+    data_used = the_hclust_computations()
     
     plot(data_used$Hierarchical_Cluster$height[length(data_used$Hierarchical_Cluster$height):1],type="l")
   })
@@ -263,7 +265,7 @@ shinyServer(function(input, output,session) {
   the_Hcluster_member_tab<-reactive({
     # list the user inputs the tab depends on (easier to read the code)
     input$hclust_obs_chosen
-    data_used = the_computations()    
+    data_used = the_hclust_computations()    
     
     hclust_obs_chosen=matrix(data_used$ProjectData_with_hclust_membership[input$hclust_obs_chosen,"Cluster_Membership"],ncol=1)
     rownames(hclust_obs_chosen)<-"Cluster Membership"
@@ -303,19 +305,17 @@ shinyServer(function(input, output,session) {
     ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData)
     colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData))
     
-    cluster_memberships_kmeans <- kmeans_clusters$cluster 
-    cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
+    cluster_memberships <- kmeans_clusters$cluster 
+    cluster_ids <- unique(cluster_memberships)
     
-    cluster_memberships <- cluster_memberships_kmeans
-    cluster_ids <-  cluster_ids_kmeans
-    
-    Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
+    Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ,drop=F], 2, mean))
+    if (ncol(ProjectData_profile) <2)
+      Cluster_Profile_mean=t(Cluster_Profile_mean)
     colnames(Cluster_Profile_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
     
     
     list(
       kmeans_clusters = kmeans_clusters,
-      ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership,
       cluster_memberships = cluster_memberships,
       Cluster_Profile_mean = Cluster_Profile_mean,
       ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership
@@ -357,7 +357,7 @@ shinyServer(function(input, output,session) {
     ProjectData_profile = all_inputs$ProjectData_profile
     
     data_used_kmeans = the_kmeans_tab()    
-    data_used_hclust = the_Hcluster_member_tab()
+    data_used_hclust = the_hclust_computations()
     
     ProjectData_scaled_profile=apply(ProjectData_profile,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
     if (input$clust_method_used == "hclust"){ 
@@ -367,7 +367,9 @@ shinyServer(function(input, output,session) {
     }
     
     cluster_ids = unique(cluster_memberships)
-    Cluster_Profile_standar_mean <- sapply(cluster_ids, function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ], 2, mean))
+    Cluster_Profile_standar_mean <- sapply(cluster_ids, function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop=F], 2, mean))
+    if (ncol(ProjectData_scaled_profile) < 2)
+      Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
     colnames(Cluster_Profile_standar_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
     
     list(Cluster_Profile_standar_mean = Cluster_Profile_standar_mean,
@@ -494,14 +496,14 @@ shinyServer(function(input, output,session) {
         file.remove(filename.html)
       unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
       unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
-      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figure', sep="/"), recursive=TRUE)
       
       file.copy(paste(local_directory,"doc/Slides_s45.Rmd",sep="/"),filename.Rmd,overwrite=T)
       slidify(filename.Rmd)
       
       unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
       unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
-      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figure', sep="/"), recursive=TRUE)
       file.remove(filename.Rmd)
       file.remove(filename.md)
       file.rename(filename.html, file) # move pdf to file for downloading      

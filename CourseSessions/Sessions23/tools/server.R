@@ -388,14 +388,14 @@ shinyServer(function(input, output,session) {
         file.remove(filename.html)
       unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
       unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
-      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figure', sep="/"), recursive=TRUE)
       
       file.copy(paste(local_directory,"doc/Slides_s23.Rmd",sep="/"),filename.Rmd,overwrite=T)
       slidify(filename.Rmd)
       
       unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
       unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
-      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figure', sep="/"), recursive=TRUE)
       file.remove(filename.Rmd)
       file.remove(filename.md)
       file.rename(filename.html, file) # move pdf to file for downloading      
