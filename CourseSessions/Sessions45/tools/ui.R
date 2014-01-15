@@ -20,7 +20,6 @@ shinyUI(pageWithSidebar(
     # STEP 2.1: read the data
     
     HTML("<center><h4>Choose a data file:<h4>"),    
-    HTML("<strong>Do Not Download Report for the Boats Data, it will crash!!<strong>"),    
     HTML("<br>"),
     selectInput('datafile_name_coded', '',
                 c("Mall_Visits","Boats"),multiple = FALSE),
@@ -61,12 +60,20 @@ shinyUI(pageWithSidebar(
     ###########################################################
     # STEP 2.3: buttons to download the new report and new slides 
         
-    HTML("<h4>Download the new HTML report </h4>"),
-    downloadButton('report', label = "Download"),
     HTML("<hr>"),
-    HTML("<h4>Download the new HTML5 slides </h4></center>"),
+    HTML("<h4>Download the new HTML report </h4>"),
+    HTML("<br>"),
+    HTML("<br>"),
+    downloadButton('report', label = "Download"),
+    HTML("<br>"),
+    HTML("<br>"),
+    HTML("<h4>Download the new HTML5 slides </h4>"),
+    HTML("<br>"),
+    HTML("(Only for small Data (not Boats!). Slides are not visible otherwise!)"),
+    HTML("<br>"),
+    HTML("<br>"),
     downloadButton('slide', label = "Download"),
-    HTML("<hr>")
+    HTML("<hr></center>")
   ),
   
   ###########################################################

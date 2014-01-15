@@ -10,8 +10,8 @@ rm(list = ls( )) # clean up the workspace
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
-local_directory <- "~CourseSessions/Sessions45"
-#local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions45"
+local_directory <- "~INSEADjan2014/CourseSessions/Sessions45"
+local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions45"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 
@@ -52,7 +52,8 @@ kmeans_method = "Lloyd"
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
 
-# Please enter the maximum number of observations to show in the report and slides (DEFAULT is 50)
+# Please enter the maximum number of observations to show in the report and slides 
+# (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
 max_data_report = 50 # can also chance in server.R
 
 ###########################

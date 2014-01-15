@@ -125,17 +125,17 @@ Mall.Visits: how often they visit the mall (scale 1-7)
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(ProjectData_segment,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -156,17 +156,17 @@ print(m1,'chart')
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectData_segment),2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -191,9 +191,9 @@ print(m1,'chart')
 ProjectData_segment_scaled=apply(ProjectData_segment,2, function(r) {
   if (sd(r)!=0) { 
     res=(r-mean(r))/sd(r) 
-  } else { 
-    res=0*r; res
-    }
+    } else { 
+      res=0*r; res
+      }
   })
 ```
 
@@ -205,17 +205,17 @@ ProjectData_segment_scaled=apply(ProjectData_segment,2, function(r) {
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectData_segment_scaled),2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -280,10 +280,10 @@ euclidean_pairwise[euclidean_pairwise==10e10] <- NA
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
@@ -311,10 +311,10 @@ manhattan_pairwise[manhattan_pairwise==10e10] <- NA
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
@@ -356,10 +356,10 @@ Manual_Pairwise[Manual_Pairwise == 10e10] <- NA
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
@@ -382,19 +382,25 @@ print(xtable(Manual_Pairwise, caption=paste("Pairwise Distances between the firs
 
 <style>
 .wrapper{
-            height: 40%;
-            width: 800px;
-            overflow: auto;
-          }
+height: 40%;
+width: 800px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:15px;">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, echo=FALSE, error=FALSE, fig.align='center', results='asis'}
-ProjectDataframe = data.frame(ProjectData_segment)
-V1 <- ggplot() + geom_bar(aes(y = ..count.., x = V1),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 1') + theme_grey()
-V2 <- ggplot() + geom_bar(aes (y = ..count.., x = V2),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 2') + theme_grey()
-V3 <- ggplot() + geom_bar(aes (y = ..count.., x = V3),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 3') + theme_grey()
-V4 <- ggplot() + geom_bar(aes (y = ..count.., x = V4),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 4') + theme_grey()
-grid.arrange(V1, V2, V3, V4)
+
+if (0){
+  
+  ProjectDataframe = data.frame(ProjectData_segment[,1:min(4,ncol(ProjectData_segment))])
+  V1 <- ggplot() + geom_bar(aes(y = ..count.., x = V1),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 1') + theme_grey()
+  V2 <- ggplot() + geom_bar(aes (y = ..count.., x = V2),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 2') + theme_grey()
+  V3 <- ggplot() + geom_bar(aes (y = ..count.., x = V3),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 3') + theme_grey()
+  V4 <- ggplot() + geom_bar(aes (y = ..count.., x = V4),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 4') + theme_grey()
+  grid.arrange(V1, V2, V3, V4)
+  
+  }
+
 ```
 </div>
 
@@ -433,10 +439,10 @@ We can plug-and-play (with CARE) this "black box" in our analysis
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
@@ -455,10 +461,10 @@ rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red")
 
 <style>
 .wrapper{
-            height: 40%;
-            width: 800px;
-            overflow: auto;
-          }
+height: 40%;
+width: 800px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:15px;">
 ```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
@@ -480,24 +486,24 @@ print(Line,'chart')
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=3)) # cut tree into 3 clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
-ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData)
-colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData))
+ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData[,1])
+colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData)[1])
 ```
 
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_hclust_membership,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -519,24 +525,24 @@ print(m1,'chart')
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm=kmeans_method)
 
-ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData)
-colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData))
+ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData[,1])
+colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData)[1])
 ```
 
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_kmeans_membership,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -586,17 +592,17 @@ cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 show_data = data.frame(round(cluster.profile,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -616,10 +622,10 @@ print(m1,'chart')
 
 <style>
 .wrapper{
-            height: 160%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 160%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 ```{r Fig2, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
@@ -650,17 +656,17 @@ colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_rati
 
 <style>
 .wrapper{
-            height: 120%;
-            width: 900px;
-            overflow: auto;
-          }
+height: 120%;
+width: 900px;
+overflow: auto;
+}
 </style>
 <div class="wrapper" style="font-size:20px;">
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 show_data = data.frame(round(cluster_profile_ratios,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -734,8 +740,8 @@ print(xtable(per_cluster_observations_overlapping, caption = paste(paste("The pe
 ```
 </div>
 </div>
- <br>
- 
+<br>
+
 How much overlap should we expect across clustering solutions?
 
 

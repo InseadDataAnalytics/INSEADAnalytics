@@ -47,8 +47,6 @@ To make this decision, the committee uses a number of data about the applicants.
 
 Let us assume that this data is converted into a numerical scale from 1-7. For example: a numerical rating may be given to the fellowships based on the prestige and the number of fellowships won. Job experience may be rated on the number of years on the job, with a numerical weighting for the level of the job in the managerial ladder.
 
-This is how the data looks:
-<br>
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 # let's make the data into data.matrix classes so that we can easier visualize them
@@ -56,11 +54,14 @@ ProjectDataFactor = data.matrix(ProjectDataFactor)
 ProjectData = data.matrix(ProjectData)
 ```
 
+This is how the first `r min(max_data_report, nrow(ProjectData))` data looks:
+<br>
+
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectDataFactor,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -139,7 +140,7 @@ The data we use here have the following descriptive statistics:
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectDataFactor),2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -167,12 +168,13 @@ Notice now the summary statistics of the scaled dataset:
 
 <br>
 
+
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 
 show_data = data.frame(round(my_summary(ProjectDatafactor_scaled),2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -221,7 +223,7 @@ UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
 colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
 
 show_data <- UnRotated_Factors 
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -320,7 +322,7 @@ sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)
 Rotated_Factors <- Rotated_Factors[sorted_rows,]
 
 show_data <- Rotated_Factors 
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -340,7 +342,7 @@ colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
 rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
 
 show_data <- Rotated_Factors_thres 
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -373,7 +375,7 @@ The way to represent our observations using the found derived attributes (factor
 
 (**Note:** Sometimes for simplicity we represent each selected factor using one of the original raw attributes, typically the one on which the factor has the highest loading on. Although this is not statistically as accurate, it may help with the interpretation of subsequent analyses.)
 
-For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows:
+For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r min(max_data_report,nrow(Rotated_Results$scores))` observations):
 
 
 <div class="row">
@@ -386,7 +388,7 @@ colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectD
 if (factors_selected >=2){ 
   
   show_data <- as.data.frame(NEW_ProjectData) 
-  show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+  show_data = show_data[1:min(max_data_report,nrow(show_data)),]
   row<-rownames(show_data)
   dfnew<-cbind(row,show_data)
   change<-colnames(dfnew)

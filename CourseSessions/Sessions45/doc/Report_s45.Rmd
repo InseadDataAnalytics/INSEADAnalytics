@@ -83,8 +83,6 @@ Income: the household income of the respondent (in dollars)
 
 Mall.Visits: how often they visit the mall (scale 1-7)
 
-<br>
-Forty people responded to these 6 questions. Here are their responses:
 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
@@ -92,12 +90,15 @@ Forty people responded to these 6 questions. Here are their responses:
 ProjectData = data.matrix(ProjectData)
 ```
 
+<br>
+Forty people responded to these 6 questions. Here are the responses for the first `r min(max_data_report,nrow(ProjectData))` people:
+
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData,2))
 
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
@@ -165,7 +166,7 @@ Our data have the following descriptive statistics:
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectData),2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -202,7 +203,7 @@ Notice now the summary statistics of the scaled dataset:
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 
 show_data = data.frame(round(my_summary(ProjectData_scaled),2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -307,12 +308,18 @@ Having defined what we mean "two observations are similar", the next step is to 
 For example, in our case we can see the histogram of, say, the first 4 variables:
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, echo=FALSE, error=FALSE, fig.align='center', results='asis'}
-ProjectDataframe = data.frame(ProjectData_segment)
-V1 <- ggplot() + geom_bar(aes(y = ..count.., x = V1),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 1') + theme_grey()
-V2 <- ggplot() + geom_bar(aes (y = ..count.., x = V2),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 2') + theme_grey()
-V3 <- ggplot() + geom_bar(aes (y = ..count.., x = V3),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 3') + theme_grey()
-V4 <- ggplot() + geom_bar(aes (y = ..count.., x = V4),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 4') + theme_grey()
-grid.arrange(V1, V2, V3, V4)
+
+if (0){
+  
+  ProjectDataframe = data.frame(ProjectData_segment[,1:min(4,ncol(ProjectData_segment))])
+  V1 <- ggplot() + geom_bar(aes(y = ..count.., x = V1),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 1') + theme_grey()
+  V2 <- ggplot() + geom_bar(aes (y = ..count.., x = V2),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 2') + theme_grey()
+  V3 <- ggplot() + geom_bar(aes (y = ..count.., x = V3),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 3') + theme_grey()
+  V4 <- ggplot() + geom_bar(aes (y = ..count.., x = V4),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 4') + theme_grey()
+  grid.arrange(V1, V2, V3, V4)
+  
+  }
+
 ```
 
 or the histogram of all pairwise distances for the `r distance_used` distance:
@@ -371,14 +378,14 @@ As a rule of thumb, one can select the number of clusters as the "elbow" of this
 Selecting the number of clusters requires a combination of statistical reasoning, judgment, interpretability of the clusters, actionable value of the clusters found, and many other quantitative and qualitative criteria. In practice different numbers of segments should be explored, and the final choice should be made based on both statistical and qualitative criteria. 
 </p> </blockquote>
 
-For now let's consider the `r numb_clusters_used`-segments solution found by the Hierarchical Clustering method (using the `r distance_used` distance and the hclust option `r hclust_method`). We can also see the segment each observation (respondent in this case) belongs to:
+For now let's consider the `r numb_clusters_used`-segments solution found by the Hierarchical Clustering method (using the `r distance_used` distance and the hclust option `r hclust_method`). We can also see the segment each observation (respondent in this case) belongs to for the first `r min(max_data_report,nrow(ProjectData))` people:
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
-ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData)
-colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData))
+ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData[,1])
+colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData)[1])
 ```
 
 
@@ -386,7 +393,7 @@ colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(Pr
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_hclust_membership,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -403,20 +410,21 @@ print(m1,'chart')
 
 As always, much like Hierarchical Clustering can be performed using various distance metrics, so can Kmeans. Moreover, there are variations of Kmeans (e.g. "Hartigan-Wong", "Lloyd", or "MacQueen" - see help(kmeans) in R) one can explore, which are beyond the scope of this note.
 
-Here are the clusters our observations belong to when we select `r numb_clusters_used` clusters and the `r kmeans_method` kmeans method:
+Here are the clusters our observations belong to when we select `r numb_clusters_used` clusters and the `r kmeans_method` kmeans method, for the first `r min(max_data_report,nrow(ProjectData))` people:
+
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm=kmeans_method)
 
-ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData)
-colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData))
+ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData[,1])
+colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData)[1])
 ```
 
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_kmeans_membership,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -471,7 +479,7 @@ cluster.profile <- cbind (population_average,Cluster_Profile_mean, Cluster_Profi
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 show_data = data.frame(round(cluster.profile,2))
-show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
