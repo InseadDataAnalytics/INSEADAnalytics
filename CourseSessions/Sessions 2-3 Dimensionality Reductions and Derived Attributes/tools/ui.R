@@ -29,7 +29,7 @@ shinyUI(pageWithSidebar(
     
     HTML("<hr>"),
     HTML("<h4>Select the variables to use</h4>"),
-    HTML("(<strong>Press 'ctrl' of 'shift'</strong> to select multiple  variables)"),
+    HTML("(<strong>Press 'ctrl' or 'shift'</strong> to select multiple  variables)"),
     HTML("<br>"),
     HTML("<br>"),
     selectInput("factor_attributes_used","Variables used for Factor Analysis",  choices=c("attributes used"),selected=NULL, multiple=TRUE),

@@ -60,6 +60,7 @@ ProjectData = data.matrix(ProjectData)
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectDataFactor,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -138,6 +139,7 @@ The data we use here have the following descriptive statistics:
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectDataFactor),2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -170,6 +172,7 @@ Notice now the summary statistics of the scaled dataset:
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 
 show_data = data.frame(round(my_summary(ProjectDatafactor_scaled),2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -185,7 +188,7 @@ print(m1,'chart')
 As expected all variables have mean 0 and standard deviation 1. 
 
 While this is typically a necessary step, one has to always do it with care: some times you may want your analytics findings to be driven mainly by a few attributes that take large values; other times having attributes with different scales may imply something about those attributes. For example, when students rate their schools on various factors on a 1-7 scale, if the variability is minimal on a certain variable (e.g. satisfaction about the IT infrastructure of the school) but very high on another one (e.g. satisfaction with job placement), then standardization will reduce the real big differences in placement satisfaction and magnify the small differences in IT infrastructure satisfaction. In many such cases one may choose to skip step 2 for some of the raw attributes. Hence standardization is not a necessary data transformation step, and you should use it judiciously. 
- 
+
 
 
 #### Step 3:  Check correlation matrix to see if Factor Analysis makes sense
@@ -218,6 +221,7 @@ UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
 colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
 
 show_data <- UnRotated_Factors 
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -248,7 +252,7 @@ Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
 Variance_Explained_Table<-Variance_Explained_Table_results$eig
 Variance_Explained_Table_copy<-Variance_Explained_Table
 
-  
+
 row=1:nrow(Variance_Explained_Table)
 name<-paste("Component No:",row,sep="")
 Variance_Explained_Table<-cbind(name,Variance_Explained_Table)
@@ -316,6 +320,7 @@ sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)
 Rotated_Factors <- Rotated_Factors[sorted_rows,]
 
 show_data <- Rotated_Factors 
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -335,6 +340,7 @@ colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
 rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
 
 show_data <- Rotated_Factors_thres 
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -380,6 +386,7 @@ colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectD
 if (factors_selected >=2){ 
   
   show_data <- as.data.frame(NEW_ProjectData) 
+  show_data = show_data[1:max(max_data_report,nrow(show_data)),]
   row<-rownames(show_data)
   dfnew<-cbind(row,show_data)
   change<-colnames(dfnew)

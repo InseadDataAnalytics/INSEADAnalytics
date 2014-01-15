@@ -135,6 +135,7 @@ Mall.Visits: how often they visit the mall (scale 1-7)
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(ProjectData_segment,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -165,6 +166,7 @@ print(m1,'chart')
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectData_segment),2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -213,6 +215,7 @@ ProjectData_segment_scaled=apply(ProjectData_segment,2, function(r) {
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectData_segment_scaled),2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -494,6 +497,7 @@ colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(Pr
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_hclust_membership,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -532,6 +536,7 @@ colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(P
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_kmeans_membership,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -591,6 +596,7 @@ cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 show_data = data.frame(round(cluster.profile,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -654,6 +660,7 @@ colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_rati
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 show_data = data.frame(round(cluster_profile_ratios,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)

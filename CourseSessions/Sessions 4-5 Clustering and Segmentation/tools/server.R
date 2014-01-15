@@ -1,17 +1,15 @@
-
-if (0){
-  
-  if (!exists("local_directory")) {  
-    local_directory <- "~/CourseSessions/Sessions 4-5 Clustering and Segmentation"
-    source(paste(local_directory,"R/library.R",sep="/"))
-    source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
-  } 
-}
+if (!exists("local_directory")) {  
+  local_directory <- "~/CourseSessions/Sessions 4-5 Clustering and Segmentation"
+  source(paste(local_directory,"R/library.R",sep="/"))
+  source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
+} 
 
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
 options(rgl.useNULL=TRUE)
 options(scipen = 50)
+
+max_data_report = 50 
 
 shinyServer(function(input, output,session) {
   
@@ -22,7 +20,7 @@ shinyServer(function(input, output,session) {
     
     # First read the pre-loaded file, and if the user loads another one then replace 
     # ProjectData with the filethe user loads
-    ProjectData <- read.csv(paste("../data", paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+    ProjectData <- read.csv(paste(paste(local_directory,"data",sep="/"), paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
     ProjectData=data.matrix(ProjectData)
     
     updateSelectInput(session, "segmentation_attributes_used","Segmentation variables used",  colnames(ProjectData), selected=colnames(ProjectData)[1])
@@ -43,7 +41,12 @@ shinyServer(function(input, output,session) {
     
     ProjectData = read_dataset()
     
+    ProjectData_segment=ProjectData[,input$segmentation_attributes_used,drop=F]
+    ProjectData_profile=ProjectData[,input$profile_attributes_used,drop=F]
+    
     list(ProjectData = read_dataset(), 
+         ProjectData_segment = ProjectData_segment,
+         ProjectData_profile = ProjectData_profile,
          segmentation_attributes_used = input$segmentation_attributes_used, 
          profile_attributes_used = input$profile_attributes_used,
          numb_clusters_used = input$numb_clusters_used,
@@ -79,8 +82,8 @@ shinyServer(function(input, output,session) {
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData 
-    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
-    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    ProjectData_segment = all_inputs$ProjectData_segment
+    ProjectData_profile = all_inputs$ProjectData_profile
     segmentation_attributes_used = all_inputs$segmentation_attributes_used 
     profile_attributes_used = all_inputs$profile_attributes_used
     numb_clusters_used = all_inputs$numb_clusters_used
@@ -172,8 +175,8 @@ shinyServer(function(input, output,session) {
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
-    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
-    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    ProjectData_segment = all_inputs$ProjectData_segment
+    ProjectData_profile = all_inputs$ProjectData_profile
     
     pairwise_dist=as.matrix(dist(ProjectData_segment,method=input$dist_chosen))
     pairwise_dist=pairwise_dist*lower.tri(pairwise_dist)+pairwise_dist*diag(pairwise_dist)+10e10*upper.tri(pairwise_dist)
@@ -203,30 +206,35 @@ shinyServer(function(input, output,session) {
     input$distance_used
     input$MIN_VALUE    
     input$hclust_method
+    input$kmeans_method
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
-    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
-    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    ProjectData_profile = all_inputs$ProjectData_profile
+    ProjectData_segment = all_inputs$ProjectData_segment
     distance_used = all_inputs$distance_used
     numb_clusters_used = all_inputs$numb_clusters_used
     hclust_method = all_inputs$hclust_method
+    kmeans_method = input$kmeans_method
     
     Hierarchical_Cluster_distances<-dist(ProjectData_segment,method=distance_used)
     Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
     
     cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
     cluster_ids_hclust=unique(cluster_memberships_hclust)
-    ProjectData_with_hclust_membership <- cbind(ProjectData,cluster_memberships_hclust)
-    colnames(ProjectData_with_hclust_membership)<-c(colnames(ProjectData),"Cluster_Membership")
-    Cluster_Profile_mean=sapply(cluster_ids_hclust,function(i) apply(ProjectData_profile[(cluster_memberships_hclust==i),,drop=F],2,mean))
+    ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData)
+    colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData))
+    Cluster_Profile_mean=sapply(cluster_ids_hclust,function(i) {
+      useonly = which((cluster_memberships_hclust==i))
+      apply(ProjectData_profile[useonly,,drop=F],2,mean)
+    })
     colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids_hclust),sep=" ")
     
     list(
       ProjectData_segment = ProjectData_segment,
       Hierarchical_Cluster = Hierarchical_Cluster,
-      cluster_memberships_hclust = cluster_memberships_hclust,
-      cluster_ids_hclust = cluster_ids_hclust,
+      cluster_memberships = cluster_memberships_hclust,
+      cluster_ids = cluster_ids_hclust,
       Cluster_Profile_mean = Cluster_Profile_mean,
       ProjectData_with_hclust_membership = ProjectData_with_hclust_membership
     )
@@ -275,34 +283,41 @@ shinyServer(function(input, output,session) {
     input$datafile_name_coded
     input$segmentation_attributes_used
     input$numb_clusters_used
+    input$distance_used
+    input$MIN_VALUE    
+    input$hclust_method
     input$kmeans_method
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
-    ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F]
-    ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F]
+    ProjectData_profile = all_inputs$ProjectData_profile
+    ProjectData_segment = all_inputs$ProjectData_segment
+    distance_used = all_inputs$distance_used
     numb_clusters_used = all_inputs$numb_clusters_used
-    kmeans_method = all_inputs$kmeans_method
+    hclust_method = all_inputs$hclust_method
+    kmeans_method = input$kmeans_method
     
     kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm=kmeans_method)
-    ProjectData_with_kmeans_membership <- cbind(ProjectData,kmeans_clusters$cluster)
-    colnames(ProjectData_with_kmeans_membership)<-c(colnames(ProjectData),"Cluster_Membership")
+    
+    ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData)
+    colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData))
     
     cluster_memberships_kmeans <- kmeans_clusters$cluster 
-    cluster_ids_kmeans=unique(cluster_memberships_kmeans)
-    cluster_memberships=cluster_memberships_kmeans
-    cluster_ids = cluster_ids_kmeans
-    Cluster_Profile_mean=sapply(cluster_ids,function(i) apply(ProjectData_profile[(cluster_memberships==i),,drop=F],2,mean))
-    colnames(Cluster_Profile_mean)<- paste("Segment",1:length(cluster_ids),sep=" ")
-    Cluster_Profile_sd=sapply(cluster_ids,function(i) apply(ProjectData_profile[cluster_memberships==i,,drop=F],2,sd))
-    colnames(Cluster_Profile_sd)<- paste("Segment",1:length(cluster_ids),sep=" ")  
+    cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
+    
+    cluster_memberships <- cluster_memberships_kmeans
+    cluster_ids <-  cluster_ids_kmeans
+    
+    Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
+    colnames(Cluster_Profile_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
+    
     
     list(
       kmeans_clusters = kmeans_clusters,
       ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership,
-      cluster_memberships_kmeans = cluster_memberships_kmeans,
-      ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership,
-      Cluster_Profile_mean = Cluster_Profile_mean
+      cluster_memberships = cluster_memberships,
+      Cluster_Profile_mean = Cluster_Profile_mean,
+      ProjectData_with_kmeans_membership = ProjectData_with_kmeans_membership
     )
   })
   
@@ -330,20 +345,43 @@ shinyServer(function(input, output,session) {
     data_used$Cluster_Profile_mean
   })  
   
-  output$snake_plot <- renderPlot({  
+  
+  ### Now do the snake plot tab. first the reactive
+  
+  snake_plot_tab <- reactive({  
     input$clust_method_used
+    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    ProjectData_profile = all_inputs$ProjectData_profile
     
     data_used_kmeans = the_kmeans_tab()    
     data_used_hclust = the_Hcluster_member_tab()
     
+    ProjectData_scaled_profile=apply(ProjectData_profile,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
     if (input$clust_method_used == "hclust"){ 
-      Cluster_Profile_mean = data_used_hclust$Cluster_Profile_mean
+      cluster_memberships = data_used_hclust$cluster_memberships
     } else {
-      Cluster_Profile_mean = data_used_kmeans$Cluster_Profile_mean      
+      cluster_memberships = data_used_kmeans$cluster_memberships      
     }
     
-    plot(Cluster_Profile_mean[,1],type="l")
-    for(i in 2:ncol(Cluster_Profile_mean)) lines(Cluster_Profile_mean[,i])
+    cluster_ids = unique(cluster_memberships)
+    Cluster_Profile_standar_mean <- sapply(cluster_ids, function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ], 2, mean))
+    colnames(Cluster_Profile_standar_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
+    
+    list(Cluster_Profile_standar_mean = Cluster_Profile_standar_mean,
+         cluster_ids = cluster_ids)
+  })
+  
+  # now pass it to ui.R
+  output$snake_plot <- renderPlot({  
+    data_used=snake_plot_tab()
+    Cluster_Profile_standar_mean = data_used$Cluster_Profile_standar_mean
+    cluster_ids = data_used$cluster_ids
+    
+    plot(Cluster_Profile_standar_mean[, 1,drop=F], type="l", col="red", main="Snake plot for each cluster", ylab="mean of cluster", xlab="profiling variables (standardized)",ylim=c(min(Cluster_Profile_standar_mean),max(Cluster_Profile_standar_mean))) 
+    for(i in 2:ncol(Cluster_Profile_standar_mean))
+      lines(Cluster_Profile_standar_mean[, i], col="blue")
   })  
   
   # Now the report and slides  
@@ -365,15 +403,15 @@ shinyServer(function(input, output,session) {
     # A list of all the (SAME) parameters that the report takes from RunStudy.R
     list(
       ProjectData = all_inputs$ProjectData,
-      ProjectData_segment=ProjectData[,all_inputs$segmentation_attributes_used,drop=F],
-      ProjectData_profile=ProjectData[,all_inputs$profile_attributes_used,drop=F],
+      ProjectData_segment = all_inputs$ProjectData_segment,
+      ProjectData_profile = all_inputs$ProjectData_profile,
       segmentation_attributes_used = all_inputs$segmentation_attributes_used, 
       profile_attributes_used = all_inputs$profile_attributes_used,
       numb_clusters_used = all_inputs$numb_clusters_used,
       distance_used = all_inputs$distance_used,
       hclust_method = all_inputs$hclust_method,
       kmeans_method = all_inputs$kmeans_method,
-      MIN_VALUE = all_inputs$MIN_VALUE,
+      MIN_VALUE = all_inputs$MIN_VALUE
     )    
   })
   
@@ -384,17 +422,17 @@ shinyServer(function(input, output,session) {
     
     content = function(file) {
       
-      filename.Rmd <- paste('Report_s45', 'Rmd', sep=".")
-      filename.md <- paste('Report_s45', 'md', sep=".")
-      filename.html <- paste('Report_s45', 'html', sep=".")
+      filename.Rmd <- paste(local_directory, 'tools/Report_s45.Rmd', sep="/")
+      filename.md <- paste(local_directory, 'tools/Report_s45.md', sep="/")
+      filename.html <- paste(local_directory, 'tools/Report_s45.html', sep="/")
       
       #############################################################
       # All the (SAME) parameters that the report takes from RunStudy.R
       reporting_data<- the_slides_and_report()
       
       ProjectData = reporting_data$ProjectData
-      segmentation_attributes_usedreporting_datareporting_data$segmentation_attributes_used
-      profile_attributes_used = input$profile_attributes_used
+      segmentation_attributes_used = reporting_data$segmentation_attributes_used
+      profile_attributes_used = reporting_data$profile_attributes_used
       numb_clusters_used = reporting_data$numb_clusters_used
       distance_used = reporting_data$distance_used
       hclust_method = reporting_data$hclust_method
@@ -406,17 +444,16 @@ shinyServer(function(input, output,session) {
       
       if (file.exists(filename.html))
         file.remove(filename.html)
-      unlink(".cache", recursive=TRUE)      
-      unlink("assets", recursive=TRUE)      
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       
       file.copy(paste(local_directory,"doc/Report_s45.Rmd",sep="/"),filename.Rmd,overwrite=T)
-      file.copy(paste(local_directory,"doc/All3.png",sep="/"),"All3.png",overwrite=T)
       out = knit2html(filename.Rmd,quiet=TRUE)
       
-      unlink(".cache", recursive=TRUE)      
-      unlink("assets", recursive=TRUE)      
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       file.remove(filename.Rmd)
       file.remove(filename.md)
       
@@ -432,17 +469,17 @@ shinyServer(function(input, output,session) {
     
     content = function(file) {
       
-      filename.Rmd <- paste('Slides_s45', 'Rmd', sep=".")
-      filename.md <- paste('Slides_s45', 'md', sep=".")
-      filename.html <- paste('Slides_s45', 'html', sep=".")
+      filename.Rmd <- paste(local_directory, 'tools/Slides_s45.Rmd', sep="/")
+      filename.md <- paste(local_directory, 'tools/Slides_s45.md', sep="/")
+      filename.html <- paste(local_directory, 'tools/Slides_s45.html', sep="/")
       
       #############################################################
       # All the (SAME) parameters that the report takes from RunStudy.R
       reporting_data<- the_slides_and_report()
       
       ProjectData = reporting_data$ProjectData
-      segmentation_attributes_usedreporting_datareporting_data$segmentation_attributes_used
-      profile_attributes_used = input$profile_attributes_used
+      segmentation_attributes_used = reporting_data$segmentation_attributes_used
+      profile_attributes_used = reporting_data$profile_attributes_used
       numb_clusters_used = reporting_data$numb_clusters_used
       distance_used = reporting_data$distance_used
       hclust_method = reporting_data$hclust_method
@@ -454,17 +491,16 @@ shinyServer(function(input, output,session) {
       
       if (file.exists(filename.html))
         file.remove(filename.html)
-      unlink(".cache", recursive=TRUE)     
-      unlink("assets", recursive=TRUE)    
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       
       file.copy(paste(local_directory,"doc/Slides_s45.Rmd",sep="/"),filename.Rmd,overwrite=T)
-      file.copy(paste(local_directory,"doc/All3.png",sep="/"),"All3.png",overwrite=T)
       slidify(filename.Rmd)
       
-      unlink(".cache", recursive=TRUE)     
-      unlink("assets", recursive=TRUE)    
-      unlink("figures", recursive=TRUE)      
+      unlink(paste(local_directory, 'tools/.cache', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/assets', sep="/"), recursive=TRUE)
+      unlink(paste(local_directory, 'tools/figures', sep="/"), recursive=TRUE)
       file.remove(filename.Rmd)
       file.remove(filename.md)
       file.rename(filename.html, file) # move pdf to file for downloading      
@@ -473,6 +509,5 @@ shinyServer(function(input, output,session) {
   )
   
 })
-
 
 

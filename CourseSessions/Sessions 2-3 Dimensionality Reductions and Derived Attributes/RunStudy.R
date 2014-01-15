@@ -45,6 +45,10 @@ factor_attributes_used= (min(ncol(ProjectData),2)):(min(ncol(ProjectData),30))
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
 
+# Please enter the maximum number of observations to show in the report and slides (DEFAULT is 50)
+max_data_report = 50 # can also chance in server.R
+
+
 ###########################
 # Would you like to also start a web application on YOUR LOCAL COMPUTER once the report and slides are generated?
 # Select start_webapp <- 1 ONLY if you run the case on your local computer

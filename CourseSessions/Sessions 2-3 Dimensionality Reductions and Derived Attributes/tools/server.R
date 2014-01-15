@@ -1,17 +1,16 @@
-if (0){
-  
-  
-  if (!exists("local_directory")) {  
-    local_directory <- "~/CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
-    source(paste(local_directory,"R/library.R",sep="/"))
-    source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
-  } 
-  
-}
+if (!exists("local_directory")) {  
+  local_directory <- "~/CourseSessions/Sessions 2-3 Dimensionality Reductions and Derived Attributes"
+  source(paste(local_directory,"R/library.R",sep="/"))
+  source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
+} 
+
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
 options(rgl.useNULL=TRUE)
 options(scipen = 50)
+
+# Please enter the maximum number of observations to show in the report and slides (DEFAULT is 100)
+max_data_report = 50 
 
 shinyServer(function(input, output,session) {
   
@@ -22,7 +21,7 @@ shinyServer(function(input, output,session) {
     
     # First read the pre-loaded file, and if the user loads another one then replace 
     # ProjectData with the filethe user loads
-    ProjectData <- read.csv(paste("../data", paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+    ProjectData <- read.csv(paste(paste(local_directory,"data",sep="/"), paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
     ProjectData=data.matrix(ProjectData)
     
     updateSelectInput(session, "factor_attributes_used","Variables used for Factor Analysis",  colnames(ProjectData), selected=colnames(ProjectData)[1])
@@ -167,9 +166,9 @@ shinyServer(function(input, output,session) {
     rotation_used = all_inputs$rotation_used
     MIN_VALUE = all_inputs$MIN_VALUE
     
-
+    
     unrot_number = max(1, min(input$unrot_number, length(factor_attributes_used)))
-
+    
     correl<-cor(ProjectDataFactor)
     
     Unrotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none")
@@ -178,7 +177,7 @@ shinyServer(function(input, output,session) {
     Unrotated_Factors<-as.data.frame(unclass(Unrotated_Factors))
     colnames(Unrotated_Factors)<-paste("Component",1:ncol(Unrotated_Factors),sep=" ")
     rownames(Unrotated_Factors) <- colnames(ProjectDataFactor)
-
+    
     if (input$show_colnames_unrotate==0)
       rownames(Unrotated_Factors)<- NULL
     
@@ -186,8 +185,8 @@ shinyServer(function(input, output,session) {
     Variance_Explained_Table<-Variance_Explained_Table_results$eig
     
     eigenvalues<-Unrotated_Results$values
-
-
+    
+    
     Rotated_Results<-principal(ProjectDataFactor, nfactors=manual_numb_factors_used, rotate=rotation_used,score=TRUE)
     Rotated_Factors<-round(Rotated_Results$loadings,2)
     Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
@@ -199,7 +198,7 @@ shinyServer(function(input, output,session) {
     Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
     colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
     rownames(Rotated_Factors) <- colnames(ProjectDataFactor)
-
+    
     if (input$show_colnames_rotate==0)
       rownames(Rotated_Factors)<- NULL
     
@@ -244,9 +243,9 @@ shinyServer(function(input, output,session) {
     data_used = the_computations()    
     round(data_used$Variance_Explained_Table,2)
   })
-    
+  
   output$Unrotated_Factors<-renderHeatmap({
-
+    
     data_used = the_computations()        
     
     the_data = round(data_used$Unrotated_Factors,2)
@@ -256,7 +255,7 @@ shinyServer(function(input, output,session) {
   
   output$Rotated_Factors<-renderHeatmap({
     data_used = the_computations()        
-  
+    
     the_data = round(data_used$Rotated_Factors,2)
     the_data[abs(the_data) < input$MIN_VALUE] <- 0
     the_data

@@ -20,8 +20,10 @@ shinyUI(pageWithSidebar(
     # STEP 2.1: read the data
     
     HTML("<center><h4>Choose a data file:<h4>"),    
+    HTML("<strong>Do Not Download Report for the Boats Data, it will crash!!<strong>"),    
+    HTML("<br>"),
     selectInput('datafile_name_coded', '',
-                c("Mall Visits","Boats", "Coffee"),multiple = FALSE),
+                c("Mall_Visits","Boats"),multiple = FALSE),
     
     ###########################################################
     # STEP 2.2: read the INPUTS. 
@@ -29,7 +31,7 @@ shinyUI(pageWithSidebar(
     
     HTML("<hr>"),
     HTML("<h4>Select the variables to use</h4>"),
-    HTML("(<strong>Press 'ctrl' of 'shift'</strong> to select multiple  variables)"),
+    HTML("(<strong>Press 'ctrl' or 'shift'</strong> to select multiple  variables)"),
     HTML("<br>"),
     HTML("<br>"),
     selectInput("segmentation_attributes_used","Segmentation variables used",  choices=c("Segmentation Variables"),selected=NULL, multiple=TRUE),
@@ -54,10 +56,11 @@ shinyUI(pageWithSidebar(
     HTML("<br>"),
     numericInput("MIN_VALUE", "Select the threshold below which numbers in tables do not appear:", 0.5),
     HTML("<center><hr>"),
+
     
     ###########################################################
     # STEP 2.3: buttons to download the new report and new slides 
-    
+        
     HTML("<h4>Download the new HTML report </h4>"),
     downloadButton('report', label = "Download"),
     HTML("<hr>"),
@@ -108,7 +111,8 @@ shinyUI(pageWithSidebar(
       tabPanel("Kmeans Profiling",
                div(class="span12",tableOutput('kmeans_profiling'))), 
       tabPanel("Snake Plots", 
-               textInput("clust_method_used", "Select cluster method (kmeans or hclust):", "kmeans"),
+               selectInput("clust_method_used", "Select cluster method (kmeans or hclust):", 
+                           choices = c("kmeans","hclust"), selected = "kmeans", multiple=FALSE),
                div(class="span12",plotOutput('snake_plot')))
     )    
   )

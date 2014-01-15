@@ -52,7 +52,8 @@ kmeans_method = "Lloyd"
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
 
-
+# Please enter the maximum number of observations to show in the report and slides (DEFAULT is 50)
+max_data_report = 50 # can also chance in server.R
 
 ###########################
 # Would you like to also start a web application on YOUR LOCAL COMPUTER once the report and slides are generated?
@@ -75,9 +76,9 @@ source(paste(local_directory,"R/runcode.R", sep = "/"))
 
 if (start_local_webapp){
   # first load the data files in the data directory so that the App see them
-  Mall_Visits <- read.csv(paste("data", "Mall_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-  Boats <- read.csv(paste("data", "Boats.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-  Boats=data.matrix(Boats)
+  Mall_Visits <- read.csv(paste(local_directory, "data/Mall_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boats <- read.csv(paste(local_directory, "data/Boats.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boats=data.matrix(Boats) # this file needs to be converted to "numeric"....
   
   # now run the app
   runApp(paste(local_directory,"tools", sep="/"))  

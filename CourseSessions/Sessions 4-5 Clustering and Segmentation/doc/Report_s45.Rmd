@@ -96,6 +96,9 @@ ProjectData = data.matrix(ProjectData)
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData,2))
+
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
+
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -162,6 +165,7 @@ Our data have the following descriptive statistics:
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 show_data = data.frame(round(my_summary(ProjectData),2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -198,6 +202,7 @@ Notice now the summary statistics of the scaled dataset:
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 
 show_data = data.frame(round(my_summary(ProjectData_scaled),2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -370,7 +375,7 @@ For now let's consider the `r numb_clusters_used`-segments solution found by the
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
-cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=3)) # cut tree into 3 clusters
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
 ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData)
 colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData))
@@ -381,6 +386,7 @@ colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(Pr
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_hclust_membership,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -410,6 +416,7 @@ colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(P
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 show_data = data.frame(round(ProjectData_with_kmeans_membership,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -464,6 +471,7 @@ cluster.profile <- cbind (population_average,Cluster_Profile_mean, Cluster_Profi
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 show_data = data.frame(round(cluster.profile,2))
+show_data = show_data[1:max(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
