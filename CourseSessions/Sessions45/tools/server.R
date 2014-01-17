@@ -80,6 +80,7 @@ shinyServer(function(input, output,session) {
     input$hclust_method
     input$kmeans_method
     input$MIN_VALUE
+    input$action_parameters
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData 
@@ -126,6 +127,7 @@ shinyServer(function(input, output,session) {
   the_summary_tab<-reactive({
     # list the user inputs the tab depends on (easier to read the code)
     input$datafile_name_coded
+    input$action_summary
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -147,6 +149,7 @@ shinyServer(function(input, output,session) {
     # list the user inputs the tab depends on (easier to read the code)
     input$datafile_name_coded
     input$var_chosen
+    input$action_histograms
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -173,6 +176,7 @@ shinyServer(function(input, output,session) {
     input$segmentation_attributes_used
     input$dist_chosen
     input$obs_shown
+    input$action_pairwise
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -208,6 +212,10 @@ shinyServer(function(input, output,session) {
     input$MIN_VALUE    
     input$hclust_method
     input$kmeans_method
+    
+    input$action_dendrogram
+    input$action_heights
+    
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -246,6 +254,7 @@ shinyServer(function(input, output,session) {
   ########## The Hcluster related Tabs now
   
   output$dendrogram <- renderPlot({  
+    input$action_dendrogram
     data_used = the_hclust_computations()
     
     plot(data_used$Hierarchical_Cluster,main = NULL, sub=NULL,labels = 1:nrow(data_used$ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
@@ -253,6 +262,7 @@ shinyServer(function(input, output,session) {
   })
   
   output$dendrogram_heights <- renderPlot({  
+    input$action_heights
     data_used = the_hclust_computations()
     
     plot(data_used$Hierarchical_Cluster$height[length(data_used$Hierarchical_Cluster$height):1],type="l")
@@ -265,6 +275,7 @@ shinyServer(function(input, output,session) {
   the_Hcluster_member_tab<-reactive({
     # list the user inputs the tab depends on (easier to read the code)
     input$hclust_obs_chosen
+    input$action_hclustmemb
     data_used = the_hclust_computations()    
     
     hclust_obs_chosen=matrix(data_used$ProjectData_with_hclust_membership[input$hclust_obs_chosen,"Cluster_Membership"],ncol=1)
@@ -290,6 +301,7 @@ shinyServer(function(input, output,session) {
     input$MIN_VALUE    
     input$hclust_method
     input$kmeans_method
+    input$action_kmeansmemb
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -326,6 +338,7 @@ shinyServer(function(input, output,session) {
   
   kmeans_membership<-reactive({
     # list the user inputs the tab depends on (easier to read the code)
+    input$action_kmeansmemb
     input$kmeans_obs_chosen
     data_used = the_kmeans_tab()    
     
@@ -341,6 +354,8 @@ shinyServer(function(input, output,session) {
   })  
   
   output$kmeans_profiling<-renderTable({
+    input$action_profile
+
     data_used = the_kmeans_tab()    
     # Must also show the standard deviations...!
     data_used$Cluster_Profile_mean
@@ -351,6 +366,7 @@ shinyServer(function(input, output,session) {
   
   snake_plot_tab <- reactive({  
     input$clust_method_used
+    input$action_snake
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
