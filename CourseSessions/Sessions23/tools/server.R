@@ -68,6 +68,7 @@ shinyServer(function(input, output,session) {
     input$manual_numb_factors_used
     input$rotation_used
     input$MIN_VALUE
+    input$action_parameters
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData 
@@ -108,6 +109,7 @@ shinyServer(function(input, output,session) {
   the_summary_tab<-reactive({
     # list the user inputs the tab depends on (easier to read the code)
     input$datafile_name_coded
+    input$action_summary
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -131,6 +133,7 @@ shinyServer(function(input, output,session) {
     # list the user inputs the tab depends on (easier to read the code)
     input$datafile_name_coded
     input$var_chosen
+    input$action_histogram
     
     all_inputs <- user_inputs()
     ProjectData = all_inputs$ProjectData
@@ -226,6 +229,7 @@ shinyServer(function(input, output,session) {
     input$datafile_name_coded
     input$factor_attributes_used
     input$show_colnames
+    input$action_correlations
     
     data_used = the_computations()    
     the_data = data_used$correl
@@ -241,11 +245,23 @@ shinyServer(function(input, output,session) {
   })
   
   output$Variance_Explained_Table<-renderTable({
+    input$action_variance
+    
     data_used = the_computations()    
     round(data_used$Variance_Explained_Table,2)
   })
   
+  output$scree <- renderPlot({  
+    input$action_scree
+    
+    data_used = the_computations()    
+    plot(data_used$eigenvalues, type="l")
+  })
+  
+  
   output$Unrotated_Factors<-renderHeatmap({
+    input$unrot_number
+    input$action_unrotated
     
     data_used = the_computations()        
     
@@ -255,6 +271,8 @@ shinyServer(function(input, output,session) {
   })
   
   output$Rotated_Factors<-renderHeatmap({
+    input$action_rotated
+    
     data_used = the_computations()        
     
     the_data = round(data_used$Rotated_Factors,2)
@@ -262,14 +280,11 @@ shinyServer(function(input, output,session) {
     the_data
   })
   
-  output$scree <- renderPlot({  
-    data_used = the_computations()    
-    plot(data_used$eigenvalues, type="l")
-  })
-  
   output$NEW_ProjectData<-renderPlot({  
     input$factor1
-    input$factor
+    input$factor2
+    input$action_visual
+    
     data_used = the_computations()    
     NEW_ProjectData <- data_used$NEW_ProjectData
     
@@ -404,7 +419,6 @@ shinyServer(function(input, output,session) {
   )
   
 })
-
 
 
 

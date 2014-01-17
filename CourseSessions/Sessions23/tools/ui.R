@@ -13,7 +13,7 @@ shinyUI(pageWithSidebar(
   sidebarPanel(
     
     HTML("Please reload the web page any time the app crashes. <strong> When it crashes the screen turns into grey.</strong> If it only stops reacting it may be because of 
-       heavy computation or traffic on the server, in which case you should simply wait. This is a test version.</center>"),    
+         heavy computation or traffic on the server, in which case you should simply wait. This is a test version.</center>"),    
     HTML("<hr>"),    
     
     ###########################################################    
@@ -56,7 +56,7 @@ shinyUI(pageWithSidebar(
     HTML("<br>"),
     downloadButton('slide', label = "Download"),
     HTML("<hr></center>")
-  ),
+    ),
   
   ###########################################################
   # STEP 3: The output tabs (these follow more or less the 
@@ -75,31 +75,51 @@ shinyUI(pageWithSidebar(
     
     tabsetPanel(
       tabPanel("Parameters", 
+               actionButton("action_parameters", "Show/Update Results"),
+               HTML("<br>"),
                div(class="span12",tableOutput('parameters'))), 
       tabPanel("Summary", 
+               actionButton("action_summary", "Show/Update Results"),
+               HTML("<br>"),
                div(class="span12",tableOutput('summary'))), 
       tabPanel("Histograms", 
                numericInput("var_chosen", "Select the attribute to see the Histogram for:", 1),
+               actionButton("action_histogram", "Show/Update Results"),
+               HTML("<br>"),
                div(class="span12",plotOutput('histograms'))), 
       tabPanel("Correlations",
                selectInput("show_colnames", "Show column names? (0 or 1):", choices=c("0","1"),selected=1, multiple=FALSE),               
+               actionButton("action_correlations", "Show/Update Results"),
+               HTML("<br>"),
                tableOutput('correlation')),
-      tabPanel("Variance Explained",tableOutput('Variance_Explained_Table')),
-      tabPanel("Scree Plot", plotOutput("scree")), 
+      tabPanel("Variance Explained",
+               actionButton("action_variance", "Show/Update Results"),
+               HTML("<br>"),
+               tableOutput('Variance_Explained_Table')),
+      tabPanel("Scree Plot", 
+               actionButton("action_scree", "Show/Update Results"),
+               HTML("<br>"),
+               plotOutput("scree")), 
       tabPanel("Unotated Factors",
                numericInput("unrot_number", "Select the the number of factors to see:",3),
                selectInput("show_colnames_unrotate", "Show variable names? (0 or 1):", choices=c("0","1"),selected=1, multiple=FALSE),               
+               actionButton("action_unrotated", "Show/Update Results"),
+               HTML("<br>"),
+               HTML("<br>"),
                tableOutput('Unrotated_Factors')),
       tabPanel("Rotated Factors",
                selectInput("show_colnames_rotate", "Show variable names? (0 or 1):", choices=c("0","1"),selected=1, multiple=FALSE),               
+               actionButton("action_rotated", "Show/Update Results"),
+               HTML("<br>"),
                div(class="span12",h5("Showing Factors for the number of factors you selected in the right pane")),
                tableOutput('Rotated_Factors')),
       tabPanel("Factors Visualization", 
                numericInput("factor1", "Select the the x-axis factors to use:",1),
                numericInput("factor2", "Select the the y-axis factors to use:",2),             
+               actionButton("action_visual", "Show/Update Results"),
+               HTML("<br>"),
                plotOutput("NEW_ProjectData")) 
     )
     
   )
 ))
-
