@@ -6,8 +6,7 @@ rm(list = ls()) # clean up the workspace
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
-local_directory <- "~/CourseSessions/Session 1 Introduction" 
-local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Session 1 Introduction"
+local_directory <- "~/INSEADjan2014/CourseSessions/Session1"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 
