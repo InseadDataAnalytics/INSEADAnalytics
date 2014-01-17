@@ -12,12 +12,14 @@ shinyUI(pageWithSidebar(
   
   sidebarPanel(
     
-    HTML("Please reload the web page any time the app crashes. <strong> When it crashes the screen turns into grey.</strong> If it only stops reacting it may be because of 
-         heavy computation or traffic on the server, in which case you should simply wait. This is a test version.</center>"),    
-    HTML("<hr>"),    
+    HTML("Please reload the web page any time the app crashes. <strong> When it crashes the whole screen turns into grey.</strong> If it only stops reacting it may be because of 
+heavy computation or traffic on the server, in which case you should simply wait. Plots may at times fade: you do <strong>not</strong> 
+         need to reload the app when this happens, simply continue using the app.This is a test version. </h4>"),
     
     ###########################################################    
     # STEP 2.1: read the data
+
+    HTML("<hr>"),    
     
     HTML("<center><h4>Choose a data file:<h4>"),    
     selectInput('datafile_name_coded', '',
