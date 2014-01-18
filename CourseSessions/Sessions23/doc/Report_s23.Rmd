@@ -201,8 +201,8 @@ This is the correlation matrix of the `r length(factor_attributes_used)` origina
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 thecor = round(cor(ProjectDataFactor),2)
-colnames(thecor)<-colnames(thecor)
-rownames(thecor)<-rownames(thecor)
+colnames(thecor)<-colnames(ProjectDataFactor)
+rownames(thecor)<-colnames(ProjectDataFactor)
 ## printing the result in a clean-slate table
 cat(renderHeatmapX(thecor, border=1))
 ```

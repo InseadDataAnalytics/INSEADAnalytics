@@ -1,92 +1,152 @@
 
+if (!exists("local_directory")) {  
+  local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
+  source(paste(local_directory,"R/library.R",sep="/"))
+  source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
+} 
+
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
+options(rgl.useNULL=TRUE)
+options(scipen = 50)
+
+# Please enter the maximum number of observations to show in the report and slides (DEFAULT is 100)
+max_data_report = 50 
 
 shinyServer(function(input, output,session) {
   
   ############################################################
-  # STEP 1: Create the place to keep track of all the new variables 
-  # based on the inputs of the user 
+  # STEP 1: Read the data 
+  read_dataset <- reactive({
+    input$datafile_name_coded
+    
+    # First read the pre-loaded file, and if the user loads another one then replace 
+    # ProjectData with the filethe user loads
+    ProjectData <- read.csv(paste(paste(local_directory,"data",sep="/"), paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+    ProjectData=data.matrix(ProjectData)
+    
+    updateSelectInput(session, "factor_attributes_used","Variables used for Factor Analysis",  colnames(ProjectData), selected=colnames(ProjectData)[1])
+    
+    ProjectData
+  })
   
-  new_values<-reactiveValues()  
+  user_inputs <- reactive({
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$manual_numb_factors_used
+    input$rotation_used
+    input$MIN_VALUE
+    
+    ProjectData = read_dataset()
+    ProjectDataFactor = as.matrix(ProjectData[,input$factor_attributes_used, drop=F])
+    
+    list(ProjectData = read_dataset(), 
+         ProjectDataFactor = ProjectDataFactor,
+         factor_attributes_used = input$factor_attributes_used, 
+         manual_numb_factors_used = max(1,min(input$manual_numb_factors_used,length(input$factor_attributes_used))),
+         rotation_used = input$rotation_used,
+         MIN_VALUE = input$MIN_VALUE
+    )
+  }) 
   
   ############################################################
-  # STEP 2:  Read all the input variables, which are the SAME as in RunStudy.R
-  # Note: When we use these variables we need to take them from input$ and
-  # NOT from new_values$ !
+  # STEP 2: create a "reactive function" as well as an "output" 
+  # for each of the R code chunks in the report/slides to use in the web application. 
+  # These also correspond to the tabs defined in the ui.R file. 
   
-  output$parameters<-renderTable({
+  # The "reactive function" recalculates everything the tab needs whenever any of the inputs 
+  # used (in the left pane of the application) for the calculations in that tab is modified by the user 
+  # The "output" is then passed to the ui.r file to appear on the application page/
+  
+  ########## The Parameters Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  the_parameters_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$factor_attributes_used
+    input$manual_numb_factors_used
+    input$rotation_used
+    input$MIN_VALUE
+    input$action_parameters
     
-    inFile <- input$datafile_name
-    if (is.null(inFile))
-      return(NULL)    
-    load(inFile$datapath)
-    
-    new_values$dependent_variable<-reactive({
-      input$dependent_variable
-    }) 
-    new_values$attributes_used<-reactive({
-      eval(parse(text=paste("c(",input$attributes_used,")",sep="")))
-    })        
-    new_values$estimation_data_percent<-reactive({
-      input$estimation_data_percent
-    })
-    new_values$validation1_data_percent<-reactive({
-      input$validation1_data_percent
-    })    
-    new_values$Probability_Threshold<-reactive({
-      input$Probability_Threshold
-    })    
-    new_values$classification_method<-reactive({
-      input$classification_method
-    })    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData 
+    ProjectDataFactor = all_inputs$ProjectDataFactor
+    factor_attributes_used = all_inputs$factor_attributes_used
+    manual_numb_factors_used = all_inputs$manual_numb_factors_used
+    rotation_used = all_inputs$rotation_used
+    MIN_VALUE = all_inputs$MIN_VALUE
     
     
-    ############################################################
-    # STEP 3: Create the new dataset that will be used in Step 3, using 
-    # the new inputs. Note that it uses only input$ variables
-    
-    new_values$ProjectData <- ProjectData
-    tmp_attributes_used<-eval(parse(text=paste("c(",input$attributes_used,")",sep="")))  
-    new_values$tmp_attributes_used <- tmp_attributes_used
-    
-    new_values$ProjectData_used=new_values$ProjectData[,tmp_attributes_used]    
-    
-    ############################################################
-    # STEP 4: Compute all the variables used in the Report and Slides: this
-    # is more or less a "cut-and-paste" from the R chunks of the reports
-    
-    # MOTE: again, for the input variables we must use input$ on the right hand side, 
-    # and not the new_values$ !
-    
-    
-    ############################################################
-    # STEP 5: Store all new calculated variables in new_values$ so that the tabs 
-    # read them directly. 
-    # NOTE: the tabs below do not do many calculations as they are all done in Step 4
-    
-    new_values$Cluster_Profile_sd <- Cluster_Profile_sd
-    
-    #############################################################
-    # STEP 5b: Print whatever basic information about the selected data needed. 
-    # THese will show in the first tab of the application (called "parameters")
-    
-    allparameters=c(nrow(new_values$ProjectData), ncol(new_values$ProjectData),
-                    ncol(new_values$ProjectData_segment), ncol(new_values$ProjectData_profile),
-                    input$numb_clusters_used, input$distance_used,
-                    colnames(new_values$ProjectData)[new_values$tmp_segmentation_attributes_used],
-                    colnames(new_values$ProjectData)[new_values$tmp_profile_attributes_used]
+    allparameters=c(nrow(ProjectData), ncol(ProjectData),
+                    ncol(ProjectDataFactor),
+                    manual_numb_factors_used, rotation_used,factor_attributes_used
     )
     allparameters<-matrix(allparameters,ncol=1)    
-    rownames(allparameters)<-c("Total number of observations", "Total number of attributes", 
-                               "Number of segmentation used", "Number of profiling attributes used", 
-                               "Number of clusters to get", "Distance Metric",
-                               paste("Attrbute Used for Segmentation:",1:length(new_values$tmp_segmentation_attributes_used)),
-                               paste("Attrbute Used for Profiling:",1:length(new_values$tmp_profile_attributes_used))
+    theparameter_names <- c("Total number of observations", "Total number of attributes", 
+                            "Number of attrubutes used",  
+                            "Number of factors to get", "Rotation used",
+                            paste("Used Attribute:",1:length(factor_attributes_used), sep=" ")
     )
+    if (length(allparameters) == length(theparameter_names))
+      rownames(allparameters)<- theparameter_names
     colnames(allparameters)<-NULL
     allparameters<-as.data.frame(allparameters)
-    return(allparameters)   
+    
+    allparameters
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$parameters<-renderTable({
+    the_parameters_tab()
+  })
+  
+  ########## The Summary Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_summary_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$action_summary
+    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    ProjectDataFactor = all_inputs$ProjectDataFactor
+    factor_attributes_used = all_inputs$factor_attributes_used
+    
+    my_summary(ProjectDataFactor)
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$summary <- renderTable({        
+    the_summary_tab()
+  })
+  
+  
+  ########## The hisotgrams Tab
+  
+  # first the reactive function doing all calculations when the related inputs were modified by the user
+  
+  the_histogram_tab<-reactive({
+    # list the user inputs the tab depends on (easier to read the code)
+    input$datafile_name_coded
+    input$var_chosen
+    input$action_histogram
+    
+    all_inputs <- user_inputs()
+    ProjectData = all_inputs$ProjectData
+    
+    var_chosen = max(0,min(input$var_chosen,ncol(ProjectData)))
+    ProjectData[,var_chosen,drop=F]
+  })
+  
+  # Now pass to ui.R what it needs to display this tab
+  output$histograms <- renderPlot({  
+    data_used = unlist(the_histogram_tab())
+    numb_of_breaks = ifelse(length(unique(data_used)) < 10, length(unique(data_used)), length(data_used)/5)
+    hist(data_used, breaks=numb_of_breaks,main = NULL, xlab=paste("Histogram of Variable: ",colnames(data_used)), ylab="Frequency", cex.lab=1.2, cex.axis=1.2)
   })
   
   ############################################################

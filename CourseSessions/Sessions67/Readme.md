@@ -1,6 +1,6 @@
 Data Analytics Course Session (Case): 
 ---------------------------------------------------------
-"Sessions 6-7 of INSEAD Big Data Analytics for Business Course: "Classification"
+Sessions 6-7 of INSEAD Big Data Analytics for Business Course: Classification
 ---------------------------------------------------------
 
 
@@ -53,6 +53,6 @@ and source this file again. A new report, slides, and (if needed) web applicatio
 
 2. switch to the gh-pages branch (from the *Shell* (under the *Tools* menu), type *git checkout gh-pages*)
 
-3. Once in the gh-pages branch, you can copy the html files from the master branch by typing in the shell file the command *git checkout master doc/Report_s45.html* and *git checkout master doc/Slides_s45.html*. Your report and slides are now available online through gh-pages.
+3. Once in the gh-pages branch, you can copy the html files from the master branch by typing in the shell file the command *git checkout master doc/Report_s67.html* and *git checkout master doc/Slides_s67.html*. Your report and slides are now available online through gh-pages.
 
 4. You should now go back to the master branch (in the *Shell* type *git checkout master*) and delete the 2 html files from the doc directory (before pushing any new material back on your master branch on github).
