@@ -13,7 +13,6 @@ file.copy( 'Report_s67.html', paste(local_directory,"doc/Report_s67.html", sep="
 setwd( "../" )
 unlink( "TMPdirReport", recursive = TRUE )      
 
-
 unlink( "TMPdirSlides", recursive = TRUE )      
 dir.create( "TMPdirSlides" )
 setwd( "TMPdirSlides" )

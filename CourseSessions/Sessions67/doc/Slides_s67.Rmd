@@ -47,32 +47,317 @@ mode : standalone
 - Neural Networks
 - Bayesian methods
 - Support Vector Machines
-… 
+- Deep learning methods
+- ...
 
 ---
 
-## Target Advertisement 
+## Purchase Drivers
 
-Consider a vacation resort that has information on the following variables from a sample of its customers:
+who would be the most likely customers to purchase a boat in the future or to recommend their brand?
 
-1. Visit: Whether they visited (1) or not (0) the resort in the last 2 years
-2. Income: Income of Household
-3. Travel Attitude: Attitude towards travel
-4. Vacation Importance: Importance attached to Vacations
-5. HH Size: Size of Household
-6. HH Age: Age of the Head of the household
-7. Vacation Spending: Amount of money spent on vacations
+What would be the **key purchase drivers** that affect people's decision to purchase or recommend?
 
 ---
 
-## Summary Statistics
+## Some Data
 
-
+<div class="row">
+<div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-print(xtable(head(ProjectData_used,5) ,caption=paste("Sample Data",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+show_data = data.frame(round(ProjectData,2))
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+---
+
+## Summary Statistics: Class 1
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
+show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==1,]),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+---
+
+## Summary Statistics: Class 0
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
+show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==0,]),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+
+---
+
+## Data Splits: Example Split
+
+Estimation Data: `r estimation_data_percent`% of the data
+
+Validation Data: `r validation_data_percent`% of the data
+
+Test Data: `r 100 - estimation_data_percent - validation_data_percent`% of the data
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+if (random_sampling){
+  estimation_data=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
+  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data)
+  validation_data=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
+  } else {
+    estimation_data=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data)
+    validation_data = (tail(estimation_data,1)+1):(tail(estimation_data,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    }
+
+test_data = setdiff(1:nrow(ProjectData), union(estimation_data,validation_data))
+
+estimation_data=ProjectData[estimation_data,]
+validation_data=ProjectData[validation_data,]
+test_data=ProjectData[test_data,]
 ```
 
 ---
 
-## ...
+## Estimation Data: Example Box Plots
 
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+split.screen(c(2, 2))
+screen(1); boxplot(estimation_data[,independent_variables[1]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[1], xlab=dependent_variable)
+screen(2); boxplot(estimation_data[,independent_variables[2]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[2], xlab=dependent_variable)
+screen(3); boxplot(estimation_data[,independent_variables[3]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[3], xlab=dependent_variable)
+screen(4); boxplot(estimation_data[,independent_variables[4]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[4], xlab=dependent_variable)
+```
+
+---
+
+## CART: Classification Trees
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+# just name the variables numerically so that they look ok on the tree plots
+independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
+
+estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
+colnames(estimation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
+colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+test_data_nolabel = cbind(test_data[,dependent_variable], test_data[,independent_variables])
+colnames(test_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+estimation_data_nolabel = data.frame(estimation_data_nolabel)
+validation_data_nolabel = data.frame(validation_data_nolabel)
+test_data_nolabel = data.frame(test_data_nolabel)
+
+estimation_data = data.frame(estimation_data)
+validation_data = data.frame(validation_data)
+test_data = data.frame(test_data)
+
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+formula=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+
+fancyRpartPlot(CART_tree, main=paste("Classification Tree for", data_name,sep=" "))
+```
+
+---
+
+## Another Classification Tree
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
+
+fancyRpartPlot(CART_tree_large, paste("Another classification Tree for", data_name,sep=" "))
+```
+
+---
+
+## KEY QUESTION: Model Complexity
+
+Do we want a "large" or a "small" tree? 
+
+How complex should our classifier be?
+
+---
+
+## Probability Predictions: Validation Data
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# Let's first calculate all probabilites for the estimation, validation, and test data
+estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
+estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
+
+validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
+validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
+
+test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
+test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
+
+
+estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
+estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
+
+validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
+validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
+
+test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
+test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
+
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+Classification_Table_large=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table_large)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
+
+show_data = data.frame(round(Classification_Table,2))
+show_data = show_data[,1:min(max_data_report,ncol(show_data))]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-""
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=140,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+
+```
+
+---
+## Logistic Regression
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables,1),sep=""),sep="~")
+
+logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=estimation_data)
+
+log_coefficients = round(summary(logreg_solution)$coefficients,1)
+print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# Let's get the probabilities for the 3 types of data again
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+
+estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
+validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
+test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+
+```
+
+
+---
+
+## Hit Ratio: Validation Data
+
+---
+
+## Hit Ratio: Estimation Data
+
+---
+
+## Fit versus Prediction
+
+Should the performance of our model be similar in the estimation and validation data? 
+
+How about in our validation data and when we deply the model?
+
+Why should performance be different? Why should it not?
+
+
+---
+
+## Confusion Matrix: Validation Data
+
+---
+
+## ROC Curves: Validation Data
+
+---
+
+## Lift Curves: Validation Data
+
+---
+
+## Profit Matrix
+
+---
+
+## Profit Curves: Validation Data
+
+---
+
+## Hit Ratios: Test Data
+
+---
+
+## Confusion Matrix: Test Data
+
+---
+
+## ROC Curves: Test Data
+
+---
+
+## Lift Curves: Test Data
+
+---
+
+## Profit Curves: Test Data
+
+---
+
+## Observations and Lessons
+
+- ...
+- ...
+- ...
+
+--- 
+
+## Next Class: Class Projects Presentationss

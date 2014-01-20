@@ -12,6 +12,7 @@ rm(list = ls( )) # clean up the workspace
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
 local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
+local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions67"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 datafile_name="Boat_Purchase"
@@ -27,17 +28,26 @@ data_name="Boats Customers"
 dependent_variable="Q18_PurchaseFuture"
 
 # Please ENTER the attributes to use as independent variables (default is 1:ncol(ProjectData), namely all of them)
-attributes_used=2:ncol(ProjectData)
+independent_variables=colnames(ProjectData)[2:15]
 
 # Please ENTER the percentage of data used for estimation
 estimation_data_percent = 80
-validation1_data_percent = 20
+validation_data_percent = 10
+
+# Please enter 0 if you want to "randomly" split the data in estimation and validation/test
+random_sampling = 0
 
 # Please ENTER the probability threshold above which an observations  
 # is predicted as class 1:
 Probability_Threshold=50 # between 1 and 99%
 Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
- 
+
+# CART parameters:
+# PLEASE ENTER THE CART complexity control cp (e.g. 0.001 to 0.02, depending on the data)
+CART_cp = 0.01
+# what to pass to CART.... do not change this line!!!
+CART_control = rpart.control(cp = CART_cp)
+
 # Please enter the maximum number of observations to show in the report and slides 
 # (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
 max_data_report = 50 # can also chance in server.R
@@ -58,8 +68,7 @@ start_local_webapp <- 0
 ################################################
 # Now run everything
 
-validation2_data_percent = 100-estimation_data_percent-validation1_data_percent
-ProjectData_used = ProjectData[,attributes_used]
+test_data_percent = 100-estimation_data_percent-validation_data_percent
 source(paste(local_directory,"R/library.R", sep="/"))
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))

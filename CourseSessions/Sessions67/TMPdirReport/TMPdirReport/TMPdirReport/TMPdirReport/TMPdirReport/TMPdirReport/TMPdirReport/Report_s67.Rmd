@@ -37,7 +37,7 @@ A boating company had become a victim of the crisis in the boating industry. The
 
 The team believed that in order to develop a strategy for North America, they needed a better understanding of their current and potential customers in that market. They believed that they had to build more targeted boats for their most important segments there. To that purpose, the boating company had been commissioned a project for that market. Being a data-friendly company, the decision was made to develop an understanding of their customers in a data-driven way - none of that soft hold-hands-and-discuss stuff. 
 
-The company would like to understand who would be the most likely customers to purchase a boat in the future or to recommend their brand, as well as what would be the **key purchase drivers** that affect people's decision to purchase or recommend. 
+The company would like to understand who would be the most likely customers to purchase a boat in the future or to recommend their brand, as well as what would be the **key purchase drivers** that affect people's decision to visit or re-visit the resort. 
 
 ### The Data
 
@@ -271,10 +271,6 @@ estimation_data_nolabel = data.frame(estimation_data_nolabel)
 validation_data_nolabel = data.frame(validation_data_nolabel)
 test_data_nolabel = data.frame(test_data_nolabel)
 
-estimation_data = data.frame(estimation_data)
-validation_data = data.frame(validation_data)
-test_data = data.frame(test_data)
-
 ```
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
@@ -294,7 +290,7 @@ CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", co
 fancyRpartPlot(CART_tree_large, paste("Another classification Tree for", data_name,sep=" "))
 ```
 
-One can use the percentage of data in each leaf of the tree to have an estimate that an observation (e.g. person) belongs to a given class. Specifically, given a new observation (e.g .person), the tree can be used to understand the leaf this observation would belong to. The **purity of the leaf** can indicate the probability an observation belongs to a class. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the first CART above, is:
+One can use the percentage of data in each leaf of the tree to have an estimate that an observation (e.g. person) belongs to a given class. Specifically, given a new observation (e.g .person), the tree can be used to understand the leaf this observation would belong to. The **purity of the leaf** can indicate the probability am observation belongs to a class. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the first CART above, is:
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 # Let's first calculate all probabilites for the estimation, validation, and test data
@@ -351,7 +347,7 @@ In practice we need to select the **probability threshold** above which we consi
 
 formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables,1),sep=""),sep="~")
 
-logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=estimation_data)
+logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=data.frame(estimation_data))
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
 print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
@@ -362,9 +358,9 @@ Given a set of independent variables, the output of the estimated logistic regre
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 # Let's get the probabilities for the 3 types of data again
-estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
-validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
-test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data_nolabel[,independent_variables_nolabel])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data_nolabel[,independent_variables_nolabel])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data_nolabel[,independent_variables_nolabel])
 
 estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
 validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
@@ -450,7 +446,7 @@ print(xtable(estimation_hit_rates ,caption=paste("Estimation Data Hit Ratios for
 
 The **Maximum Chance Criterion** suggests that the hit rate should exceed the proportion of the class with the largest size. For our validation data the largest group is people who did not visit the resort: `r sum(validation_actual)` out of `r length(validation_actual)` people). Clearly without doing any discriminant analysis, if we classified all individuals into the largest group, then we could get a hit-rate of `r sum(validation_actual)/length(validation_actual)`% without doing any work. This is the Maximum Chance Criterion. Clearly, discriminant analysis should get a hit rate of at least the Maximum Chance Criterion. 
 
-### 2. **Confusion matrix**
+###2. **Confusion matrix**
 
 The confusion matrix shows the percentage of the estimation data that are put in the right group, for each group. For example for the method above with the highest hit rate in the validation data, the confusion matrix for the validation data is:
 
@@ -472,13 +468,17 @@ Remember that each observation is classified in a group by our model according t
 
 The ROC curves for the validation data for both the CARTs above as well as the logistic regression are as follows:
 
+crs$pr <- predict(crs$glm, type="response", newdata=crs$dataset)
+  pred <- prediction(crs$pr, no.miss)
+plot(performance(pred, "tpr", "fpr"), col="#CC0000FF", lty=1, add=FALSE)
+
 ```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
 
 validation_actual_class <- as.numeric(validation_data[,dependent_variable])
 
 # these are done above...
 #validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
-#validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+#validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data_nolabel[,independent_variables_nolabel])
 
 pred_tree <- prediction(validation_Probability_class1_tree, validation_actual_class)
 pred_tree_large <- prediction(validation_Probability_class1_tree_large, validation_actual_class)
@@ -486,12 +486,12 @@ pred_log <- prediction(validation_Probability_class1_log, validation_actual_clas
 
 # XXXX NOT WORKING!!!
 plot(performance(pred_tree, "tpr", "fpr"),  lty=1, add=FALSE, main="Lift Curve")
-#par(new=TRUE)
-#plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
-#par(new=TRUE)
-#plot(performance(pred_log, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
-#grid()
-#par(new=FALSE)
+par(new=TRUE)
+plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
+par(new=TRUE)
+plot(performance(pred_log, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
+grid()
+par(new=FALSE)
 
 ```
 
