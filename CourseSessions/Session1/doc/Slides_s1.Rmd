@@ -5,6 +5,7 @@ author : T. Evgeniou and J. Niessing
 job : INSEAD
 widgets : []
 mode : standalone 
+
 ---
 
 ## Today's Plan
@@ -21,22 +22,6 @@ Introduction to the Tools
 
 ---
 
-## Why this class? Three goals
-  
-  
-  
-  
-1. <b style="color:#000;">Organizational Level:</b> Develop your intuition about identifying data analytics opportunities and their implementation challenges  
-  
-  
-2. <b style="color:#000;">Project Level:</b> Learn how to approach data analytics projects  
-  
-  
-3. <b style="color:#000;">Analysis Level:</b> Learn how to perform, read, and use key data analytics methods. 
-  
-
----
-
 ## Course Grading
 
 
@@ -44,10 +29,9 @@ Introduction to the Tools
   
 Class Group Project (one):    40%
 
-Group Assignment (one):		30%
+Group Assignment (one):  	30%
 
 Class Participation: 			30%
-
 
 ---
 
@@ -70,6 +54,22 @@ Financial modeling
 Knowledge management and text mining
 
 ...
+
+---
+
+
+## Why this class? Three goals
+  
+  
+  
+1. <b style="color:#000;">Organizational Level:</b> Develop your intuition about identifying data analytics opportunities and their implementation challenges  
+  
+  
+2. <b style="color:#000;">Project Level:</b> Learn how to approach data analytics projects  
+  
+  
+3. <b style="color:#000;">Analysis Level:</b> Learn how to perform, read, and use key data analytics methods. 
+  
 
 ---
 
@@ -227,16 +227,15 @@ By Session 6 you need to have your first draft of the report and slides for your
 
 ---
 
-## To Do Before Next Class
+## To Do Before Next Class (in groups if needed)
 
-1. Become familiar with the <i>pull - commit - push</i> github process
-  
-  
-2. Create a new R project on your individual server by pulling the material at the 
-<a href="https://github.com/tevgeniou/Data_Analytics_Case_MarketSegmentation_LuxuryGoods" target="_blank">Segmentation </a> repository, and explore it (e.g. generate reports and slides as well as use the web application)
-  
-  
-3. Read the Boats case as well as the documents in your Data_Analytics_Case_MarketSegmentation_LuxuryGoods R project
-  
-  
-4. Let us know by email about your groups if you have not done so yet (3-5 people): we will work in groups next time
+1. Create a new repository in your github account, and then a new project in your RStudio server linked to that new repository (see <a href="http://inseaddataanalytics.github.io/INSEADjan2014/Technical Instructions_Other.pdf" target="_blank">some technical instructions on the course website) </a>
+
+2. Create a few files in your newly created project in the RStudio of your server (you can start by cut and paste from files in any of the existing course sessions and cases for example)
+
+3. "Fork" the <a href="https://github.com/tevgeniou/Data_Analytics_Case_MarketSegmentation_LuxuryGoods" target="_blank">Segmentation </a> repository into your own github, and explore it in your server's RStudio after creating a new project linked to it (e.g. generate reports and slides as well as use the web application using the RunStudy.R replication process)
+    
+4. Read the Boats case as well as the documents in your Data_Analytics_Case_MarketSegmentation_LuxuryGoods RStudio project or the <a href="http://inseaddataanalytics.github.io/INSEADjan2014/ProjectsMenu.html" target="_blank">projects website </a>
+
+5. Become familiar with the <i>pull - commit - push</i> github process for your OWN new project (NOT the ones forked into your github!)
+
