@@ -42,11 +42,16 @@ random_sampling = 0
 Probability_Threshold=50 # between 1 and 99%
 Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
 
+# Please ENTER the profit/cost values for the correctly and wrong classified data:
+actual_1_predict_1 = 100
+actual_1_predict_0 = -75
+actual_0_predict_1 = -50
+actual_0_predict_0 = 0
+
+
 # CART parameters:
 # PLEASE ENTER THE CART complexity control cp (e.g. 0.001 to 0.02, depending on the data)
 CART_cp = 0.01
-# what to pass to CART.... do not change this line!!!
-CART_control = rpart.control(cp = CART_cp)
 
 # Please enter the maximum number of observations to show in the report and slides 
 # (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
@@ -68,8 +73,13 @@ start_local_webapp <- 0
 ################################################
 # Now run everything
 
+Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predict_0, actual_0_predict_0), ncol=2)
+colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
+rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
 test_data_percent = 100-estimation_data_percent-validation_data_percent
 source(paste(local_directory,"R/library.R", sep="/"))
+# what to pass to CART.... do not change this line!!!
+CART_control = rpart.control(cp = CART_cp)
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 
