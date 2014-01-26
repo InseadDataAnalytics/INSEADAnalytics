@@ -182,11 +182,11 @@ test_data=ProjectData[test_data,]
 ## Estimation Data: Example Box Plots
 <style="width=1100px;">
 ```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis',fig.height=7,fig.width=14}
-split.screen(c(2, 2))
-screen(1); boxplot(estimation_data[,independent_variables[1]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[1], xlab=dependent_variable)
-screen(2); boxplot(estimation_data[,independent_variables[2]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[2], xlab=dependent_variable)
-screen(3); boxplot(estimation_data[,independent_variables[3]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[3], xlab=dependent_variable)
-screen(4); boxplot(estimation_data[,independent_variables[4]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[4], xlab=dependent_variable)
+par(mfrow=c(2,2))
+boxplot(estimation_data[,independent_variables[1]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[1], xlab=dependent_variable)
+boxplot(estimation_data[,independent_variables[2]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[2], xlab=dependent_variable)
+boxplot(estimation_data[,independent_variables[3]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[3], xlab=dependent_variable)
+boxplot(estimation_data[,independent_variables[4]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[4], xlab=dependent_variable)
 ```
 </style>
 
@@ -426,7 +426,7 @@ print(xtable(conf_matrix ,caption=paste("Confusion Matrix for Validation data:",
 
 ## ROC Curves: Validation Data
 
-(red: CART 1; black: CART 2; blue: logistic regression):
+(black: CART 1; red: CART 2; blue: logistic regression):
 
 
 ```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
@@ -841,4 +841,4 @@ print(LineFramev3,'chart')
 
 --- 
 
-## Next Class: Class Projects Presentationss
+## Next Class: Class Projects Presentations

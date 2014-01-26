@@ -12,7 +12,6 @@ rm(list = ls( )) # clean up the workspace
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
 local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
-local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions67"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 datafile_name="Boat_Purchase"
@@ -91,8 +90,8 @@ if (start_local_webapp){
     install_libraries("shiny")
   
   # first load the data files in the data directory so that the App see them
-  Resort_Visits <- read.csv(paste(local_directory, "data/Mall_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-  Boat_Purchase <- read.csv(paste(local_directory, "data/Boat_Purchases.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Resort_Visits <- read.csv(paste(local_directory, "data/Resort_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boat_Purchase <- read.csv(paste(local_directory, "data/Boat_Purchase.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
   Boat_Purchase=data.matrix(Boat_Purchase) # this file needs to be converted to "numeric"....
   
   # now run the app
