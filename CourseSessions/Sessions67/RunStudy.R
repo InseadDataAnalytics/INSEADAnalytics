@@ -76,19 +76,16 @@ Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predic
 colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
 rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
 test_data_percent = 100-estimation_data_percent-validation_data_percent
-source(paste(local_directory,"R/library.R", sep="/"))
 # what to pass to CART.... do not change this line!!!
 CART_control = rpart.control(cp = CART_cp)
+source(paste(local_directory,"R/library.R", sep="/"))
+if (require(shiny) == FALSE) 
+  install_libraries("shiny")
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 
 if (start_local_webapp){
-  
-  # MAKE SURE THIS INSTALLS FINE if a local web app is to be use - the local computer needs
-  # to have the shiny library to run the shiny apps
-  if (require(shiny) == FALSE) 
-    install_libraries("shiny")
-  
+    
   # first load the data files in the data directory so that the App see them
   Resort_Visits <- read.csv(paste(local_directory, "data/Resort_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
   Boat_Purchase <- read.csv(paste(local_directory, "data/Boat_Purchase.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData

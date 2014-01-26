@@ -74,15 +74,12 @@ start_local_webapp <- 0
 ProjectData_segment=ProjectData[,segmentation_attributes_used]
 ProjectData_profile=ProjectData[,profile_attributes_used]
 source(paste(local_directory,"R/library.R", sep="/"))
+if (require(shiny) == FALSE) 
+  install_libraries("shiny")
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 
 if (start_local_webapp){
-
-  # MAKE SURE THIS INSTALLS FINE if a local web app is to be use - the local computer needs
-  # to have the shiny library to run the shiny apps
-  if (require(shiny) == FALSE) 
-    install_libraries("shiny")
   
   # first load the data files in the data directory so that the App see them
   Mall_Visits <- read.csv(paste(local_directory, "data/Mall_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
