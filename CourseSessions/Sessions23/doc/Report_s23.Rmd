@@ -280,7 +280,7 @@ One can also plot the eigenvalues of the generated factors in decreasing order: 
 eigenvalues  <- Variance_Explained_Table[,2]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
-Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(Line, 'chart')
 ```
 
@@ -416,7 +416,7 @@ if(ncol(NEW_ProjectData) >= 2) {
   df1  <- cbind(NEW_ProjectData[, 1], NEW_ProjectData[, 2])
   df1  <- as.data.frame(df1)
   sca1 <- gvisScatterChart(df1, options=list(legend="none",
-                                             lineWidth=0, pointSize=12, hAxis.title="Derived Variable (Factor) 2",
+                                             lineWidth=0, pointSize=8, hAxis.title="Derived Variable (Factor) 2",
                                              title="Data Visualization Using the top 2 Derived Attributes (Factors)", vAxis="{title:'Derived Variable (Factor) 1'}",
                                              hAxis="{title:'Derived Variable (Factor) 2'}", width=900, height=800))
   print(sca1,'chart')

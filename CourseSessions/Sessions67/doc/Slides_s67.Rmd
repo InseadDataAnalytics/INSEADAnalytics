@@ -62,21 +62,20 @@ What would be the **key drivers** that affect people's decision to purchase or r
 ---
 
 ## Example: Some Data
-
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:500px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
@@ -87,32 +86,16 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1024, height=600,allowHTML=TRUE,page='disable'))
-print(m1,'chart')
+#m1<-gvisTable(dfnew,options=list(showRowNumber=FALSE,width=960, height=440,allowHTML=TRUE,page='disable'))
+#print(m1,'chart')
+print(xtable(dfnew ,caption=paste("Number of Observations per class in the Estimation Sample:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
-
 
 ---
 
 ## Summary Statistics: Class 1
 
-<style>
-.wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
-.wrapper1{
-            
-           height:500px;
-             overflow-y: scroll;
-          }
-</style>
-<div class="wrapper wrapper1">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
 show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==1,]),2))
 #show_data = show_data[1:min(max_data_report,nrow(show_data)),]
@@ -121,11 +104,9 @@ dfnew2<-cbind(row,show_data)
 change<-colnames(dfnew2)
 change[1]<-"Variables"
 colnames (dfnew2)<-change
-m2<-gvisTable(dfnew2,options=list(showRowNumber=TRUE,width=1024, height=600,allowHTML=TRUE,page='disable'))
+m2<-gvisTable(dfnew2,options=list(showRowNumber=TRUE,width=960, height=440,allowHTML=TRUE,page='disable'))
 print(m2,'chart')
 ```
-</div>
-
 
 ---
 
@@ -146,7 +127,6 @@ print(m3,'chart')
 ```
 </div>
 </div>
-
 
 ---
 
@@ -482,7 +462,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 1', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 1', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFrame,'chart')
 
 
@@ -496,7 +476,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFrame1,'chart')
 
 probs = validation_Probability_class1_log
@@ -509,7 +489,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFrame2,'chart')
 ```
 <div>
@@ -565,7 +545,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFramev1,'chart')
 
 probs = validation_Probability_class1_tree_large
@@ -584,7 +564,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFramev2,'chart')
 
 probs = validation_Probability_class1_log
@@ -603,7 +583,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFramev3,'chart')
 ```
 </div>
@@ -658,6 +638,9 @@ print(xtable(conf_matrix ,caption=paste("Confusion Matrix for test data:",data_n
 
 ## ROC Curves: Test Data
 
+(black: CART 1; red: CART 2; blue: logistic regression):
+
+
 ```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
 
 test_actual_class <- as.numeric(test_data[,dependent_variable])
@@ -667,7 +650,7 @@ pred_tree_large1 <- prediction(test_Probability_class1_tree_large, test_actual_c
 pred_log1 <- prediction(test_Probability_class1_log, test_actual_class)
 ```
 
-(red: CART 1; black: CART 2; blue: logistic regression): 
+
 ```{r echo=FALSE}
 plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
 grid()
@@ -700,6 +683,7 @@ par(new=FALSE)
           }
 </style>
 <div class="wrapper wrapper1">
+
 ```{r liftTest,echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 test_actual<- test_data[,dependent_variable]
 all1s = sum(test_actual)
@@ -714,7 +698,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:' Percent of Class 1'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:' Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFrame,'chart')
 
 probs = test_Probability_class1_tree_large
@@ -727,7 +711,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART large', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART large', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFrame1,'chart')
 
 probs = test_Probability_class1_log
@@ -740,7 +724,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART large', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART large', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFrame2,'chart')
 
 ```
@@ -749,6 +733,7 @@ print(LineFrame2,'chart')
 ---
 
 ## Profit Curves: Test Data
+
 <style>
 .wrapper{
             
@@ -765,6 +750,7 @@ print(LineFrame2,'chart')
           }
 </style>
 <div class="wrapper wrapper1">
+
 ```{r echo=FALSE, warning=FALSE,comment=NA, results='asis',error=FALSE,message=FALSE}
 actual_class<- test_data[,dependent_variable]
 
@@ -784,7 +770,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFramev1,'chart')
 
 probs = test_Probability_class1_tree_large
@@ -803,7 +789,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFramev2,'chart')
 
 probs = test_Probability_class1_log
@@ -822,7 +808,7 @@ xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 frame<-cbind(xaxis,yaxis)
 frame<-as.data.frame(frame)
-LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(LineFramev3,'chart')
 ```
 </div>

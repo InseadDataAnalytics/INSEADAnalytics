@@ -9,6 +9,64 @@ mode : standalone
 
 ---
 
+## Why this class? Three goals
+  
+  
+1. Organizational Level: Develop your intuition about identifying data analytics opportunities and their implementation challenges  
+  
+  
+2. Project Level: Learn how to approach data analytics projects  
+  
+  
+3. Analysis Level: Learn how to perform, read, and use key data analytics methods.
+
+---
+
+## Group Project: Deliverable #1
+
+Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  github pages before the day of sessions 4-5. Delayed reports will lose 20% of the group project grade. 
+
+For this report you need to answer the following questions:
+
+- Name of the company you are studying (if it is for a new venture, please describe the business model, market, and key processes)
+
+- What is the business objective of the data analytics project? 
+
+- Which business processes and management decisions are affected from the data analytics project?
+
+---
+
+## Group Project: Deliverable #1 (contd)
+
+- What changes (e.g. organizational, processes, systems) do you expect the company will need to make order to effectively use the results of data analytics? What types of resistance do you expect, and why?
+
+- How will you measure the value of your proposed data analytics project (e.g. process efficiency, predictive improvement with specific business impact, etc)?  
+
+- What data will you use? Provide summary statistics of the data, as well as any initial visual/graphic summaries.
+
+Also be prepared to briefly present your project in class 
+
+---
+
+## Data Analytics Processes: Iterative Process Cycle with a Lifetime
+
+
+  
+Step 1: Defining the Objective(s)  
+  
+  
+Step 2: Data Preparation and Exploration
+  
+  
+Step 3: Analysis
+  
+  
+Step 4: Performance Assessment
+
+
+
+---
+
 ## What is Dimensionality Deduction and Factor Analysis?
 
 Derive new  variables which are (linear) combinations of the original ones and capture most of the information in the original data. 
@@ -45,7 +103,7 @@ Can also be used to solve multicollinearity issues in regression
 
 ## Dimensionality Reduction and Factor Analysis: 8 (Easy) Steps
 
-1. Confirm the data in metric 
+1. Confirm the data is metric 
 
 2. Decide whether to scale or standardize the data
 
@@ -265,7 +323,7 @@ print(m,'chart')
 eigenvalues  <- Variance_Explained_Table[,2]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
-Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=500, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=500, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(Line, 'chart')
 ```
 
@@ -463,7 +521,7 @@ if(ncol(NEW_ProjectData) >= 2) {
   df1  <- cbind(NEW_ProjectData[, 1], NEW_ProjectData[, 2])
   df1  <- as.data.frame(df1)
   sca1 <- gvisScatterChart(df1, options=list(legend="none",
-                                             lineWidth=0, pointSize=12, hAxis.title="Derived Variable (Factor) 2",
+                                             lineWidth=0, pointSize=8, hAxis.title="Derived Variable (Factor) 2",
                                              title="Data Visualization Using the top 2 Derived Attributes (Factors)", vAxis="{title:'Derived Variable (Factor) 1'}",
                                              hAxis="{title:'Derived Variable (Factor) 2'}", width=900, height=500))
   print(sca1,'chart')
@@ -489,6 +547,16 @@ if(ncol(NEW_ProjectData) >= 2) {
 4. Varimax rotation
 5. Factor Loadings ("components")
 6. Factor scores
+
+---
+
+## Key Questions
+
+1. How many factors should we use? Why? Quantitative and Qualitative criteria
+
+2. How can we name and interpret the factors? 
+
+3. What are some issues to consider? 
 
 ---
 
