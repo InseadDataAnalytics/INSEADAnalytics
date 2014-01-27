@@ -24,9 +24,9 @@ shinyServer(function(input, output,session) {
     # ProjectData with the filethe user loads
     ProjectData <- read.csv(paste(paste(local_directory,"data",sep="/"), paste(input$datafile_name_coded, "csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
     ProjectData=data.matrix(ProjectData)
+    colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
     
     updateSelectInput(session, "factor_attributes_used","Variables used for Factor Analysis",  colnames(ProjectData), selected=colnames(ProjectData)[1])
-    
     ProjectData
   })
   
@@ -38,9 +38,14 @@ shinyServer(function(input, output,session) {
     input$MIN_VALUE
     
     ProjectData = read_dataset()
-    ProjectDataFactor = as.matrix(ProjectData[,input$factor_attributes_used, drop=F])
     
-    list(ProjectData = read_dataset(), 
+    use_attributes = intersect(colnames(ProjectData),input$factor_attributes_used)
+    ProjectDataFactor = as.matrix(ProjectData[,use_attributes, drop=F])      
+
+    if (ncol(ProjectDataFactor) == 0)
+      ProjectDataFactor = ProjectData[,1:min(3,ncol(ProjectData))]
+    
+    list(ProjectData = ProjectData, 
          ProjectDataFactor = ProjectDataFactor,
          factor_attributes_used = input$factor_attributes_used, 
          manual_numb_factors_used = max(1,min(input$manual_numb_factors_used,length(input$factor_attributes_used))),
@@ -173,7 +178,10 @@ shinyServer(function(input, output,session) {
     
     unrot_number = max(1, min(input$unrot_number, length(factor_attributes_used)))
     
-    correl<-cor(ProjectDataFactor)
+    if (ncol(ProjectDataFactor) == 0)
+      ProjectDataFactor = ProjectData[,1:min(3,ncol(ProjectData))]
+
+    correl<-cor(ProjectDataFactor)      
     
     Unrotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none")
     Unrotated_Factors<-Unrotated_Results$loadings[,1:unrot_number,drop=F]
