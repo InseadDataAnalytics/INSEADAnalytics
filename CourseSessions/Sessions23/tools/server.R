@@ -261,7 +261,7 @@ shinyServer(function(input, output,session) {
   
   output$scree <- renderGvis({      
     input$action_scree
-    data_used = the_computations_fa()
+    data_used = the_computations()
     
     eigenvalues  <- data_used$eigenvalues
     df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
