@@ -114,7 +114,7 @@ It is important to remember that Data Analytics Projects require a delicate bala
 
 There is *not one* process for factor analysis. However, we have to start somewhere, so we will use the following process:
 
-#### Factor Analysis in 8 steps
+#### Factor Analysis in 6 steps
 
 1. Confirm the data in metric 
 

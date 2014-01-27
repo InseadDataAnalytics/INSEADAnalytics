@@ -101,7 +101,7 @@ Can also be used to solve multicollinearity issues in regression
 
 ---
 
-## Dimensionality Reduction and Factor Analysis: 8 (Easy) Steps
+## Dimensionality Reduction and Factor Analysis: 6 (Easy) Steps
 
 1. Confirm the data is metric 
 
