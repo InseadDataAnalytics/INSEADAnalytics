@@ -318,7 +318,7 @@ shinyServer(function(input, output,session) {
   the_tree_computations <- reactive({
     # list the user inputs the tab depends on (easier to read the code)
     
-    class_params = classifier_params_tab()    
+    class_params = classifier_params_tab()
     CART_control = class_params$tree_cp
     
     res = list()
@@ -333,13 +333,15 @@ shinyServer(function(input, output,session) {
       independent_variables_nolabel = all_inputs$independent_variables_nolabel
       
       formula=paste(colnames(estimation_data_nolabel[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
-      CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+      CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", 
+                       control=rpart.control(cp = CART_control))
       
       estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,"1"]    
       validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,"1"]    
       test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,"1"]    
       
       res = list(CART_tree = CART_tree,
+                 tree_cp = CART_control,
                  estimation_Probability_class1 = estimation_Probability_class1_tree,
                  validation_Probability_class1 = validation_Probability_class1_tree,
                  test_Probability_class1 = test_Probability_class1_tree)
@@ -493,16 +495,16 @@ shinyServer(function(input, output,session) {
   
   output$hit_rates <- renderTable({  
     input$action_hit
-    available_methods_hit = input$hit_method_chosen    
+    available_methods = input$hit_method_chosen    
     hit_data_chosen = input$hit_data_chosen
     
     Probability_Threshold = input$Probability_Threshold/100  
     all_inputs <- user_inputs()
     
     res = matrix("No Method has been selected", ncol=1)    
-    if (length(intersect(available_methods_hit, c("tree","logistic","svm","forest")))){
+    if (length(intersect(available_methods, c("tree","logistic","svm","forest")))){
       res = NULL
-      for (method_used in available_methods_hit){
+      for (method_used in available_methods){
         if (method_used == "tree")
           use_results = the_tree_computations()
         if (method_used == "logistic")
@@ -528,7 +530,7 @@ shinyServer(function(input, output,session) {
         res = c(res, 100*sum(prediction_class==actual_class)/length(actual_class)) 
       }
       res = matrix(res,ncol=1)
-      rownames(res) <- available_methods_hit
+      rownames(res) <- available_methods
       colnames(res) <- hit_data_chosen
     }
     
@@ -538,7 +540,7 @@ shinyServer(function(input, output,session) {
   
   output$roc_curve <- renderPlot({      
     input$action_roc
-    available_methods_hit = input$roc_method_chosen
+    available_methods = input$roc_method_chosen
     hit_data_chosen = input$roc_data_chosen
     
     Probability_Threshold = input$Probability_Threshold/100    
@@ -546,8 +548,8 @@ shinyServer(function(input, output,session) {
     
     res <- rep(0,1000) 
     
-    if (length(available_methods_hit)){  
-      res = lapply(available_methods_hit, function(method_used){
+    if (length(available_methods)){  
+      res = lapply(available_methods, function(method_used){
         
         if (method_used == "tree"){ 
           use_results = the_tree_computations()
@@ -589,10 +591,24 @@ shinyServer(function(input, output,session) {
     if (length(res) == 1000) { 
       plot(res, main = "No method estimated or selected")
     } else {
-      for (iter in 1:length(res)){
-        theperf = res[[iter]]$theperf
-        thecolor = res[[iter]]$thecolor
-        plot(performance(theperf, "tpr", "fpr"), col=thecolor, lty=1, add=FALSE)
+      if(length(available_methods) > 1){
+        for (iter in 1:length(res)){
+          theperf = res[[iter]]$theperf
+          thecolor = res[[iter]]$thecolor          
+          plot(theperf, col=thecolor, lty=1, add=FALSE, main="ROC Curve")          
+          if(iter == 1){
+            grid()
+            par(new=TRUE)
+          }else if(iter != 1 && iter != length(res)){
+            par(new=TRUE)
+          }else{
+            par(new=FALSE)
+          }
+        }
+      } else {
+        theperf = res[[1]]$theperf
+        thecolor = res[[1]]$thecolor        
+        plot(theperf, col=thecolor, lty=1, add=FALSE, main="ROC Curve")
       }      
     }
   })
@@ -600,16 +616,16 @@ shinyServer(function(input, output,session) {
   
   output$lift_curve <- renderPlot({  
     input$action_lift
-    available_methods_hit = input$roc_method_chosen    
-    hit_data_chosen = input$roc_data_chosen
+    available_methods = input$lift_method_chosen    
+    hit_data_chosen = input$lift_data_chosen
     
-    Probability_Threshold = input$Probability_Threshold/100 
+    Probability_Threshold = input$Probability_Threshold/100    
     all_inputs <- user_inputs()
     
     res <- rep(0,1000) 
     
-    if (length(available_methods_hit)){  
-      res = lapply(available_methods_hit, function(method_used){
+    if (length(available_methods)){  
+      res = lapply(available_methods, function(method_used){
         
         if (method_used == "tree"){ 
           use_results = the_tree_computations()
@@ -641,8 +657,14 @@ shinyServer(function(input, output,session) {
           actual_class = all_inputs$test_data[,all_inputs$dependent_variable]
         }
         
-        the_pred = prediction(probs, actual_class)     
-        list( theperf = performance(the_pred, "tpr", "fpr"),
+        all1s=sum(actual_class);         
+        xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+        the_lift = 100*Reduce(cbind,lapply(xaxis, function(prob){
+          useonly = which(probs >= 1-prob)
+          c(length(useonly)/length(actual_class), sum(actual_class[useonly])/all1s) 
+        }))
+        cat("the_lift has", dim(the_lift))
+        list( theperf = the_lift,
               thecolor = thecolor
         )
       })
@@ -651,19 +673,32 @@ shinyServer(function(input, output,session) {
     if (length(res) == 1000) { 
       plot(res, main = "No method estimated or selected")
     } else {
-      for (iter in 1:length(res)){
-        theperf = res[[iter]]$theperf
-        thecolor = res[[iter]]$thecolor
-        plot(performance(theperf, "tpr", "fpr"), col=thecolor, lty=1, add=FALSE)
+      if(length(available_methods) > 1){
+        for (iter in 1:length(res)){
+          theperf = res[[iter]]$theperf
+          thecolor = res[[iter]]$thecolor          
+          plot(theperf[1,], theperf[2,], col=thecolor, lty=1, add=FALSE, main="Lift Curve")          
+          if(iter == 1){
+            grid()
+            par(new=TRUE)
+          }else if(iter != 1 && iter != length(res)){
+            par(new=TRUE)
+          }else{
+            par(new=FALSE)
+          }
+        }
+      } else {
+        theperf = res[[1]]$theperf
+        thecolor = res[[1]]$thecolor        
+        plot(theperf[,1], theperf[,2], col=thecolor, lty=1, add=FALSE, main="Lift Curve")
       }      
-    }
-    
+    }    
   })
   
   
   output$profit_curve <- renderPlot({  
     input$action_profit
-    available_methods_hit = input$profit_method_chosen    
+    available_methods = input$profit_method_chosen    
     hit_data_chosen = input$profit_data_chosen
     
     Probability_Threshold = input$Probability_Threshold/100    
@@ -671,8 +706,8 @@ shinyServer(function(input, output,session) {
     
     res <- rep(0,1000) 
     
-    if (length(available_methods_hit)){  
-      res = lapply(available_methods_hit, function(method_used){
+    if (length(available_methods)){  
+      res = lapply(available_methods, function(method_used){
         
         if (method_used == "tree"){ 
           use_results = the_tree_computations()

@@ -163,7 +163,7 @@ shinyUI(pageWithSidebar(
                HTML("<br>"),
                actionButton("action_roc", "Show/Update Results"),
                HTML("<hr>"),
-               div(class="span12",plotOutput('ROC_curve'))), 
+               div(class="span12",plotOutput('roc_curve'))), 
       tabPanel("Lift Curves", 
                selectInput("lift_data_chosen","Data Used",  choices = c("Estimation Data","Validation Data", "Test Data"), selected="Estimation Data", multiple=FALSE),
                selectInput("lift_method_chosen","Method(s) available to see",  choices = c("no choice"), selected="no choice", multiple=TRUE),

@@ -77,10 +77,10 @@ colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
 rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
 test_data_percent = 100-estimation_data_percent-validation_data_percent
 # what to pass to CART.... do not change this line!!!
-CART_control = rpart.control(cp = CART_cp)
 source(paste(local_directory,"R/library.R", sep="/"))
 if (require(shiny) == FALSE) 
   install_libraries("shiny")
+CART_control = rpart.control(cp = CART_cp)
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 
