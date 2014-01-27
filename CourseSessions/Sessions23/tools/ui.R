@@ -101,7 +101,7 @@ heavy computation or traffic on the server, in which case you should simply wait
       tabPanel("Scree Plot", 
                actionButton("action_scree", "Show/Update Results"),
                HTML("<br>"),
-               plotOutput("scree")), 
+               htmlOutput("scree")), 
       tabPanel("Unotated Factors",
                numericInput("unrot_number", "Select the the number of factors to see:",3),
                selectInput("show_colnames_unrotate", "Show variable names? (0 or 1):", choices=c("0","1"),selected=1, multiple=FALSE),               

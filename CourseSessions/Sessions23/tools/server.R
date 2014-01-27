@@ -259,12 +259,20 @@ shinyServer(function(input, output,session) {
     round(data_used$Variance_Explained_Table,2)
   })
   
-  output$scree <- renderPlot({  
+  output$scree <- renderGvis({      
     input$action_scree
+    data_used = the_computations_fa()
     
-    data_used = the_computations()    
-    plot(data_used$eigenvalues, type="l")
+    eigenvalues  <- data_used$eigenvalues
+    df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+    colnames(df) <- c("eigenvalues", "components", "abline")
+    gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
   })
+  
+#  output$scree <- renderPlot({      
+#    data_used = the_computations()    
+#    plot(data_used$eigenvalues, type="l")
+#  })
   
   
   output$Unrotated_Factors<-renderHeatmap({
