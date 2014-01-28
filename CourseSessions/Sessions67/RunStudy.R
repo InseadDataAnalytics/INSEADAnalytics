@@ -16,6 +16,13 @@ local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 datafile_name="Boat_Purchase"
 
+
+# Please ENTER the name Report and Slides (in the doc directory) to generate 
+#report_file = "Report_s67"
+report_file = "MyBoatsDrivers"
+slides_file = "Slides_s67"
+
+
 # this loads the selected data: DO NOT EDIT THIS LINE
 ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) # make sure the data are numeric!!!! check your file!

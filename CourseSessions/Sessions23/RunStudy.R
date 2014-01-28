@@ -15,7 +15,13 @@ cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE I
 
 
 # Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
-datafile_name="MBAadmin" # do not add .csv at the end!
+datafile_name="Boats" # do not add .csv at the end!
+
+# Please ENTER the name Report and Slides (in the doc directory) to generate 
+
+#report_file = "Report_s23"
+report_file = "MyBoatsFactor"
+slides_file = "Slides_s23"
 
 # this loads the selected data: DO NOT EDIT THIS LINE
 ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
@@ -82,5 +88,3 @@ if (start_local_webapp){
   # now run the app
   runApp(paste(local_directory,"tools", sep="/"))  
 }
-
-  
