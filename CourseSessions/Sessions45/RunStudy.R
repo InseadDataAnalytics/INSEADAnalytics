@@ -54,6 +54,9 @@ hclust_method = "ward"
 # DEFAULT is "Lloyd"
 kmeans_method = "Lloyd"
 
+# Please enter the method to use for the profiling (e.g. "hclust" or "kmeans"):
+profile_with = "hclust"
+
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
 

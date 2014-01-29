@@ -453,7 +453,7 @@ Data analytics is used to eventually make decisions, and that is feasible only w
 
 To this purpose, one needs to spend time visualizing and understanding the data within each of the selected segments. For example, one can see how the summary statistics (e.g. averages, standard deviations, etc) of the **profiling attributes** differ across the segments. 
 
-In our case, assuming we decided we use the `r numb_clusters_used` segments found using Kmeans as outlined above (similar profiling can be done with the results of hierarchical clustering or other segmentation methods), we can see how the responses to our survey differ across segments. The summary statistics of our data for the total population as well as within each customer segment are:
+In our case, assuming we decided we use the `r numb_clusters_used` segments found using hierarchical clustering as outlined above (similar profiling can be done with the results of kmeans or other segmentation methods), we can see how the responses to our survey differ across segments. The summary statistics of our data for the total population as well as within each customer segment are:
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
@@ -462,11 +462,19 @@ cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
 ```
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships <- cluster_memberships_hclust
+cluster_ids <-  cluster_ids_hclust  
+if (profile_with == "hclust"){
+  cluster_memberships <- cluster_memberships_hclust
+  cluster_ids <-  cluster_ids_hclust  
+  }
+if (profile_with == "kmeans"){
+  cluster_memberships <- cluster_memberships_kmeans
+  cluster_ids <-  cluster_ids_kmeans
+  }
 
 population_average = cbind(apply(ProjectData_profile, 2, mean), apply(ProjectData_profile, 2, sd))
 colnames(population_average) <- c("Population (AVG)", "Population (SD)")
-cluster_memberships <- cluster_memberships_kmeans
-cluster_ids <-  cluster_ids_kmeans
 Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
 if (ncol(ProjectData_profile) <2)
   Cluster_Profile_mean=t(Cluster_Profile_mean)
