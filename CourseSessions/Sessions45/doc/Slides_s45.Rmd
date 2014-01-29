@@ -390,7 +390,7 @@ overflow: auto;
 <div class="wrapper" style="font-size:15px;">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, echo=FALSE, error=FALSE, fig.align='center', results='asis'}
 
-if (0){
+if (1){
   
   ProjectDataframe = data.frame(ProjectData_segment[,1:min(4,ncol(ProjectData_segment))])
   V1 <- ggplot() + geom_bar(aes(y = ..count.., x = V1),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 1') + theme_grey()
