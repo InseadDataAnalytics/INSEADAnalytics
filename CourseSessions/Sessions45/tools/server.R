@@ -356,7 +356,8 @@ shinyServer(function(input, output,session) {
   output$kmeans_profiling<-renderTable({
     input$action_profile
 
-    data_used = the_kmeans_tab()    
+    #data_used = the_kmeans_tab()  
+    data_used = the_hclust_computations()
     # Must also show the standard deviations...!
     data_used$Cluster_Profile_mean
   })  

@@ -133,7 +133,7 @@ heavy computation or traffic on the server, in which case you should simply wait
                HTML("<br>"),
                numericInput("kmeans_obs_chosen", "Select the observation to see the Kmeans cluster membership for:", 1),
                div(class="span12",tableOutput('kmeans_membership'))), 
-      tabPanel("Kmeans Profiling",
+      tabPanel("Hclust Profiling",
                actionButton("action_profile", "Show/Update Results"),
                HTML("<br>"),
                div(class="span12",tableOutput('kmeans_profiling'))), 
