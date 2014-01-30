@@ -795,6 +795,16 @@ How much overlap should we expect across clustering solutions?
 - Actionability, Interpretability, Statistical Robustness
 
 --- 
+## Group Work
+
+1. How many market segments (clusters) are there? Why?
+
+2. How would you describe the segments?
+
+3. How would the segments inform the strategy of CreeqBoat?
+
+
+--- 
 
 ## Next Class: Discriminant Analysis, Purchase Drivers, and Linking Analytics to Business Decisions
 
