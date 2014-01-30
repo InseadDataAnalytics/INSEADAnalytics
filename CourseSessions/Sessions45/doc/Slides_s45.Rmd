@@ -378,33 +378,6 @@ print(xtable(Manual_Pairwise, caption=paste("Pairwise Distances between the firs
 
 ---
 
-## Histograms of some Variables
-
-<style>
-.wrapper{
-height: 40%;
-width: 800px;
-overflow: auto;
-}
-</style>
-<div class="wrapper" style="font-size:15px;">
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, echo=FALSE, error=FALSE, fig.align='center', results='asis'}
-
-if (1){
-  
-  ProjectDataframe = data.frame(ProjectData_segment[,1:min(4,ncol(ProjectData_segment))])
-  V1 <- ggplot() + geom_bar(aes(y = ..count.., x = V1),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 1') + theme_grey()
-  V2 <- ggplot() + geom_bar(aes (y = ..count.., x = V2),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 2') + theme_grey()
-  V3 <- ggplot() + geom_bar(aes (y = ..count.., x = V3),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 3') + theme_grey()
-  V4 <- ggplot() + geom_bar(aes (y = ..count.., x = V4),data=ProjectDataframe) + ylab(label = 'Frequency') + xlab(label = 'Histogram of Variable 4') + theme_grey()
-  grid.arrange(V1, V2, V3, V4)
-  
-  }
-
-```
-</div>
-
----
 
 ## Histogram of all pairwise distances 
 
