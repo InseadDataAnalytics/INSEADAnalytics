@@ -38,7 +38,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -59,7 +59,7 @@ Our Approach
 
 4. Develop a scree plot and decide on the number of factors to be derived
 
-5. Interpret the factors and consider factor rotations (technical but useful)
+5. Interpret the factors (consider factor rotations - technical but useful)
 
 6. Save factor scores for subsequent analyses
 
@@ -78,7 +78,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -109,7 +109,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -131,7 +131,7 @@ thecor = round(cor(ProjectDataFactor),2)
 colnames(thecor)<-colnames(ProjectDataFactor)
 rownames(thecor)<-colnames(ProjectDataFactor)
 ## printing the result in a clean-slate table
-cat(renderHeatmapX(thecor, border=1))
+cat(renderHeatmapX(thecor, border=1, center = 0,vrange_up = 1, vrange_down = 1))
 ```
 
 your text...
@@ -140,7 +140,6 @@ your text...
 
 your text...
 
-
 <br>
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
@@ -148,22 +147,7 @@ UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor)
 UnRotated_Factors<-round(UnRotated_Results$loadings,2)
 UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
 colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
-
-show_data <- UnRotated_Factors 
-#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
-row<-rownames(show_data)
-dfnew<-cbind(row,show_data)
-change<-colnames(dfnew)
-change[1]<-"Variables"
-colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
-print(m1,'chart')
 ```
-<br> <br>
-
-your text...
-
-<br>
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
 Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
@@ -177,7 +161,7 @@ Variance_Explained_Table<-cbind(name,Variance_Explained_Table)
 Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
 colnames(Variance_Explained_Table)<-c("Components", "Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
 
-m<-gvisTable(Variance_Explained_Table,options=list(width=1200, height=400,allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+m<-gvisTable(Variance_Explained_Table,options=list(width=1200, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
 print(m,'chart')
 ```
 <br> <br>
@@ -210,9 +194,9 @@ if (factor_selectionciterion == "manual")
 
 your text...
 
-#### 5. Interpret the factors and consider factor rotations (technical but useful)
+#### 5. Interpret the factors 
 
-For example for our data one can "rotate" (mathematically) the original factors to generate new ones wich are easier to interpret while capturing the same information from the raw data as the initial factors found.  For our data, the `r factors_selected` selected factors look as follows after the `r rotation_used` rotation: 
+For our data, the `r factors_selected` selected factors look as follows after the `r rotation_used` rotation: 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 
@@ -231,7 +215,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 <br> <br>
@@ -251,7 +235,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 <br> <br>
@@ -282,7 +266,7 @@ if (factors_selected >=2){
   change<-colnames(dfnew)
   change[1]<-"Observation"
   colnames (dfnew)<-change
-  m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+  m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
   print(m1,'chart')
   
   } else {

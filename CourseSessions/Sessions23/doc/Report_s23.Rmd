@@ -67,7 +67,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -124,7 +124,7 @@ There is *not one* process for factor analysis. However, we have to start somewh
 
 4. Develop a scree plot and decide on the number of factors to be derived
 
-5. Interpret the factors and consider factor rotations (technical but useful)
+5. Interpret the factors (consider factor rotations - technical but useful)
 
 6. Save factor scores for subsequent analyses
 
@@ -146,7 +146,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -180,7 +180,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -204,7 +204,7 @@ thecor = round(cor(ProjectDataFactor),2)
 colnames(thecor)<-colnames(ProjectDataFactor)
 rownames(thecor)<-colnames(ProjectDataFactor)
 ## printing the result in a clean-slate table
-cat(renderHeatmapX(thecor, border=1))
+cat(renderHeatmapX(thecor, border=1,center = 0,vrange_up = 1, vrange_down = 1))
 ```
 
 There are quite a few large (in absolute value) correlations. For example  GPA, GMAT and Fellowship seem to be highly positively correlated - as expected? Maybe those can be grouped in one "factor"? How about "Communication Skills"? Should that also be part of that same factor? With what weights should we combine these raw attributes in groups? Remember, this is a very simple example where one could possibly derive attributes manually. In practice most of the time data are not as easy to understand, with many more than `r length(factor_attributes_used)` raw attributes. However, even in this simple example people often disagree about how to group the `r length(factor_attributes_used)` raw attributes!
@@ -213,29 +213,14 @@ Let's now see what factor analysis suggests as factors.
 
 #### Step 4. Develop a scree plot and decide on the number of factors to be derived
 
-There are many statistical methods to generate derived variables from raw data. One of the most standard ones is **Principal Component Analysis**. This method finds factors, called **Principal Components**, which are **linear combinations of the original raw attributes** so that most of the information in the data, measured using  **variance explained** (roughly "how much of the variability in the data is captured by the selected components") is captured by only a few factors. The components are developed typically so that they are **uncorrelated**, leading to *at most as many factors as the number of the original raw attributes, but* so that only a few are needed (the *principal compontents*) to keep most of the information (variance/variability) in the raw data. For example, for our data we have `r ncol(ProjectData)` raw attributes hence we can only have a total of `r ncol(ProjectData)` factors/compontents, each of them being a linear combination of the `r ncol(ProjectData)` original raw data. These are:
-<br>
+There are many statistical methods to generate derived variables from raw data. One of the most standard ones is **Principal Component Analysis**. This method finds factors, called **Principal Components**, which are **linear combinations of the original raw attributes** so that most of the information in the data, measured using  **variance explained** (roughly "how much of the variability in the data is captured by the selected components") is captured by only a few factors. The components are developed typically so that they are **uncorrelated**, leading to *at most as many factors as the number of the original raw attributes, but* so that only a few are needed (the *principal compontents*) to keep most of the information (variance/variability) in the raw data. For example, for our data we have `r ncol(ProjectData)` raw attributes hence we can only have a total of `r ncol(ProjectData)` factors/compontents, each of them being a linear combination of the `r ncol(ProjectData)` original raw data. 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
 UnRotated_Factors<-round(UnRotated_Results$loadings,2)
 UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
 colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
-
-show_data <- UnRotated_Factors 
-#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
-row<-rownames(show_data)
-dfnew<-cbind(row,show_data)
-change<-colnames(dfnew)
-change[1]<-"Variables"
-colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
-print(m1,'chart')
 ```
-<br> <br>
-
-
-For each component, the values of the corresponding column indicate how much of each of the original raw attributes is "used" by the component. Ideally, for easier/better interpretation and use,  only few of the original variables are used by each component: we will see below how one can use what is called a *rotation* to better link the factors with the original attributes.
 
 While there are as many (and for other methods, more) factors as the number of the original raw attributes, since our goal is to have a small(er) number of derived variables/factors, one question is whether we could use only a few of the components without losing much information. When this is feasible, we can say that the original raw attributes can be "compressed" to a few principal components/factors/derived variables. Note that this is not necessarily feasible - e.g. when the original raw attributes are uncorrelated and each one provides "trully different information from all the others" (in this case "different" means "uncorrelated", but other statistical measures of "different" can be used, such as "statistically independent information", leading to other well known dimensionality reduction methods such as *Independent Component Analysis (ICA)*, etc). 
 
@@ -261,7 +246,7 @@ Variance_Explained_Table<-cbind(name,Variance_Explained_Table)
 Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
 colnames(Variance_Explained_Table)<-c("Components", "Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
 
-m<-gvisTable(Variance_Explained_Table,options=list(width=1200, height=400,allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+m<-gvisTable(Variance_Explained_Table,options=list(width=1200, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
 print(m,'chart')
 ```
 <br> <br>
@@ -302,14 +287,12 @@ if (factor_selectionciterion == "manual")
 
 Based on the three criteria (eigenvalue > 1, cumulative percentage of variance explained, and the elbow of the scree plot), and using our current selection criterion, namely `r factor_selectionciterion`, for this data we can decide to use `r factors_selected` components only. In practice one may try different numbers of factors/components as one needs to consider not only the statistical rules discussed here, but also the interpretation and actionability of the selected components: as always, data analytics is about both science and art. We consider interpretability of the derived attributes/factors next. 
 
-#### 5. Interpret the factors and consider factor rotations (technical but useful)
+#### 5. Interpret the factors (consider factor rotations - technical but useful)
 
 
-As noted in the analysis above, each of the derived new variables is a linear combination of the original ones. In practice one would like to have derived variables that use only a few of the original raw attributes - while each new derived variable using different subsets of the original raw attributes. 
+In practice one would like to have derived variables that use only a few of the original raw attributes - while each new derived variable using different subsets of the original raw attributes. Unfortunately this is not necessarily always the case. However, there are mathematical methods, called "factor **rotations**", which transform the estimated factors into new ones which capture exactly the same information from the raw data but use only few non-overlaping raw attributes. One such rotation often used in practice is called the `r rotation_used` rotation - but others are also available. 
 
-As seen in the analysis above, this is not necessarily always the case. However, there are mathematical methods, such as **rotations** of the factors, which transform the estimated factors into new ones which capture exactly the same information from the raw data but use only few non-overlaping raw attributes. One such rotation often used in practice is called the `r rotation_used` **Rotation** - but others are also available. 
-
-For example for our data one can "rotate" (mathematically) the original factors to generate new ones wich are easier to interpret while capturing the same information from the raw data as the initial factors found.  For our data, the `r factors_selected` selected factors look as follows after the `r rotation_used` rotation: 
+For our data, the `r factors_selected` selected factors look as follows after the `r rotation_used` rotation: 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 
@@ -328,7 +311,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 <br> <br>
@@ -348,7 +331,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 <br> <br>
@@ -394,7 +377,7 @@ if (factors_selected >=2){
   change<-colnames(dfnew)
   change[1]<-"Observation"
   colnames (dfnew)<-change
-  m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+  m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
   print(m1,'chart')
   
   } else {

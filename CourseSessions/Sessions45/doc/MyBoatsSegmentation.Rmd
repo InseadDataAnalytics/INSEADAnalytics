@@ -43,7 +43,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -90,7 +90,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -120,7 +120,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -154,7 +154,7 @@ euclidean_pairwise[euclidean_pairwise==10e10] <- NA
 <div class="row">
 <div class="col-md-4">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(euclidean_pairwise, caption=paste("Pairwise Distances between the first 5 observations using The Euclidean Distance Metric:", data_name,sep=" "), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5 observations using The Euclidean Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -170,7 +170,7 @@ manhattan_pairwise[manhattan_pairwise==10e10] <- NA
 <div class="row">
 <div class="col-md-4">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(manhattan_pairwise, caption=paste("Pairwise Distances between the first 5 observations using The Manhattan Distance Metric:", data_name, sep=" "), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(manhattan_pairwise, caption="Pairwise Distances between the first 5 observations using The Manhattan Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -193,7 +193,7 @@ Manual_Pairwise[Manual_Pairwise == 10e10] <- NA
 <div class="row">
 <div class="col-md-4">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(Manual_Pairwise, caption=paste("Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric:", data_name, sep=" "), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(Manual_Pairwise, caption="Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -262,7 +262,7 @@ max <- nrow(ProjectData)
 num <- max - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
 colnames(df1) <- c("distances","index")
-Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(Line,'chart')
 ```
 
@@ -272,8 +272,9 @@ For now let's consider the `r numb_clusters_used`-segments solution found by the
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
-ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData[,1])
-colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData)[1])
+
+ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
+colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
 ```
 
 
@@ -287,7 +288,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -302,8 +303,8 @@ Here are the clusters our observations belong to when we select `r numb_clusters
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm=kmeans_method)
 
-ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData[,1])
-colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData)[1])
+ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
+colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
 ```
 
 <div class="row">
@@ -316,7 +317,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 </div>
@@ -350,6 +351,10 @@ if (profile_with == "kmeans"){
   cluster_ids <-  cluster_ids_kmeans
   }
 
+# SAVE THE DATA in the cluster file
+NewData = matrix(cluster_memberships,ncol=1)
+write.csv(NewData,file=cluster_file)
+
 population_average = cbind(apply(ProjectData_profile, 2, mean), apply(ProjectData_profile, 2, sd))
 colnames(population_average) <- c("Population (AVG)", "Population (SD)")
 Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
@@ -374,7 +379,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 
 ```
@@ -407,7 +412,7 @@ population_average_matrix <- population_average[,"Population (AVG)",drop=F] %*% 
 cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 ## printing the result in a clean-slate table
-cat(renderHeatmapX(cluster_profile_ratios, border=1))
+cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
 ```
 
 
@@ -415,7 +420,7 @@ YOUR TEXT: INTERPRETATION
 
 #### Step 8. Assess the robustness of our clusters
 
-For the class, we will skip this step. However in practice this is a very important step. 
+We will skip this step for this exercise. However in practice this is a very important step. 
 
 
 Intepretation, Decisions and Conclusion

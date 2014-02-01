@@ -1,6 +1,13 @@
+
+############################################
+############################################
+# SOME LINES TO MODIFY (if you add/remove lines, these may change!): 24, 28, 29, 30, 34, 38, 42, 46, 49, 52 (typically only 29, 34, 38, 42, 46)
+############################################
+############################################
+
 # Project Name: "Sessions 2-3 of INSEAD Big Data Analytics for Business Course: "Dimensionality Reduction and Derived Attributes"
 
-rm(list = ls( )) # clean up the workspace
+rm(list = ls( ))
 
 ######################################################################
 
@@ -13,39 +20,33 @@ local_directory <- "~/INSEADjan2014/CourseSessions/Sessions23"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 
-
 # Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
-datafile_name="Boats" # do not add .csv at the end!
+datafile_name="MBAadmin" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 
-# Please ENTER the name Report and Slides (in the doc directory) to generate 
+# Please ENTER the filename of the Report and Slides (in the doc directory) to generate 
 
-#report_file = "Report_s23"
-report_file = "MyBoatsFactor"
+report_file = "Report_s23"
+#report_file = "MyBoatsFactor"
 slides_file = "Slides_s23"
 
-# this loads the selected data: DO NOT EDIT THIS LINE
-ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-ProjectData=data.matrix(ProjectData) # make sure the data are numeric!!!! check your file!
-
-# Please ENTER a name that describes the data for this project (which will appear on the titles of the plots)
-data_name="MBA Applicants"
-
-
-# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
-rotation_used="varimax"
+# Please ENTER then original raw attributes to use. 
+# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+factor_attributes_used= c(1:7)
 
 # Please ENTER the selection criterions for the factors to use. 
 # Choices: "eigenvalue", "variance", "manual"
 factor_selectionciterion = "eigenvalue"
 
-# Please ENTER the desired minumum variance explained (in case "variance" is the factor selection criterion used). 
+# Please ENTER the desired minumum variance explained 
+# (ONLY USED in case "variance" is the factor selection criterion used). 
 minimum_variance_explained = 65  # between 1 and 100
 
-# Please ENTER the number of factors to use in case "manual" is the factor selection criterion used
+# Please ENTER the number of factors to use 
+# (ONLY USED in case "manual" is the factor selection criterion used).
 manual_numb_factors_used = 2
 
-# Please ENTER then original raw attributes to use (default is 1:ncol(ProjectData), namely all of them)
-factor_attributes_used= (min(ncol(ProjectData),2)):(min(ncol(ProjectData),30))
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
+rotation_used="varimax"
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
@@ -71,6 +72,14 @@ start_local_webapp <- 0
 ################################################
 # Now run everything
 
+# this loads the selected data: DO NOT EDIT THIS LINE
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) 
+
+if (datafile_name == "Boats")
+  colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
+
+factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
 ProjectDataFactor=ProjectData[,factor_attributes_used]
 source(paste(local_directory,"R/library.R", sep="/"))
 if (require(shiny) == FALSE) 

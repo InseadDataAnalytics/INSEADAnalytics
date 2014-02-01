@@ -7,8 +7,12 @@ heatmapOutput <- function(outputId) {
   uiOutput(outputId)
 }
 
-renderHeatmapX <- function(data, style="norm", include.rownames = TRUE, include.colnames=TRUE, nsmall=2, border=0) {
-  vmax <- max(Filter(is.numeric, data))
+renderHeatmapX <- function(data, style="norm", include.rownames = TRUE, include.colnames=TRUE, nsmall=2, border=0, center = NULL, vrange_up = NULL, vrange_down = NULL, minvalue = 0) {
+  center = ifelse(is.null(center), mean(Filter(is.numeric, data)), center)
+  vrange_up = ifelse(is.null(vrange_up), abs(max(Filter(is.numeric, data-center))), vrange_up)
+  vrange_down = ifelse(is.null(vrange_down), abs(min(Filter(is.numeric, data-center))), vrange_down)  
+  vrange <- max(Filter(is.numeric, data)) - min(Filter(is.numeric, data))
+
   sigmoid <- function(v) { return(1 / (1 + exp(-v))) }
   toRGB <- function(intensity, sign) {
     rgb <- "rgb("
@@ -22,12 +26,13 @@ renderHeatmapX <- function(data, style="norm", include.rownames = TRUE, include.
   }
   heatmap <- function(x, style="norm") {
     if ("squashed" == style) {
-      squashed <- sigmoid(x) - 0.5
+      squashed <- sigmoid(ifelse(vrange, 4*(x-center)/vrange, 0))- 0.5
       intensity <- abs(squashed) / 0.5
       rgb <- toRGB(intensity, squashed >= 0)
     } else { # ("norm" == style)
-      intensity <- abs(x) / vmax
-      rgb <- toRGB(intensity, x > 0)
+      xdemean = ifelse(abs(x-center) > minvalue, x-center, 0)
+      intensity <- ifelse(xdemean > 0, abs(xdemean/vrange_up), abs(xdemean/vrange_down))
+      rgb <- toRGB(intensity, xdemean > 0)
     }
     return (paste("background-color:", rgb))
   }

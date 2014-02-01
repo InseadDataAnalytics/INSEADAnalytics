@@ -289,7 +289,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(euclidean_pairwise, caption=paste("Pairwise Distances between the first 5 observations using The Euclidean Distance Metric:", data_name,sep=" "), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5 observations using The Euclidean Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -320,7 +320,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(manhattan_pairwise, caption=paste("Pairwise Distances between the first 5 observations using The Manhattan Distance Metric:", data_name, sep=" "), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(manhattan_pairwise, caption="Pairwise Distances between the first 5 observations using The Manhattan Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -365,7 +365,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(Manual_Pairwise, caption=paste("Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric:", data_name, sep=" "), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(Manual_Pairwise, caption="Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -445,7 +445,7 @@ max <- nrow(ProjectData)
 num <- max - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
 colnames(df1) <- c("distances","index")
-Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
+Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(Line,'chart')
 ```
 <div>
@@ -457,10 +457,10 @@ print(Line,'chart')
 <br>
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
-cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=3)) # cut tree into 3 clusters
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
-ProjectData_with_hclust_membership <- cbind(cluster_memberships_hclust, ProjectData[,1])
-colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData)[1])
+ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
+colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
 ```
 
 
@@ -480,7 +480,7 @@ show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
-change[1]<-"Variables"
+change[1]<-"Observation"
 colnames (dfnew)<-change
 m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
 print(m1,'chart')
@@ -491,15 +491,17 @@ print(m1,'chart')
 
 ---
 
-## Cluster Membership: Kmeans Clustering
+## Cluster Membership: K-means Clustering
+
+Note: K-means does not necessarily lead to the same solution every time you run it
 
 <br>
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
-kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=1000, algorithm=kmeans_method)
+kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
 
-ProjectData_with_kmeans_membership <- cbind(kmeans_clusters$cluster, ProjectData[,1])
-colnames(ProjectData_with_kmeans_membership)<-c("Cluster_Membership", colnames(ProjectData)[1])
+ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
+colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
 ```
 
 
@@ -519,7 +521,7 @@ show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
-change[1]<-"Variables"
+change[1]<-"Observation"
 colnames (dfnew)<-change
 m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
 print(m1,'chart')
@@ -662,8 +664,7 @@ change[1]<-"Variables"
 colnames (dfnew)<-change
 m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
 #print(m1,'chart')
-cat(renderHeatmapX(cluster_profile_ratios, border=1))
-
+cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
 ```
 </div>
 </div>
@@ -718,15 +719,21 @@ Are the clusters stable when we use:
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 # First, make sure the segment ids are correctly aligned
-max_cluster_overlap <- sapply(1:length(cluster_ids_kmeans), 
-                              function(i) {
-                                overlaps <- sapply(1:length(cluster_ids_hclust), 
-                                                   function(j) length
-                                                   (intersect(which(cluster_memberships_kmeans==i), 
-                                                              which(cluster_memberships_hclust==j))));
-                                which.max(overlaps)
-                                }
-                              )
+cluster_overlaps <- Reduce(cbind,lapply(1:length(cluster_ids_kmeans), function(i) {
+  overlaps <- sapply(1:length(cluster_ids_hclust), function(j) {
+    length(intersect(which(cluster_memberships_kmeans==i), 
+                     which(cluster_memberships_hclust==j))) } );
+  overlaps}))
+max_cluster_overlap = rep(0,length(cluster_ids_kmeans))
+for (i in 1:length(cluster_ids_kmeans)){
+  highest_now = which.max(cluster_overlaps)
+  hclust_id_now = highest_now %% length(cluster_ids_kmeans)
+  hclust_id_now = ifelse(hclust_id_now == 0, 3, hclust_id_now)
+  kmeans_id_now = ceiling(highest_now/length(cluster_ids_kmeans))
+  max_cluster_overlap[kmeans_id_now] <- hclust_id_now
+  cluster_overlaps[hclust_id_now,] <- 0
+  cluster_overlaps[,kmeans_id_now] <- 0
+}
 cluster_memberships_kmeans_aligned <- rep(0,length(cluster_memberships_kmeans))
 for (i in 1:length(cluster_ids_kmeans))
   cluster_memberships_kmeans_aligned[(cluster_memberships_kmeans==i)] <- max_cluster_overlap[i]
