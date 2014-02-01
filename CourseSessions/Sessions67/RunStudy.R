@@ -27,8 +27,6 @@ slides_file = "Slides_s67"
 ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) # make sure the data are numeric!!!! check your file!
 
-# Please ENTER a name that describes the data for this project
-data_name="Boats Customers"
 
 # Please ENTER the name of the class variable:
 dependent_variable="Q18_PurchaseFuture"
@@ -83,6 +81,7 @@ Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predic
 colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
 rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
 test_data_percent = 100-estimation_data_percent-validation_data_percent
+data_name="the data"
 # what to pass to CART.... do not change this line!!!
 source(paste(local_directory,"R/library.R", sep="/"))
 if (require(shiny) == FALSE) 
