@@ -33,22 +33,33 @@ With the aid of a market research firm, the boating company gathered various dat
 
 After analyzing the survey data (using for example factor and cluster analysis), the company managers decided to only focus on a few purchase drivers which they thought were the most important ones. They decided to perform the classification and purchase drivers analysis using only the responses to the following questions:
 
-1. "Q16_2_Has.best.in.class.customer.service"                                    
-2. "Q16_5_Is.a.leader.in.safety"                                                 
-3. "Q16_8_Is.a.good.brand.for.people.that.are.new.to.boating"                    
-4. "Q16_10_Offers.boats.that.provide.a.fast.and.powerful.boating.experience"     
-5. "Q16_11_Offers.the.best.boats.for.socializing"                                
-6. "Q16_12_Offers.the.best.boats.for.water.sports..e.g...tubing..ski..wakeboard."
-7. "Q16_13_Offers.boats.with.superior.interior.style"                            
-8. "Q16_17_Offers.boats.that.can.handle.rough.weather.or.choppy.water"           
-9. "Q16_18_Offers.boats.that.can.handle.frequent.and.heavy.usage"                
-10. "Q16_21_Offers.boats.that.are.easy.to.maintain.and.or.repair"                 
-11. "Q16_22_Offers.boats.that.are.easy.to.use"                                    
-12. "Q16_24_Has.low.prices"                                                       
-13. "Q16_25_Is.a.brand.that.gives.me.peace.of.mind"                               
-14. "Q16_27_Is.a.brand.that.impresses.others"                                     
-15. "Q17_Recommend"                                                               
-16. "Q18_PurchaseFuture" 
+1 "Q16_1_Is a brand that has been around for a long time"                       
+2 "Q16_2_Has best in class customer service"                                    
+3 "Q16_3_Has a strong dealer network"                                           
+4 "Q16_4_Is a leader in cutting edge technology"                                
+5 "Q16_5_Is a leader in safety"                                                 
+6 "Q16_6_Is known for its innovative products"                                  
+7 "Q16_7_Is a brand for people who are serious about boating"                   
+8 "Q16_8_Is a good brand for people that are new to boating"                    
+9 "Q16_9_Is a brand I see in the water all the time"                            
+10 "Q16_10_Offers boats that provide a fast and powerful boating experience"     
+11 "Q16_11_Offers the best boats for socializing"                                
+12 "Q16_12_Offers the best boats for water sports  e g   tubing  ski  wakeboard "
+13 "Q16_13_Offers boats with superior interior style"                            
+14 "Q16_14_Offers boats with superior exterior style"                            
+15 "Q16_15_Offers boats that stand out from the crowd"                           
+16 "Q16_16_Offers boats that look cool"                                          
+17 "Q16_17_Offers boats that can handle rough weather or choppy water"           
+18 "Q16_18_Offers boats that can handle frequent and heavy usage"                
+19 "Q16_19_Offers a wide breadth of product offerings and accessories"           
+20 "Q16_20_Offers boats that I can move around safely"                           
+21 "Q16_21_Offers boats that are easy to maintain and or repair"                 
+22 "Q16_22_Offers boats that are easy to use"                                    
+23 "Q16_23_Offers boats that are easy to clean up"                               
+24 "Q16_24_Has low prices"                                                       
+25 "Q16_25_Is a brand that gives me peace of mind"                               
+26 "Q16_26_Makes me feel I made a smart decision"                                
+27 "Q16_27_Is a brand that impresses others"    
 
 Let's get the data and see it for a few customers. This is how the first `r min(max_data_report, nrow(ProjectData))` out of the total of `r nrow(ProjectData)` rows look:
 <br>
@@ -374,12 +385,14 @@ tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.impor
 tree_importance_final = rep(0,length(independent_variables))
 tree_importance_final[tree_ordered_drivers] <- tree_importance
 tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+tree_importance_final <- tree_importance_final*sign(log_importance)
 
 large_tree_importance = CART_tree_large$variable.importance
 large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
 large_tree_importance_final = rep(0,length(independent_variables))
 large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
 large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+large_tree_importance_final <- large_tree_importance_final*sign(log_importance)
 
 Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log_importance)
 colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
@@ -1025,7 +1038,7 @@ print(xtable(cluster_size ,caption="Number of Observations per segment in the Da
 </div>
 </div>
 
-Using exactly the same analysis as above, let's see now the key drivers as well as the profit curve in the test data (only, for simplicity) when we perform the analysis for each segment separately (note: we only use segments with at least `r min_segment` datapoints). For simplicity we only show here the key drivers using only the logistic regression model for each segment.
+Using exactly the same analysis as above, let's see now the key drivers as well as the profit curve in the test data (only, for simplicity) when we perform the analysis for each segment separately (note: we only use segments with at least `r min_segment` datapoints). For simplicity we only show here the key drivers using only the first CARTmodel for each segment.
 
 <br>
 <br>
@@ -1076,10 +1089,18 @@ for (i in unique(cluster_ids)){
     
     
     log_coefficients = round(summary(logreg_solution)$coefficients,1)
-    Log_Drivers_segment = log_coefficients[,"z value", drop=F]
+    Log_Drivers_segment = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
     Log_Drivers_segment = Log_Drivers_segment/max(abs(Log_Drivers_segment))
-    Log_Drivers = cbind(Log_Drivers,Log_Drivers_segment)
     
+    tree_importance = CART_tree$variable.importance
+    tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+    tree_importance_final = rep(0,length(independent_variables))
+    tree_importance_final[tree_ordered_drivers] <- tree_importance
+    tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+    tree_importance_final <- tree_importance_final*sign(Log_Drivers_segment)
+    
+    Log_Drivers = cbind(Log_Drivers,tree_importance_final)
+
     
     }
   }

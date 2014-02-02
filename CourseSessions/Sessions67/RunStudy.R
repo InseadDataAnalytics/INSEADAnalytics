@@ -118,8 +118,7 @@ source(paste(local_directory,"R/runcode.R", sep = "/"))
 if (start_local_webapp){
     
   # first load the data files in the data directory so that the App see them
-  Resort_Visits <- read.csv(paste(local_directory, "data/Resort_Visits.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-  Boat_Purchase <- read.csv(paste(local_directory, "data/Boat_Purchase.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+  Boat_Purchase <- read.csv(paste(local_directory, "data/Boat.csv", sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
   Boat_Purchase=data.matrix(Boat_Purchase) # this file needs to be converted to "numeric"....
   
   # now run the app

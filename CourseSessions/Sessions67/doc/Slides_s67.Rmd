@@ -339,12 +339,14 @@ tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.impor
 tree_importance_final = rep(0,length(independent_variables))
 tree_importance_final[tree_ordered_drivers] <- tree_importance
 tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+tree_importance_final <- tree_importance_final*sign(log_importance)
 
 large_tree_importance = CART_tree_large$variable.importance
 large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
 large_tree_importance_final = rep(0,length(independent_variables))
 large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
 large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+large_tree_importance_final <- large_tree_importance_final*sign(log_importance)
 
 Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log_importance)
 colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
@@ -911,9 +913,17 @@ for (i in unique(cluster_ids)){
     
     
     log_coefficients = round(summary(logreg_solution)$coefficients,1)
-    Log_Drivers_segment = log_coefficients[,"z value", drop=F]
+    Log_Drivers_segment = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
     Log_Drivers_segment = Log_Drivers_segment/max(abs(Log_Drivers_segment))
-    Log_Drivers = cbind(Log_Drivers,Log_Drivers_segment)
+    
+    tree_importance = CART_tree$variable.importance
+    tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+    tree_importance_final = rep(0,length(independent_variables))
+    tree_importance_final[tree_ordered_drivers] <- tree_importance
+    tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+    tree_importance_final <- tree_importance_final*sign(Log_Drivers_segment)
+    
+    Log_Drivers = cbind(Log_Drivers,tree_importance_final)
     
     
     }
