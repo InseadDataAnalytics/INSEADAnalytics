@@ -164,7 +164,7 @@
 <li><p>Decide whether to scale or standardize the data</p></li>
 <li><p>Check the correlation matrix to see if Factor Analysis makes sense</p></li>
 <li><p>Develop a scree plot and decide on the number of factors to be derived</p></li>
-<li><p>Interpret the factors and consider factor rotations (technical but useful)</p></li>
+<li><p>Interpret the factors (consider factor rotations - technical but useful)</p></li>
 <li><p>Save factor scores for subsequent analyses</p></li>
 </ol>
 
@@ -197,12 +197,10 @@
 
 <slide class="" id="slide-10" style="background:;">
   <hgroup>
-    <h2>Step 1: Confirm the data are metric</h2>
+    <h2>Example Factors</h2>
   </hgroup>
   <article data-timings="">
-    <p>(Pls scroll to see the data)</p>
-
-<style>
+    <style>
 .wrapper{
 height: 120%;
 width: 900px;
@@ -214,212 +212,63 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:14 2014 -->
+<!-- Sat Feb 01 19:54:11 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b808eb76d8 () {
+function gvisDataTableID56d74742d136e () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
- "1",
-580,
-2,
-3.5,
-5,
-3.8,
-4 
+ "GPA",
+0.96,
+-0.05 
 ],
 [
- "2",
-570,
-2,
-3.8,
-6,
-3.8,
-3.8 
+ "GMAT",
+0.95,
+0.19 
 ],
 [
- "3",
-690,
-3,
-3.3,
-3,
-3.2,
-3.6 
+ "Fellow",
+0.95,
+-0.01 
 ],
 [
- "4",
-760,
-3,
-3.8,
-5,
-3.9,
-3.2 
+ "Comm",
+0.7,
+0.54 
 ],
 [
- "5",
-480,
-2,
-3.2,
-6,
-3.8,
-3.8 
+ "Job.Ex",
+0.19,
+0.93 
 ],
 [
- "6",
-520,
-2.5,
-2.6,
-2,
-2.5,
-2.4 
+ "Organze",
+0.01,
+0.89 
 ],
 [
- "7",
-670,
-3,
-3.7,
-4,
-3.5,
-2.9 
-],
-[
- "8",
-760,
-3,
-3.9,
-5,
-3.3,
-3.2 
-],
-[
- "9",
-380,
-1,
-2,
-3,
-2.9,
-3.1 
-],
-[
- "10",
-560,
-3,
-2.8,
-2,
-1,
-2.8 
-],
-[
- "11",
-480,
-2,
-3.2,
-4,
-3.4,
-3.7 
-],
-[
- "12",
-590,
-3.4,
-3.4,
-5,
-3.7,
-3.6 
-],
-[
- "13",
-720,
-3.8,
-3.8,
-6,
-3.8,
-3.7 
-],
-[
- "14",
-680,
-3,
-3.6,
-6,
-3.4,
-3.8 
-],
-[
- "15",
-700,
-3.7,
-3.8,
-2,
-2.1,
-2.7 
-],
-[
- "16",
-560,
-2.8,
-3.4,
-5,
-3.8,
-2.7 
-],
-[
- "17",
-440,
-1,
-3.3,
-5,
-3.5,
-3.8 
-],
-[
- "18",
-430,
-1,
-3.1,
-3,
-3.1,
-2.9 
-],
-[
- "19",
-420,
-1,
-2.8,
-2,
-2.3,
-2.5 
-],
-[
- "20",
-680,
-2.8,
-3.7,
-6,
-3.2,
-3.8 
+ "Extra",
+0.01,
+0.86 
 ] 
 ];
 data.addColumn('string','Variables');
-data.addColumn('number','GMAT');
-data.addColumn('number','Fellow');
-data.addColumn('number','Comm');
-data.addColumn('number','Job.Ex');
-data.addColumn('number','Organze');
-data.addColumn('number','Extra');
+data.addColumn('number','Component 1');
+data.addColumn('number','Component 2');
 data.addRows(datajson);
 return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b808eb76d8() {
-var data = gvisDataTableID1b808eb76d8();
+function drawChartTableID56d74742d136e() {
+var data = gvisDataTableID56d74742d136e();
 var options = {};
 options["allowHtml"] = true;
 options["showRowNumber"] = true;
@@ -429,7 +278,7 @@ options["allowHTML"] = true;
 options["page"] = "disable";
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b808eb76d8')
+    document.getElementById('TableID56d74742d136e')
     );
     chart.draw(data,options);
     
@@ -453,9 +302,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b808eb76d8);
+callbacks.push(drawChartTableID56d74742d136e);
 })();
-function displayChartTableID1b808eb76d8() {
+function displayChartTableID56d74742d136e() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -479,11 +328,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b808eb76d8"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d74742d136e"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b808eb76d8"
+<div id="TableID56d74742d136e"
   style="width: 1220px; height: 400px;">
 </div>
 
@@ -496,6 +345,325 @@ callbacks.shift()();
 </slide>
 
 <slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Step 1: Confirm the data are metric</h2>
+  </hgroup>
+  <article data-timings="">
+    <style>
+.wrapper{
+height: 120%;
+width: 900px;
+overflow: auto;
+}
+</style>
+
+<div class="wrapper" style="font-size:20px;">
+<div class="row">
+<div class="col-md-3">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Sat Feb 01 19:54:13 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID56d746f03211a () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+3,
+580,
+2,
+3.5,
+5,
+3.8,
+4 
+],
+[
+ "2",
+3.2,
+570,
+2,
+3.8,
+6,
+3.8,
+3.8 
+],
+[
+ "3",
+3.7,
+690,
+3,
+3.3,
+3,
+3.2,
+3.6 
+],
+[
+ "4",
+3.9,
+760,
+3,
+3.8,
+5,
+3.9,
+3.2 
+],
+[
+ "5",
+2.8,
+480,
+2,
+3.2,
+6,
+3.8,
+3.8 
+],
+[
+ "6",
+3.4,
+520,
+2.5,
+2.6,
+2,
+2.5,
+2.4 
+],
+[
+ "7",
+3.6,
+670,
+3,
+3.7,
+4,
+3.5,
+2.9 
+],
+[
+ "8",
+3.6,
+760,
+3,
+3.9,
+5,
+3.3,
+3.2 
+],
+[
+ "9",
+2.8,
+380,
+1,
+2,
+3,
+2.9,
+3.1 
+],
+[
+ "10",
+3.6,
+560,
+3,
+2.8,
+2,
+1,
+2.8 
+],
+[
+ "11",
+2.8,
+480,
+2,
+3.2,
+4,
+3.4,
+3.7 
+],
+[
+ "12",
+3.6,
+590,
+3.4,
+3.4,
+5,
+3.7,
+3.6 
+],
+[
+ "13",
+3.8,
+720,
+3.8,
+3.8,
+6,
+3.8,
+3.7 
+],
+[
+ "14",
+3.5,
+680,
+3,
+3.6,
+6,
+3.4,
+3.8 
+],
+[
+ "15",
+3.9,
+700,
+3.7,
+3.8,
+2,
+2.1,
+2.7 
+],
+[
+ "16",
+3.3,
+560,
+2.8,
+3.4,
+5,
+3.8,
+2.7 
+],
+[
+ "17",
+2.8,
+440,
+1,
+3.3,
+5,
+3.5,
+3.8 
+],
+[
+ "18",
+2.5,
+430,
+1,
+3.1,
+3,
+3.1,
+2.9 
+],
+[
+ "19",
+2.5,
+420,
+1,
+2.8,
+2,
+2.3,
+2.5 
+],
+[
+ "20",
+3.8,
+680,
+2.8,
+3.7,
+6,
+3.2,
+3.8 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','GPA');
+data.addColumn('number','GMAT');
+data.addColumn('number','Fellow');
+data.addColumn('number','Comm');
+data.addColumn('number','Job.Ex');
+data.addColumn('number','Organze');
+data.addColumn('number','Extra');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID56d746f03211a() {
+var data = gvisDataTableID56d746f03211a();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID56d746f03211a')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID56d746f03211a);
+})();
+function displayChartTableID56d746f03211a() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d746f03211a"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID56d746f03211a"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div>
+</div></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
   <hgroup>
     <h2>Step 2: Decide whether to scale or standardize the data: Summary Statistics</h2>
   </hgroup>
@@ -512,18 +680,28 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:14 2014 -->
+<!-- Sat Feb 01 19:54:13 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b8058814241 () {
+function gvisDataTableID56d742d44a9 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
+ "GPA",
+2.5,
+2.8,
+3.45,
+3.31,
+3.62,
+3.9,
+0.47 
+],
+[
  "GMAT",
 380,
 480,
@@ -597,8 +775,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b8058814241() {
-var data = gvisDataTableID1b8058814241();
+function drawChartTableID56d742d44a9() {
+var data = gvisDataTableID56d742d44a9();
 var options = {};
 options["allowHtml"] = true;
 options["showRowNumber"] = true;
@@ -608,7 +786,7 @@ options["allowHTML"] = true;
 options["page"] = "disable";
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b8058814241')
+    document.getElementById('TableID56d742d44a9')
     );
     chart.draw(data,options);
     
@@ -632,9 +810,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b8058814241);
+callbacks.push(drawChartTableID56d742d44a9);
 })();
-function displayChartTableID1b8058814241() {
+function displayChartTableID56d742d44a9() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -658,11 +836,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b8058814241"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d742d44a9"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b8058814241"
+<div id="TableID56d742d44a9"
   style="width: 1220px; height: 400px;">
 </div>
 
@@ -674,7 +852,7 @@ callbacks.shift()();
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-12" style="background:;">
+<slide class="" id="slide-13" style="background:;">
   <hgroup>
     <h2>Data Standardization: Example Code</h2>
   </hgroup>
@@ -693,7 +871,7 @@ callbacks.shift()();
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-13" style="background:;">
+<slide class="" id="slide-14" style="background:;">
   <hgroup>
     <h2>Standardized Data: Summary Statistics</h2>
   </hgroup>
@@ -710,18 +888,28 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:14 2014 -->
+<!-- Sat Feb 01 19:54:15 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b80165c5c2b () {
+function gvisDataTableID56d748a547bc () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
+ "GPA",
+-1.72,
+-1.08,
+0.31,
+0,
+0.68,
+1.27,
+1 
+],
+[
  "GMAT",
 -1.7,
 -0.87,
@@ -795,8 +983,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b80165c5c2b() {
-var data = gvisDataTableID1b80165c5c2b();
+function drawChartTableID56d748a547bc() {
+var data = gvisDataTableID56d748a547bc();
 var options = {};
 options["allowHtml"] = true;
 options["showRowNumber"] = true;
@@ -806,7 +994,7 @@ options["allowHTML"] = true;
 options["page"] = "disable";
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b80165c5c2b')
+    document.getElementById('TableID56d748a547bc')
     );
     chart.draw(data,options);
     
@@ -830,9 +1018,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b80165c5c2b);
+callbacks.push(drawChartTableID56d748a547bc);
 })();
-function displayChartTableID1b80165c5c2b() {
+function displayChartTableID56d748a547bc() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -856,11 +1044,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b80165c5c2b"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d748a547bc"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b80165c5c2b"
+<div id="TableID56d748a547bc"
   style="width: 1220px; height: 400px;">
 </div>
 
@@ -872,7 +1060,7 @@ callbacks.shift()();
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-14" style="background:;">
+<slide class="" id="slide-15" style="background:;">
   <hgroup>
     <h2>Step 3:  Check correlation matrix to see if Factor Analysis makes sense</h2>
   </hgroup>
@@ -892,6 +1080,7 @@ overflow: auto;
   <thead class="thead">
     <tr>
       <th></th>
+      <th>GPA</th>
       <th>GMAT</th>
       <th>Fellow</th>
       <th>Comm</th>
@@ -902,7 +1091,18 @@ overflow: auto;
   </thead>
   <tbody>
     <tr>
+      <td align="right">GPA</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(25,255,25)">0.90</td>
+      <td align="right" style="background-color: rgb(20,255,20)">0.92</td>
+      <td align="right" style="background-color: rgb(112,255,112)">0.56</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+    </tr>
+    <tr>
       <td align="right">GMAT</td>
+      <td align="right" style="background-color: rgb(25,255,25)">0.90</td>
       <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
       <td align="right" style="background-color: rgb(35,255,35)">0.86</td>
       <td align="right" style="background-color: rgb(56,255,56)">0.78</td>
@@ -912,6 +1112,7 @@ overflow: auto;
     </tr>
     <tr>
       <td align="right">Fellow</td>
+      <td align="right" style="background-color: rgb(20,255,20)">0.92</td>
       <td align="right" style="background-color: rgb(35,255,35)">0.86</td>
       <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
       <td align="right" style="background-color: rgb(104,255,104)">0.59</td>
@@ -921,6 +1122,7 @@ overflow: auto;
     </tr>
     <tr>
       <td align="right">Comm</td>
+      <td align="right" style="background-color: rgb(112,255,112)">0.56</td>
       <td align="right" style="background-color: rgb(56,255,56)">0.78</td>
       <td align="right" style="background-color: rgb(104,255,104)">0.59</td>
       <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
@@ -930,6 +1132,7 @@ overflow: auto;
     </tr>
     <tr>
       <td align="right">Job.Ex</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
       <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
       <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
       <td align="right" style="background-color: rgb(102,255,102)">0.60</td>
@@ -939,6 +1142,7 @@ overflow: auto;
     </tr>
     <tr>
       <td align="right">Organze</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
       <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
       <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
       <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
@@ -948,6 +1152,7 @@ overflow: auto;
     </tr>
     <tr>
       <td align="right">Extra</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
       <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
       <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
       <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
@@ -967,7 +1172,7 @@ overflow: auto;
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-15" style="background:;">
+<slide class="" id="slide-16" style="background:;">
   <hgroup>
     <h2>Step 4. Develop a scree plot and decide on the number of factors to be derived</h2>
   </hgroup>
@@ -991,7 +1196,7 @@ overflow: auto;
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-16" style="background:;">
+<slide class="" id="slide-17" style="background:;">
   <hgroup>
     <h2>How Many Factors? Eigenvalues and Variance Explained</h2>
   </hgroup>
@@ -1010,51 +1215,57 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:15 2014 -->
+<!-- Sat Feb 01 19:54:16 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b805810e25 () {
+function gvisDataTableID56d74e443cee () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
  "Component No:1",
-3.309070416,
-55.15117361,
-55.15117361 
+3.743590932,
+53.47987046,
+53.47987046 
 ],
 [
  "Component No:2",
-1.805254162,
-30.08756937,
-85.23874297 
+2.267883829,
+32.39834042,
+85.87821088 
 ],
 [
  "Component No:3",
-0.4058662675,
-6.764437792,
-92.00318076 
+0.4248511117,
+6.069301595,
+91.94751247 
 ],
 [
  "Component No:4",
-0.2563909425,
-4.273182375,
-96.27636314 
+0.2879014132,
+4.112877331,
+96.0603898 
 ],
 [
  "Component No:5",
-0.13916096,
-2.319349333,
-98.59571247 
+0.1395511834,
+1.993588334,
+98.05397814 
 ],
 [
  "Component No:6",
-0.08425725164,
-1.404287527,
+0.09841835557,
+1.405976508,
+99.45995465 
+],
+[
+ "Component No:7",
+0.0378031747,
+0.5400453529,
 100 
 ] 
 ];
@@ -1067,8 +1278,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b805810e25() {
-var data = gvisDataTableID1b805810e25();
+function drawChartTableID56d74e443cee() {
+var data = gvisDataTableID56d74e443cee();
 var options = {};
 options["allowHtml"] = true;
 options["width"] =   1200;
@@ -1084,7 +1295,7 @@ options["page"] = "disable";
   dataFormat3.format(data, 3);
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b805810e25')
+    document.getElementById('TableID56d74e443cee')
     );
     chart.draw(data,options);
     
@@ -1108,9 +1319,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b805810e25);
+callbacks.push(drawChartTableID56d74e443cee);
 })();
-function displayChartTableID1b805810e25() {
+function displayChartTableID56d74e443cee() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -1134,11 +1345,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b805810e25"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d74e443cee"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b805810e25"
+<div id="TableID56d74e443cee"
   style="width: 1200px; height: 400px;">
 </div>
 
@@ -1150,52 +1361,57 @@ callbacks.shift()();
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-17" style="background:;">
+<slide class="" id="slide-18" style="background:;">
   <hgroup>
     <h2>How Many Factors? Scree Plot</h2>
   </hgroup>
   <article data-timings="">
     <!-- LineChart generated in R 3.0.2 by googleVis 0.4.7 package -->
 
-<!-- Mon Jan 27 19:34:15 2014 -->
+<!-- Sat Feb 01 19:54:16 2014 -->
 
 <!-- jsHeader -->
 
 <script type="text/javascript">
  
 // jsData 
-function gvisDataLineChartID1b802940142a () {
+function gvisDataLineChartID56d74736c2b2b () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
  "1",
-3.309070416,
+3.743590932,
 1 
 ],
 [
  "2",
-1.805254162,
+2.267883829,
 1 
 ],
 [
  "3",
-0.4058662675,
+0.4248511117,
 1 
 ],
 [
  "4",
-0.2563909425,
+0.2879014132,
 1 
 ],
 [
  "5",
-0.13916096,
+0.1395511834,
 1 
 ],
 [
  "6",
-0.08425725164,
+0.09841835557,
+1 
+],
+[
+ "7",
+0.0378031747,
 1 
 ] 
 ];
@@ -1207,8 +1423,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartLineChartID1b802940142a() {
-var data = gvisDataLineChartID1b802940142a();
+function drawChartLineChartID56d74736c2b2b() {
+var data = gvisDataLineChartID56d74736c2b2b();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Scree plot";
@@ -1220,7 +1436,7 @@ options["vAxes"] = [{title:'Eigenvalues'}];
 options["series"] = [{color:'green',pointSize:3, targetAxisIndex: 0}];
 
     var chart = new google.visualization.LineChart(
-    document.getElementById('LineChartID1b802940142a')
+    document.getElementById('LineChartID56d74736c2b2b')
     );
     chart.draw(data,options);
     
@@ -1244,9 +1460,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartLineChartID1b802940142a);
+callbacks.push(drawChartLineChartID56d74736c2b2b);
 })();
-function displayChartLineChartID1b802940142a() {
+function displayChartLineChartID56d74736c2b2b() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -1272,12 +1488,12 @@ callbacks.shift()();
 
 <!-- jsChart -->  
 
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartLineChartID1b802940142a"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartLineChartID56d74736c2b2b"></script>
  
 
 <!-- divChart -->
 
-<div id="LineChartID1b802940142a"
+<div id="LineChartID56d74736c2b2b"
   style="width: 900px; height: 500px;">
 </div>
 
@@ -1285,7 +1501,7 @@ callbacks.shift()();
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-18" style="background:;">
+<slide class="" id="slide-19" style="background:;">
   <hgroup>
     <h2>How many factors?</h2>
   </hgroup>
@@ -1304,183 +1520,9 @@ callbacks.shift()();
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-19" style="background:;">
-  <hgroup>
-    <h2>Example Factors</h2>
-  </hgroup>
-  <article data-timings="">
-    <p><br></p>
-
-<style>
-.wrapper{
-height: 120%;
-width: 900px;
-overflow: auto;
-}
-</style>
-
-<div class="wrapper" style="font-size:20px;">
-<div class="row">
-<div class="col-md-3">
-<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:15 2014 -->
-
-
-<!-- jsHeader -->
-<script type="text/javascript">
- 
-// jsData 
-function gvisDataTableID1b805b348fd () {
-var data = new google.visualization.DataTable();
-var datajson =
-[
- [
- "GMAT",
-0.73,
-0.64,
-0.01,
--0.01,
-0.11,
--0.21 
-],
-[
- "Fellow",
-0.57,
-0.75,
-0.13,
-0.28,
--0.04,
-0.14 
-],
-[
- "Comm",
-0.87,
-0.26,
--0.16,
--0.37,
--0.03,
-0.11 
-],
-[
- "Job.Ex",
-0.85,
--0.43,
-0,
-0.08,
--0.28,
--0.08 
-],
-[
- "Organze",
-0.71,
--0.54,
--0.37,
-0.19,
-0.16,
-0.03 
-],
-[
- "Extra",
-0.67,
--0.55,
-0.47,
--0.05,
-0.13,
-0.03 
-] 
-];
-data.addColumn('string','Variables');
-data.addColumn('number','Component 1');
-data.addColumn('number','Component 2');
-data.addColumn('number','Component 3');
-data.addColumn('number','Component 4');
-data.addColumn('number','Component 5');
-data.addColumn('number','Component 6');
-data.addRows(datajson);
-return(data);
-}
- 
-// jsDrawChart
-function drawChartTableID1b805b348fd() {
-var data = gvisDataTableID1b805b348fd();
-var options = {};
-options["allowHtml"] = true;
-options["showRowNumber"] = true;
-options["width"] =   1220;
-options["height"] =    400;
-options["allowHTML"] = true;
-options["page"] = "disable";
-
-    var chart = new google.visualization.Table(
-    document.getElementById('TableID1b805b348fd')
-    );
-    chart.draw(data,options);
-    
-
-}
-  
- 
-// jsDisplayChart
-(function() {
-var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-var chartid = "table";
-  
-// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
-var i, newPackage = true;
-for (i = 0; newPackage && i < pkgs.length; i++) {
-if (pkgs[i] === chartid)
-newPackage = false;
-}
-if (newPackage)
-  pkgs.push(chartid);
-  
-// Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b805b348fd);
-})();
-function displayChartTableID1b805b348fd() {
-  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-  window.clearTimeout(window.__gvisLoad);
-  // The timeout is set to 100 because otherwise the container div we are
-  // targeting might not be part of the document yet
-  window.__gvisLoad = setTimeout(function() {
-  var pkgCount = pkgs.length;
-  google.load("visualization", "1", { packages:pkgs, callback: function() {
-  if (pkgCount != pkgs.length) {
-  // Race condition where another setTimeout call snuck in after us; if
-  // that call added a package, we must not shift its callback
-  return;
-}
-while (callbacks.length > 0)
-callbacks.shift()();
-} });
-}, 100);
-}
- 
-// jsFooter
-</script>
- 
-<!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b805b348fd"></script>
- 
-<!-- divChart -->
-  
-<div id="TableID1b805b348fd"
-  style="width: 1220px; height: 400px;">
-</div>
-
-<p></div>
-</div>
-</div></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
 <slide class="" id="slide-20" style="background:;">
   <hgroup>
-    <h2>Step 5. Interpret the factors and Consider rotation of factors (technical but useful)</h2>
+    <h2>Step 5. Interpret the factors</h2>
   </hgroup>
   <article data-timings="">
     <p>Rotated Selected Factors using the varimax rotation.</p>
@@ -1497,46 +1539,51 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:15 2014 -->
+<!-- Sat Feb 01 19:54:17 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b8086864f7 () {
+function gvisDataTableID56d745ddd8b7 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
- "Job.Ex",
-0.92,
-0.23 
-],
-[
- "Organze",
-0.89,
-0.07 
-],
-[
- "Extra",
-0.87,
-0.04 
-],
-[
- "Comm",
-0.48,
-0.77 
+ "GPA",
+0.96,
+-0.05 
 ],
 [
  "GMAT",
-0.13,
-0.96 
+0.95,
+0.19 
 ],
 [
  "Fellow",
--0.07,
-0.94 
+0.95,
+-0.01 
+],
+[
+ "Comm",
+0.7,
+0.54 
+],
+[
+ "Job.Ex",
+0.19,
+0.93 
+],
+[
+ "Organze",
+0.01,
+0.89 
+],
+[
+ "Extra",
+0.01,
+0.86 
 ] 
 ];
 data.addColumn('string','Variables');
@@ -1547,8 +1594,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b8086864f7() {
-var data = gvisDataTableID1b8086864f7();
+function drawChartTableID56d745ddd8b7() {
+var data = gvisDataTableID56d745ddd8b7();
 var options = {};
 options["allowHtml"] = true;
 options["showRowNumber"] = true;
@@ -1558,7 +1605,7 @@ options["allowHTML"] = true;
 options["page"] = "disable";
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b8086864f7')
+    document.getElementById('TableID56d745ddd8b7')
     );
     chart.draw(data,options);
     
@@ -1582,9 +1629,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b8086864f7);
+callbacks.push(drawChartTableID56d745ddd8b7);
 })();
-function displayChartTableID1b8086864f7() {
+function displayChartTableID56d745ddd8b7() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -1608,11 +1655,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b8086864f7"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d745ddd8b7"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b8086864f7"
+<div id="TableID56d745ddd8b7"
   style="width: 1220px; height: 400px;">
 </div>
 
@@ -1626,7 +1673,7 @@ callbacks.shift()();
 
 <slide class="" id="slide-21" style="background:;">
   <hgroup>
-    <h2>Let&#39;s supress the small numbers...</h2>
+    <h2>For visualization, let&#39;s supress the small numbers...</h2>
   </hgroup>
   <article data-timings="">
     <p><br></p>
@@ -1643,46 +1690,51 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:17 2014 -->
+<!-- Sat Feb 01 19:54:17 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b8016665619 () {
+function gvisDataTableID56d74449d41c8 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
- "Job.Ex",
-0.92,
+ "GPA",
+0.96,
 null 
 ],
 [
- "Organze",
-0.89,
+ "GMAT",
+0.95,
 null 
 ],
 [
- "Extra",
-0.87,
+ "Fellow",
+0.95,
 null 
 ],
 [
  "Comm",
-null,
-0.77 
+0.7,
+0.54 
 ],
 [
- "GMAT",
+ "Job.Ex",
 null,
-0.96 
+0.93 
 ],
 [
- "Fellow",
+ "Organze",
 null,
-0.94 
+0.89 
+],
+[
+ "Extra",
+null,
+0.86 
 ] 
 ];
 data.addColumn('string','Variables');
@@ -1693,8 +1745,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b8016665619() {
-var data = gvisDataTableID1b8016665619();
+function drawChartTableID56d74449d41c8() {
+var data = gvisDataTableID56d74449d41c8();
 var options = {};
 options["allowHtml"] = true;
 options["showRowNumber"] = true;
@@ -1704,7 +1756,7 @@ options["allowHTML"] = true;
 options["page"] = "disable";
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b8016665619')
+    document.getElementById('TableID56d74449d41c8')
     );
     chart.draw(data,options);
     
@@ -1728,9 +1780,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b8016665619);
+callbacks.push(drawChartTableID56d74449d41c8);
 })();
-function displayChartTableID1b8016665619() {
+function displayChartTableID56d74449d41c8() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -1754,11 +1806,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b8016665619"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d74449d41c8"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b8016665619"
+<div id="TableID56d74449d41c8"
   style="width: 1220px; height: 400px;">
 </div>
 
@@ -1804,116 +1856,116 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 <!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
-<!-- Mon Jan 27 19:34:17 2014 -->
+<!-- Sat Feb 01 19:54:18 2014 -->
 
 
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataTableID1b80674a2511 () {
+function gvisDataTableID56d7420ce6651 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
  "1",
-1.05,
--0.32 
+-0.46,
+1.05 
 ],
 [
  "2",
-1.22,
--0.16 
+-0.23,
+1.21 
 ],
 [
  "3",
--0.24,
-0.56 
+0.68,
+-0.24 
 ],
 [
  "4",
-0.36,
-1.07 
+1.13,
+0.4 
 ],
 [
  "5",
-1.14,
--0.81 
+-0.94,
+1.1 
 ],
 [
  "6",
--1.61,
--0.36 
+-0.14,
+-1.67 
 ],
 [
  "7",
--0.25,
-0.81 
+0.76,
+-0.17 
 ],
 [
  "8",
-0.09,
-1.19 
-],
-[
- "9",
--0.51,
--2.07 
-],
-[
- "10",
--2.12,
+1.02,
 0.21 
 ],
 [
+ "9",
+-1.76,
+-0.72 
+],
+[
+ "10",
+0.43,
+-2.14 
+],
+[
  "11",
-0.42,
--0.74 
+-0.87,
+0.4 
 ],
 [
  "12",
-0.48,
-0.39 
+0.47,
+0.47 
 ],
 [
  "13",
-0.78,
-1.22 
+1.17,
+0.85 
 ],
 [
  "14",
-0.76,
-0.62 
+0.55,
+0.8 
 ],
 [
  "15",
--1.63,
-1.5 
+1.49,
+-1.5 
 ],
 [
  "16",
-0.03,
-0.16 
+0.1,
+0.06 
 ],
 [
  "17",
-0.97,
--1.32 
+-1.3,
+0.86 
 ],
 [
  "18",
--0.34,
--1.25 
+-1.43,
+-0.36 
 ],
 [
  "19",
--1.3,
--1.29 
+-1.42,
+-1.31 
 ],
 [
  "20",
-0.71,
-0.6 
+0.74,
+0.69 
 ] 
 ];
 data.addColumn('string','Observation');
@@ -1924,8 +1976,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartTableID1b80674a2511() {
-var data = gvisDataTableID1b80674a2511();
+function drawChartTableID56d7420ce6651() {
+var data = gvisDataTableID56d7420ce6651();
 var options = {};
 options["allowHtml"] = true;
 options["showRowNumber"] = true;
@@ -1935,7 +1987,7 @@ options["allowHTML"] = true;
 options["page"] = "disable";
 
     var chart = new google.visualization.Table(
-    document.getElementById('TableID1b80674a2511')
+    document.getElementById('TableID56d7420ce6651')
     );
     chart.draw(data,options);
     
@@ -1959,9 +2011,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartTableID1b80674a2511);
+callbacks.push(drawChartTableID56d7420ce6651);
 })();
-function displayChartTableID1b80674a2511() {
+function displayChartTableID56d7420ce6651() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -1985,11 +2037,11 @@ callbacks.shift()();
 </script>
  
 <!-- jsChart -->  
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID1b80674a2511"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID56d7420ce6651"></script>
  
 <!-- divChart -->
   
-<div id="TableID1b80674a2511"
+<div id="TableID56d7420ce6651"
   style="width: 1220px; height: 400px;">
 </div>
 
@@ -2008,96 +2060,96 @@ callbacks.shift()();
   <article data-timings="">
     <!-- ScatterChart generated in R 3.0.2 by googleVis 0.4.7 package -->
 
-<!-- Mon Jan 27 19:34:17 2014 -->
+<!-- Sat Feb 01 19:54:18 2014 -->
 
 <!-- jsHeader -->
 
 <script type="text/javascript">
  
 // jsData 
-function gvisDataScatterChartID1b8060767f23 () {
+function gvisDataScatterChartID56d746e4b77f7 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
- 1.05,
--0.32 
+ -0.46,
+1.05 
 ],
 [
- 1.22,
--0.16 
+ -0.23,
+1.21 
 ],
 [
- -0.24,
-0.56 
+ 0.68,
+-0.24 
 ],
 [
- 0.36,
-1.07 
+ 1.13,
+0.4 
 ],
 [
- 1.14,
--0.81 
+ -0.94,
+1.1 
 ],
 [
- -1.61,
--0.36 
-],
-[
- -0.25,
-0.81 
-],
-[
- 0.09,
-1.19 
-],
-[
- -0.51,
--2.07 
-],
-[
- -2.12,
-0.21 
-],
-[
- 0.42,
--0.74 
-],
-[
- 0.48,
-0.39 
-],
-[
- 0.78,
-1.22 
+ -0.14,
+-1.67 
 ],
 [
  0.76,
-0.62 
+-0.17 
 ],
 [
- -1.63,
-1.5 
+ 1.02,
+0.21 
 ],
 [
- 0.03,
-0.16 
+ -1.76,
+-0.72 
 ],
 [
- 0.97,
--1.32 
+ 0.43,
+-2.14 
 ],
 [
- -0.34,
--1.25 
+ -0.87,
+0.4 
+],
+[
+ 0.47,
+0.47 
+],
+[
+ 1.17,
+0.85 
+],
+[
+ 0.55,
+0.8 
+],
+[
+ 1.49,
+-1.5 
+],
+[
+ 0.1,
+0.06 
 ],
 [
  -1.3,
--1.29 
+0.86 
 ],
 [
- 0.71,
-0.6 
+ -1.43,
+-0.36 
+],
+[
+ -1.42,
+-1.31 
+],
+[
+ 0.74,
+0.69 
 ] 
 ];
 data.addColumn('number','V1');
@@ -2107,8 +2159,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartScatterChartID1b8060767f23() {
-var data = gvisDataScatterChartID1b8060767f23();
+function drawChartScatterChartID56d746e4b77f7() {
+var data = gvisDataScatterChartID56d746e4b77f7();
 var options = {};
 options["allowHtml"] = true;
 options["legend"] = "none";
@@ -2122,7 +2174,7 @@ options["width"] =    900;
 options["height"] =    500;
 
     var chart = new google.visualization.ScatterChart(
-    document.getElementById('ScatterChartID1b8060767f23')
+    document.getElementById('ScatterChartID56d746e4b77f7')
     );
     chart.draw(data,options);
     
@@ -2146,9 +2198,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartScatterChartID1b8060767f23);
+callbacks.push(drawChartScatterChartID56d746e4b77f7);
 })();
-function displayChartScatterChartID1b8060767f23() {
+function displayChartScatterChartID56d746e4b77f7() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -2174,12 +2226,12 @@ callbacks.shift()();
 
 <!-- jsChart -->  
 
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartScatterChartID1b8060767f23"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartScatterChartID56d746e4b77f7"></script>
  
 
 <!-- divChart -->
 
-<div id="ScatterChartID1b8060767f23"
+<div id="ScatterChartID56d746e4b77f7"
   style="width: 900px; height: 500px;">
 </div>
 
@@ -2196,7 +2248,7 @@ callbacks.shift()();
 <li>Correlation</li>
 <li>Variance explained (eigenvalues)</li>
 <li>Scree plot</li>
-<li>Varimax rotation</li>
+<li>varimax rotation</li>
 <li>Factor Loadings (&quot;components&quot;)</li>
 <li>Factor scores</li>
 </ol>
@@ -2225,7 +2277,7 @@ callbacks.shift()();
     <h2>Next Class: Cluster Analysis for Segmentation</h2>
   </hgroup>
   <article data-timings="">
-    <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2AAAAGwCAMAAAD47faQAAAAq1BMVEX9/v0AAAAAADkAAGUAAGYAOTkAOY8AOpAAZAAAZrUAZrY5AAA5ADk5AGU5OY85j9o6OpA6kNtGgrRlAABlADllAGVltf1mAGZmtv+LAACPOQCPOTmPOWWPj2WPtY+P2/2QOgCQOmaQkLa1ZgC1/rW1/v22ZgC2///ajzna24/a/v3bkDrbtmbb///9tWX924/9/rX9/tr9/v3/tmb/wMv/25D//7b//9v///+GuascAAAAOXRSTlP//////////////////////////////////////////////////////////////////wD///////+FmMD9AAAACXBIWXMAAAsSAAALEgHS3X78AAAUqElEQVR4nO3dC3fbNpqA4UG7k3XqSby1p26VzG5m15vUk+76wmha//9fNiJ1MSkCJG4fSADvc05rO5ElAdQbUqRE/akBIOZPS98BoGQEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggKCUwBEAws4HeBMhAYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIrzWazWfou4BWBFWazobA1IbDCbDZKEdh6EFhhNm1hzP1qEFhp2i1EClsNAiuMOv1/7oXcSIHACnOYdaX6P2ExBFYqClsFAiuWGq7MsIjgwB4vb58/KPXmq+tVQ4Ay/MSyWEpoYM8fbpu7211n70eFsVCTO59yCltcaGBPP31+/vip+3q6SruzESCB/kJggSwheBNxt/p6uGqah7euV40kTBuNSCN8J8ddt7Ya98XCTE0/4cMVFwslMfYilsM04Wd/zqZiSgRWgfGSYNmkQmA1GK+0WDiJEFgppqdb87dsKqZAYIWYm23DHpD4dwQDBFYL/QqLhSSMwOphWCBsKkoisCLYzbU5JZaVFAIrgu1cU1hqBFaXiYXCpqIEAqvMdEYss9gIrABuM01hKRFY/lwnemZbkE3FmAisRrOLhmUXC4FlY7vdav7U70TZFJYKgeViu9UV1p7I16uw+aXDpmIMBJaL7VZpA/M9Fb3V4iGyUASWCaWUYQ228Tz9CfGkQGAZaFNQE8/BVOPXWOgLrDCPwNaum0arp0zuE279G0Tmi8BWrp1Fi88jUvvLRT4khmAEtmKvn+DgsKpxnHb7ixOjDwJbqdPD2f5xfezRLTK5C6MhsFUanI/XayKdGmNBCSKwtRmeJ9S1r9cLOzTm+GJhFqwDAluZ/qz5PJSHv295BewcEUNgK3L2sI0xgbaNBaYMEwJbiVEI+z/wOn581qlVY5JH0WpGYGugmSpl+guv67fJJ0LLGCGwFRjPVPADd/T7Fo153ibLeQqBLUz7uI+w+tKtFOca88yaBT2BwBZkeECrSJuHHo353iabiiYEthDjQzLiY1V7TdONBdw6y1uHwJYwMTUpZm3yxVQUFhWBLWDi0a1mL+J4U+YVpfFvJG6uWgSW2PQG2ugbSabGAithuffFCezx3Wfnq67QQicknNoglfhQIxZ8T2hgTzdq7/tRYszzwNx0CG5dTV6ztrHgw3As/IPgNdjTzS6twRpMHQXetbLM9mV/0eg3r1lWEZYey78VYRPx6ebNP9hEnGLxIgrhvmavddwYhUUR5TnY4+V4A5H53bN7pa343bBw3liMTZDuOvxOPlwI9iIKsn2riPjqa3w7pksMLhLnzqhNzYURmBTr4SvD98tQkXPvno0TmAmB+bIdfeJ9QVYbrK/3SanXfVZO+616v7FhDWZGYD6cTwSVkO1W6/GeKfXyav6XdSVuNvU+FAgsNotkXs+BfbZXQeDu6FjeziETq8BmVnF1PhQ6BBaT1ZBPn0MkcAoOOw4rWDUZGIc8ZxFYRHYjPn4OUR7z024i/vF3pf79/3uB0ZU1AovE/tG27T6HaOFHp8PTxJeXbz+8vHz5pQ3MN6y6Hgt9BBaB49mnd30JvG5CymET8bdfrHZyGK8l4j3KCoEF8vqwhfFL/+LcGTeWOxS7vtqV2OsabPibNe+Fn0VgIfy2lVbz3MXqfnSBfflhuJOjf2Ss7uNccwgsgGdf4VcTj8WRrXYnxy/G3fS2r9Qo/9GgR2Cu9PvYrXQf5bCqvixufRfYlzaiH03PwezWYIU+GmYRmKOtbheFHe3qa/XmDzSzhTiBwBy1eXn3tZpnXwPT92rwWsRV3v9VIzBH3WFin8ea0j6Qs5kkNfgScA2VITBXu7z23zi+vFw7H6uZo/mnYrYX9L+JIhFYGHNlgw2r9W9dzd09NfoGNggsAm1lvZ0DauWrLwsbddqRsfZ/KtaFwNxNrLH6P/cDy6KviXI2m/6xLs97vroBp0BgHswj61Wm5vZu52QYGIXZI7D4Dk+79q+RNR6fXSfDWuz8YHJGI1oYgQnZv9X+m+kFELlNzvnB5Nzu/2IIzIfN0NrA/vkf/6cPbNVzY/caYLFrLguB+bAM7Peff/2W2SZix64wnxdjuv9K7ghMyi6w3w4vki10JgodVlwEJuXwRkXNGiyHicnnjN8rR2BeLMZmDKygeXEeSkFjt0RgXqwDy/k4mM0gBa6zLAQmRf8mj6wmRaKw2hCYFO3rD7ObE+tX2UOPwPzYPPCKmID5gboNs4hJcUBgfize3VH0+PucBlrNrBwQmAjVaMaf64TMrqNyHVgKBCahqL4sFDy0UATmaXJ02sCyNjMah8GWNS+zggN7vFTffWqap59GH4Ne9kxOja68vijMV2hgzx9ud/9d1RfYBHX639mfZW56pV3CCAWEBrYP6+5tL7Daz6FXal9zoyhjjLHFWIPt3P/5XW1rMNPw1OTflsx2zFXNTfBzsKebq/bL/fcE1vtjNf6jMkxul1gOtKT5mMVexLjU4Mvo+8JVNFRbBBZXDRuIE6Mre+A+CMybbnyaFViBggsrfH76CMyb+cXyub49xYFxXLwVeojAIlJnX0ueA/PIyh2zDwKLZ9xXnWof/wCB+TMdTK4lNOPW4PzAS5+aVwTm4/r6uv2iP9pVS18TKOyEwDxcXx8K6xsFVoXJw+0gMC/X12oUWJ19mQurbBqMCMzDdVtYY9gdX8Oh5iH9WOO9vyVrBOZjF1g3Ps1qq76+/AqrZYYIzI9S46rOv60dU9EQmC/Vf9sXfemfc9U6GX0E5msfmGqGAz3/uW4R3tuSOwLzpppxT1X3pXtxZvWvvCcwP72Ssj31fHRsJo4RmJ9DYNvtdrgCK3rQFsbjr3xGCCyA2uWltt13h70d5Y95jkNhVUwWgYVQ211jxx+GKzOc+L8muAAE5mm/E3HbbiOqbtW1+6q2c79VhdF6vOxHwjQC83TYJuytwFTvBwyU/VCYRGBhXge5Pa7N0IzfK+f1esUSEFiY3iC3rMB6rDYTK3iIEJgvNfjS/4vCB+6p0lkhMF/q7CvOnf1LU+dEEVioWrd93OleSpX+XiRGYMEobMJgLVZjYQTmS/tuMP0FcFDh01MC86Z5O7PhApWbWYmVjcAiMI+0njmYMlVY6TNkE5j5Y5hDrrokFGbv/BD0MvciGYvAJj6GOeSqs2f7NrDS58GKmn3KWiiLwDQfwxzjqrNn/dSi9IlwVdV8WK7BGv3HMIdcdVmqGqwn/V6hwmfO5jmY+WOYQ666LDODrXD/tMZrYfXsWAzei/h4qVqa+MqeuKauf4hjqe4FZnaBPZgiOm4/Ng9vvjpedf4cX2rHWqxVW2FWgT399ZPpAsc9H709IOooxv3LR2XDDVbJbkW7wMz7D2teg52xGW9t/+poHc8QdPp5sXuSgN0m4v2V8RJPN9U+B6vtmGlsVcyXZWDG52D+V10Av8DKnxcL3STUsD4PfQ7mf9UFojB7avT/MoU+B/O/6hJZD7nCuRlTTQWFBT8H877qAoxGaD/k8ifHwmth5bJbgxl3ZARcdQkCCqtifmwUPg28HywuCnOjVOHrMQKLy3HQqv1AdZE7khFV8mPF6u0q/8smop5miK6FXVNY0S/6YQ0WQjdEt2HvHlzVB7abMrXZbJa+FzIILDbbYe9fr3mtWIPtbJQqtDCrwLq3pDhuINYamOqZvMzhe/pqbTY1B/bQnvJmV9lt1KsuwniM6uVEuwFZ39sMbGw2pW4j2pwy4OP+hVKP70cvmA+56iI4BKZdqdUwR1ZK7cv+pDects2OLjDjaqvOKaoKgUXWBfb7z78eAmOTsHIEFmb8YqldWd/Uv3WB0RZsArs57BTjQPOYLrA//ueP//7VsJNj6ldRII6DRdZtItoEVuf0VIfAIrMODFUgsDDa52AEhiMCCzQ6smUXWB2TAwKLbeaVHMdLpbtDWBSBRWbzWkTUg8AChb9jBSUjsEAegdUxMegQmAAOgOGIwATUO3KcI7BQmnesLHAvsFIEFsoxsEpmBQcEFh8HmHFCYPFVO3CMEViwoPNno3AEFsz+PBu1zAheEVh05rO1pbwXWAcCi67WcUMnOLDHS9WeNlFzwo5aHmicig1moYE9f7jd/XdFYKYfZ/8cRQsNbB/W3duKAztjGHals1G9GGuwnfs/vyOwvUqHDb3g52BPN93nN9+/ntOtuvcbqomfUDn2IoZTxh8m/xA1ILDIeIcz+uIEdn/lftWFqnPUMCGwCJThe4DAIlDabyf+CNXgOVhcvL8ZAwQWV5WDhhmBRTC9iYiaEVgMSvOd7kdUh8Cioi8MEVhUNY4ZUwgsBjX6BugQWAz6wCqaAJgQWEz0hTMEFlOFQ8Y0AotCDb4ARwQWxSiwmgaPCQQWEX3hHIFFVN+IMYfA4lCn/wE9BBbHILCqRo5JBBYR+xJxjsDiyW7AFxcXS9+F4hFYHKrJb8AXFxQmjsAiUfnt6Li4UAQmjcDiyW0tphRrMHEEFk124931ld19zg6BRaLyGq9S2a1w80RgkajTs7BcZHVns0Vg0WSzDlO57Y3JGYFFcq2ul74LTjgongaBxXG9C+x66Tth4zysqpbSAggsjlwCY8WVGIHFcd1a+k7MYbWVHoFFkm1fdS2m5AisQgSWTpzAHt99Hv8hS25F+h9Jz4JJKDSwpxu19/0oMZbjOrFcUgpegz3d7NJiDbZmamaTkAUlKMIm4tPNm38QWC40S4UFJSjKc7DHy/4GojoKuFuI5HwpsFASYy9iVVgmqRFYwWyfbrGk5MQJ7P7K/aohzX53BotKDIEVSjf7xiXCqQPEEFiZXPuiMCE8ByuQ6zOtC8XppaQQWHlc+1KcXkoOgVXCuDTaI2X0JYbAymI6vG/cf8hSkkVgdTBsNqqJv0QMBFaOibWRdqfi8fIsKEEEVgPdK3xZPEkQWCGmZlvzkg4WTiIEVganvubeIIZ4CKwA0zN9/rdnay8WkygCy1p3AMulL96mlxiB5eyi/Qy9mcv0FwN1JUdgObtoX0U4fZH+2aScXgGMKAgsZ+2r4Kc3+l7/Tn8xFpIwAsva/kWE5sReT+bL0lgGgeWs189gU1CdnXiIvBZDYBkbHs46VaReTlQzveOQZSSNwApySGkQmOUzNAghsLK0jfUDYyEsjMCyZX6L18vLF6V+OW4iYkkElquJJ1Yv3354+f3nX2cDYwnJI7DydJuIFoGxgBIgsPK0gX1RP7KJuAYElqfJfYPd/o3ffiSwFSCwLE1v+r18+3E+MBZPEgRWGnXYi/jDzCYiiycJAivM2XGwpe9O9QgsQ1Mn6W10r0XEYggsPxMn6R2ffsP1OhAXgZXD5Q2VLJxECKwUrifNRhLBgT1e3j5/UOrNV9erhh/9tE483WI5LCk0sOcPt83d7a6z96PCWLASTH05/QqLJpnQwJ5++vz88VP31fGqEc3c3kLrXR+ILngTcbf6erhqmoe3rleNKLrT3sxdiEWxmPCdHHfd8ZZeXxyDkTOa07mzSpl+D4mwFzEr4409y49XVobvIYzAstZ+uLLdx78q7beQFiew+yv3q0Ywp49XZnEsgsDycTahrk9yWR5LILB8qImf7H+fxZIUz8Hy5LWPVp3+h1QILEe+h0CU9TM2REJgmYiyn/2CwlIjsEy8zmbAEfwLy6NmiIbAcuM1rW2Uu/+sj5ohFgLLi8e++f6v0FdqBJaFw1w65dWttUTuDewRWA7U4MvchVXQ8zRERWDZmI2GsFaIwDIxnQ6bg2tFYOunGvPJoVhrrRyBrZ62IcLKBIFl4OxVvmwOZoTAVq09bnVcU7E5mCMCW7P9GW0IK2MEtmYX7atzmcecEdia8drB7BHYqtFX7ggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgiQDAyAXmJtE67tUq9WyhlPWzaxpOAS27tvhZlZ8OwSW/+1wMyu+HQLL/3a4mRXfDoHlfzvczIpvh8Dyvx1uZsW3Q2D53w43s+LbWVdgQIUIDBBEYIAgAgMEERggiMAAQQQGCCIwQBCBAYIIDBCUKrDHd5+b5l4p9f1n8Zt5ulFvvkreSpNiKE2agTSJxpJs0SR5pD1eKnVrNZxEgT10w727TXEzzx9um/u3wrckPpSdJANp0owl2aJJ8kh7+uun5vEvn2yGkyawu+/+a/fvyvPHTylu5umnz/t/xgSJD6WVYiBNorGkWjRpHmkPbVV3tzbDSbmJuFuhditW4Zt5fP+1+ydGUoKhNEkG0iQaS7pFk+iR1o7DZjgpA9utVKX/bWlv5uFNgqUoP5QmyUCaRGNJuGjSPNKeP1xZDUc8sDul2vXpaU0qtHXcuxnpfyYPNyX/3CXRGqwj/zws5RqsIzqkp5sruwWUdC9iS3ZJPiZ6DtaRflAmG0iTKrAUI0rySHu8bK98bc/B2jXq89/Ed9O3K2/pnW8JhtIkGUiTaCzpFk2KR9q+L6vhpD4O9l2C7YNEx8GEh9KkPA4mP5bkx8Ekh3TfndL3dkXHwYA6ERggiMAAQQQGCCIwQBCBAYIIDBBEYIAgAgMEERggiMAAQQQGCCIwQBCBAYIIDBBEYIAgAgMEERggiMAAQQQGCCKwvLSfOtCdtHZ0urBUJ3iDEwLLy+HcTONT/j0k+IAUuCOwvOzXU4/vv+6+ef74n0pdPez+O37oAVaHwPKyD6z94IFdYB/e7jYZ3x6jI7A1IrC87DN6/tgF9nH/EQf706MT2CoRWF4GazACWz8Cy8s+o4c3XwksDwSWl9NeRALLA4HlpX8cjMAyQGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBP0L8ONo9RwwGKEAAAAASUVORK5CYII=" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
+    <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2AAAAGwCAMAAAD47faQAAAAq1BMVEX9/v0AAAAAADkAAGUAAGYAOTkAOY8AOpAAZAAAZrUAZrY5AAA5ADk5AGU5OY85j9o6OpA6kNtGgrRlAABlADllAGVltf1mAGZmtv+LAACPOQCPOTmPOWWPj2WPtY+P2/2QOgCQOmaQkLa1ZgC1/rW1/v22ZgC2///ajzna24/a/v3bkDrbtmbb///9tWX924/9/rX9/tr9/v3/tmb/wMv/25D//7b//9v///+GuascAAAAOXRSTlP//////////////////////////////////////////////////////////////////wD///////+FmMD9AAAACXBIWXMAAAsSAAALEgHS3X78AAASwUlEQVR4nO3dD3/Txh2A8V5ZmSGDjKSkTdhGtwya0i12hFfy/l/ZJPmfZP3X3e90d7/n+2khQLB9Jz9IlmT5uwyAmO+WfgBAyggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEGQTmAEgGJjF3wXSQGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCCw1V1dXSz8EnBBYYq6uKCwkBJaYqytDYAEhsMQYwxosJASWFmNYgQWFwFIydO42vCOwhNBXeAgsHUVfTHpgCCwRu7f2MeehsQ5sfXHzdGfMyy9TbxpuMd1Bsg3s6e4mu7/JO3vbKIwl7o3h5VeobAPbvP/09OFj+fPxJsddjQDOmMNiZMqDY72JmK++Hi+z7PHV1JuGO/QVLPudHPfl2qrZF4vbC8PmYdDYixg95jlkBBaz2p555jtEBBYxUzt5g/kOEYFFjTkOHYFFihM34kBgETMdXyMcBBajcmoNfUWAwCJkjj8gdAQWKWY3DgQWGdPcPGSqA0ZgMTqfWqY6WAQWh9pnJjKz8SCwOJjnXPnDM+f2xoTA4rBraxdY48+WeEAYh8DikG8Ztgd2dcU8h4zA4lDk9cdPvzYC41L0gSOwGJgisK/mT6fAKvs8CCxkBBaB4m0pz9/+9e2fu8Cq1zthDRY4AotDsYl4COz0m4aPAwsdgQVuv7JqBsb0RoHAomAagTG7cSCwkB1WVqa+BuNQczwILGD7dVX53uXTcWbmNSYEFrjDa7DquYiIB4EFqu1tKbQVHwILGVMYPQILUeXF1/G3mM4oEViAGluHTGW0CCxMXDIqEQQWmN1O+frpUIgXgYXn1BRTGD0CC8n52mu5RwJHCCwgfBpReggsKGwdpobAAlGkdciLHRvpILBgHM46XPhhwCk3ga3ffJp80ziprr2WfSRwzDawzfX+FO8XjcR4qoxl2q84jwRYr8E213latTUYb6uYiqlKl4NNxM31y9/YRJzr8C8RkaXJyWuw9UVzA5HARqod/ErSarVa+iEsh72ISzIaPst8tdJcGIEtqPwoouSnabUyBNaFwASp2A9kDIH1IDApKj5Ib3/oXHFfBLaA4mrX6a+9zOmyjss+kGURmHd5X8nXVV366e/G6UNg3hV9XS39IESdXWwu0/xcIDDv0v7EocbKWfnTgMD8S7evtkWu/GlAYLB1PI7c05faJwOBwdLuTI2u/Tbm7GdtCAyWVitjOg90qX8SENhU2+126YcQkuJMjRWBdSKwibZbCjvaLeKisN5vOP9SEwKbaLs1BLY3nA+BEdhEeWCGwJrHu1qXdppPgUkIbKpt+qcRDmmbAAJrR2CT6e6rc/SDB5l1ThuBzZDuyDrtDib3Drz5h2O2IlNHYDOYlAfXan8wuf+bGn+sbJJaEdh0Cq6jca44mDw8YtZYTQQ2nYK3Ip8r12DD17o0Pb9q+w0FCGyOhIfW4bCFOBCZ6fi663fSR2CzmOMPmhzOjO+JjCPLZwhsuuM+jmRHOKwzMtP4QjcCm07fPo6T2jZgW2SmovdvK0Fg8yQ9uD7newrPQzLPR2PP90gagc1zfB9h0qMcqRpZf2D6ENgMmrcRs67TDg+fEkNgNQQ2g/LAOsdebi/mZX025ueOwNRNG4HNZVq+QrEG+/r6+Y+ffiWwEoHNpfuIT/eBsHLrsDMwdQhsBp2Hmes6NxOfy23Ed7wG2yGwGdQfZu6x38nx+7uuwJRNG4HNpv7dhO17E/PXYO8I7IjA5qOwtt/b7UV8zSbijnVg6wvz/ccs27xvfAx6uvNraj+hiuNgdbaBPd3d5P9f6gqMwo6a7/nqOxex/a8kzTawXVj3ryqBDcxvQngHb/+gKczNGiz38MMbTWuwvfMRpj/iiZgQ+9dgm+vL4qeHF5oCM2c/69Y9C8wPexFnIbCaqYVpmjYCs9J8jb/EowhY+7Ey349iQQRmhTft7nWfm+jzUQSIwObgwhMNFNaOwObgrSrjKX/TCoHZUf70qZlw2EvPFBGYJd1PnzoOLDcR2Bzb02fwJTxKZzTPEYHNUP0Y2XRHOcvYA19qpo3AZqh9TjPHUmtGToea+SGwGbbb4W3EdEc/h97ZILA58r7YU9+J/T4VBDZP5TPCOMR6blRhSmaHwGajsEmUvreHwObjnPpuLXOic5oIbB6TEVgvxXvmawhsHnP8IesdadKTMJHKKywQmA2zLY+HzbguhQZD+zVUTA2B2diOKEwxrXsOqwhspnJ0h1M69r/Y9v4NpP6caENgMx2aMofAttuuwtKeiH69O+c1TAyBWSkKK342Zyco1mmYiS59r7s0zAuBWdvvse8JDCdanhUHBDZX/WREU3uTGKpMz6+SR2BzmdqXJusfcOKT0a+zMAWzQmAOmOFPPFA0G4NUFUZgDlQ+sofP7GmnbufGAYHNVf13mMAGmY6vU0dgc00PLPEJmUDRu1UJzAFz/Nzv/jWYnhlp1fbaK/kpITAHysC+msHAtFO1d2NvTGDdH8Nsc9PRq2zn5GH976//IbAJtMzTiMB6PobZ5qajVwvsj59+/TomsNQnZUhj2zD1CRkRWMvHMLu46YTkgf1eHAIrChv6aGo9s9JOW2Ej12BZ+8cw29x0QnY7OQ5rMA0f/+6Cjlka8xqs+2OYbW46fqd/jGuBZRmN9VKy7tqx3ou4vihPEGqJL/n5OwusfhyspzH19dULS3s2xgX22BXRYfsxe3z5ZeJNJ6TjXETWY0PM8YdkjQps8+PHrm847Pmo7AEZOu01VW3j1TcLI2lYeZXGBda9/1DzGqzvzbqV325tLPnJGaKlsHGbiA+Xnd+xuVb7Gmz0OwnbVufpz84oyW8kjgys8zXY/JtOTv942VhsOMaV8szYvgabf9PJGRwvjZ1JfvWV2b8Gm3/TCRi7iVj5ntpeRrePJlKJz4L1a7DZN52A6YFltcbSn6FB5vBfqsatwTp3ZFjcdHLGj5dtxZPUC+P9YM5MGi+NVaQ8FQRmw3T+YsxfLhozXNE+Myk/VUa9XeXfbCK2swos2x0go7CisGSfLKzBnJk13q3hgttZ8S/NarX0Y5BBYM7MDIw1WG6VB5ZmYaMCK9+SMnEDUUdgpuPr8eirsFqlugobE9hjccmbvLIbpzedBPvAUFitFK/Bnj7sTpRav22cMG9z08mZM15tc9Qp1b7GX/SGy7YNmbMX0f2jQFgIzAqbiOhHYHY4dxe9xgR2vb8EAAeae00+k0PkUSAsHAdzZuJ4tU2PUgRmh01E9CIwOwSGXgTmzLS3q0g9CoSFwJyZMl5tc6MXgVkyLV8BBwRmicDQh8CcGT1ebROjGoE5M3a82uZFNwKzxUXY0IPAbBEYehCYM+PGq21WtCMwZ0aNV9ukqEdgtthERA8Cs2ZqPwFVBObKiOEqmxFkBObO8HCVTQgKBGaNTUR0sw5sfWGKyya2XLBDyzOOwNDNNrCnu5v8/0vNge0NDVfZdGDHNrBdWPevCGxguMpmA3su1mC5hx/e6A3MVH4Eaqxfg22uy89vfjhd080cWD60aBAYOrEX0ZW+4SqbCpwQmCs9w1U2E6hwE9jD5fSbTog5/gDUEZgDBIYuBOZK53CVzQNqeA3mStdwlU0D6gjMATYR0YXAHCAwdCEwV1qHq2wO0EBgrrQNV9kUoInAXDCZquFiPAJzgcDQgcBcaQ5X2QSgDYG50hiusvGjFYE5YXQNF6MRmBMEhnYE5orp+RXUIjBXTOcvoBiBOcEmItoRmBtG13AxFoG5Ylq/hHIE5opp+QrqEZgbUW4i3t7eLv0QkkdgbsQY2O0thYkjMFfi+wyI21tDYNIIzJX4ru9rDGswcQTmSIRXCs/7iu9Bx4bAHIksMGN4E5sXBOZKdM/XqB5stAjMlXjOljJcBcsfAnNka7ZLP4RJ4tvpGScCc2ObBxZFYedhqVpKCyAwN2IJjBWXZwTmxraw9IMYwmrLPwJzJNq+dC0m7whMIQLzx01g6zefmr/JkgtI9Tg4C8Yj28A212bnRSMxlmOYWC4+Wa/BNtd5WqzBQmYGNglZUIIcbCJurl/+RmCxaFkqLChBTl6DrS+qG4jmwOJhwZHzpcBC8Yy9iKqwTHwjsISNfbnFkpLjJrCHy+k3DWnjd2ewqMQQWKLaZr9ziXDpADEElqapfVGYEF6DJWjqK61bw+WlpBBYeqb2Zbi8lBwCU6JzaRRHyuhLDIGlpevwfuf+Q5aSLALToWOzMb6rpcaGwNLRszZq3al4+H4WlCAC06DtDF8WjxcEloi+2W45pYOF4wmBpWFSX0NvEIM7BJaA/pk+/9OztReLSRSBRa08gDWlL96m5xmBxey2+Ay9ge+pLgbq8o7AYnZbnEXY/y3Vq0lNOgMYThBYzIqz4Ps3+k5/1v5tLCRhBBa13UmE3YmdLubL0lgGgcWs0k9tU9CcXXiIvBZDYBGrH846VmSej0zWv+OQZSSNwBKyT6kW2MhXaBBCYGkpGqsGxkJYGIFFq/stXs/ffjHmz//dbyJiSQQWq54XVs9fXz8/f/55MDCWkDwCS89uE/H3wcBYQB4QWHrKwIqVGJuIyyOwOPXuG8zL+vz6mcBCQGBR6t/0e/72y8/PQ4GxeLwgsNQYY54/FydxvCOwABBYYs6Ogy39cNQjsAj1XaQ3azsXEYshsPj0XKS3efmNqbcBtwgsHVPeUMnC8YTAUjH1otnwwjqw9cXN050xL79MvWnM0z6tPS+3WA5Lsg3s6e4mu7/JO3vbKIwFK6Grr0l/hUXjjW1gm/efnj58LH+eeNNwZmhv4ehdH3DOehMxX309XmbZ46upNw0nysveDH0Ti2Ix9js57svjLZW+OAYjpzGnQ1eV6vp78IS9iFFpbuyN/Hhl0/E1hBFY1IoPVx738a+m9UtIcxPYw+X0m4a1SR+vzOJYBIHF42xCp77IZXksgcDiYXp+Nf7vs1i84jVYnGbtozXHH+ALgcVo7iEQM/oVGxwhsEg42c9+S2G+EVgkTrNpcQT/duRRMzhDYLGZNa1FlPn/o4+awRUCi8uMffPVv0JfvhFYFPZzOSmvcq0l8mgwHoHFwNR+GvpmY/U6DU4RWDQGoyGsABFYJPrTYXMwVAQWPpN1XxyKtVbgCCx4rQ0RViQILAJnZ/myORgRAgtacdzqsKZiczBGBBay3RVtCCtiBBay2+LsXOYxZgQWMs4djB6BBY2+YkdggCACAwQRGCCIwABBBAYIIjBAEIEBgggMECQZGAC5wKbxtL7ztVpNazhp3U1IwyGwsO+Huwn4fggs/vvhbgK+HwKL/364m4Dvh8Divx/uJuD7IbD474e7Cfh+CCz+++FuAr6fsAIDFCIwQBCBAYIIDBBEYIAgAgMEERggiMAAQQQGCCIwQJCvwNZvPmXZgzHmxSfxu9lcm5dfJO8l8zGUzM9AMk9j8bZovDzT1hfG3IwajqfAHsvh3t/4uJunu5vs4ZXwPYkPJedlIJmfsXhbNF6eaZsfP2brv3wcMxw/gd1//4/835WnDx993M3m/afdP2OCxIdS8DGQzNNYfC0aP8+0x6Kq+5sxw/G5iZivUMsVq/DdrN9+Kf+JkeRhKJmXgWSexuJv0Xh6phXjGDMcn4HlK1Xpf1uKu3l86WEpyg8l8zKQzNNYPC4aP8+0p7vLUcMRD+zemGJ9elyTCm0dV+5G+p/J/V3Jv3bxtAYryb8O87kGK4kOaXN9OW4Bed2LWJBdkmtPr8FK0k9KbwPJfAXmY0Renmnri+LGQ3sNVqxRn/4mvpu+WHlL73zzMJTMy0AyT2Pxt2h8PNN2fY0aju/jYN972D7wdBxMeCiZz+Ng8mPxfhxMckgP5SV9bwI6DgboRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjAAEEEBggiMEAQgQGCCAwQRGCAIAIDBBEYIIjA4lJ86kB50drG5cJ8XeANkxBYXPbXZmpe8u/RwwekYDoCi8tuPbV++yX/4unD3425fMz/P3zoAYJDYHHZBVZ88EAe2N2rfJPx1SE6AgsRgcVll9HThzKwD7uPONhdHp3AgkRgcamtwQgsfAQWl11Gjy+/EFgcCCwux72IBBYHAotL9TgYgUWAwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYIIjBAEIEBgggMEERggCACAwQRGCCIwABBBAYI+j8zmbVGEfxKGgAAAABJRU5ErkJggg==" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -2291,73 +2343,73 @@ callbacks.shift()();
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=10 title='Step 1: Confirm the data are metric'>
+        data-slide=10 title='Example Factors'>
          10
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=11 title='Step 2: Decide whether to scale or standardize the data: Summary Statistics'>
+        data-slide=11 title='Step 1: Confirm the data are metric'>
          11
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=12 title='Data Standardization: Example Code'>
+        data-slide=12 title='Step 2: Decide whether to scale or standardize the data: Summary Statistics'>
          12
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=13 title='Standardized Data: Summary Statistics'>
+        data-slide=13 title='Data Standardization: Example Code'>
          13
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=14 title='Step 3:  Check correlation matrix to see if Factor Analysis makes sense'>
+        data-slide=14 title='Standardized Data: Summary Statistics'>
          14
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=15 title='Step 4. Develop a scree plot and decide on the number of factors to be derived'>
+        data-slide=15 title='Step 3:  Check correlation matrix to see if Factor Analysis makes sense'>
          15
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=16 title='How Many Factors? Eigenvalues and Variance Explained'>
+        data-slide=16 title='Step 4. Develop a scree plot and decide on the number of factors to be derived'>
          16
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=17 title='How Many Factors? Scree Plot'>
+        data-slide=17 title='How Many Factors? Eigenvalues and Variance Explained'>
          17
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=18 title='How many factors?'>
+        data-slide=18 title='How Many Factors? Scree Plot'>
          18
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=19 title='Example Factors'>
+        data-slide=19 title='How many factors?'>
          19
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=20 title='Step 5. Interpret the factors and Consider rotation of factors (technical but useful)'>
+        data-slide=20 title='Step 5. Interpret the factors'>
          20
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=21 title='Let&#39;s supress the small numbers...'>
+        data-slide=21 title='For visualization, let&#39;s supress the small numbers...'>
          21
       </a>
     </li>
