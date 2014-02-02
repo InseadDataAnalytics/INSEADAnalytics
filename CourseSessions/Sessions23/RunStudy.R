@@ -25,8 +25,8 @@ datafile_name="MBAadmin" # do not add .csv at the end! make sure the data are nu
 
 # Please ENTER the filename of the Report and Slides (in the doc directory) to generate 
 
-report_file = "Report_s23"
-#report_file = "MyBoatsFactor"
+#report_file = "Report_s23"
+report_file = "MyBoatsFactor"
 slides_file = "Slides_s23"
 
 # Please ENTER then original raw attributes to use. 

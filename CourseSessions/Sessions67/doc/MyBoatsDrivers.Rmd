@@ -9,7 +9,8 @@ text-align:center;
 <script src='//api.tiles.mapbox.com/mapbox.js/v1.6.0/mapbox.js'></script>
 
 
-Boats Segmentation: Drivers Analysis
+Boats Segmentation: Cluster Analysis
+
 ========================================================
 
 **Team names**
@@ -25,7 +26,10 @@ your text...
 The Data
 --------------------------------------------
 
-YOUR TEXT...
+
+Your text...
+
+With the aid of a market research firm, the boating company gathered various data about the boating market in the US through interviews with almost 3,000 boat owners and intenders. The data consisted, among others, of 29 attitudes towards boating, which respondents indicated on a 5-point scale. They are listed below. Other types of information had been collected, such as demographics as well as information about the boats, such as the length of the boat they owned, how they used their boats, and the price of the boats. 
 
 After analyzing the survey data (using for example factor and cluster analysis), the company managers decided to only focus on a few purchase drivers which they thought were the most important ones. They decided to perform the classification and purchase drivers analysis using only the responses to the following questions:
 
@@ -73,7 +77,9 @@ print(m1,'chart')
 <br> <br>
 
 Our Approach
------------------------------------------------
+---------------------------------------------------------------
+
+There is *not a single best* process for classification. However, we have to start somewhere, so we will use the following process:
 
 #### Classification in 6 steps
 
@@ -89,35 +95,39 @@ Our Approach
 
 6. Finally, assess the accuracy of classification in the second validation sample.  You should eventually use/report all relevant performance measures/plots on this second validation sample only.
 
+Let's follow these steps.
 
 #### Step 1: Splitting the data into estimation and validation samples
 
-YOUR TEXT...
+You text...
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='hide'}
 
 if (random_sampling){
-  estimation_data=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
-  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data)
-  validation_data=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
+  estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
+  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+  validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
   } else {
-    estimation_data=1:floor(estimation_data_percent*nrow(ProjectData)/100)
-    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data)
-    validation_data = (tail(estimation_data,1)+1):(tail(estimation_data,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
     }
 
-test_data = setdiff(1:nrow(ProjectData), union(estimation_data,validation_data))
+test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
 
-estimation_data=ProjectData[estimation_data,]
-validation_data=ProjectData[validation_data,]
-test_data=ProjectData[test_data,]
+estimation_data=ProjectData[estimation_data_ids,]
+validation_data=ProjectData[validation_data_ids,]
+test_data=ProjectData[test_data_ids,]
 ```
+
 
 In our case we use for example `r nrow(estimation_data)` observations in the estimation data, 
 `r nrow(validation_data)` in the validation data, and `r nrow(test_data)` in the test data. 
 
 #### Step 2: Setting up the dependent variable
-Your Text....
+
+
+Your text...
 
 In our data the number of 0/1's in our estimation sample is as follows:
 <div class="row">
@@ -125,7 +135,7 @@ In our data the number of 0/1's in our estimation sample is as follows:
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 class_percentages=matrix(c(sum(estimation_data[,dependent_variable]==1),sum(estimation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
 rownames(class_percentages)<-"# of Observations"
-print(xtable(class_percentages ,caption=paste("Number of Observations per class in the Estimation Sample:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(class_percentages ,caption="Number of Observations per class in the Estimation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 
 </div>
@@ -137,7 +147,7 @@ while in the validation sample they are:
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 class_percentages=matrix(c(sum(validation_data[,dependent_variable]==1),sum(validation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
 rownames(class_percentages)<-"# of Observations"
-print(xtable(class_percentages ,caption=paste("Number of Observations per class in the Validation Sample:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(class_percentages ,caption="Number of Observations per class in the Validation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
@@ -145,13 +155,12 @@ print(xtable(class_percentages ,caption=paste("Number of Observations per class 
 
 #### Step 3: Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics.
 
-Good data analytics starts with good contextual knowledge as well as a simple statistical and visualization exploration of the data. In the case of classification, one can explore "simple classifications" by assessing how the  classes differ along any of the independent variables. For example, these are the statistics of our independent variables across the two classes, class 1, "purchase" (first table), and class 0, "no purchase" (second table):
-
 
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
 show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==1,]),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -167,6 +176,7 @@ print(m1,'chart')
 <div class="col-md-6">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
 show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==0,]),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
 row<-rownames(show_data)
 dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
@@ -178,26 +188,30 @@ print(m1,'chart')
 </div>
 </div>
 
-A simple visualization tool to assess the discriminatory power of the independent variables are the **box plots**. These visually indicate simple summary statistics of an independent variable (e.g. mean, median, top and bottom quantiles, min, max, etc).
-For example consider the box plots for our data for the first 4 independent variables:
+
+Your text
+
 <center style="width=1048px;">
 ```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis',fig.height=10,fig.width=16}
-par(mfrow=c(2,2))
-boxplot(estimation_data[,independent_variables[1]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[1], xlab=dependent_variable)
-boxplot(estimation_data[,independent_variables[2]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[2], xlab=dependent_variable)
-boxplot(estimation_data[,independent_variables[3]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[3], xlab=dependent_variable)
-boxplot(estimation_data[,independent_variables[4]]~estimation_data[,dependent_variable],data=estimation_data, main=independent_variables[4], xlab=dependent_variable)
+par(mfrow=c(2,1))
+DVvalues = unique(estimation_data[,dependent_variable])
+x0 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[1]),independent_variables]
+x1 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[2]),independent_variables]
+colnames(x0) <- 1:ncol(x0)
+colnames(x1) <- 1:ncol(x1)
+boxplot(x0)
+boxplot(x1)
 ```
 </center>
+
 Can you see which variables appear to be the most discrimatory ones?
-
-YOUR TEXT....
-
+Your text
 
 
 #### Step 4: Estimate the classification model using the estimation data, and interpret the results.
 
-Running a basic CART model with complexity control cp=`r CART_cp`,  leads to the following tree (**NOTE**: for better readability of the tree figures below,  we will rename the independent variables as IV1 to `r paste("IV", length(independent_variables), sep="")` when using CART):
+Your text
+
 
 ```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis'}
 
@@ -205,7 +219,7 @@ Running a basic CART model with complexity control cp=`r CART_cp`,  leads to the
 independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
 
 estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
-colnames(estimation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+colnames(estimation_data_nolabel)<- c(colnames(estimation_data)[dependent_variable],independent_variables_nolabel)
 
 validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
 colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
@@ -226,16 +240,13 @@ test_data = data.frame(test_data)
 
 <center>
 ```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis'}
-formula=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
 fancyRpartPlot(CART_tree)
 ```
 </center>
 
-Your TEXT (Interpretation of the tree...)
-
-One can estimate larger trees through changing the tree's **complexity control** parameter (in this case the rpart.control argument cp). For example, this is how the tree would look like if we set cp = 0.005
 
 <center style="width=900px; height=800px;">
 ```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
@@ -245,7 +256,7 @@ fancyRpartPlot(CART_tree_large)
 ```
 </center>
 
-One can also use the percentage of data in each leaf of the tree to have an estimated probability that an observation (e.g. person) belongs to a given class.  The **purity of the leaf** can indicate the probability an observation which "reaches that leaf" belongs to a class. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the first CART above, is:
+In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the first CART above, is:
 
 ```{r echo=FALSE, message=FALSE,warning=FALSE, results='asis'}
 # Let's first calculate all probabilites for the estimation, validation, and test data
@@ -293,6 +304,7 @@ print(m1,'chart')
 ```
 <br>
 
+In practice we need to select the **probability threshold** above which we consider an observation as "class 1": this is an important choice that we will discuss below. First we discuss another method widely used, namely logistic regression.
 
 <br>
 <br>
@@ -303,7 +315,7 @@ print(m1,'chart')
 <br>
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
-formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables,1),sep=""),sep="~")
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
 
 logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=estimation_data)
 
@@ -312,7 +324,7 @@ print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficien
 
 ```
 
-Given a set of independent variables, the output of the estimated logistic regression (the sum of the products of the independent variables with the corresponding regression coefficients) can be used to assess the probability an observation belongs to one of the classes. Specifically, the regression output can be transformed into a probability of belonging to, say, class 1 for each observation. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the logistic regression above, is:
+In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the logistic regression above, is:
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 # Let's get the probabilities for the 3 types of data again
@@ -345,12 +357,47 @@ print(m1,'chart')
 ```
 <br>
 
+
+Your text
+
+From this table we can see the **key drivers** of the classification according to each of the methods we used here. 
+
+<br>
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+log_importance = log_importance/max(abs(log_importance))
+
+tree_importance = CART_tree$variable.importance
+tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+tree_importance_final = rep(0,length(independent_variables))
+tree_importance_final[tree_ordered_drivers] <- tree_importance
+tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+
+large_tree_importance = CART_tree_large$variable.importance
+large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
+large_tree_importance_final = rep(0,length(independent_variables))
+large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
+large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+
+Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log_importance)
+colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
+rownames(Importance_table) <- rownames(log_importance)
+## printing the result in a clean-slate table
+cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
+```
+
+<br>
+<br>
+
 #### Step 5: Assess the accuracy of classification in the first validation sample
 
+Your text
 
 ### 1.  **Hit ratio** 
 
-This is simply the percentage of the observations that have been correctly classified (the predicted is the same as the actual class). We can just count the number of the (first) validation data correctly classified and divide this number with the total number of the (fist) validation data, using the two CART and the logistic regression above. These are as follows for the probability threshold  `r Probability_Threshold*100`% for the validation data:
+These are as follows for the probability threshold  `r Probability_Threshold*100`% for the validation data:
 
 <div class="row">
 <div class="col-md-6">
@@ -367,7 +414,7 @@ validation_hit_rates = rbind(
 colnames(validation_hit_rates) <- "Hit Ratio"
 rownames(validation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(validation_hit_rates ,caption=paste("Validation Data Hit Ratios for different classifiers tested:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(validation_hit_rates ,caption="Validation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -390,17 +437,19 @@ estimation_hit_rates = rbind(
 colnames(estimation_hit_rates) <- "Hit Ratio"
 rownames(estimation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(estimation_hit_rates ,caption=paste("Estimation Data Hit Ratios for different classifiers tested:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(estimation_hit_rates ,caption="Estimation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
 </div>
 
+**Why are the performances on the estimation and validation data different? How different can they possibly be? What does this diffference depend on?** Is the Validation Data Hit Rate satisfactory? Which classifier should we use? What should be the benchmark against which to compare the hit rate? 
+
+YOUR TEXT/INTERPRETATION
 
 ### 2. **Confusion matrix**
 
-The confusion matrix shows for each class the number (or percentage) of the  data that are correctly classified for that class. For example for the method above with the highest hit rate in the validation data (among logistic regression and the 2 CART models), the confusion matrix for the validation data is:
-
+YOUR TEXT/INTERPRETATION
 
 <div class="row">
 <div class="col-md-6">
@@ -416,7 +465,7 @@ conf_matrix = round(conf_matrix,2)
 colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
 rownames(conf_matrix) <- c("Actual 1", "Actual 0")
 
-print(xtable(conf_matrix ,caption=paste("Confusion Matrix for Validation data:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+print(xtable(conf_matrix ,caption="Confusion Matrix for Validation data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
 ```
 
 </div>
@@ -425,9 +474,10 @@ print(xtable(conf_matrix ,caption=paste("Confusion Matrix for Validation data:",
 
 Note that the percentages add up to 100% for each row: can you see why? Moreover, a "good" confusion matrix should have large diagonal values and small off-diagonal oens: you see why?
 
-YOUR TEXT HERE
+YOUR TEXT/INTERPRETATION
 
 ### 3.  **ROC curve** 
+
 
 The ROC curves for the validation data for both the CARTs above as well as the logistic regression are as follows:
 
@@ -443,18 +493,18 @@ pred_log <- prediction(validation_Probability_class1_log, validation_actual_clas
 
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 ```{r echo=FALSE, warning=FALSE,comment=NA, results='asis',error=FALSE,message=FALSE}
@@ -499,34 +549,30 @@ par(new=FALSE)
 
 ```
 <br>
-
-
 How should a good ROC curve look like? A rule of thumb in assessing ROC curves is that the "higher" the curve, hence the larger the area under the curve, the better. You may also select one point on the ROC curve (the "best one" for our purpose) and use that false positive/false negative performances (and corresponding threshold for P(0)) to assess your model. **Which point on the ROC should we select?**
 
-
-YOUR TEXT HERE
+YOUR TEXT/INTERPRETATION
 
 
 ### 4. **Lift curve**
 
-By changing the probability threshold, we can also generate the so called lift curve, which is useful for certain applications e.g. in marketing or credit risk. For example, consider the case of capturing fraud by examining only a few transactions instead of every single one of them. In this case we may want to examine as few transactions as possible and capture the maximum number of frauds possible. We can measure the percentage of all frauds we capture if we only examine, say, x% of cases (the top x% in terms of Probability(fraud)). If we plot these points [percentage of class 1 captured vs percentage of all data examined] while we change the threshold, we get a curve that is called the **lift curve**. 
 
 The Lift curves for the validation data for our three classifiers are the following:
 
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 ```{r lift,echo=FALSE,results='asis',warning=FALSE,error=FALSE}
@@ -579,25 +625,17 @@ print(LineFrame2,'chart')
 
 How should a good Lift Curve look like? Notice that if we were to randomly examine transactions, **the "random prediction" lift curve would be a 45 degrees straight diagonal line** (why?)! So the further **above** this 45 degrees line our Lift curve is, the better the "lift". Moreover, much like for the ROC curve, one can select the probability threshold appropriately so that any point of the lift curve is selected. **Which point on the lift curve should we select in practice?** 
 
-YOUR TEXT HERE
+
+YOUR TEXT/INTERPRETATION
 
 ### 5. **Profit Curve** 
-
-Finally, we can generate the so called profit curve, which we often use to make our final decisions.  The intuition is as follows. Consider a direct marketing campaign, and suppose it costs $ 1 to send an advertisement, and the expected profit from a person who responds positively is $45. Suppose you have a database of 1 million people to whom you could potentially send the ads. What fraction of the 1 million people should you send ads (typical response rates are 0.05%)? To answer this type of questions we need to create the profit curve, which is generated by changing again the probability threshold for classifying observations: for each threshold value we can simply measure the total **Expected Profit** (or loss) we would generate. This is simply equal to:
-
-<blockquote> <p>
-Total Expected Profit = (% of 1's correctly predicted)x(value of capturing a 1) + (% of 0's correctly predicted)x(value of capturing a 0) + (% of 1's incorrectly predicted as 0)x(cost of missing a 1) + (% of 0's incorrectly predicted as 1)x(cost of missing a 0)
-
-Calculating the expected profit requires we have an estimate of the 4 costs/values: value of capturing a 1 or a 0, and cost of misclassifying a 1 into a 0 or vice versa. 
-</p> </blockquote>
-
-Given the values and costs of correct classifications and misclassifications, we can plot the total expected profit (or loss) as we change the probabibility threshold, much like how we generated the ROC and the Lift Curves. Here is the profit curve for our example if we consider the following business profit and loss for the correctly classified as well as the misclassified customers: 
+Here is the profit curve for our example if we consider the following business profit and loss for the correctly classified as well as the misclassified customers: 
 
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
-print(xtable(Profit_Matrix ,caption=paste("Assumed Profits and Costs:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -608,18 +646,18 @@ Based on these profit and cost estimates, the profit curves for the validation d
 
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 ```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
@@ -634,7 +672,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
     Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
     Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
     Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-
+  
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
@@ -653,7 +691,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
     Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
     Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
     Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-
+  
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
@@ -672,7 +710,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
     Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
     Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
     Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-
+  
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
@@ -687,17 +725,19 @@ print(LineFramev3,'chart')
 
 We can then select the threshold that corresponds to the maximum expected profit (or minimum loss, if necessary). 
 
-YOUR TEXT HERE
+
+YOUR TEXT/INTERPRETATION
 
 
 #### Step 6: Finally, assess the accuracy of classification in the test data.
 
-Having iterated steps 2-5 until we are satisfyed with the performance of our selected model on the validation data, in this step the performance analysis outlined in step 5 needs to be done with the test sample. This is the performance that "best mimics" what one should expect in practice upon deployment of the classification solution, **assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed.** 
 
 Let's see in our case how the **Confusion Matrix, ROC Curve, Lift Curve, and Profit Curve** look like for our test data:
 
 
 **Will the performance in the test data be similar to the performance in the  validation data above? More important: should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?**
+
+YOUR TEXT/INTERPRETATION
 
 
 <div class="row">
@@ -706,8 +746,8 @@ Let's see in our case how the **Confusion Matrix, ROC Curve, Lift Curve, and Pro
 ######for train data#####
 test_actual=test_data[,dependent_variable]
 test_predictions = rbind(test_prediction_class_tree,
-                               test_prediction_class_tree_large,
-                               test_prediction_class_log)
+                         test_prediction_class_tree_large,
+                         test_prediction_class_log)
 test_hit_rates = rbind(
   100*sum(test_prediction_class_tree==test_actual)/length(test_actual), 
   100*sum(test_prediction_class_tree_large==test_actual)/length(test_actual), 
@@ -716,7 +756,7 @@ test_hit_rates = rbind(
 colnames(test_hit_rates) <- "Hit Ratio"
 rownames(test_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(test_hit_rates ,caption=paste("Test Data Hit Ratios for different classifiers tested:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(test_hit_rates ,caption="Test Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 
@@ -739,7 +779,7 @@ conf_matrix = round(conf_matrix,2)
 colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
 rownames(conf_matrix) <- c("Actual 1", "Actual 0")
 
-print(xtable(conf_matrix ,caption=paste("Confusion Matrix for test data:",data_name,sep=" "), digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+print(xtable(conf_matrix ,caption="Confusion Matrix for test data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
 ```
 </div>
 </div>
@@ -759,18 +799,18 @@ pred_log1 <- prediction(test_Probability_class1_log, test_actual_class)
 
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 ```{r echo=FALSE, warning=FALSE,comment=NA, results='asis',error=FALSE,message=FALSE}
@@ -817,18 +857,18 @@ Lift Curves for the test data:
 
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 ```{r liftTest,echo=FALSE,results='asis',warning=FALSE,error=FALSE}
@@ -882,18 +922,18 @@ Finally the profit curves for the test data, using the same profit/cost estimate
 
 <style>
 .wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
 .wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
+
+height:450px;
+overflow-y: scroll;
+}
 </style>
 <div class="wrapper wrapper1">
 
@@ -910,7 +950,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
     Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
     Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
     Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-
+  
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
@@ -929,7 +969,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
     Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
     Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
     Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-
+  
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
@@ -948,7 +988,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
     Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
     Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
     Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-
+  
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
@@ -960,8 +1000,184 @@ print(LineFramev3,'chart')
 ```
 </div>
 
+YOUR TEXT/INTERPRETATION
 
-Intepretation, Decisions and Conclusion
-----------------------------------------------------------------
 
-YOUR TEXT HERE....
+What if consider a segment-specific analysis?
+---------------------------------------------------------------------------
+
+YOUR TEXT
+
+In this case, let's assume we found some customer segments based on earlier analysis. Let's say we have these many observations in each segment:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+cluster_size = NULL
+for (i in unique(cluster_ids)){
+  cluster_size = c(cluster_size,sum(cluster_ids == i))
+  }
+cluster_size = matrix(cluster_size, nrow=1)
+colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
+rownames(cluster_size) <- "Number of Obs."
+print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+</div>
+</div>
+
+Using exactly the same analysis as above, let's see now the key drivers as well as the profit curve in the test data (only, for simplicity) when we perform the analysis for each segment separately (note: we only use segments with at least `r min_segment` datapoints). For simplicity we only show here the key drivers using only the logistic regression model for each segment.
+
+<br>
+<br>
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+actual_class<- test_data[,dependent_variable]
+probs_tree = 0*test_Probability_class1_tree
+probs_tree_large = 0*test_Probability_class1_tree_large
+probs_log = 0*test_Probability_class1_log
+Log_Drivers = NULL
+
+for (i in unique(cluster_ids)){
+  useonly = which(cluster_ids==i)
+  if (length(useonly) >= min_segment){
+    
+    test_ids_used = intersect(test_data_ids,useonly)
+    probs_to_fill = which(sapply(test_data_ids, function(i) sum(test_ids_used==i)) !=0)
+    estimation_data_clus=ProjectData[intersect(estimation_data_ids,useonly) ,]
+    test_data_clus=ProjectData[intersect(test_data_ids,useonly),]
+    
+    ###
+    estimation_data_clus_nolabel = cbind(estimation_data_clus[,dependent_variable], estimation_data_clus[,independent_variables])
+    colnames(estimation_data_clus_nolabel)<- c(colnames(estimation_data_clus)[dependent_variable],independent_variables_nolabel)
+    
+    test_data_clus_nolabel = cbind(test_data_clus[,dependent_variable], test_data_clus[,independent_variables])
+    colnames(test_data_clus_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+    
+    estimation_data_clus = data.frame(estimation_data_clus)
+    test_data_clus = data.frame(test_data_clus)
+    estimation_data_clus_nolabel = data.frame(estimation_data_clus_nolabel)
+    test_data_clus_nolabel = data.frame(test_data_clus_nolabel)
+    ###
+    
+    CART_tree<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=CART_control)    
+    CART_tree_large<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=rpart.control(cp = 0.005))
+    logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=estimation_data_clus)
+    
+    #####
+    
+    test_Probability_class1_tree<-predict(CART_tree, test_data_clus_nolabel)[,2]
+    test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_clus_nolabel)[,2]
+    test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data_clus[,independent_variables])
+    
+    #######
+    probs_tree[probs_to_fill] <- test_Probability_class1_tree
+    probs_tree_large[probs_to_fill] <- test_Probability_class1_tree
+    probs_log[probs_to_fill] <- test_Probability_class1_log
+    
+    
+    log_coefficients = round(summary(logreg_solution)$coefficients,1)
+    Log_Drivers_segment = log_coefficients[,"z value", drop=F]
+    Log_Drivers_segment = Log_Drivers_segment/max(abs(Log_Drivers_segment))
+    Log_Drivers = cbind(Log_Drivers,Log_Drivers_segment)
+    
+    
+    }
+  }
+colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
+cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+
+```
+<br>
+<br>
+
+while the profit curves are now:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = probs_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = probs_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = probs_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+<br>
+<br>
+
+**Does segment specific analysis help for our business decisions?**
+
+<br>
+<br>
+
+YOUR TEXT/INTERPRETATION

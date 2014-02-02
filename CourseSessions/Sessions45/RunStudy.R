@@ -18,20 +18,20 @@ cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE I
 datafile_name="Mall_Visits" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 
 # Please ENTER the name Report and Slides (in the doc directory) to generate 
-report_file = "Report_s45"
-#report_file = "MyBoatsSegmentation"
+#report_file = "Report_s45"
+report_file = "MyBoatsSegmentation"
 slides_file = "Slides_s45"
 
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-segmentation_attributes_used = c(2:9)
+segmentation_attributes_used = c(2:9) # for boats possibly use: c(2,3,5,8,9,11,12,14,20,24,25,28,30), for Mall_Visits use c(2:9)
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-profile_attributes_used = c(2:9)
+profile_attributes_used = c(2:9) # for boats use 2:82
 
 # Please ENTER the number of clusters to eventually use for this report
-numb_clusters_used = 8
+numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
 
 # Please enter the minimum distance from "1" the profiling values should have in order to be colored 
 # (e.g. using heatmin = 0 will color everything - try it)

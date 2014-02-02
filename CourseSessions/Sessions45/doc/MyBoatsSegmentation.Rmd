@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 <style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
 
-Boats Segmentation: Drivers Analysis
+Boats Segmentation: Cluster Analysis
 
 ========================================================
 
