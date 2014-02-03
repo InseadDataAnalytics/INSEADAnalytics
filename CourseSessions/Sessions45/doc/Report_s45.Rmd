@@ -455,7 +455,7 @@ Data analytics is used to eventually make decisions, and that is feasible only w
 
 To this purpose, one needs to spend time visualizing and understanding the data within each of the selected segments. For example, one can see how the summary statistics (e.g. averages, standard deviations, etc) of the **profiling attributes** differ across the segments. 
 
-In our case, assuming we decided we use the `r numb_clusters_used` segments found using `r profile_with` as outlined above (similar profiling can be done with the results of other segmentation methods), we can see how the responses to our survey differ across segments. The summary statistics of our data for the total population as well as within each customer segment are:
+In our case, assuming we decided we use the `r numb_clusters_used` segments found using `r profile_with` as outlined above (similar profiling can be done with the results of other segmentation methods), we can see how the responses to our survey differ across segments. The average values of our data for the total population as well as within each customer segment are:
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
@@ -479,17 +479,13 @@ if (profile_with == "kmeans"){
 NewData = matrix(cluster_memberships,ncol=1)
 write.csv(NewData,file=cluster_file)
 
-population_average = cbind(apply(ProjectData_profile, 2, mean), apply(ProjectData_profile, 2, sd))
-colnames(population_average) <- c("Population (AVG)", "Population (SD)")
-Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
+population_average = matrix(apply(ProjectData_profile, 2, mean), ncol=1)
+colnames(population_average) <- "Population"
+Cluster_Profile_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
 if (ncol(ProjectData_profile) <2)
   Cluster_Profile_mean=t(Cluster_Profile_mean)
-colnames(Cluster_Profile_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
-Cluster_Profile_sd <- sapply(cluster_ids, function(i) apply(ProjectData_profile[cluster_memberships==i,], 2, sd))
-if (ncol(ProjectData_profile) <2)
-  Cluster_Profile_sd=t(Cluster_Profile_sd)
-colnames(Cluster_Profile_sd)<- paste("Segment (SD)", 1:length(cluster_ids), sep=" ")
-cluster.profile <- cbind (population_average,Cluster_Profile_mean, Cluster_Profile_sd)
+colnames(Cluster_Profile_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 ```
 
 
@@ -515,10 +511,10 @@ We can also "visualize" the segments using **snake plots** for each cluster. For
 ```{r Fig2, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
 ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F]
 
-Cluster_Profile_standar_mean <- sapply(cluster_ids, function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
+Cluster_Profile_standar_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
 if (ncol(ProjectData_scaled_profile) < 2)
   Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
-colnames(Cluster_Profile_standar_mean) <- paste("Segment (AVG)", 1:length(cluster_ids), sep=" ")
+colnames(Cluster_Profile_standar_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
 
 plot(Cluster_Profile_standar_mean[, 1,drop=F], type="l", col="red", main="Snake plot for each cluster", ylab="mean of cluster", xlab="profiling variables (standardized)",ylim=c(min(Cluster_Profile_standar_mean),max(Cluster_Profile_standar_mean))) 
 for(i in 2:ncol(Cluster_Profile_standar_mean))
@@ -530,9 +526,10 @@ Can we see differences between the segments? Do the segments differ in terms of 
 We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. avg(cluster)/avg(population)) and explore a matrix as the following one:
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
-population_average_matrix <- population_average[,"Population (AVG)",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
+population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
 cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
+rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
 cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
 ```

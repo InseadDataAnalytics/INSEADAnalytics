@@ -328,7 +328,7 @@ In practice we need to select the **probability threshold** above which we consi
 
 formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
 
-logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=estimation_data)
+logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
 print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
@@ -1026,8 +1026,12 @@ In this case, let's assume we found some customer segments based on earlier anal
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+cluster_ids <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(cluster_file_ini,"csv", sep="."), sep = "/"), sep=",", dec=".") # this contains only the matrix ProjectData
+cluster_ids <- data.matrix(cluster_ids)
+cluster_ids = cluster_ids[,2]
+
 cluster_size = NULL
-for (i in unique(cluster_ids)){
+for (i in sort(unique(cluster_ids))){
   cluster_size = c(cluster_size,sum(cluster_ids == i))
   }
 cluster_size = matrix(cluster_size, nrow=1)
@@ -1038,7 +1042,7 @@ print(xtable(cluster_size ,caption="Number of Observations per segment in the Da
 </div>
 </div>
 
-Using exactly the same analysis as above, let's see now the key drivers as well as the profit curve in the test data (only, for simplicity) when we perform the analysis for each segment separately (note: we only use segments with at least `r min_segment` datapoints). For simplicity we only show here the key drivers using only the first CARTmodel for each segment.
+Using exactly the same analysis as above, let's see now the key drivers as well as the profit curve in the test data (only, for simplicity) when we perform the analysis for each segment separately (note: we only use segments with at least `r min_segment` datapoints). For simplicity we only show here the key drivers using only the logistic regression model for each segment.
 
 <br>
 <br>
@@ -1050,7 +1054,7 @@ probs_tree_large = 0*test_Probability_class1_tree_large
 probs_log = 0*test_Probability_class1_log
 Log_Drivers = NULL
 
-for (i in unique(cluster_ids)){
+for (i in sort(unique(cluster_ids))){
   useonly = which(cluster_ids==i)
   if (length(useonly) >= min_segment){
     
@@ -1074,7 +1078,7 @@ for (i in unique(cluster_ids)){
     
     CART_tree<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=CART_control)    
     CART_tree_large<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=rpart.control(cp = 0.005))
-    logreg_solution <- glm(formula_log, family=binomial(link="logit"), data=estimation_data_clus)
+    logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data_clus)
     
     #####
     
@@ -1099,7 +1103,8 @@ for (i in unique(cluster_ids)){
     tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
     tree_importance_final <- tree_importance_final*sign(Log_Drivers_segment)
     
-    Log_Drivers = cbind(Log_Drivers,tree_importance_final)
+    #Log_Drivers = cbind(Log_Drivers,tree_importance_final)
+    Log_Drivers = cbind(Log_Drivers,Log_Drivers_segment)
 
     
     }

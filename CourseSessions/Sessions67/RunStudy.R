@@ -18,8 +18,15 @@ cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE I
 # Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
 datafile_name="Boats" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 
+# Please ENTER the filename that indicates subsets of the data to use (e.g. only a specific cluster)
+# This file need to have 2 columns with the second one indicating the cluster ID of the observation. 
+# The rows of this files are aligned with those of the datafile_name one
+# This is used ONLY for the report "MyBoatsDrivers"
+cluster_file_ini = "Boats_cluster" # make sure this file exists in the "data" directory
+
 # Please ENTER the name Report and Slides (in the doc directory) to generate 
 #report_file = "Report_s67"
+#report_file = "SampleBoatsDriversSegments"
 report_file = "MyBoatsDrivers"
 slides_file = "Slides_s67"
 
@@ -37,14 +44,6 @@ actual_1_predict_1 = 100
 actual_1_predict_0 = -75
 actual_0_predict_1 = -50
 actual_0_predict_0 = 0
-
-# Please ENTER the filename that indicates subsets of the data to use (e.g. only a specific cluster)
-# This file need to have 2 columns with the second one indicating the cluster ID of the observation. 
-# The rows of this files are aligned with those of the datafile_name one
-cluster_file = "Boats_cluster" 
-
-# Please ENTER the cluster to use (enter 0 if you want to use ALL data)
-use_subset = 0
 
 # Please ENTER the probability threshold above which an observations  
 # is predicted as class 1:
@@ -87,9 +86,6 @@ start_local_webapp <- 0
 Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
 ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData)
-cluster_ids <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(cluster_file,"csv", sep="."), sep = "/"), sep=",", dec=".") # this contains only the matrix ProjectData
-cluster_ids <- data.matrix(cluster_ids)
-cluster_ids = cluster_ids[,2]
 
 if (datafile_name == "Boats")
   colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))

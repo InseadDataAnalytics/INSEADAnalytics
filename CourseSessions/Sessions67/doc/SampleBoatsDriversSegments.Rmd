@@ -1,0 +1,603 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;}</style>
+<style>
+td.tableRow
+{
+text-align:center;
+}
+</style>
+<script src='//api.tiles.mapbox.com/mapbox.js/v1.6.0/mapbox.js'></script>
+
+
+Boats Segmentation: Sample Segments
+========================================================
+
+**T. Evgeniou**
+
+No Segmentation Specific Solution
+-----------------------------------------------------------------------------
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# let's make the data into data.matrix classes so that we can easier visualize them
+ProjectData = data.matrix(ProjectData)
+
+if (random_sampling){
+  estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
+  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+  validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
+  } else {
+    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    }
+
+test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
+
+estimation_data=ProjectData[estimation_data_ids,]
+validation_data=ProjectData[validation_data_ids,]
+test_data=ProjectData[test_data_ids,]
+
+# just name the variables numerically so that they look ok on the tree plots
+independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
+
+estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
+colnames(estimation_data_nolabel)<- c(colnames(estimation_data)[dependent_variable],independent_variables_nolabel)
+
+validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
+colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+test_data_nolabel = cbind(test_data[,dependent_variable], test_data[,independent_variables])
+colnames(test_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+estimation_data_nolabel = data.frame(estimation_data_nolabel)
+validation_data_nolabel = data.frame(validation_data_nolabel)
+test_data_nolabel = data.frame(test_data_nolabel)
+
+estimation_data = data.frame(estimation_data)
+validation_data = data.frame(validation_data)
+test_data = data.frame(test_data)
+
+formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+
+fancyRpartPlot(CART_tree)
+```
+</center>
+
+
+<center style="width=900px; height=800px;">
+```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
+
+fancyRpartPlot(CART_tree_large)
+```
+</center>
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, results='asis'}
+# Let's first calculate all probabilites for the estimation, validation, and test data
+estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
+estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
+
+validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
+validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
+
+test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
+test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
+
+
+estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
+estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
+
+validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
+validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
+
+test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
+test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
+
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+Classification_Table_large=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table_large)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
+
+
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
+
+logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
+
+log_coefficients = round(summary(logreg_solution)$coefficients,1)
+
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# Let's get the probabilities for the 3 types of data again
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+
+estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
+validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
+test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_log)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+log_importance = log_importance/max(abs(log_importance))
+
+tree_importance = CART_tree$variable.importance
+tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+tree_importance_final = rep(0,length(independent_variables))
+tree_importance_final[tree_ordered_drivers] <- tree_importance
+tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+tree_importance_final <- tree_importance_final*sign(log_importance)
+
+large_tree_importance = CART_tree_large$variable.importance
+large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
+large_tree_importance_final = rep(0,length(independent_variables))
+large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
+large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+large_tree_importance_final <- large_tree_importance_final*sign(log_importance)
+
+Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log_importance)
+colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
+rownames(Importance_table) <- rownames(log_importance)
+## printing the result in a clean-slate table
+cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
+```
+
+The profit curves for the test data in this case are:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = test_Probability_class1_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = test_Probability_class1_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = test_Probability_class1_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+<br>
+<br>
+<hr>
+
+Segment Specific Analysis: Five Segments Solution
+---------------------------------------------------------------------------
+
+Let's see first how many observations we have in each segment:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+numb_clusters_used = 5
+
+cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,paste("cluster",numb_clusters_used,sep="") , sep="_"), "csv", sep="."), sep="/")
+
+cluster_ids <- read.csv(cluster_file, sep=",", dec=".") # this contains only the matrix ProjectData
+cluster_ids <- data.matrix(cluster_ids)
+cluster_ids = cluster_ids[,2]
+
+cluster_size = NULL
+for (i in sort(unique(cluster_ids))){
+  cluster_size = c(cluster_size,sum(cluster_ids == i))
+  }
+cluster_size = matrix(cluster_size, nrow=1)
+colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
+rownames(cluster_size) <- "Number of Obs."
+print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+</div>
+</div>
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+actual_class<- test_data[,dependent_variable]
+probs_tree = 0*test_Probability_class1_tree
+probs_tree_large = 0*test_Probability_class1_tree_large
+probs_log = 0*test_Probability_class1_log
+Log_Drivers = NULL
+
+for (i in sort(unique(cluster_ids))){
+  useonly = which(cluster_ids==i)
+  if (length(useonly) >= min_segment){
+    
+    test_ids_used = intersect(test_data_ids,useonly)
+    probs_to_fill = which(sapply(test_data_ids, function(i) sum(test_ids_used==i)) !=0)
+    estimation_data_clus=ProjectData[intersect(estimation_data_ids,useonly) ,]
+    test_data_clus=ProjectData[intersect(test_data_ids,useonly),]
+    
+    ###
+    estimation_data_clus_nolabel = cbind(estimation_data_clus[,dependent_variable], estimation_data_clus[,independent_variables])
+    colnames(estimation_data_clus_nolabel)<- c(colnames(estimation_data_clus)[dependent_variable],independent_variables_nolabel)
+    
+    test_data_clus_nolabel = cbind(test_data_clus[,dependent_variable], test_data_clus[,independent_variables])
+    colnames(test_data_clus_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+    
+    estimation_data_clus = data.frame(estimation_data_clus)
+    test_data_clus = data.frame(test_data_clus)
+    estimation_data_clus_nolabel = data.frame(estimation_data_clus_nolabel)
+    test_data_clus_nolabel = data.frame(test_data_clus_nolabel)
+    ###
+    
+    CART_tree<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=CART_control)    
+    CART_tree_large<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=rpart.control(cp = 0.005))
+    logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data_clus)
+    
+    #####
+    
+    test_Probability_class1_tree<-predict(CART_tree, test_data_clus_nolabel)[,2]
+    test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_clus_nolabel)[,2]
+    test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data_clus[,independent_variables])
+    
+    #######
+    probs_tree[probs_to_fill] <- test_Probability_class1_tree
+    probs_tree_large[probs_to_fill] <- test_Probability_class1_tree
+    probs_log[probs_to_fill] <- test_Probability_class1_log
+    
+    
+    log_coefficients = round(summary(logreg_solution)$coefficients,1)
+    Log_Drivers_segment = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+    Log_Drivers_segment = Log_Drivers_segment/max(abs(Log_Drivers_segment))
+    
+    tree_importance = CART_tree$variable.importance
+    tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+    tree_importance_final = rep(0,length(independent_variables))
+    tree_importance_final[tree_ordered_drivers] <- tree_importance
+    tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+    tree_importance_final <- tree_importance_final*sign(Log_Drivers_segment)
+    
+    #Log_Drivers = cbind(Log_Drivers,tree_importance_final)
+    Log_Drivers = cbind(Log_Drivers,Log_Drivers_segment)
+
+    
+    }
+  }
+colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
+cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+
+```
+<br>
+<br>
+
+The profit curves for the test data in this case are:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = probs_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = probs_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = probs_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+<br>
+<br>
+<br>
+<hr>
+
+
+Segment Specific Analysis: Seven Segments Solution
+---------------------------------------------------------------------------
+
+Let's see first how many observations we have in each segment:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+numb_clusters_used = 7
+
+cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,paste("cluster",numb_clusters_used,sep="") , sep="_"), "csv", sep="."), sep="/")
+
+cluster_ids <- read.csv(cluster_file, sep=",", dec=".") # this contains only the matrix ProjectData
+cluster_ids <- data.matrix(cluster_ids)
+cluster_ids = cluster_ids[,2]
+
+cluster_size = NULL
+for (i in sort(unique(cluster_ids))){
+  cluster_size = c(cluster_size,sum(cluster_ids == i))
+  }
+cluster_size = matrix(cluster_size, nrow=1)
+colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
+rownames(cluster_size) <- "Number of Obs."
+print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+</div>
+</div>
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+actual_class<- test_data[,dependent_variable]
+probs_tree = 0*test_Probability_class1_tree
+probs_tree_large = 0*test_Probability_class1_tree_large
+probs_log = 0*test_Probability_class1_log
+Log_Drivers = NULL
+
+for (i in sort(unique(cluster_ids))){
+  useonly = which(cluster_ids==i)
+  if (length(useonly) >= min_segment){
+    
+    test_ids_used = intersect(test_data_ids,useonly)
+    probs_to_fill = which(sapply(test_data_ids, function(i) sum(test_ids_used==i)) !=0)
+    estimation_data_clus=ProjectData[intersect(estimation_data_ids,useonly) ,]
+    test_data_clus=ProjectData[intersect(test_data_ids,useonly),]
+    
+    ###
+    estimation_data_clus_nolabel = cbind(estimation_data_clus[,dependent_variable], estimation_data_clus[,independent_variables])
+    colnames(estimation_data_clus_nolabel)<- c(colnames(estimation_data_clus)[dependent_variable],independent_variables_nolabel)
+    
+    test_data_clus_nolabel = cbind(test_data_clus[,dependent_variable], test_data_clus[,independent_variables])
+    colnames(test_data_clus_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+    
+    estimation_data_clus = data.frame(estimation_data_clus)
+    test_data_clus = data.frame(test_data_clus)
+    estimation_data_clus_nolabel = data.frame(estimation_data_clus_nolabel)
+    test_data_clus_nolabel = data.frame(test_data_clus_nolabel)
+    ###
+    
+    CART_tree<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=CART_control)    
+    CART_tree_large<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=rpart.control(cp = 0.005))
+    logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data_clus)
+    
+    #####
+    
+    test_Probability_class1_tree<-predict(CART_tree, test_data_clus_nolabel)[,2]
+    test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_clus_nolabel)[,2]
+    test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data_clus[,independent_variables])
+    
+    #######
+    probs_tree[probs_to_fill] <- test_Probability_class1_tree
+    probs_tree_large[probs_to_fill] <- test_Probability_class1_tree
+    probs_log[probs_to_fill] <- test_Probability_class1_log
+    
+    
+    log_coefficients = round(summary(logreg_solution)$coefficients,1)
+    Log_Drivers_segment = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+    Log_Drivers_segment = Log_Drivers_segment/max(abs(Log_Drivers_segment))
+    
+    tree_importance = CART_tree$variable.importance
+    tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+    tree_importance_final = rep(0,length(independent_variables))
+    tree_importance_final[tree_ordered_drivers] <- tree_importance
+    tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+    tree_importance_final <- tree_importance_final*sign(Log_Drivers_segment)
+    
+    Log_Drivers = cbind(Log_Drivers,tree_importance_final)
+
+    
+    }
+  }
+colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
+cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+
+```
+<br>
+<br>
+
+The profit curves in this case are:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = probs_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = probs_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = probs_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+<br>
+<br>
