@@ -3,7 +3,7 @@
 
 rm(list = ls()) # clean up the workspace
 
-setwd(paste(getwd(),"CourseSessions/Session 8 Projects and Summary",sep="/"))
+setwd(paste(getwd(),"CourseSessions/Session8",sep="/"))
 
 ######################################################################
 

@@ -7,8 +7,4 @@ widgets : []
 mode : standalone 
 ---
 
-## Today's Plan
-
----
-
-## Key Lessons
+## No Handouts
