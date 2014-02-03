@@ -461,23 +461,26 @@ shinyServer(function(input, output,session) {
     
     all_inputs <- user_inputs()
     
-    res = matrix("No Method has been selected", ncol=1)    
+    #res = matrix("No Method has been selected", nrow=15,ncol=1)    
     if (method_used == "tree"){ 
       res = round(the_tree_computations()$CART_tree$variable.importance, 2)
-      rownames(res) <- all_inputs$independent_variables
-      colnames(res) <- "tree"
+      #rownames(res) <- all_inputs$independent_variables
+      #colnames(res) <- "tree"
     }
     if (method_used == "logistic"){ 
       res = round(summary(the_logistic_computations()$logreg_solution)$coefficients,1)
-      colnames(res) <- "logistic"
+      as.data.frame(res)
+      #colnames(res) <- "logistic"
     }
     if (method_used == "svm"){
       res = matrix("SVM does not provide this", ncol=1)
       colnames(res) <- "svm"
     }
     if (method_used == "forest"){
+      
       res = round(the_forest_computations()$forest_solution$importance,2)
-      colnames(res) <- "forest"
+      as.data.frame(res)
+      #colnames(res) <- "forest"
     }
     
     as.data.frame(res)
@@ -595,7 +598,7 @@ shinyServer(function(input, output,session) {
         for (iter in 1:length(res)){
           theperf = res[[iter]]$theperf
           thecolor = res[[iter]]$thecolor          
-          plot(theperf, col=thecolor, lty=1, add=FALSE, main="ROC Curve")          
+          plot(theperf, col=thecolor, lty=1, main="ROC Curve")          
           if(iter == 1){
             grid()
             par(new=TRUE)
@@ -608,7 +611,7 @@ shinyServer(function(input, output,session) {
       } else {
         theperf = res[[1]]$theperf
         thecolor = res[[1]]$thecolor        
-        plot(theperf, col=thecolor, lty=1, add=FALSE, main="ROC Curve")
+        plot(theperf, col=thecolor, lty=1,main="ROC Curve")
       }      
     }
   })
@@ -663,7 +666,6 @@ shinyServer(function(input, output,session) {
           useonly = which(probs >= 1-prob)
           c(length(useonly)/length(actual_class), sum(actual_class[useonly])/all1s) 
         }))
-        cat("the_lift has", dim(the_lift))
         list( theperf = the_lift,
               thecolor = thecolor
         )
@@ -677,7 +679,7 @@ shinyServer(function(input, output,session) {
         for (iter in 1:length(res)){
           theperf = res[[iter]]$theperf
           thecolor = res[[iter]]$thecolor          
-          plot(theperf[1,], theperf[2,], col=thecolor, lty=1, add=FALSE, main="Lift Curve")          
+          plot(theperf[1,], theperf[2,], col=thecolor, lty=1,main="Lift Curve")          
           if(iter == 1){
             grid()
             par(new=TRUE)
@@ -690,7 +692,7 @@ shinyServer(function(input, output,session) {
       } else {
         theperf = res[[1]]$theperf
         thecolor = res[[1]]$thecolor        
-        plot(theperf[,1], theperf[,2], col=thecolor, lty=1, add=FALSE, main="Lift Curve")
+        plot(theperf[1,], theperf[2,], col=thecolor, lty=1, main="Lift Curve")
       }      
     }    
   })
@@ -739,8 +741,20 @@ shinyServer(function(input, output,session) {
           actual_class = all_inputs$test_data[,all_inputs$dependent_variable]
         }
         
-        the_pred = prediction(probs, actual_class)     
-        list( theperf = performance(the_pred, "tpr", "fpr"),
+        xxxaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+        the_profit = Reduce(cbind,lapply(xxxaxis, function(prob){
+          useonly = which(probs >= prob)
+          predict_class = 1*(probs >= prob)
+          theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+            Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+            Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+            Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+          
+          c(100*length(useonly)/length(actual_class), theprofit)
+        }))
+        
+        #the_pred = prediction(probs, actual_class)     
+        list( theperf = the_profit,
               thecolor = thecolor
         )
       })
@@ -749,12 +763,26 @@ shinyServer(function(input, output,session) {
     if (length(res) == 1000) { 
       plot(res, main = "No method estimated or selected")
     } else {
-      for (iter in 1:length(res)){
-        theperf = res[[iter]]$theperf
-        thecolor = res[[iter]]$thecolor
-        plot(performance(theperf, "tpr", "fpr"), col=thecolor, lty=1, add=FALSE)
+      if(length(available_methods) > 1){
+        for (iter in 1:length(res)){
+          theperf = res[[iter]]$theperf
+          thecolor = res[[iter]]$thecolor          
+          plot(theperf[1,], theperf[2,], col=thecolor, lty=1, main="Profit Curve")          
+          if(iter == 1){
+            grid()
+            par(new=TRUE)
+          }else if(iter != 1 && iter != length(res)){
+            par(new=TRUE)
+          }else{
+            par(new=FALSE)
+          }
+        }
+      } else {
+        theperf = res[[1]]$theperf
+        thecolor = res[[1]]$thecolor        
+        plot(theperf[1,], theperf[2,], col=thecolor, lty=1, main="Profit Curve")
       }      
-    }
+    }    
   })
   
   # Now the report and slides  
@@ -888,4 +916,3 @@ shinyServer(function(input, output,session) {
   )
   
 })
-

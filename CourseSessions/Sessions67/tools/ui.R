@@ -24,7 +24,7 @@ shinyUI(pageWithSidebar(
     HTML("<center><h4>Choose a data file:<h4>"),    
     HTML("<br>"),
     selectInput('datafile_name_coded', '',
-                c("Resort_Visits","Boat_Purchase"),multiple = FALSE),
+                c("Resort_Visits","Boats"),multiple = FALSE),
     
     ###########################################################
     # STEP 2.2: read the INPUTS. 
@@ -86,7 +86,7 @@ shinyUI(pageWithSidebar(
     HTML("<br>"),
     downloadButton('slide', label = "Download"),
     HTML("<hr></center>")
-  ),
+    ),
   
   ###########################################################
   # STEP 3: The output tabs (these follow more or less the 
@@ -180,4 +180,4 @@ shinyUI(pageWithSidebar(
                div(class="span12",plotOutput('profit_curve')))
     )    
   )
-))
+  ))
