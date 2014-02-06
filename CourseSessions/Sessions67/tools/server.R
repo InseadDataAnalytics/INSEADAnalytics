@@ -704,7 +704,7 @@ shinyServer(function(input, output,session) {
     
     Probability_Threshold = input$Probability_Threshold/100    
     all_inputs <- user_inputs()
-    
+    Profit_Matrix<-all_inputs$Profit_Matrix
     res <- rep(0,1000) 
     
     if (length(available_methods)){  
