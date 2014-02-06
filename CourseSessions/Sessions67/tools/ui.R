@@ -44,7 +44,7 @@ shinyUI(pageWithSidebar(
     HTML("<br>"),
     selectInput("use_tree", "CART (Classification Tree)", choices = c("0","1"), selected="0", multiple=FALSE),
     selectInput("use_log", "Logistic Regression", choices = c("0","1"), selected="0", multiple=FALSE),
-    selectInput("use_svm", "Support Vector Machine", choices = c("0","1"), selected="0", multiple=FALSE),
+    #selectInput("use_svm", "Support Vector Machine (may be slow)", choices = c("0","1"), selected="0", multiple=FALSE),
     selectInput("use_forest", "Random Forest", choices = c("0","1"), selected="0", multiple=FALSE),
     HTML("<hr>"),
     
@@ -74,17 +74,17 @@ shinyUI(pageWithSidebar(
     ###########################################################
     # STEP 2.3: buttons to download the new report and new slides 
     
-    HTML("<hr>"),
-    HTML("<h4>Download the new HTML report </h4>"),
+    #HTML("<hr>"),
+    #HTML("<h4>Download the new HTML report </h4>"),
+    #HTML("<br>"),
+    #HTML("<br>"),
+    #downloadButton('report', label = "Download"),
+    #HTML("<br>"),
+    #HTML("<br>"),
+    #HTML("<h4>Download the new HTML5 slides </h4>"),
     HTML("<br>"),
     HTML("<br>"),
-    downloadButton('report', label = "Download"),
-    HTML("<br>"),
-    HTML("<br>"),
-    HTML("<h4>Download the new HTML5 slides </h4>"),
-    HTML("<br>"),
-    HTML("<br>"),
-    downloadButton('slide', label = "Download"),
+    #downloadButton('slide', label = "Download"),
     HTML("<hr></center>")
     ),
   
@@ -141,7 +141,9 @@ shinyUI(pageWithSidebar(
       ), 
       
       tabPanel("Key Independent Variables", 
-               selectInput("drivers_method_chosen","Method available to see (using the estimation data only)",  choices = c("no choice"), selected="no choice", multiple=FALSE),
+               
+               selectInput("drivers_method_chosen","Method available to see",  choices = c("no choice"), selected="no choice", multiple=FALSE),
+               HTML("<br><strong>(This may take some time, please wait...) </strong><br>"),
                HTML("<br>"),
                actionButton("action_drivers", "Show/Update Results"),
                HTML("<hr>"),

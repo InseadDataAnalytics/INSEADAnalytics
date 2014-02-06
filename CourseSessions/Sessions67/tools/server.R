@@ -55,8 +55,8 @@ shinyServer(function(input, output,session) {
       methods_available = setdiff(unique(c(methods_available, "tree")),"no choice")
     if (input$use_log == "1")
       methods_available = setdiff(unique(c(methods_available, "logistic")),"no choice")
-    if (input$use_svm == "1")
-      methods_available = setdiff(unique(c(methods_available, "svm")),"no choice")
+    #if (input$use_svm == "1")
+    #  methods_available = setdiff(unique(c(methods_available, "svm")),"no choice")
     if (input$use_forest == "1")
       methods_available = setdiff(unique(c(methods_available, "forest")),"no choice")
     
@@ -64,13 +64,14 @@ shinyServer(function(input, output,session) {
       methods_available = setdiff(methods_available, "tree")
     if (input$use_log == "0")
       methods_available = setdiff(methods_available, "logistic")
-    if (input$use_svm == "0")
-      methods_available = setdiff(methods_available, "svm")
+    #if (input$use_svm == "0")
+    #  methods_available = setdiff(methods_available, "svm")
     if (input$use_forest == "0")
       methods_available = setdiff(methods_available, "forest")    
     
     if ((input$use_tree == "0") & (input$use_log == "0") &
-          (input$use_svm == "0") & (input$use_forest == "0"))
+          #(input$use_svm == "0") & 
+          (input$use_forest == "0"))
       methods_available = "no choice"
     
     updateSelectInput(session, "drivers_method_chosen","Method(s) available to see", choices = methods_available, selected = methods_available[1])      
@@ -679,7 +680,7 @@ shinyServer(function(input, output,session) {
         for (iter in 1:length(res)){
           theperf = res[[iter]]$theperf
           thecolor = res[[iter]]$thecolor          
-          plot(theperf[1,], theperf[2,], col=thecolor, lty=1,main="Lift Curve")          
+          plot(theperf[1,], theperf[2,], col=thecolor,type='l', lty=1,main="Lift Curve")          
           if(iter == 1){
             grid()
             par(new=TRUE)
@@ -692,7 +693,7 @@ shinyServer(function(input, output,session) {
       } else {
         theperf = res[[1]]$theperf
         thecolor = res[[1]]$thecolor        
-        plot(theperf[1,], theperf[2,], col=thecolor, lty=1, main="Lift Curve")
+        plot(theperf[1,], theperf[2,], col=thecolor, type='l',lty=1, main="Lift Curve")
       }      
     }    
   })
@@ -767,7 +768,7 @@ shinyServer(function(input, output,session) {
         for (iter in 1:length(res)){
           theperf = res[[iter]]$theperf
           thecolor = res[[iter]]$thecolor          
-          plot(theperf[1,], theperf[2,], col=thecolor, lty=1, main="Profit Curve")          
+          plot(theperf[1,], theperf[2,], col=thecolor,type='l', lty=1, main="Profit Curve")          
           if(iter == 1){
             grid()
             par(new=TRUE)
@@ -780,7 +781,7 @@ shinyServer(function(input, output,session) {
       } else {
         theperf = res[[1]]$theperf
         thecolor = res[[1]]$thecolor        
-        plot(theperf[1,], theperf[2,], col=thecolor, lty=1, main="Profit Curve")
+        plot(theperf[1,], theperf[2,], col=thecolor,type='l', lty=1, main="Profit Curve")
       }      
     }    
   })
