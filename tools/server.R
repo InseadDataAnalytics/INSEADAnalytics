@@ -1,5 +1,5 @@
 
-local_directory <- "~/INSEADjan2014/CourseSessions/Sessions23"
+local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions23"
 source(paste(local_directory,"R/library.R",sep="/"))
 source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 
@@ -214,7 +214,6 @@ shinyServer(function(input, output,session) {
     
     NEW_ProjectData <- Rotated_Results$scores
     colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
-    
     list( 
       correl = correl,
       Unrotated_Results = Unrotated_Results,
@@ -276,11 +275,12 @@ shinyServer(function(input, output,session) {
   output$Unrotated_Factors<-renderHeatmap({
     input$unrot_number
     input$action_unrotated
+    input$action_scree
     
     data_used = the_computations()        
     
     the_data = round(data_used$Unrotated_Factors,2)
-    the_data[abs(the_data) < input$MIN_VALUE] <- 0
+    #the_data[abs(the_data) < input$MIN_VALUE] <- 0
     the_data
   })
   
@@ -288,9 +288,8 @@ shinyServer(function(input, output,session) {
     input$action_rotated
     
     data_used = the_computations()        
-    
     the_data = round(data_used$Rotated_Factors,2)
-    the_data[abs(the_data) < input$MIN_VALUE] <- 0
+    #the_data[abs(the_data) < input$MIN_VALUE] <- 0
     the_data
   })
   
