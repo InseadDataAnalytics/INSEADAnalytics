@@ -1,5 +1,5 @@
 
-local_directory <- "C:/Theos/insead/eLAB/INSEADjan2014/CourseSessions/Sessions23"
+local_directory <- "~/INSEADjan2014/CourseSessions/Sessions23"
 source(paste(local_directory,"R/library.R",sep="/"))
 source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 
