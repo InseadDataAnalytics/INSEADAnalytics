@@ -1,9 +1,7 @@
 
-if (!exists("local_directory")) {  
-  local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
-  source(paste(local_directory,"R/library.R",sep="/"))
-  source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
-} 
+local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
+source(paste(local_directory,"R/library.R",sep="/"))
+source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)

@@ -1,9 +1,7 @@
 
-if (!exists("local_directory")) {  
-  local_directory <- "~/INSEADjan2014/CourseSessions/Sessions23"
-  source(paste(local_directory,"R/library.R",sep="/"))
-  source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
-} 
+local_directory <- "~/INSEADjan2014/CourseSessions/Sessions23"
+source(paste(local_directory,"R/library.R",sep="/"))
+source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
@@ -41,7 +39,7 @@ shinyServer(function(input, output,session) {
     
     use_attributes = intersect(colnames(ProjectData),input$factor_attributes_used)
     ProjectDataFactor = as.matrix(ProjectData[,use_attributes, drop=F])      
-
+    
     if (ncol(ProjectDataFactor) == 0)
       ProjectDataFactor = ProjectData[,1:min(3,ncol(ProjectData))]
     
@@ -180,7 +178,7 @@ shinyServer(function(input, output,session) {
     
     if (ncol(ProjectDataFactor) == 0)
       ProjectDataFactor = ProjectData[,1:min(3,ncol(ProjectData))]
-
+    
     correl<-cor(ProjectDataFactor)      
     
     Unrotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none")
@@ -269,10 +267,10 @@ shinyServer(function(input, output,session) {
     gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:12, targetAxisIndex: 0}]"))
   })
   
-#  output$scree <- renderPlot({      
-#    data_used = the_computations()    
-#    plot(data_used$eigenvalues, type="l")
-#  })
+  #  output$scree <- renderPlot({      
+  #    data_used = the_computations()    
+  #    plot(data_used$eigenvalues, type="l")
+  #  })
   
   
   output$Unrotated_Factors<-renderHeatmap({

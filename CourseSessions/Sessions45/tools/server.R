@@ -1,9 +1,7 @@
 
-if (!exists("local_directory")) {  
-  local_directory <- "~/INSEADjan2014/CourseSessions/Sessions45"
-  source(paste(local_directory,"R/library.R",sep="/"))
-  source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
-} 
+local_directory <- "~/INSEADjan2014/CourseSessions/Sessions45"
+source(paste(local_directory,"R/library.R",sep="/"))
+source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 
 # To be able to upload data up to 30MB
 options(shiny.maxRequestSize=30*1024^2)
@@ -228,14 +226,14 @@ shinyServer(function(input, output,session) {
     
     Hierarchical_Cluster_distances<-dist(ProjectData_segment,method=distance_used)
     Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
-
+    
     
     cluster_memberships <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
     cluster_ids <- unique(cluster_memberships)
-
+    
     ProjectData_with_hclust_membership <- cbind(cluster_memberships, ProjectData)
     colnames(ProjectData_with_hclust_membership)<-c("Cluster_Membership",colnames(ProjectData))
-
+    
     Cluster_Profile_mean <- sapply(cluster_ids, function(i) apply(ProjectData_profile[(cluster_memberships==i), ,drop=F], 2, mean))
     if (ncol(ProjectData_profile) <2)
       Cluster_Profile_mean=t(Cluster_Profile_mean)
@@ -355,7 +353,7 @@ shinyServer(function(input, output,session) {
   
   output$kmeans_profiling<-renderTable({
     input$action_profile
-
+    
     #data_used = the_kmeans_tab()  
     data_used = the_hclust_computations()
     # Must also show the standard deviations...!
