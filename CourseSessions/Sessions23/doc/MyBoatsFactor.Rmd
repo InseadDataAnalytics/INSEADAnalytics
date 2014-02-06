@@ -131,7 +131,8 @@ thecor = round(cor(ProjectDataFactor),2)
 colnames(thecor)<-colnames(ProjectDataFactor)
 rownames(thecor)<-colnames(ProjectDataFactor)
 ## printing the result in a clean-slate table
-cat(renderHeatmapX(thecor, border=1, center = 0,vrange_up = 1, vrange_down = 1))
+#cat(renderHeatmapX(thecor, border=1,center = 0,vrange_up = 1, vrange_down = 1))
+cat(renderHeatmapX(thecor, border=1))
 ```
 
 your text...
