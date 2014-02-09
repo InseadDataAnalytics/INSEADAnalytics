@@ -24,27 +24,25 @@ mode : standalone
 
 ## Group Project: Deliverable #1
 
-Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  github pages before the day of sessions 4-5. Delayed reports will lose 20% of the group project grade. 
+Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  <b style="color:#000;">servers before the day of sessions 4-5</b>. Delayed reports will lose 20% of the group project grade. 
 
-For this report you need to answer the following questions:
+Provide 
 
-- Name of the company you are studying (if it is for a new venture, please describe the business model, market, and key processes)
+- summary statistics of the data, 
 
-- What is the business objective of the data analytics project? 
+- any initial visual/graphic summaries  
 
-- Which business processes and management decisions are affected from the data analytics project?
+- an initial analysis based on sessions 2-3
+
 
 ---
 
-## Group Project: Deliverable #1 (contd)
-
-- What changes (e.g. organizational, processes, systems) do you expect the company will need to make order to effectively use the results of data analytics? What types of resistance do you expect, and why?
-
-- How will you measure the value of your proposed data analytics project (e.g. process efficiency, predictive improvement with specific business impact, etc)?  
-
-- What data will you use? Provide summary statistics of the data, as well as any initial visual/graphic summaries.
-
-Also be prepared to briefly present your project in class 
+## Group Project: Final Deliverable 
+  
+By Session 8 you need to have your final draft of the report and slides for your project.   
+  
+  
+<b style="color:#000;">Your report and slides need to be public on your servers before session 8. </b> 
 
 ---
 
