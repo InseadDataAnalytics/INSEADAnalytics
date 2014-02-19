@@ -1,0 +1,16525 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Boats Segmentation: Factor Analysis</title>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"></p>
+
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
+
+<h1>Boats Segmentation: Factor Analysis</h1>
+
+<p><strong>Iti Jain, Saad Nassar, Laura Lesker, Thomas Tilley</strong></p>
+
+<p><strong><em>NOTE</em></strong> All our answers begin with text &ldquo;Team Analysis&rdquo;</p>
+
+<h2>Business Decisions</h2>
+
+<p><strong><em>Team Analysis:</em></strong> Based on iterative factor analysis, it appears that there are seven key drivers of the customer&#39;s purchasing behaviour. These factors will help Mary and her team to analyse current and future customers more efficiently (using methods like Segment Analysis), by reducing number of variables to be analysed without losing a lot of information. Knowing these drivers, she can potentially customize the product, distribution etc. to grow sales of the company effectively. </p>
+
+<h2>The Data</h2>
+
+<p><strong><em>Team Analysis:</em></strong> Data consisted of 29 attitudes towards boarding, which respondents indicated their preference on a 5-point scale</p>
+
+<p>This is how the first 50 data looks:
+<br></p>
+
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Mon Feb 17 18:35:46 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e6922c20bc9 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+5,
+1,
+5,
+5,
+5,
+5,
+5,
+3,
+5,
+4,
+2,
+1,
+5,
+5,
+4,
+4,
+5,
+5,
+4,
+5,
+5,
+5,
+5,
+5,
+3,
+4 
+],
+[
+ "2",
+3,
+2,
+4,
+4,
+4,
+4,
+5,
+3,
+4,
+4,
+3,
+2,
+4,
+4,
+3,
+3,
+5,
+4,
+3,
+4,
+4,
+3,
+4,
+4,
+4,
+4 
+],
+[
+ "3",
+3,
+1,
+4,
+4,
+5,
+4,
+4,
+2,
+4,
+3,
+2,
+2,
+5,
+5,
+4,
+4,
+4,
+4,
+3,
+3,
+5,
+4,
+4,
+5,
+3,
+3 
+],
+[
+ "4",
+5,
+2,
+3,
+4,
+5,
+5,
+3,
+3,
+3,
+4,
+4,
+2,
+5,
+5,
+4,
+3,
+5,
+4,
+3,
+5,
+4,
+5,
+3,
+4,
+3,
+3 
+],
+[
+ "5",
+4,
+2,
+4,
+5,
+5,
+4,
+5,
+4,
+5,
+4,
+5,
+1,
+5,
+4,
+5,
+5,
+5,
+5,
+4,
+4,
+4,
+5,
+4,
+5,
+4,
+4 
+],
+[
+ "6",
+4,
+2,
+2,
+4,
+5,
+5,
+4,
+3,
+2,
+4,
+2,
+2,
+3,
+4,
+4,
+4,
+4,
+5,
+3,
+5,
+5,
+4,
+5,
+4,
+4,
+4 
+],
+[
+ "7",
+4,
+3,
+4,
+4,
+5,
+5,
+5,
+5,
+3,
+1,
+5,
+3,
+4,
+4,
+4,
+5,
+4,
+5,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+5 
+],
+[
+ "8",
+4,
+3,
+4,
+4,
+4,
+5,
+4,
+4,
+5,
+3,
+4,
+1,
+4,
+4,
+3,
+4,
+4,
+4,
+3,
+4,
+4,
+3,
+5,
+5,
+3,
+3 
+],
+[
+ "9",
+4,
+3,
+4,
+4,
+4,
+4,
+4,
+3,
+4,
+3,
+5,
+1,
+4,
+4,
+4,
+4,
+4,
+4,
+4,
+4,
+4,
+4,
+4,
+5,
+5,
+5 
+],
+[
+ "10",
+2,
+5,
+3,
+2,
+1,
+3,
+5,
+4,
+3,
+4,
+1,
+3,
+1,
+4,
+2,
+3,
+5,
+5,
+4,
+5,
+4,
+5,
+4,
+4,
+4,
+4 
+],
+[
+ "11",
+5,
+5,
+5,
+5,
+5,
+4,
+5,
+4,
+3,
+5,
+1,
+5,
+4,
+3,
+5,
+4,
+5,
+4,
+5,
+4,
+4,
+5,
+5,
+5,
+4,
+4 
+],
+[
+ "12",
+5,
+5,
+4,
+4,
+5,
+4,
+4,
+4,
+5,
+5,
+4,
+3,
+3,
+5,
+4,
+3,
+4,
+3,
+4,
+4,
+5,
+5,
+3,
+5,
+5,
+4 
+],
+[
+ "13",
+4,
+3,
+4,
+4,
+3,
+3,
+4,
+5,
+3,
+4,
+4,
+4,
+3,
+4,
+3,
+3,
+3,
+4,
+4,
+5,
+4,
+4,
+4,
+4,
+3,
+2 
+],
+[
+ "14",
+4,
+4,
+3,
+4,
+4,
+4,
+4,
+3,
+3,
+3,
+3,
+1,
+3,
+4,
+2,
+3,
+4,
+4,
+3,
+4,
+3,
+4,
+3,
+4,
+4,
+3 
+],
+[
+ "15",
+4,
+5,
+4,
+4,
+4,
+4,
+5,
+4,
+5,
+4,
+4,
+4,
+5,
+4,
+4,
+5,
+4,
+4,
+4,
+5,
+4,
+4,
+5,
+5,
+4,
+5 
+],
+[
+ "16",
+5,
+5,
+4,
+3,
+4,
+4,
+5,
+4,
+4,
+4,
+3,
+4,
+2,
+5,
+4,
+3,
+5,
+4,
+5,
+5,
+4,
+4,
+4,
+4,
+4,
+4 
+],
+[
+ "17",
+4,
+3,
+4,
+2,
+3,
+4,
+3,
+3,
+3,
+4,
+4,
+3,
+3,
+3,
+3,
+3,
+3,
+3,
+4,
+4,
+2,
+2,
+4,
+4,
+5,
+4 
+],
+[
+ "18",
+3,
+5,
+3,
+5,
+4,
+4,
+3,
+3,
+1,
+3,
+3,
+4,
+5,
+3,
+4,
+4,
+3,
+3,
+4,
+4,
+4,
+5,
+3,
+5,
+4,
+3 
+],
+[
+ "19",
+4,
+4,
+5,
+4,
+5,
+5,
+4,
+5,
+4,
+4,
+4,
+4,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+4,
+4,
+4,
+5,
+5,
+5,
+5 
+],
+[
+ "20",
+5,
+2,
+3,
+5,
+5,
+5,
+4,
+4,
+4,
+4,
+3,
+4,
+5,
+5,
+4,
+5,
+4,
+3,
+5,
+4,
+4,
+5,
+5,
+5,
+5,
+3 
+],
+[
+ "21",
+4,
+3,
+5,
+4,
+5,
+5,
+4,
+4,
+4,
+5,
+4,
+4,
+3,
+4,
+4,
+3,
+5,
+4,
+4,
+5,
+4,
+5,
+4,
+5,
+4,
+4 
+],
+[
+ "22",
+4,
+2,
+2,
+4,
+3,
+4,
+4,
+4,
+1,
+2,
+4,
+3,
+4,
+2,
+4,
+4,
+2,
+4,
+4,
+5,
+4,
+3,
+4,
+5,
+3,
+5 
+],
+[
+ "23",
+5,
+5,
+4,
+5,
+5,
+4,
+4,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+4,
+4,
+4,
+4,
+4,
+4,
+4,
+5,
+4,
+4,
+4,
+4 
+],
+[
+ "24",
+5,
+2,
+5,
+4,
+5,
+5,
+5,
+2,
+5,
+5,
+4,
+2,
+4,
+5,
+5,
+4,
+5,
+4,
+4,
+5,
+5,
+5,
+4,
+5,
+5,
+5 
+],
+[
+ "25",
+4,
+2,
+5,
+4,
+3,
+5,
+5,
+4,
+5,
+5,
+4,
+2,
+3,
+4,
+4,
+3,
+5,
+5,
+3,
+5,
+5,
+4,
+4,
+5,
+5,
+5 
+],
+[
+ "26",
+5,
+1,
+3,
+4,
+4,
+5,
+4,
+4,
+3,
+4,
+3,
+2,
+3,
+4,
+2,
+4,
+4,
+5,
+4,
+5,
+5,
+5,
+4,
+3,
+5,
+5 
+],
+[
+ "27",
+4,
+3,
+3,
+4,
+4,
+4,
+4,
+3,
+3,
+4,
+3,
+2,
+4,
+4,
+3,
+3,
+4,
+4,
+3,
+4,
+3,
+4,
+4,
+3,
+3,
+3 
+],
+[
+ "28",
+5,
+3,
+5,
+5,
+5,
+5,
+5,
+3,
+5,
+3,
+3,
+2,
+5,
+5,
+5,
+4,
+5,
+5,
+3,
+5,
+4,
+5,
+4,
+4,
+5,
+5 
+],
+[
+ "29",
+5,
+3,
+4,
+4,
+5,
+5,
+5,
+4,
+3,
+4,
+5,
+2,
+3,
+4,
+3,
+3,
+4,
+5,
+4,
+5,
+5,
+5,
+5,
+4,
+4,
+5 
+],
+[
+ "30",
+4,
+3,
+4,
+4,
+4,
+5,
+5,
+3,
+4,
+3,
+5,
+2,
+4,
+4,
+4,
+4,
+5,
+5,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+5 
+],
+[
+ "31",
+5,
+4,
+5,
+4,
+5,
+5,
+5,
+4,
+4,
+3,
+5,
+2,
+5,
+4,
+4,
+5,
+5,
+5,
+5,
+4,
+5,
+5,
+5,
+4,
+5,
+4 
+],
+[
+ "32",
+5,
+3,
+3,
+4,
+4,
+4,
+4,
+3,
+3,
+4,
+2,
+4,
+4,
+5,
+3,
+4,
+4,
+5,
+3,
+4,
+4,
+4,
+4,
+4,
+4,
+4 
+],
+[
+ "33",
+5,
+2,
+4,
+5,
+4,
+4,
+4,
+3,
+3,
+3,
+5,
+2,
+4,
+4,
+4,
+5,
+5,
+5,
+4,
+5,
+4,
+3,
+5,
+4,
+4,
+4 
+],
+[
+ "34",
+4,
+3,
+4,
+3,
+4,
+5,
+5,
+4,
+4,
+4,
+4,
+2,
+4,
+4,
+4,
+4,
+5,
+4,
+4,
+5,
+4,
+5,
+5,
+4,
+4,
+4 
+],
+[
+ "35",
+5,
+4,
+5,
+3,
+4,
+5,
+5,
+4,
+4,
+5,
+3,
+1,
+5,
+5,
+4,
+4,
+5,
+5,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+5 
+],
+[
+ "36",
+4,
+2,
+3,
+4,
+4,
+4,
+3,
+4,
+3,
+1,
+5,
+2,
+2,
+3,
+4,
+3,
+4,
+3,
+4,
+5,
+5,
+4,
+5,
+5,
+3,
+3 
+],
+[
+ "37",
+4,
+4,
+3,
+4,
+3,
+4,
+4,
+4,
+3,
+3,
+4,
+2,
+3,
+3,
+3,
+3,
+4,
+4,
+3,
+4,
+4,
+3,
+4,
+3,
+3,
+3 
+],
+[
+ "38",
+3,
+5,
+3,
+3,
+3,
+3,
+5,
+3,
+3,
+3,
+3,
+3,
+3,
+3,
+3,
+3,
+5,
+5,
+3,
+5,
+4,
+4,
+4,
+3,
+4,
+4 
+],
+[
+ "39",
+4,
+5,
+4,
+5,
+4,
+5,
+4,
+4,
+5,
+4,
+5,
+5,
+4,
+5,
+4,
+4,
+5,
+5,
+5,
+5,
+4,
+4,
+5,
+4,
+4,
+4 
+],
+[
+ "40",
+4,
+3,
+3,
+4,
+3,
+4,
+4,
+4,
+3,
+3,
+2,
+2,
+3,
+3,
+3,
+3,
+4,
+4,
+3,
+4,
+4,
+4,
+4,
+4,
+3,
+3 
+],
+[
+ "41",
+5,
+3,
+3,
+4,
+4,
+3,
+4,
+3,
+4,
+2,
+2,
+3,
+3,
+4,
+2,
+3,
+4,
+4,
+3,
+4,
+4,
+4,
+4,
+4,
+3,
+4 
+],
+[
+ "42",
+5,
+3,
+3,
+5,
+5,
+3,
+5,
+2,
+4,
+5,
+3,
+4,
+4,
+5,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+3,
+5,
+3,
+2,
+4 
+],
+[
+ "43",
+4,
+4,
+3,
+4,
+2,
+4,
+4,
+4,
+3,
+3,
+5,
+2,
+2,
+4,
+3,
+3,
+3,
+4,
+4,
+4,
+4,
+4,
+4,
+3,
+3,
+3 
+],
+[
+ "44",
+4,
+2,
+2,
+4,
+4,
+3,
+3,
+4,
+2,
+4,
+4,
+2,
+2,
+2,
+3,
+3,
+4,
+4,
+3,
+4,
+4,
+3,
+4,
+3,
+3,
+2 
+],
+[
+ "45",
+5,
+3,
+3,
+4,
+3,
+4,
+4,
+5,
+2,
+3,
+4,
+2,
+3,
+3,
+4,
+4,
+5,
+4,
+5,
+5,
+5,
+3,
+5,
+3,
+4,
+4 
+],
+[
+ "46",
+5,
+3,
+3,
+4,
+4,
+5,
+5,
+4,
+2,
+4,
+4,
+3,
+2,
+2,
+5,
+4,
+5,
+5,
+4,
+5,
+4,
+4,
+4,
+2,
+2,
+3 
+],
+[
+ "47",
+4,
+4,
+5,
+4,
+4,
+5,
+5,
+5,
+4,
+5,
+4,
+4,
+4,
+4,
+4,
+5,
+4,
+4,
+3,
+4,
+4,
+3,
+4,
+4,
+4,
+4 
+],
+[
+ "48",
+4,
+5,
+4,
+4,
+5,
+5,
+5,
+4,
+5,
+5,
+5,
+5,
+5,
+5,
+4,
+4,
+4,
+4,
+5,
+4,
+4,
+5,
+5,
+5,
+5,
+5 
+],
+[
+ "49",
+5,
+5,
+4,
+4,
+5,
+5,
+5,
+5,
+4,
+5,
+5,
+5,
+4,
+5,
+5,
+4,
+4,
+4,
+5,
+5,
+4,
+4,
+4,
+4,
+4,
+5 
+],
+[
+ "50",
+4,
+5,
+2,
+1,
+3,
+2,
+3,
+4,
+2,
+1,
+5,
+2,
+3,
+4,
+1,
+3,
+3,
+5,
+4,
+2,
+2,
+2,
+2,
+4,
+4,
+2 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','Q1_1_When.buying.a.boat..I.do.a.lot.of.shopping.around.and.visit.multiple.dealers');
+data.addColumn('number','Q1_2_When.buying.a.boat..getting.the.lowest.price.is.more.important.than.the.boat.brand');
+data.addColumn('number','Q1_3_The.brand.of.boat.I.buy.says.a.lot.about.who.I.am');
+data.addColumn('number','Q1_4_I.only.consider.buying.a.boat.from.a.reputable.brand');
+data.addColumn('number','Q1_5_I.am.willing.to.pay.a.premium.for.a.brand.with.a.reputation.for.high.quality');
+data.addColumn('number','Q1_6_Owning.a.boat.is.a.way.of.rewarding.myself.for.my.hard.work');
+data.addColumn('number','Q1_7_Owning.a.boat.gives.me.a.sense.of.achievement');
+data.addColumn('number','Q1_8_When.buying.a.boat..functionality.is.more.important.than.style');
+data.addColumn('number','Q1_9_I.see.my.boat.as.a.status.symbol');
+data.addColumn('number','Q1_10_When.buying.a.boat..I.rely.more.on.expert.opinion.than.my.own..e.g..consumer.reports..salespeople.');
+data.addColumn('number','Q1_11_I.tend.to.perform.minor.boat.repairs.and.maintenance.on.my.own');
+data.addColumn('number','Q1_12_When.it.comes.to.boating..I.tend.to.prefer.a.basic.boat.with.little.to.no.frills');
+data.addColumn('number','Q1_13_When.buying.a.boat..I.tend.to.buy.the.latest.and.greatest');
+data.addColumn('number','Q1_14_When.buying.accessories.for.my.boat..I.tend.to.buy.the.latest.and.greatest');
+data.addColumn('number','Q1_16_People.tend.to.come.to.me.for.advice.about.boating');
+data.addColumn('number','Q1_17_I.consider.myself.more.knowledgeable.about.boating.than.the.rest.of.my.boating.peers');
+data.addColumn('number','Q1_18_Boating.gives.me.a.feeling.of.adventure');
+data.addColumn('number','Q1_19_Boating.allows.me.to.experience.nature');
+data.addColumn('number','Q1_20_When.not.on.my.boat..I.often.find.myself.doing.boating.related.activities');
+data.addColumn('number','Q1_21_Boating.helps.me.escape.from.everyday.life.and.relax');
+data.addColumn('number','Q1_22_Boating.helps.me.stay.active');
+data.addColumn('number','Q1_23_Boating.allows.me.to.excel.in.the.sports.that.I.am.passionate.about...e.g..fishing..racing..water.sports.');
+data.addColumn('number','Q1_24_Boating.gives.me.an.outlet.to.socialize.with.family.and.or.friends');
+data.addColumn('number','Q1_26_Having.a.powerful.boat.is.what.is.most.important.to.me');
+data.addColumn('number','Q1_27_Boating.is.the.number.one.thing.I.do.with.my.spare.time');
+data.addColumn('number','Q1_28_Boating.is.my.true.passion.in.life');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e6922c20bc9() {
+var data = gvisDataTableID4e6922c20bc9();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e6922c20bc9')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e6922c20bc9);
+})();
+function displayChartTableID4e6922c20bc9() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e6922c20bc9"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID4e6922c20bc9"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div>
+<br> <br></p>
+
+<h2>Our Approach</h2>
+
+<h4>Factor Analysis in 6 steps</h4>
+
+<ol>
+<li><p>Confirm the data in metric </p></li>
+<li><p>Decide whether to scale or standardize the data</p></li>
+<li><p>Check the correlation matrix to see if Factor Analysis makes sense</p></li>
+<li><p>Develop a scree plot and decide on the number of factors to be derived</p></li>
+<li><p>Interpret the factors (consider factor rotations - technical but useful)</p></li>
+<li><p>Save factor scores for subsequent analyses</p></li>
+</ol>
+
+<p>Let&#39;s follow these steps.</p>
+
+<p>The data we use here have the following descriptive statistics: </p>
+
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Mon Feb 17 18:35:47 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e6939c5364a () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers",
+1,
+4,
+4,
+4.03,
+5,
+5,
+0.82 
+],
+[
+ "Q1_2_When buying a boat  getting the lowest price is more important than the boat brand",
+1,
+2,
+3,
+2.89,
+4,
+5,
+1.01 
+],
+[
+ "Q1_3_The brand of boat I buy says a lot about who I am",
+1,
+2,
+3,
+3.12,
+4,
+5,
+1.02 
+],
+[
+ "Q1_4_I only consider buying a boat from a reputable brand",
+1,
+3,
+4,
+3.89,
+4,
+5,
+0.82 
+],
+[
+ "Q1_5_I am willing to pay a premium for a brand with a reputation for high quality",
+1,
+3,
+4,
+3.55,
+4,
+5,
+0.93 
+],
+[
+ "Q1_6_Owning a boat is a way of rewarding myself for my hard work",
+1,
+4,
+4,
+3.95,
+4,
+5,
+0.82 
+],
+[
+ "Q1_7_Owning a boat gives me a sense of achievement",
+1,
+3,
+4,
+3.67,
+4,
+5,
+0.9 
+],
+[
+ "Q1_8_When buying a boat  functionality is more important than style",
+1,
+3,
+4,
+3.74,
+4,
+5,
+0.82 
+],
+[
+ "Q1_9_I see my boat as a status symbol",
+1,
+2,
+3,
+2.89,
+4,
+5,
+1.08 
+],
+[
+ "Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople ",
+1,
+3,
+3,
+3.37,
+4,
+5,
+0.93 
+],
+[
+ "Q1_11_I tend to perform minor boat repairs and maintenance on my own",
+1,
+3,
+4,
+3.46,
+4,
+5,
+1.15 
+],
+[
+ "Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills",
+1,
+2,
+3,
+2.86,
+4,
+5,
+1.01 
+],
+[
+ "Q1_13_When buying a boat  I tend to buy the latest and greatest",
+1,
+2,
+3,
+3.02,
+4,
+5,
+0.98 
+],
+[
+ "Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest",
+1,
+3,
+3,
+3.25,
+4,
+5,
+0.97 
+],
+[
+ "Q1_16_People tend to come to me for advice about boating",
+1,
+2,
+3,
+3.1,
+4,
+5,
+1.05 
+],
+[
+ "Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers",
+1,
+2,
+3,
+3.08,
+4,
+5,
+0.98 
+],
+[
+ "Q1_18_Boating gives me a feeling of adventure",
+1,
+4,
+4,
+4.12,
+5,
+5,
+0.74 
+],
+[
+ "Q1_19_Boating allows me to experience nature",
+1,
+4,
+4,
+4.2,
+5,
+5,
+0.72 
+],
+[
+ "Q1_20_When not on my boat  I often find myself doing boating related activities",
+1,
+2,
+3,
+3.16,
+4,
+5,
+0.97 
+],
+[
+ "Q1_21_Boating helps me escape from everyday life and relax",
+1,
+4,
+4,
+4.25,
+5,
+5,
+0.73 
+],
+[
+ "Q1_22_Boating helps me stay active",
+1,
+4,
+4,
+4.01,
+4,
+5,
+0.74 
+],
+[
+ "Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports ",
+1,
+3,
+4,
+3.56,
+4,
+5,
+1.02 
+],
+[
+ "Q1_24_Boating gives me an outlet to socialize with family and or friends",
+1,
+4,
+4,
+4.11,
+5,
+5,
+0.76 
+],
+[
+ "Q1_26_Having a powerful boat is what is most important to me",
+1,
+2,
+3,
+2.95,
+4,
+5,
+1.05 
+],
+[
+ "Q1_27_Boating is the number one thing I do with my spare time",
+1,
+2,
+3,
+3.16,
+4,
+5,
+1.05 
+],
+[
+ "Q1_28_Boating is my true passion in life",
+1,
+3,
+3,
+3.31,
+4,
+5,
+0.98 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','min');
+data.addColumn('number','X25.percent');
+data.addColumn('number','median');
+data.addColumn('number','mean');
+data.addColumn('number','X75.percent');
+data.addColumn('number','max');
+data.addColumn('number','std');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e6939c5364a() {
+var data = gvisDataTableID4e6939c5364a();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e6939c5364a')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e6939c5364a);
+})();
+function displayChartTableID4e6939c5364a() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e6939c5364a"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID4e6939c5364a"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div></p>
+
+<h4>Step 2: Decide whether to scale or standardize the data</h4>
+
+<p><strong><em>Team Analysis:</em></strong> Data consisted of 29 attitudes towards boarding, which respondents indicated their preference on a 5-point scale</p>
+
+<pre><code class="r">ProjectDatafactor_scaled = apply(ProjectDataFactor, 2, function(r) {
+    if (sd(r) != 0) 
+        res = (r - mean(r))/sd(r) else res = 0 * r
+    res
+})
+</code></pre>
+
+<p>Notice now the summary statistics of the scaled dataset:</p>
+
+<p><br></p>
+
+<div class="row">
+<div class="col-md-6">
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Mon Feb 17 18:35:48 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e6971f1311e () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers",
+-3.69,
+-0.03,
+-0.03,
+0,
+1.19,
+1.19,
+1 
+],
+[
+ "Q1_2_When buying a boat  getting the lowest price is more important than the boat brand",
+-1.86,
+-0.87,
+0.11,
+0,
+1.1,
+2.09,
+1 
+],
+[
+ "Q1_3_The brand of boat I buy says a lot about who I am",
+-2.07,
+-1.09,
+-0.11,
+0,
+0.87,
+1.85,
+1 
+],
+[
+ "Q1_4_I only consider buying a boat from a reputable brand",
+-3.53,
+-1.09,
+0.13,
+0,
+0.13,
+1.35,
+1 
+],
+[
+ "Q1_5_I am willing to pay a premium for a brand with a reputation for high quality",
+-2.75,
+-0.6,
+0.48,
+0,
+0.48,
+1.56,
+1 
+],
+[
+ "Q1_6_Owning a boat is a way of rewarding myself for my hard work",
+-3.58,
+0.06,
+0.06,
+0,
+0.06,
+1.27,
+1 
+],
+[
+ "Q1_7_Owning a boat gives me a sense of achievement",
+-2.98,
+-0.75,
+0.36,
+0,
+0.36,
+1.48,
+1 
+],
+[
+ "Q1_8_When buying a boat  functionality is more important than style",
+-3.35,
+-0.9,
+0.32,
+0,
+0.32,
+1.55,
+1 
+],
+[
+ "Q1_9_I see my boat as a status symbol",
+-1.75,
+-0.82,
+0.11,
+0,
+1.03,
+1.96,
+1 
+],
+[
+ "Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople ",
+-2.54,
+-0.39,
+-0.39,
+0,
+0.68,
+1.75,
+1 
+],
+[
+ "Q1_11_I tend to perform minor boat repairs and maintenance on my own",
+-2.14,
+-0.4,
+0.47,
+0,
+0.47,
+1.34,
+1 
+],
+[
+ "Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills",
+-1.84,
+-0.85,
+0.14,
+0,
+1.13,
+2.12,
+1 
+],
+[
+ "Q1_13_When buying a boat  I tend to buy the latest and greatest",
+-2.06,
+-1.04,
+-0.02,
+0,
+1,
+2.01,
+1 
+],
+[
+ "Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest",
+-2.31,
+-0.25,
+-0.25,
+0,
+0.78,
+1.81,
+1 
+],
+[
+ "Q1_16_People tend to come to me for advice about boating",
+-2.01,
+-1.05,
+-0.1,
+0,
+0.86,
+1.81,
+1 
+],
+[
+ "Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers",
+-2.14,
+-1.11,
+-0.09,
+0,
+0.94,
+1.96,
+1 
+],
+[
+ "Q1_18_Boating gives me a feeling of adventure",
+-4.2,
+-0.16,
+-0.16,
+0,
+1.18,
+1.18,
+1 
+],
+[
+ "Q1_19_Boating allows me to experience nature",
+-4.42,
+-0.28,
+-0.28,
+0,
+1.1,
+1.1,
+1 
+],
+[
+ "Q1_20_When not on my boat  I often find myself doing boating related activities",
+-2.23,
+-1.19,
+-0.16,
+0,
+0.87,
+1.9,
+1 
+],
+[
+ "Q1_21_Boating helps me escape from everyday life and relax",
+-4.47,
+-0.34,
+-0.34,
+0,
+1.03,
+1.03,
+1 
+],
+[
+ "Q1_22_Boating helps me stay active",
+-4.07,
+-0.01,
+-0.01,
+0,
+-0.01,
+1.34,
+1 
+],
+[
+ "Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports ",
+-2.5,
+-0.55,
+0.43,
+0,
+0.43,
+1.4,
+1 
+],
+[
+ "Q1_24_Boating gives me an outlet to socialize with family and or friends",
+-4.1,
+-0.14,
+-0.14,
+0,
+1.18,
+1.18,
+1 
+],
+[
+ "Q1_26_Having a powerful boat is what is most important to me",
+-1.85,
+-0.9,
+0.05,
+0,
+1,
+1.95,
+1 
+],
+[
+ "Q1_27_Boating is the number one thing I do with my spare time",
+-2.06,
+-1.1,
+-0.15,
+0,
+0.8,
+1.76,
+1 
+],
+[
+ "Q1_28_Boating is my true passion in life",
+-2.35,
+-0.31,
+-0.31,
+0,
+0.7,
+1.72,
+1 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','min');
+data.addColumn('number','X25.percent');
+data.addColumn('number','median');
+data.addColumn('number','mean');
+data.addColumn('number','X75.percent');
+data.addColumn('number','max');
+data.addColumn('number','std');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e6971f1311e() {
+var data = gvisDataTableID4e6971f1311e();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e6971f1311e')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e6971f1311e);
+})();
+function displayChartTableID4e6971f1311e() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e6971f1311e"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID4e6971f1311e"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div></p>
+
+<p><br>
+As expected all variables have mean 0 and standard deviation 1. </p>
+
+<h4>Step 3:  Check correlation matrix to see if Factor Analysis makes sense</h4>
+
+<p><strong><em>Team Analysis:</em></strong> Based on factor analysis, we have identified 7 key factors. This is also supported by correlation matrix below in a way that the variables which are attributes of a factor are highly correlated to each other. For example, variables/question number 28, 16, 20, 17 and 23 which make factor or component 1 have correlation coefficients ranging from 0.4 to 0.63 which is on the higher side of the matrix. Similarly variables or questions 4 and 5 which became factor 4. Although correlation matrix gives us an indication of the factors, using it as a tool becomes more difficult as the number of variables increases.</p>
+
+<p>This is the correlation matrix of the 26 original variable we use for factor analysis (Note: this would be the same for the standardized ones if the standardization is done as above; there is a mathematical reason for this that we will not explore - you could confirm it yourself):</p>
+
+<table border="1" class="data table table-bordered table-condensed">
+  <thead class="thead">
+    <tr>
+      <th></th>
+      <th>Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers</th>
+      <th>Q1_2_When buying a boat  getting the lowest price is more important than the boat brand</th>
+      <th>Q1_3_The brand of boat I buy says a lot about who I am</th>
+      <th>Q1_4_I only consider buying a boat from a reputable brand</th>
+      <th>Q1_5_I am willing to pay a premium for a brand with a reputation for high quality</th>
+      <th>Q1_6_Owning a boat is a way of rewarding myself for my hard work</th>
+      <th>Q1_7_Owning a boat gives me a sense of achievement</th>
+      <th>Q1_8_When buying a boat  functionality is more important than style</th>
+      <th>Q1_9_I see my boat as a status symbol</th>
+      <th>Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople </th>
+      <th>Q1_11_I tend to perform minor boat repairs and maintenance on my own</th>
+      <th>Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills</th>
+      <th>Q1_13_When buying a boat  I tend to buy the latest and greatest</th>
+      <th>Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest</th>
+      <th>Q1_16_People tend to come to me for advice about boating</th>
+      <th>Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers</th>
+      <th>Q1_18_Boating gives me a feeling of adventure</th>
+      <th>Q1_19_Boating allows me to experience nature</th>
+      <th>Q1_20_When not on my boat  I often find myself doing boating related activities</th>
+      <th>Q1_21_Boating helps me escape from everyday life and relax</th>
+      <th>Q1_22_Boating helps me stay active</th>
+      <th>Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports </th>
+      <th>Q1_24_Boating gives me an outlet to socialize with family and or friends</th>
+      <th>Q1_26_Having a powerful boat is what is most important to me</th>
+      <th>Q1_27_Boating is the number one thing I do with my spare time</th>
+      <th>Q1_28_Boating is my true passion in life</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="right">Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(255,243,243)">-0.05</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_2_When buying a boat  getting the lowest price is more important than the boat brand</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(255,202,202)">-0.21</td>
+      <td align="right" style="background-color: rgb(255,202,202)">-0.21</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(255,250,250)">-0.02</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(255,230,230)">-0.10</td>
+      <td align="right" style="background-color: rgb(255,235,235)">-0.08</td>
+      <td align="right" style="background-color: rgb(255,256,256)">0.00</td>
+      <td align="right" style="background-color: rgb(255,235,235)">-0.08</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_3_The brand of boat I buy says a lot about who I am</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(189,255,189)">0.26</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(255,243,243)">-0.05</td>
+      <td align="right" style="background-color: rgb(107,255,107)">0.58</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(184,255,184)">0.28</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_4_I only consider buying a boat from a reputable brand</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(255,202,202)">-0.21</td>
+      <td align="right" style="background-color: rgb(189,255,189)">0.26</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(255,256,256)">0.00</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(240,255,240)">0.06</td>
+      <td align="right" style="background-color: rgb(255,215,215)">-0.16</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_5_I am willing to pay a premium for a brand with a reputation for high quality</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(255,202,202)">-0.21</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.45</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_6_Owning a boat is a way of rewarding myself for my hard work</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(115,255,115)">0.55</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(255,225,225)">-0.12</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(151,255,151)">0.41</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_7_Owning a boat gives me a sense of achievement</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(115,255,115)">0.55</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(255,253,253)">-0.01</td>
+      <td align="right" style="background-color: rgb(130,255,130)">0.49</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(255,227,227)">-0.11</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(184,255,184)">0.28</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(179,255,179)">0.30</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_8_When buying a boat  functionality is more important than style</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(255,243,243)">-0.05</td>
+      <td align="right" style="background-color: rgb(255,256,256)">0.00</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(255,253,253)">-0.01</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(255,243,243)">-0.05</td>
+      <td align="right" style="background-color: rgb(255,250,250)">-0.02</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(240,255,240)">0.06</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(248,255,248)">0.03</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_9_I see my boat as a status symbol</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(107,255,107)">0.58</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(130,255,130)">0.49</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(240,255,240)">0.06</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(199,255,199)">0.22</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.50</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople </td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_11_I tend to perform minor boat repairs and maintenance on my own</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(240,255,240)">0.06</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(240,255,240)">0.06</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills</td>
+      <td align="right" style="background-color: rgb(255,243,243)">-0.05</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(255,215,215)">-0.16</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(255,225,225)">-0.12</td>
+      <td align="right" style="background-color: rgb(255,227,227)">-0.11</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(255,227,227)">-0.11</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(255,250,250)">-0.02</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(255,225,225)">-0.12</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(255,227,227)">-0.11</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(255,240,240)">-0.06</td>
+      <td align="right" style="background-color: rgb(255,256,256)">0.00</td>
+      <td align="right" style="background-color: rgb(255,253,253)">-0.01</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_13_When buying a boat  I tend to buy the latest and greatest</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.45</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(255,243,243)">-0.05</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(255,227,227)">-0.11</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(92,255,92)">0.64</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(255,250,250)">-0.02</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(92,255,92)">0.64</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(151,255,151)">0.41</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_16_People tend to come to me for advice about boating</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(255,250,250)">-0.02</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(255,250,250)">-0.02</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(94,255,94)">0.63</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(122,255,122)">0.52</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(179,255,179)">0.30</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.50</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(94,255,94)">0.63</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.45</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(189,255,189)">0.26</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_18_Boating gives me a feeling of adventure</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(199,255,199)">0.22</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(255,225,225)">-0.12</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(130,255,130)">0.49</td>
+      <td align="right" style="background-color: rgb(184,255,184)">0.28</td>
+      <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_19_Boating allows me to experience nature</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(184,255,184)">0.28</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(255,232,232)">-0.09</td>
+      <td align="right" style="background-color: rgb(227,255,227)">0.11</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(225,255,225)">0.12</td>
+      <td align="right" style="background-color: rgb(130,255,130)">0.49</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_20_When not on my boat  I often find myself doing boating related activities</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(245,255,245)">0.04</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(253,255,253)">0.01</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(151,255,151)">0.41</td>
+      <td align="right" style="background-color: rgb(122,255,122)">0.52</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.45</td>
+      <td align="right" style="background-color: rgb(184,255,184)">0.28</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.50</td>
+      <td align="right" style="background-color: rgb(122,255,122)">0.52</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_21_Boating helps me escape from everyday life and relax</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(255,230,230)">-0.10</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(240,255,240)">0.06</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(189,255,189)">0.26</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_22_Boating helps me stay active</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(255,235,235)">-0.08</td>
+      <td align="right" style="background-color: rgb(184,255,184)">0.28</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(186,255,186)">0.27</td>
+      <td align="right" style="background-color: rgb(151,255,151)">0.41</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(255,227,227)">-0.11</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(179,255,179)">0.30</td>
+      <td align="right" style="background-color: rgb(189,255,189)">0.26</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports </td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(255,256,256)">0.00</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(179,255,179)">0.30</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(255,248,248)">-0.03</td>
+      <td align="right" style="background-color: rgb(174,255,174)">0.32</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(163,255,163)">0.36</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_24_Boating gives me an outlet to socialize with family and or friends</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(255,235,235)">-0.08</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(255,212,212)">-0.17</td>
+      <td align="right" style="background-color: rgb(204,255,204)">0.20</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(148,255,148)">0.42</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_26_Having a powerful boat is what is most important to me</td>
+      <td align="right" style="background-color: rgb(230,255,230)">0.10</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
+      <td align="right" style="background-color: rgb(207,255,207)">0.19</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(255,245,245)">-0.04</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.50</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(232,255,232)">0.09</td>
+      <td align="right" style="background-color: rgb(255,240,240)">-0.06</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(220,255,220)">0.14</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(217,255,217)">0.15</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.45</td>
+      <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_27_Boating is the number one thing I do with my spare time</td>
+      <td align="right" style="background-color: rgb(222,255,222)">0.13</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(212,255,212)">0.17</td>
+      <td align="right" style="background-color: rgb(181,255,181)">0.29</td>
+      <td align="right" style="background-color: rgb(168,255,168)">0.34</td>
+      <td align="right" style="background-color: rgb(161,255,161)">0.37</td>
+      <td align="right" style="background-color: rgb(248,255,248)">0.03</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(235,255,235)">0.08</td>
+      <td align="right" style="background-color: rgb(215,255,215)">0.16</td>
+      <td align="right" style="background-color: rgb(255,256,256)">0.00</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(133,255,133)">0.48</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.50</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(166,255,166)">0.35</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(194,255,194)">0.24</td>
+      <td align="right" style="background-color: rgb(140,255,140)">0.45</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+      <td align="right" style="background-color: rgb(97,255,97)">0.62</td>
+    </tr>
+    <tr>
+      <td align="right">Q1_28_Boating is my true passion in life</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(250,255,250)">0.02</td>
+      <td align="right" style="background-color: rgb(145,255,145)">0.43</td>
+      <td align="right" style="background-color: rgb(202,255,202)">0.21</td>
+      <td align="right" style="background-color: rgb(171,255,171)">0.33</td>
+      <td align="right" style="background-color: rgb(156,255,156)">0.39</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(243,255,243)">0.05</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(238,255,238)">0.07</td>
+      <td align="right" style="background-color: rgb(209,255,209)">0.18</td>
+      <td align="right" style="background-color: rgb(255,253,253)">-0.01</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(153,255,153)">0.40</td>
+      <td align="right" style="background-color: rgb(128,255,128)">0.50</td>
+      <td align="right" style="background-color: rgb(138,255,138)">0.46</td>
+      <td align="right" style="background-color: rgb(176,255,176)">0.31</td>
+      <td align="right" style="background-color: rgb(197,255,197)">0.23</td>
+      <td align="right" style="background-color: rgb(122,255,122)">0.52</td>
+      <td align="right" style="background-color: rgb(189,255,189)">0.26</td>
+      <td align="right" style="background-color: rgb(158,255,158)">0.38</td>
+      <td align="right" style="background-color: rgb(143,255,143)">0.44</td>
+      <td align="right" style="background-color: rgb(192,255,192)">0.25</td>
+      <td align="right" style="background-color: rgb(135,255,135)">0.47</td>
+      <td align="right" style="background-color: rgb(97,255,97)">0.62</td>
+      <td align="right" style="background-color: rgb(0,255,0)">1.00</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Step 4. Develop a scree plot and decide on the number of factors to be derived</h4>
+
+<p><strong><em>Team Analysis:</em></strong> Our initial analysis of potential factory using the scree plot suggested five factors with an eigenvalue above 1 which would explain 54% of the variance. However, these five factors failed the qualitative test of providing a coherent story. We pushed from five to six and then seven to arrive at the smallest set of factors that provided a consistent story explaining 61% of the variance. We anchored our initial analysis at 5 factors with an eigen value above 1. We wanted to maintain the smallest number of factors that provided a consistent story so that we were able to easily manage the analysis and explain the results to others. The association of variables to factors is provided in section 5, table 2.</p>
+
+<p><br></p>
+
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+
+<!-- Mon Feb 17 18:35:49 2014 -->
+
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e6917f0056c () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "Component No:1",
+7.505198303,
+28.86614732,
+28.86614732 
+],
+[
+ "Component No:2",
+2.269617145,
+8.729296712,
+37.59544403 
+],
+[
+ "Component No:3",
+1.827912141,
+7.030431311,
+44.62587534 
+],
+[
+ "Component No:4",
+1.436342991,
+5.524396117,
+50.15027146 
+],
+[
+ "Component No:5",
+1.157734119,
+4.452823536,
+54.603095 
+],
+[
+ "Component No:6",
+0.8617076415,
+3.31426016,
+57.91735515 
+],
+[
+ "Component No:7",
+0.8075461186,
+3.10594661,
+61.02330176 
+],
+[
+ "Component No:8",
+0.7631605629,
+2.935232934,
+63.9585347 
+],
+[
+ "Component No:9",
+0.742545112,
+2.855942739,
+66.81447744 
+],
+[
+ "Component No:10",
+0.6892142939,
+2.650824207,
+69.46530164 
+],
+[
+ "Component No:11",
+0.6510764203,
+2.504140078,
+71.96944172 
+],
+[
+ "Component No:12",
+0.6298622439,
+2.422547092,
+74.39198882 
+],
+[
+ "Component No:13",
+0.6154984294,
+2.367301652,
+76.75929047 
+],
+[
+ "Component No:14",
+0.5899477888,
+2.269029957,
+79.02832042 
+],
+[
+ "Component No:15",
+0.565086956,
+2.173411369,
+81.20173179 
+],
+[
+ "Component No:16",
+0.5460866276,
+2.100333183,
+83.30206498 
+],
+[
+ "Component No:17",
+0.5285207666,
+2.032772179,
+85.33483716 
+],
+[
+ "Component No:18",
+0.5119173893,
+1.968913036,
+87.30375019 
+],
+[
+ "Component No:19",
+0.4942097891,
+1.900806881,
+89.20455707 
+],
+[
+ "Component No:20",
+0.4869843097,
+1.873016576,
+91.07757365 
+],
+[
+ "Component No:21",
+0.4596106883,
+1.767733417,
+92.84530706 
+],
+[
+ "Component No:22",
+0.41478699,
+1.595334577,
+94.44064164 
+],
+[
+ "Component No:23",
+0.3859916792,
+1.484583382,
+95.92522502 
+],
+[
+ "Component No:24",
+0.3703215035,
+1.424313475,
+97.3495385 
+],
+[
+ "Component No:25",
+0.3536642003,
+1.360246924,
+98.70978542 
+],
+[
+ "Component No:26",
+0.3354557901,
+1.290214577,
+100 
+] 
+];
+data.addColumn('string','Components');
+data.addColumn('number','Eigenvalue');
+data.addColumn('number','Percentage_of_explained_variance');
+data.addColumn('number','Cumulative_percentage_of_explained_variance');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e6917f0056c() {
+var data = gvisDataTableID4e6917f0056c();
+var options = {};
+options["allowHtml"] = true;
+options["width"] =   1200;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+  var dataFormat1 = new google.visualization.NumberFormat({pattern:"#.##"});
+  dataFormat1.format(data, 1);
+  var dataFormat2 = new google.visualization.NumberFormat({pattern:"#.##"});
+  dataFormat2.format(data, 2);
+  var dataFormat3 = new google.visualization.NumberFormat({pattern:"#.##"});
+  dataFormat3.format(data, 3);
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e6917f0056c')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e6917f0056c);
+})();
+function displayChartTableID4e6917f0056c() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+
+<!-- jsChart -->  
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e6917f0056c"></script>
+ 
+
+<!-- divChart -->
+
+<div id="TableID4e6917f0056c"
+  style="width: 1200px; height: 400px;">
+</div>
+
+<p><br> <br></p>
+
+<!-- LineChart generated in R 3.0.2 by googleVis 0.4.7 package -->
+
+<!-- Mon Feb 17 18:35:49 2014 -->
+
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataLineChartID4e6920a448af () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+7.505198303,
+1 
+],
+[
+ "2",
+2.269617145,
+1 
+],
+[
+ "3",
+1.827912141,
+1 
+],
+[
+ "4",
+1.436342991,
+1 
+],
+[
+ "5",
+1.157734119,
+1 
+],
+[
+ "6",
+0.8617076415,
+1 
+],
+[
+ "7",
+0.8075461186,
+1 
+],
+[
+ "8",
+0.7631605629,
+1 
+],
+[
+ "9",
+0.742545112,
+1 
+],
+[
+ "10",
+0.6892142939,
+1 
+],
+[
+ "11",
+0.6510764203,
+1 
+],
+[
+ "12",
+0.6298622439,
+1 
+],
+[
+ "13",
+0.6154984294,
+1 
+],
+[
+ "14",
+0.5899477888,
+1 
+],
+[
+ "15",
+0.565086956,
+1 
+],
+[
+ "16",
+0.5460866276,
+1 
+],
+[
+ "17",
+0.5285207666,
+1 
+],
+[
+ "18",
+0.5119173893,
+1 
+],
+[
+ "19",
+0.4942097891,
+1 
+],
+[
+ "20",
+0.4869843097,
+1 
+],
+[
+ "21",
+0.4596106883,
+1 
+],
+[
+ "22",
+0.41478699,
+1 
+],
+[
+ "23",
+0.3859916792,
+1 
+],
+[
+ "24",
+0.3703215035,
+1 
+],
+[
+ "25",
+0.3536642003,
+1 
+],
+[
+ "26",
+0.3354557901,
+1 
+] 
+];
+data.addColumn('string','components');
+data.addColumn('number','eigenvalues');
+data.addColumn('number','abline');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartLineChartID4e6920a448af() {
+var data = gvisDataLineChartID4e6920a448af();
+var options = {};
+options["allowHtml"] = true;
+options["title"] = "Scree plot";
+options["legend"] = "right";
+options["width"] =    900;
+options["height"] =    600;
+options["hAxis"] = {title:'Number of Components', titleTextStyle:{color:'black'}};
+options["vAxes"] = [{title:'Eigenvalues'}];
+options["series"] = [{color:'green',pointSize:3, targetAxisIndex: 0}];
+
+    var chart = new google.visualization.LineChart(
+    document.getElementById('LineChartID4e6920a448af')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartLineChartID4e6920a448af);
+})();
+function displayChartLineChartID4e6920a448af() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+
+<!-- jsChart -->  
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartLineChartID4e6920a448af"></script>
+ 
+
+<!-- divChart -->
+
+<div id="LineChartID4e6920a448af"
+  style="width: 900px; height: 600px;">
+</div>
+
+<h4>5. Interpret the factors</h4>
+
+<p>For our data, the 7 selected factors look as follows after the varimax rotation: </p>
+
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+
+<!-- Mon Feb 17 18:35:50 2014 -->
+
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e69a1c10df () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "Q1_27_Boating is the number one thing I do with my spare time",
+0.74,
+0.21,
+0.23,
+-0.01,
+0.01,
+-0.08,
+-0.06 
+],
+[
+ "Q1_28_Boating is my true passion in life",
+0.73,
+0.27,
+0.23,
+0.04,
+0.01,
+-0.03,
+-0.02 
+],
+[
+ "Q1_16_People tend to come to me for advice about boating",
+0.68,
+0.05,
+0.27,
+0.15,
+-0.01,
+0.32,
+0.09 
+],
+[
+ "Q1_20_When not on my boat  I often find myself doing boating related activities",
+0.67,
+0.21,
+0.23,
+0.05,
+0.05,
+0.06,
+0.14 
+],
+[
+ "Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers",
+0.62,
+0,
+0.29,
+0.14,
+0.05,
+0.34,
+0.1 
+],
+[
+ "Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports ",
+0.58,
+0.28,
+0.11,
+0.15,
+0.08,
+0.03,
+0.02 
+],
+[
+ "Q1_26_Having a powerful boat is what is most important to me",
+0.45,
+0.09,
+0.56,
+0.07,
+-0.02,
+-0.09,
+0.03 
+],
+[
+ "Q1_13_When buying a boat  I tend to buy the latest and greatest",
+0.36,
+0.01,
+0.6,
+0.36,
+-0.02,
+-0.05,
+0.1 
+],
+[
+ "Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest",
+0.35,
+0.1,
+0.53,
+0.39,
+-0.05,
+0.04,
+0.14 
+],
+[
+ "Q1_22_Boating helps me stay active",
+0.33,
+0.61,
+0.08,
+0.13,
+-0.01,
+0.04,
+0 
+],
+[
+ "Q1_3_The brand of boat I buy says a lot about who I am",
+0.29,
+0.15,
+0.67,
+0.21,
+-0.02,
+0.01,
+-0.06 
+],
+[
+ "Q1_5_I am willing to pay a premium for a brand with a reputation for high quality",
+0.27,
+0.14,
+0.32,
+0.61,
+-0.09,
+-0.05,
+0.08 
+],
+[
+ "Q1_9_I see my boat as a status symbol",
+0.25,
+0.12,
+0.78,
+-0.01,
+-0.02,
+-0.02,
+-0.03 
+],
+[
+ "Q1_11_I tend to perform minor boat repairs and maintenance on my own",
+0.18,
+0.11,
+0.05,
+0.03,
+0.23,
+0.73,
+0.2 
+],
+[
+ "Q1_6_Owning a boat is a way of rewarding myself for my hard work",
+0.15,
+0.61,
+0.4,
+0,
+-0.02,
+0.08,
+0.09 
+],
+[
+ "Q1_7_Owning a boat gives me a sense of achievement",
+0.14,
+0.5,
+0.62,
+-0.07,
+-0.02,
+0.08,
+0 
+],
+[
+ "Q1_18_Boating gives me a feeling of adventure",
+0.14,
+0.73,
+0.14,
+0.05,
+0.02,
+-0.03,
+0.08 
+],
+[
+ "Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills",
+0.11,
+-0.2,
+-0.07,
+-0.27,
+0.66,
+-0.06,
+0.04 
+],
+[
+ "Q1_19_Boating allows me to experience nature",
+0.11,
+0.69,
+-0.06,
+0.09,
+0.04,
+0,
+0.18 
+],
+[
+ "Q1_24_Boating gives me an outlet to socialize with family and or friends",
+0.11,
+0.63,
+0.14,
+0.14,
+-0.06,
+-0.07,
+0.01 
+],
+[
+ "Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers",
+0.1,
+0.29,
+-0.01,
+0.13,
+-0.01,
+0.07,
+0.84 
+],
+[
+ "Q1_21_Boating helps me escape from everyday life and relax",
+0.1,
+0.74,
+0.03,
+0.07,
+-0.05,
+0.05,
+0.02 
+],
+[
+ "Q1_4_I only consider buying a boat from a reputable brand",
+0.08,
+0.18,
+0.12,
+0.71,
+-0.01,
+-0.03,
+0.1 
+],
+[
+ "Q1_2_When buying a boat  getting the lowest price is more important than the boat brand",
+0.03,
+-0.11,
+0.21,
+-0.49,
+0.55,
+-0.1,
+0.23 
+],
+[
+ "Q1_8_When buying a boat  functionality is more important than style",
+-0.01,
+0.16,
+-0.14,
+0.2,
+0.78,
+0.18,
+-0.16 
+],
+[
+ "Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople ",
+-0.01,
+0.12,
+0.19,
+0.14,
+0.37,
+-0.62,
+0.26 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','Component 1');
+data.addColumn('number','Component 2');
+data.addColumn('number','Component 3');
+data.addColumn('number','Component 4');
+data.addColumn('number','Component 5');
+data.addColumn('number','Component 6');
+data.addColumn('number','Component 7');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e69a1c10df() {
+var data = gvisDataTableID4e69a1c10df();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e69a1c10df')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e69a1c10df);
+})();
+function displayChartTableID4e69a1c10df() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+
+<!-- jsChart -->  
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e69a1c10df"></script>
+ 
+
+<!-- divChart -->
+
+<div id="TableID4e69a1c10df"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p><br> <br></p>
+
+<p>To better visualize and interpret the factors we often &ldquo;supress&rdquo; loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:</p>
+
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+
+<!-- Mon Feb 17 18:35:50 2014 -->
+
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e69548e03e4 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "Q1_27_Boating is the number one thing I do with my spare time",
+0.74,
+null,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_28_Boating is my true passion in life",
+0.73,
+null,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_16_People tend to come to me for advice about boating",
+0.68,
+null,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_20_When not on my boat  I often find myself doing boating related activities",
+0.67,
+null,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers",
+0.62,
+null,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports ",
+0.58,
+null,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_26_Having a powerful boat is what is most important to me",
+null,
+null,
+0.56,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_13_When buying a boat  I tend to buy the latest and greatest",
+null,
+null,
+0.6,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest",
+null,
+null,
+0.53,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_22_Boating helps me stay active",
+null,
+0.61,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_3_The brand of boat I buy says a lot about who I am",
+null,
+null,
+0.67,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_5_I am willing to pay a premium for a brand with a reputation for high quality",
+null,
+null,
+null,
+0.61,
+null,
+null,
+null 
+],
+[
+ "Q1_9_I see my boat as a status symbol",
+null,
+null,
+0.78,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_11_I tend to perform minor boat repairs and maintenance on my own",
+null,
+null,
+null,
+null,
+null,
+0.73,
+null 
+],
+[
+ "Q1_6_Owning a boat is a way of rewarding myself for my hard work",
+null,
+0.61,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_7_Owning a boat gives me a sense of achievement",
+null,
+0.5,
+0.62,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_18_Boating gives me a feeling of adventure",
+null,
+0.73,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills",
+null,
+null,
+null,
+null,
+0.66,
+null,
+null 
+],
+[
+ "Q1_19_Boating allows me to experience nature",
+null,
+0.69,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_24_Boating gives me an outlet to socialize with family and or friends",
+null,
+0.63,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers",
+null,
+null,
+null,
+null,
+null,
+null,
+0.84 
+],
+[
+ "Q1_21_Boating helps me escape from everyday life and relax",
+null,
+0.74,
+null,
+null,
+null,
+null,
+null 
+],
+[
+ "Q1_4_I only consider buying a boat from a reputable brand",
+null,
+null,
+null,
+0.71,
+null,
+null,
+null 
+],
+[
+ "Q1_2_When buying a boat  getting the lowest price is more important than the boat brand",
+null,
+null,
+null,
+null,
+0.55,
+null,
+null 
+],
+[
+ "Q1_8_When buying a boat  functionality is more important than style",
+null,
+null,
+null,
+null,
+0.78,
+null,
+null 
+],
+[
+ "Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople ",
+null,
+null,
+null,
+null,
+null,
+-0.62,
+null 
+] 
+];
+data.addColumn('string','Variables');
+data.addColumn('number','Component 1');
+data.addColumn('number','Component 2');
+data.addColumn('number','Component 3');
+data.addColumn('number','Component 4');
+data.addColumn('number','Component 5');
+data.addColumn('number','Component 6');
+data.addColumn('number','Component 7');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e69548e03e4() {
+var data = gvisDataTableID4e69548e03e4();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e69548e03e4')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e69548e03e4);
+})();
+function displayChartTableID4e69548e03e4() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+
+<!-- jsChart -->  
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e69548e03e4"></script>
+ 
+
+<!-- divChart -->
+
+<div id="TableID4e69548e03e4"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p><br> <br></p>
+
+<h4><strong><em>Team Analysis:</em></strong> Broadly, the factors we selected could be described as (Factor: most significant question):</h4>
+
+<ol>
+<li><p><strong><em>Status seeking behaviour</em></strong>: I see my boat as a status symbol</p></li>
+<li><p><strong><em>Price sensitivity</em></strong>: When I buy a boat I look at functionality</p></li>
+<li><p><strong><em>Technical competence</em></strong>: I tend to before minor repairs and maintenance</p></li>
+<li><p><strong><em>Investment of leisure time</em></strong>: boating is the number one thing I do with my spare time</p></li>
+<li><p><strong><em>Quality</em></strong>: I only consider buying from a reputable brand</p></li>
+<li><p><strong><em>Adventure seeking behaviour</em></strong>: boating helps me escape from every day life</p></li>
+<li><p><strong><em>Flirting</em></strong>: When buying a boat I do a lot of shopping around</p></li>
+</ol>
+
+<p><br></p>
+
+<h4>Step 6. Save factor scores for subsequent analyses</h4>
+
+<p>For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first 50 observations):</p>
+
+<div class="row">
+<div class="col-md-6">
+
+<!-- Table generated in R 3.0.2 by googleVis 0.4.7 package -->
+<!-- Mon Feb 17 18:35:50 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataTableID4e6936740a3 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "1",
+0.2,
+1.12,
+1.79,
+1.72,
+-1.72,
+-0.88,
+0.48 
+],
+[
+ "2",
+-0.13,
+0.09,
+1.59,
+0.13,
+-0.89,
+-0.8,
+-1.26 
+],
+[
+ "3",
+0.53,
+-1.08,
+1.6,
+1.22,
+-2.16,
+-0.6,
+-0.97 
+],
+[
+ "4",
+0.17,
+-0.23,
+0.54,
+1.37,
+-0.89,
+-0.04,
+1.65 
+],
+[
+ "5",
+0.82,
+-0.03,
+1.57,
+1.66,
+-0.26,
+0.94,
+0 
+],
+[
+ "6",
+1.15,
+1.01,
+-0.81,
+0.61,
+-1.25,
+-1.27,
+-0.05 
+],
+[
+ "7",
+1.62,
+1.04,
+0.41,
+0.32,
+0.49,
+2.16,
+-1.35 
+],
+[
+ "8",
+-0.98,
+0.02,
+2.3,
+0.32,
+-0.52,
+0.95,
+-0.22 
+],
+[
+ "9",
+1.5,
+-0.61,
+1.01,
+-0.21,
+-1.28,
+0.59,
+0.09 
+],
+[
+ "10",
+1.12,
+1.25,
+-0.06,
+-3.37,
+0.62,
+-2.19,
+-2.42 
+],
+[
+ "11",
+1.66,
+-0.12,
+0.94,
+0.26,
+1.65,
+-2.55,
+1.14 
+],
+[
+ "12",
+1.3,
+-0.99,
+1.52,
+-0.03,
+1.08,
+-1.08,
+1.35 
+],
+[
+ "13",
+-0.25,
+-0.4,
+0.49,
+0.57,
+1.66,
+0.26,
+-0.27 
+],
+[
+ "14",
+-0.15,
+-0.75,
+0.85,
+-0.32,
+-1.06,
+-0.41,
+0.49 
+],
+[
+ "15",
+1.01,
+-0.15,
+2.15,
+-0.66,
+1.31,
+-0.12,
+0.16 
+],
+[
+ "16",
+0.85,
+0.4,
+1.13,
+-1.58,
+0.94,
+-0.71,
+1.19 
+],
+[
+ "17",
+0.88,
+-1.62,
+0.74,
+-1.86,
+-0.68,
+-0.57,
+0.44 
+],
+[
+ "18",
+1.83,
+-1.95,
+-0.02,
+0.32,
+0.53,
+-0.65,
+-0.14 
+],
+[
+ "19",
+1.83,
+0.21,
+1.25,
+0.46,
+1.78,
+-0.06,
+-0.15 
+],
+[
+ "20",
+1.57,
+-0.85,
+0.93,
+1.64,
+0.4,
+-0.61,
+0.89 
+],
+[
+ "21",
+0.74,
+0.42,
+1.19,
+0.36,
+1.13,
+-0.87,
+-0.17 
+],
+[
+ "22",
+1.46,
+-0.61,
+-1.01,
+-0.12,
+-0.53,
+1.1,
+-0.4 
+],
+[
+ "23",
+0.82,
+-1.07,
+1.82,
+0.95,
+2.23,
+-0.37,
+1.98 
+],
+[
+ "24",
+1.6,
+0.39,
+1.73,
+0,
+-1.61,
+-0.85,
+1.2 
+],
+[
+ "25",
+0.55,
+1.44,
+1.4,
+-0.41,
+-0.04,
+-0.66,
+-0.82 
+],
+[
+ "26",
+1.52,
+1.12,
+-1.06,
+0.62,
+-0.72,
+-0.94,
+0.16 
+],
+[
+ "27",
+-0.32,
+-0.64,
+0.79,
+0.39,
+-0.65,
+-0.63,
+0.62 
+],
+[
+ "28",
+0.97,
+0.46,
+1.8,
+0.71,
+-1.01,
+-0.08,
+0.71 
+],
+[
+ "29",
+0.64,
+1.41,
+0.32,
+0.34,
+0.07,
+0.11,
+0.68 
+],
+[
+ "30",
+1.4,
+1.36,
+0.95,
+-0.7,
+-0.87,
+0.55,
+-0.28 
+],
+[
+ "31",
+1.2,
+0.75,
+1.44,
+0.1,
+0.16,
+1.04,
+0.93 
+],
+[
+ "32",
+0.94,
+-0.4,
+0.3,
+0.15,
+-0.2,
+-1.53,
+1.51 
+],
+[
+ "33",
+0.62,
+0.55,
+0.29,
+0.85,
+-1.08,
+1.15,
+1.25 
+],
+[
+ "34",
+0.58,
+0.93,
+1.35,
+-0.59,
+-0.03,
+0.19,
+-0.37 
+],
+[
+ "35",
+1.24,
+1.27,
+1.64,
+-0.54,
+-0.17,
+-1.32,
+0.82 
+],
+[
+ "36",
+0.5,
+0.32,
+-0.42,
+0.2,
+-0.94,
+2.13,
+-1.04 
+],
+[
+ "37",
+-0.62,
+-0.08,
+0.54,
+-0.47,
+0.14,
+0.71,
+0.14 
+],
+[
+ "38",
+0.52,
+0.79,
+0.3,
+-2.18,
+-0.07,
+-0.59,
+-0.84 
+],
+[
+ "39",
+0.59,
+0.63,
+1.63,
+-0.08,
+2,
+0.26,
+0.67 
+],
+[
+ "40",
+-0.08,
+-0.06,
+0.25,
+-0.2,
+-0.37,
+-0.48,
+-0.42 
+],
+[
+ "41",
+0.23,
+-0.54,
+0.43,
+-0.26,
+-1.07,
+-0.61,
+0.7 
+],
+[
+ "42",
+0.56,
+0.36,
+0.7,
+0.8,
+-0.43,
+-1.05,
+2.33 
+],
+[
+ "43",
+-0.12,
+-0.31,
+0.29,
+-0.81,
+0.21,
+1.29,
+0.33 
+],
+[
+ "44",
+-0.25,
+-0.27,
+-1.2,
+0.8,
+-0.13,
+0.04,
+0.11 
+],
+[
+ "45",
+0.98,
+1.12,
+-0.96,
+-0.09,
+0.3,
+0.79,
+0.34 
+],
+[
+ "46",
+-0.14,
+1.26,
+-0.52,
+-0.28,
+0.41,
+1.01,
+1.35 
+],
+[
+ "47",
+-0.02,
+-0.31,
+2.19,
+0.21,
+2.13,
+0.18,
+-0.05 
+],
+[
+ "48",
+1.54,
+-0.38,
+2.28,
+-0.28,
+2.08,
+-0.68,
+0.6 
+],
+[
+ "49",
+1.1,
+-0.13,
+1.58,
+0.09,
+2.66,
+0.2,
+1.49 
+],
+[
+ "50",
+0.03,
+-2.54,
+0.28,
+-2.24,
+-0.26,
+1.63,
+1.2 
+] 
+];
+data.addColumn('string','Observation');
+data.addColumn('number','Derived Variable (Factor) 1');
+data.addColumn('number','Derived Variable (Factor) 2');
+data.addColumn('number','Derived Variable (Factor) 3');
+data.addColumn('number','Derived Variable (Factor) 4');
+data.addColumn('number','Derived Variable (Factor) 5');
+data.addColumn('number','Derived Variable (Factor) 6');
+data.addColumn('number','Derived Variable (Factor) 7');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartTableID4e6936740a3() {
+var data = gvisDataTableID4e6936740a3();
+var options = {};
+options["allowHtml"] = true;
+options["showRowNumber"] = true;
+options["width"] =   1220;
+options["height"] =    400;
+options["allowHTML"] = true;
+options["page"] = "disable";
+
+    var chart = new google.visualization.Table(
+    document.getElementById('TableID4e6936740a3')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "table";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartTableID4e6936740a3);
+})();
+function displayChartTableID4e6936740a3() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartTableID4e6936740a3"></script>
+ 
+<!-- divChart -->
+  
+<div id="TableID4e6936740a3"
+  style="width: 1220px; height: 400px;">
+</div>
+
+<p></div>
+</div>
+<br> <br></p>
+
+<p>Can you describe the observations using the new derived variables? How does each person perform for each of the selected factors?</p>
+
+<p>We now can replace our original data with the new ones and continue our analysis. For example, we can now visualize our original data using only the newly derived attributes. Here is the plot when we use only the top 2 factors:</p>
+
+<!-- ScatterChart generated in R 3.0.2 by googleVis 0.4.7 package -->
+
+<!-- Mon Feb 17 18:35:50 2014 -->
+
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataScatterChartID4e6942846f05 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ 0.2,
+1.12 
+],
+[
+ -0.13,
+0.09 
+],
+[
+ 0.53,
+-1.08 
+],
+[
+ 0.17,
+-0.23 
+],
+[
+ 0.82,
+-0.03 
+],
+[
+ 1.15,
+1.01 
+],
+[
+ 1.62,
+1.04 
+],
+[
+ -0.98,
+0.02 
+],
+[
+ 1.5,
+-0.61 
+],
+[
+ 1.12,
+1.25 
+],
+[
+ 1.66,
+-0.12 
+],
+[
+ 1.3,
+-0.99 
+],
+[
+ -0.25,
+-0.4 
+],
+[
+ -0.15,
+-0.75 
+],
+[
+ 1.01,
+-0.15 
+],
+[
+ 0.85,
+0.4 
+],
+[
+ 0.88,
+-1.62 
+],
+[
+ 1.83,
+-1.95 
+],
+[
+ 1.83,
+0.21 
+],
+[
+ 1.57,
+-0.85 
+],
+[
+ 0.74,
+0.42 
+],
+[
+ 1.46,
+-0.61 
+],
+[
+ 0.82,
+-1.07 
+],
+[
+ 1.6,
+0.39 
+],
+[
+ 0.55,
+1.44 
+],
+[
+ 1.52,
+1.12 
+],
+[
+ -0.32,
+-0.64 
+],
+[
+ 0.97,
+0.46 
+],
+[
+ 0.64,
+1.41 
+],
+[
+ 1.4,
+1.36 
+],
+[
+ 1.2,
+0.75 
+],
+[
+ 0.94,
+-0.4 
+],
+[
+ 0.62,
+0.55 
+],
+[
+ 0.58,
+0.93 
+],
+[
+ 1.24,
+1.27 
+],
+[
+ 0.5,
+0.32 
+],
+[
+ -0.62,
+-0.08 
+],
+[
+ 0.52,
+0.79 
+],
+[
+ 0.59,
+0.63 
+],
+[
+ -0.08,
+-0.06 
+],
+[
+ 0.23,
+-0.54 
+],
+[
+ 0.56,
+0.36 
+],
+[
+ -0.12,
+-0.31 
+],
+[
+ -0.25,
+-0.27 
+],
+[
+ 0.98,
+1.12 
+],
+[
+ -0.14,
+1.26 
+],
+[
+ -0.02,
+-0.31 
+],
+[
+ 1.54,
+-0.38 
+],
+[
+ 1.1,
+-0.13 
+],
+[
+ 0.03,
+-2.54 
+],
+[
+ 1.21,
+-2.3 
+],
+[
+ 0.02,
+-2.07 
+],
+[
+ 0.13,
+-1.12 
+],
+[
+ -0.42,
+-3.08 
+],
+[
+ 0.84,
+-1.02 
+],
+[
+ 1.1,
+0.13 
+],
+[
+ 0.9,
+1.72 
+],
+[
+ 0.88,
+0 
+],
+[
+ 1.02,
+0.86 
+],
+[
+ 1.62,
+0.87 
+],
+[
+ -0.47,
+1.04 
+],
+[
+ 1.06,
+1.01 
+],
+[
+ 1.32,
+1.07 
+],
+[
+ 1.36,
+0.69 
+],
+[
+ -3.42,
+-0.12 
+],
+[
+ 1.03,
+0.68 
+],
+[
+ 0.07,
+0.04 
+],
+[
+ 0.43,
+0.75 
+],
+[
+ 1,
+1.27 
+],
+[
+ 0.29,
+0.58 
+],
+[
+ 1.01,
+-0.09 
+],
+[
+ 1.9,
+0.94 
+],
+[
+ -0.87,
+0.73 
+],
+[
+ 0.77,
+0.93 
+],
+[
+ -1.66,
+-0.43 
+],
+[
+ -0.89,
+-0.24 
+],
+[
+ 0.62,
+-0.42 
+],
+[
+ 1.41,
+0.42 
+],
+[
+ -0.53,
+-0.23 
+],
+[
+ 1.2,
+1.88 
+],
+[
+ 0.31,
+0.44 
+],
+[
+ 1.16,
+-0.24 
+],
+[
+ 0.16,
+-0.36 
+],
+[
+ -1.95,
+0.23 
+],
+[
+ 0.34,
+-0.11 
+],
+[
+ 1.58,
+0.61 
+],
+[
+ 0.39,
+-0.66 
+],
+[
+ 1.58,
+0.28 
+],
+[
+ 0.31,
+-1.09 
+],
+[
+ -0.12,
+0.66 
+],
+[
+ 0.3,
+-0.4 
+],
+[
+ -2.12,
+0.5 
+],
+[
+ -0.76,
+0.76 
+],
+[
+ -1.25,
+-0.23 
+],
+[
+ -0.86,
+-1.47 
+],
+[
+ 0.64,
+1.13 
+],
+[
+ 1.61,
+0.66 
+],
+[
+ -0.4,
+-0.31 
+],
+[
+ 0.48,
+0.03 
+],
+[
+ -0.08,
+-0.18 
+],
+[
+ 0.49,
+-0.44 
+],
+[
+ 0.79,
+0.33 
+],
+[
+ 1.11,
+0.71 
+],
+[
+ 1.59,
+1.39 
+],
+[
+ 1.18,
+0.78 
+],
+[
+ 0.64,
+0.09 
+],
+[
+ -0.3,
+-0.04 
+],
+[
+ 0.01,
+1.23 
+],
+[
+ 0.07,
+1.19 
+],
+[
+ 0.75,
+1.17 
+],
+[
+ 1.33,
+-0.04 
+],
+[
+ 0.95,
+1.21 
+],
+[
+ -0.47,
+-0.25 
+],
+[
+ 0.53,
+0.7 
+],
+[
+ 0.16,
+-0.06 
+],
+[
+ -0.18,
+1.21 
+],
+[
+ -0.18,
+1.34 
+],
+[
+ 0.08,
+1.06 
+],
+[
+ 1.83,
+0.53 
+],
+[
+ 1.35,
+0.74 
+],
+[
+ 1.03,
+0.59 
+],
+[
+ 0.56,
+0.57 
+],
+[
+ 0.9,
+0.61 
+],
+[
+ -0.03,
+0.31 
+],
+[
+ -0.34,
+0.84 
+],
+[
+ 0.73,
+-0.88 
+],
+[
+ -0.05,
+1.57 
+],
+[
+ 0.06,
+0.13 
+],
+[
+ 0.52,
+0.24 
+],
+[
+ 0.74,
+-0.43 
+],
+[
+ 0.03,
+0.77 
+],
+[
+ 0.28,
+-0.25 
+],
+[
+ 0.52,
+1.35 
+],
+[
+ -0.01,
+0.99 
+],
+[
+ -0.2,
+-0.83 
+],
+[
+ 1.13,
+0.83 
+],
+[
+ 1.1,
+0.57 
+],
+[
+ 0.16,
+-0.19 
+],
+[
+ -0.01,
+0.82 
+],
+[
+ 1.23,
+0.1 
+],
+[
+ -0.01,
+-0.21 
+],
+[
+ -0.54,
+-0.63 
+],
+[
+ 1.44,
+-0.44 
+],
+[
+ 0.72,
+0.79 
+],
+[
+ -0.24,
+-0.29 
+],
+[
+ -0.1,
+1.12 
+],
+[
+ 0.48,
+0.45 
+],
+[
+ 0.34,
+1.12 
+],
+[
+ 0.68,
+0 
+],
+[
+ -0.93,
+0.29 
+],
+[
+ -0.63,
+-0.43 
+],
+[
+ 0.91,
+1.83 
+],
+[
+ -2.05,
+0.78 
+],
+[
+ -0.72,
+0.37 
+],
+[
+ 0.93,
+1.42 
+],
+[
+ 0.35,
+1.51 
+],
+[
+ -0.33,
+0.46 
+],
+[
+ -0.12,
+0.53 
+],
+[
+ -0.2,
+1.74 
+],
+[
+ 0.62,
+1.16 
+],
+[
+ 0.39,
+-0.64 
+],
+[
+ -2.52,
+-1.37 
+],
+[
+ -1.11,
+0.07 
+],
+[
+ -2.35,
+0.9 
+],
+[
+ -0.61,
+-0.89 
+],
+[
+ -0.33,
+-0.19 
+],
+[
+ -0.25,
+1.32 
+],
+[
+ -2.01,
+-0.49 
+],
+[
+ -0.98,
+0.38 
+],
+[
+ -0.82,
+0.02 
+],
+[
+ 0.35,
+1.22 
+],
+[
+ -0.26,
+-0.09 
+],
+[
+ -1.83,
+1.7 
+],
+[
+ -1.15,
+1.25 
+],
+[
+ -0.9,
+-0.34 
+],
+[
+ 0.1,
+1.52 
+],
+[
+ -0.74,
+-1.13 
+],
+[
+ -0.77,
+1.24 
+],
+[
+ 1.91,
+0.28 
+],
+[
+ 1.17,
+1.24 
+],
+[
+ 1.58,
+0.99 
+],
+[
+ 0.45,
+-0.23 
+],
+[
+ 1.88,
+1.4 
+],
+[
+ 1.05,
+1.28 
+],
+[
+ 0.57,
+1.32 
+],
+[
+ 0.24,
+1.5 
+],
+[
+ 1.59,
+1.52 
+],
+[
+ -0.03,
+-0.66 
+],
+[
+ 0.48,
+1.55 
+],
+[
+ -0.63,
+-0.31 
+],
+[
+ -0.28,
+0.07 
+],
+[
+ 0.01,
+-0.22 
+],
+[
+ 0.61,
+-0.05 
+],
+[
+ 0.93,
+1.51 
+],
+[
+ -0.21,
+-0.24 
+],
+[
+ -1.06,
+0.25 
+],
+[
+ -0.39,
+1.86 
+],
+[
+ 0.89,
+1.24 
+],
+[
+ 1.35,
+1.46 
+],
+[
+ 2.26,
+1.2 
+],
+[
+ 0.72,
+1.47 
+],
+[
+ 1.29,
+0.83 
+],
+[
+ 1.07,
+1.12 
+],
+[
+ 1.35,
+1.47 
+],
+[
+ 0.8,
+1.36 
+],
+[
+ 1.58,
+0.84 
+],
+[
+ 0.92,
+-0.33 
+],
+[
+ 1.05,
+1.23 
+],
+[
+ -2.23,
+2.17 
+],
+[
+ -0.09,
+2.28 
+],
+[
+ 1.57,
+0.95 
+],
+[
+ 0.88,
+-0.3 
+],
+[
+ 1.27,
+1.73 
+],
+[
+ 0.27,
+-0.53 
+],
+[
+ 0.66,
+0.92 
+],
+[
+ 0.75,
+0.54 
+],
+[
+ -1,
+0.4 
+],
+[
+ 1.67,
+1.79 
+],
+[
+ -0.19,
+0.43 
+],
+[
+ -0.37,
+0.25 
+],
+[
+ 0.19,
+0.65 
+],
+[
+ -0.28,
+-0.09 
+],
+[
+ 0.79,
+-0.49 
+],
+[
+ 0.42,
+0.63 
+],
+[
+ 0.49,
+-0.03 
+],
+[
+ -0.8,
+1.22 
+],
+[
+ 0.63,
+0.56 
+],
+[
+ 0.14,
+0.23 
+],
+[
+ -0.19,
+-0.3 
+],
+[
+ 1.29,
+0.21 
+],
+[
+ -0.02,
+-1.76 
+],
+[
+ -1.72,
+1.77 
+],
+[
+ 1.82,
+0.89 
+],
+[
+ 0.33,
+1.23 
+],
+[
+ 0.25,
+1.23 
+],
+[
+ 0.04,
+-0.68 
+],
+[
+ 0.45,
+0.29 
+],
+[
+ 0.62,
+-1.29 
+],
+[
+ 1.16,
+-0.79 
+],
+[
+ -0.61,
+1.72 
+],
+[
+ 0.77,
+-0.34 
+],
+[
+ -0.38,
+0.08 
+],
+[
+ -0.13,
+0.74 
+],
+[
+ 1.41,
+0.67 
+],
+[
+ 0,
+-0.65 
+],
+[
+ -0.19,
+-0.06 
+],
+[
+ 1.43,
+0 
+],
+[
+ 0.84,
+1.23 
+],
+[
+ 0.09,
+0.1 
+],
+[
+ 0.91,
+-1.08 
+],
+[
+ 0.47,
+0.29 
+],
+[
+ 2.05,
+0.8 
+],
+[
+ 0.23,
+1.58 
+],
+[
+ -0.13,
+1.13 
+],
+[
+ -0.87,
+0.5 
+],
+[
+ 0.51,
+-0.46 
+],
+[
+ 1.32,
+-0.14 
+],
+[
+ -0.56,
+-0.43 
+],
+[
+ 0.55,
+-1.99 
+],
+[
+ 1.22,
+0.07 
+],
+[
+ 2.28,
+-0.45 
+],
+[
+ -0.25,
+-1.84 
+],
+[
+ -0.31,
+-0.44 
+],
+[
+ 0.95,
+-0.41 
+],
+[
+ 1.07,
+0.43 
+],
+[
+ 2.06,
+-0.55 
+],
+[
+ 1.03,
+0.06 
+],
+[
+ -0.1,
+0.36 
+],
+[
+ 0.57,
+0.57 
+],
+[
+ 1,
+-1.86 
+],
+[
+ 1.05,
+0.4 
+],
+[
+ 0.93,
+-0.85 
+],
+[
+ 0.1,
+-0.68 
+],
+[
+ 0.62,
+-0.98 
+],
+[
+ 0.44,
+-0.72 
+],
+[
+ 0.44,
+-0.47 
+],
+[
+ 1.05,
+-0.39 
+],
+[
+ 1.06,
+-0.22 
+],
+[
+ 0.58,
+-0.86 
+],
+[
+ 1.18,
+-0.81 
+],
+[
+ 1.15,
+-1.37 
+],
+[
+ 0.56,
+-1.04 
+],
+[
+ 1.4,
+-1.01 
+],
+[
+ 1.96,
+0.29 
+],
+[
+ 1.37,
+0.06 
+],
+[
+ 1.16,
+-0.61 
+],
+[
+ 0.82,
+-0.5 
+],
+[
+ 1.48,
+0.3 
+],
+[
+ 0.2,
+-0.45 
+],
+[
+ 2.08,
+-1.56 
+],
+[
+ 1.82,
+-1.34 
+],
+[
+ -0.94,
+0.12 
+],
+[
+ 1.65,
+0.3 
+],
+[
+ 1.72,
+0.35 
+],
+[
+ 1,
+0.16 
+],
+[
+ 0.25,
+-0.93 
+],
+[
+ -0.7,
+0.71 
+],
+[
+ 1.48,
+0.08 
+],
+[
+ 1.12,
+-0.83 
+],
+[
+ 0.86,
+-1.72 
+],
+[
+ 1.45,
+-0.46 
+],
+[
+ 1.23,
+0.33 
+],
+[
+ 2.28,
+-0.08 
+],
+[
+ 1.08,
+0.24 
+],
+[
+ 1.35,
+-0.73 
+],
+[
+ 0.77,
+-0.55 
+],
+[
+ 0.98,
+-0.55 
+],
+[
+ 0.6,
+0.43 
+],
+[
+ 1.43,
+-0.54 
+],
+[
+ -0.23,
+0 
+],
+[
+ 0.6,
+0.2 
+],
+[
+ 1.08,
+0.03 
+],
+[
+ 1.08,
+0.16 
+],
+[
+ 1.39,
+-1.5 
+],
+[
+ 0.5,
+-1.5 
+],
+[
+ 0.5,
+-0.55 
+],
+[
+ 2.9,
+0.92 
+],
+[
+ 0.84,
+-1.43 
+],
+[
+ 2.24,
+-0.89 
+],
+[
+ -0.23,
+-1.97 
+],
+[
+ 1.24,
+0.74 
+],
+[
+ 1.77,
+-2.11 
+],
+[
+ 0.29,
+-1.38 
+],
+[
+ 0.38,
+-0.67 
+],
+[
+ -0.65,
+-3.58 
+],
+[
+ 1.24,
+-1.23 
+],
+[
+ 0.49,
+-0.1 
+],
+[
+ 2.41,
+-2.4 
+],
+[
+ 1.05,
+-0.81 
+],
+[
+ 1.43,
+-0.67 
+],
+[
+ -0.26,
+0.88 
+],
+[
+ 0.29,
+-1.36 
+],
+[
+ 0.71,
+-1.11 
+],
+[
+ 0.89,
+-0.04 
+],
+[
+ 1.93,
+-1.52 
+],
+[
+ 0.46,
+-1.27 
+],
+[
+ 0.64,
+0.46 
+],
+[
+ 0.83,
+-0.19 
+],
+[
+ 0.02,
+-1.51 
+],
+[
+ 1.56,
+0.38 
+],
+[
+ 0.76,
+1.02 
+],
+[
+ 0.27,
+-0.67 
+],
+[
+ 0.03,
+1.2 
+],
+[
+ -1.98,
+1.16 
+],
+[
+ 0.27,
+0.81 
+],
+[
+ 0.99,
+0.72 
+],
+[
+ -0.09,
+-0.83 
+],
+[
+ 1.25,
+0.45 
+],
+[
+ 0.45,
+0.58 
+],
+[
+ 0.19,
+0.71 
+],
+[
+ -0.64,
+0.73 
+],
+[
+ -0.8,
+0.27 
+],
+[
+ 0.91,
+0.97 
+],
+[
+ 0.7,
+0.74 
+],
+[
+ 0.59,
+0.05 
+],
+[
+ -0.12,
+0.31 
+],
+[
+ 0.78,
+0.16 
+],
+[
+ 1.87,
+1.69 
+],
+[
+ -0.47,
+-0.15 
+],
+[
+ -0.88,
+0.75 
+],
+[
+ 0.72,
+1.25 
+],
+[
+ 1.06,
+1.24 
+],
+[
+ 0.47,
+-0.35 
+],
+[
+ 0.01,
+0.08 
+],
+[
+ -0.51,
+0.61 
+],
+[
+ 0.64,
+-0.38 
+],
+[
+ 0.6,
+0.71 
+],
+[
+ -0.84,
+-1 
+],
+[
+ 1.21,
+-0.59 
+],
+[
+ 0.42,
+-0.36 
+],
+[
+ 0.3,
+1.26 
+],
+[
+ 0.43,
+0.1 
+],
+[
+ 0.22,
+0.71 
+],
+[
+ -0.2,
+0.27 
+],
+[
+ -0.66,
+0.18 
+],
+[
+ 0.85,
+0.05 
+],
+[
+ 1.19,
+0.22 
+],
+[
+ -0.71,
+0.08 
+],
+[
+ -0.17,
+0.52 
+],
+[
+ -0.07,
+1.35 
+],
+[
+ 0.75,
+0.43 
+],
+[
+ 1.34,
+0.54 
+],
+[
+ -0.67,
+-0.82 
+],
+[
+ 0.76,
+1.37 
+],
+[
+ 1.81,
+0.14 
+],
+[
+ -0.15,
+-0.76 
+],
+[
+ 0.67,
+-0.48 
+],
+[
+ -0.76,
+-0.97 
+],
+[
+ 1.21,
+1.07 
+],
+[
+ 0.47,
+1.24 
+],
+[
+ 1.39,
+1.03 
+],
+[
+ 0.93,
+0.8 
+],
+[
+ 0.74,
+1.03 
+],
+[
+ 0.55,
+1.26 
+],
+[
+ 0.93,
+0.45 
+],
+[
+ 0.53,
+1.11 
+],
+[
+ 1.65,
+0.44 
+],
+[
+ 1.95,
+0.14 
+],
+[
+ 1.66,
+0.26 
+],
+[
+ 1.41,
+0.75 
+],
+[
+ 0.2,
+0.22 
+],
+[
+ 1.07,
+0.93 
+],
+[
+ 1.14,
+-0.59 
+],
+[
+ 0.69,
+0.74 
+],
+[
+ -0.26,
+-0.66 
+],
+[
+ 0.26,
+0 
+],
+[
+ 0.88,
+0.64 
+],
+[
+ 0.34,
+1.17 
+],
+[
+ -0.52,
+-0.82 
+],
+[
+ 1,
+-0.06 
+],
+[
+ 1.42,
+0.64 
+],
+[
+ 0.25,
+0.25 
+],
+[
+ 1.69,
+0.8 
+],
+[
+ 1.42,
+0.92 
+],
+[
+ 0.42,
+-0.25 
+],
+[
+ 1.02,
+0.84 
+],
+[
+ 0.33,
+0.34 
+],
+[
+ 0.54,
+0.79 
+],
+[
+ -0.03,
+-0.15 
+],
+[
+ -0.5,
+0.69 
+],
+[
+ 0.85,
+0.27 
+],
+[
+ 0.87,
+-0.5 
+],
+[
+ 1.17,
+-0.09 
+],
+[
+ 1.1,
+0.96 
+],
+[
+ 0.24,
+-1.15 
+],
+[
+ 0.89,
+1.4 
+],
+[
+ 0.51,
+0.61 
+],
+[
+ 1.49,
+1.07 
+],
+[
+ 0.34,
+-0.08 
+],
+[
+ 1.6,
+0.14 
+],
+[
+ -0.01,
+0.51 
+],
+[
+ -0.71,
+0.6 
+],
+[
+ 1.49,
+0.45 
+],
+[
+ -0.1,
+1.25 
+],
+[
+ -0.28,
+1.31 
+],
+[
+ 0.92,
+0.51 
+],
+[
+ 1.17,
+0.19 
+],
+[
+ 0.39,
+0.35 
+],
+[
+ -0.91,
+-0.04 
+],
+[
+ 0.39,
+0.29 
+],
+[
+ 0.12,
+0.19 
+],
+[
+ -0.08,
+-0.13 
+],
+[
+ 2.54,
+0.69 
+],
+[
+ 0.23,
+1.27 
+],
+[
+ -0.94,
+1.51 
+],
+[
+ -0.23,
+0.94 
+],
+[
+ -0.01,
+2.34 
+],
+[
+ -1.13,
+1.43 
+],
+[
+ -0.66,
+1.66 
+],
+[
+ -1.69,
+-0.05 
+],
+[
+ -0.76,
+1.09 
+],
+[
+ -0.3,
+1.53 
+],
+[
+ 0.12,
+0.89 
+],
+[
+ 0.81,
+0.19 
+],
+[
+ -0.4,
+0.18 
+],
+[
+ -0.79,
+-0.78 
+],
+[
+ -0.58,
+1.24 
+],
+[
+ -0.66,
+-0.1 
+],
+[
+ -0.24,
+-0.42 
+],
+[
+ -0.84,
+-0.18 
+],
+[
+ 0.66,
+0.21 
+],
+[
+ -0.98,
+-1.06 
+],
+[
+ -0.39,
+-0.26 
+],
+[
+ -1.05,
+0.75 
+],
+[
+ -0.95,
+0.05 
+],
+[
+ 0.34,
+1.43 
+],
+[
+ -1.54,
+1.11 
+],
+[
+ 0.1,
+1.15 
+],
+[
+ 0.66,
+1.84 
+],
+[
+ 0.18,
+0.55 
+],
+[
+ -0.99,
+-0.21 
+],
+[
+ -0.02,
+-0.47 
+],
+[
+ -0.14,
+2.26 
+],
+[
+ -1.25,
+-0.24 
+],
+[
+ 0.4,
+1.07 
+],
+[
+ -0.08,
+1.2 
+],
+[
+ -0.9,
+-0.53 
+],
+[
+ 0.56,
+0.19 
+],
+[
+ -2.23,
+1.65 
+],
+[
+ -0.6,
+0.55 
+],
+[
+ -0.95,
+1.2 
+],
+[
+ -0.9,
+-0.29 
+],
+[
+ -1.53,
+1.64 
+],
+[
+ 0.35,
+1.4 
+],
+[
+ -0.77,
+-0.51 
+],
+[
+ -0.82,
+-0.41 
+],
+[
+ 1.38,
+0.65 
+],
+[
+ 1.14,
+1.17 
+],
+[
+ 0.43,
+1.28 
+],
+[
+ -0.83,
+0.08 
+],
+[
+ 0.78,
+-2.22 
+],
+[
+ -1.05,
+-0.25 
+],
+[
+ 1.9,
+0.93 
+],
+[
+ -1.65,
+0.17 
+],
+[
+ -0.39,
+-0.39 
+],
+[
+ 2.41,
+0.64 
+],
+[
+ 1.42,
+1.11 
+],
+[
+ 1.2,
+1.19 
+],
+[
+ 1.28,
+1.11 
+],
+[
+ 0.5,
+1.09 
+],
+[
+ -0.86,
+0.52 
+],
+[
+ 0.99,
+1.51 
+],
+[
+ -0.07,
+-0.1 
+],
+[
+ -0.24,
+0.18 
+],
+[
+ 0.28,
+-0.66 
+],
+[
+ 1.22,
+1.19 
+],
+[
+ -0.39,
+0.25 
+],
+[
+ 0.25,
+0.19 
+],
+[
+ 0.11,
+-0.39 
+],
+[
+ 0.6,
+-0.53 
+],
+[
+ 1.26,
+-0.48 
+],
+[
+ 0.97,
+-0.57 
+],
+[
+ -0.08,
+0.17 
+],
+[
+ 0.42,
+-0.95 
+],
+[
+ -0.71,
+-0.15 
+],
+[
+ -1.77,
+1.24 
+],
+[
+ -1.3,
+-0.32 
+],
+[
+ 0.47,
+-0.32 
+],
+[
+ -0.74,
+0.38 
+],
+[
+ 0.14,
+0.23 
+],
+[
+ 0.02,
+-0.97 
+],
+[
+ -0.27,
+-1.14 
+],
+[
+ -0.78,
+-0.12 
+],
+[
+ 0.13,
+1.12 
+],
+[
+ 0.28,
+1.15 
+],
+[
+ -0.36,
+0.07 
+],
+[
+ -1.01,
+-1.55 
+],
+[
+ -0.51,
+-0.68 
+],
+[
+ -1.17,
+-0.57 
+],
+[
+ -0.63,
+-0.43 
+],
+[
+ -1.17,
+0.69 
+],
+[
+ 0.3,
+0.1 
+],
+[
+ -0.13,
+-0.87 
+],
+[
+ -0.44,
+-1.84 
+],
+[
+ 0.35,
+1.38 
+],
+[
+ -0.79,
+-1.43 
+],
+[
+ 0.13,
+1.3 
+],
+[
+ 0.1,
+-0.35 
+],
+[
+ 0.71,
+0.51 
+],
+[
+ 1.14,
+-0.44 
+],
+[
+ 1.94,
+-0.23 
+],
+[
+ -0.23,
+0.24 
+],
+[
+ -0.72,
+0.21 
+],
+[
+ 0.34,
+0.97 
+],
+[
+ 1.07,
+1.36 
+],
+[
+ -0.19,
+-0.7 
+],
+[
+ 0.12,
+0.33 
+],
+[
+ -1.05,
+1.06 
+],
+[
+ 0.33,
+-0.49 
+],
+[
+ 1.19,
+0.17 
+],
+[
+ -0.5,
+0.81 
+],
+[
+ -0.37,
+-0.7 
+],
+[
+ 2.99,
+1.11 
+],
+[
+ -1.32,
+0.58 
+],
+[
+ 0.78,
+-0.02 
+],
+[
+ -0.94,
+-0.64 
+],
+[
+ -0.75,
+0.82 
+],
+[
+ 1.36,
+0.86 
+],
+[
+ 1.11,
+-0.37 
+],
+[
+ 0.73,
+-0.87 
+],
+[
+ 0.72,
+0.2 
+],
+[
+ 1.77,
+-0.62 
+],
+[
+ 1.22,
+0.34 
+],
+[
+ 0.7,
+0.33 
+],
+[
+ 0.5,
+-0.35 
+],
+[
+ 1.72,
+-0.18 
+],
+[
+ 1.98,
+-1.92 
+],
+[
+ 1.3,
+0 
+],
+[
+ 0.06,
+-1.97 
+],
+[
+ 0.4,
+0 
+],
+[
+ 0.98,
+-0.09 
+],
+[
+ 0.45,
+0.06 
+],
+[
+ 2.07,
+0.28 
+],
+[
+ 0.88,
+0.85 
+],
+[
+ 1.04,
+0.78 
+],
+[
+ 0.17,
+-0.15 
+],
+[
+ 1.02,
+0.28 
+],
+[
+ 0.83,
+-0.71 
+],
+[
+ 0.25,
+-0.34 
+],
+[
+ 0.43,
+-0.9 
+],
+[
+ 0.89,
+-1.97 
+],
+[
+ 0.47,
+-1.09 
+],
+[
+ 2.19,
+-2.74 
+],
+[
+ 0.36,
+-0.2 
+],
+[
+ -0.24,
+-1.57 
+],
+[
+ 0.38,
+-1.25 
+],
+[
+ -0.22,
+0.24 
+],
+[
+ 0.54,
+0.06 
+],
+[
+ 0.52,
+-0.44 
+],
+[
+ 0.96,
+-2.83 
+],
+[
+ -0.16,
+0.29 
+],
+[
+ 0.98,
+-1.82 
+],
+[
+ 0.86,
+-0.71 
+],
+[
+ 1.44,
+0.29 
+],
+[
+ 1.77,
+0.08 
+],
+[
+ 2.03,
+-0.19 
+],
+[
+ 1.2,
+0.46 
+],
+[
+ 1.32,
+-0.39 
+],
+[
+ 0.78,
+-1.28 
+],
+[
+ 0.85,
+0.24 
+],
+[
+ 2.07,
+0.06 
+],
+[
+ 1.08,
+-0.12 
+],
+[
+ 0.76,
+-0.47 
+],
+[
+ 1.69,
+0.37 
+],
+[
+ 1.76,
+-0.61 
+],
+[
+ 0.88,
+-0.71 
+],
+[
+ 0.49,
+-1.15 
+],
+[
+ 0.93,
+0.01 
+],
+[
+ 0.54,
+-0.44 
+],
+[
+ 0.48,
+-1.97 
+],
+[
+ 1.04,
+-1.03 
+],
+[
+ 1.56,
+-3.5 
+],
+[
+ 1.31,
+-0.61 
+],
+[
+ 1.1,
+-1.19 
+],
+[
+ -0.6,
+-0.29 
+],
+[
+ 1.12,
+0.4 
+],
+[
+ 1.85,
+-0.03 
+],
+[
+ 0.65,
+-0.34 
+],
+[
+ 0.53,
+-1.22 
+],
+[
+ 0.57,
+-0.27 
+],
+[
+ 1.7,
+-0.16 
+],
+[
+ 1.76,
+-0.07 
+],
+[
+ 1.24,
+-1.61 
+],
+[
+ 0.85,
+-2.78 
+],
+[
+ 0.75,
+-1.37 
+],
+[
+ 0.6,
+0.37 
+],
+[
+ 1.47,
+-0.03 
+],
+[
+ 1.12,
+-0.02 
+],
+[
+ 1.09,
+0.41 
+],
+[
+ 0.79,
+-0.52 
+],
+[
+ 1.1,
+-0.33 
+],
+[
+ 1.08,
+0.11 
+],
+[
+ 1.91,
+0.04 
+],
+[
+ 1.29,
+-0.42 
+],
+[
+ 0.44,
+0.74 
+],
+[
+ 1.22,
+-0.21 
+],
+[
+ 0.43,
+-0.44 
+],
+[
+ 0.57,
+-1.51 
+],
+[
+ 0.78,
+-1.15 
+],
+[
+ 1.3,
+-1.67 
+],
+[
+ 0.5,
+-2.08 
+],
+[
+ 0.13,
+-1.33 
+],
+[
+ 0.69,
+-0.92 
+],
+[
+ 0.33,
+0.32 
+],
+[
+ 0.34,
+-2.91 
+],
+[
+ 0.94,
+-2.23 
+],
+[
+ 0.86,
+-3.79 
+],
+[
+ 0.82,
+-0.03 
+],
+[
+ 1.24,
+-0.48 
+],
+[
+ 0.21,
+-1.8 
+],
+[
+ 0.61,
+-1.28 
+],
+[
+ 0.72,
+-0.01 
+],
+[
+ 0.46,
+-1.25 
+],
+[
+ 0.77,
+-0.53 
+],
+[
+ 1.37,
+-1.92 
+],
+[
+ 1,
+-2.8 
+],
+[
+ 0.63,
+-0.82 
+],
+[
+ 0.4,
+0.6 
+],
+[
+ 0.34,
+-0.47 
+],
+[
+ 0.51,
+-2.17 
+],
+[
+ -0.69,
+0.42 
+],
+[
+ 0.5,
+-1.01 
+],
+[
+ -0.23,
+-1.01 
+],
+[
+ -0.16,
+-0.92 
+],
+[
+ -0.07,
+-1.01 
+],
+[
+ 0.03,
+-3.68 
+],
+[
+ -1.23,
+-3.1 
+],
+[
+ 1.09,
+1.43 
+],
+[
+ -0.07,
+1.77 
+],
+[
+ 0.47,
+0.2 
+],
+[
+ -0.11,
+0.63 
+],
+[
+ 0.04,
+1 
+],
+[
+ 0.51,
+1.33 
+],
+[
+ -1.77,
+0.47 
+],
+[
+ -1.41,
+0.06 
+],
+[
+ 1.46,
+0.89 
+],
+[
+ -1.16,
+1.49 
+],
+[
+ 0.91,
+1.44 
+],
+[
+ -0.15,
+1.07 
+],
+[
+ 0.89,
+0.22 
+],
+[
+ 0.7,
+0.19 
+],
+[
+ 0.47,
+1.52 
+],
+[
+ 0.24,
+0.82 
+],
+[
+ 0.01,
+1.18 
+],
+[
+ 0.56,
+-0.49 
+],
+[
+ 0.66,
+-0.42 
+],
+[
+ 0.43,
+-0.23 
+],
+[
+ 1.28,
+0.46 
+],
+[
+ -0.49,
+-0.32 
+],
+[
+ 0,
+-0.99 
+],
+[
+ 0.53,
+0.59 
+],
+[
+ -0.05,
+0.76 
+],
+[
+ 0.18,
+-0.33 
+],
+[
+ -0.39,
+0.21 
+],
+[
+ 0.02,
+-0.18 
+],
+[
+ 0.38,
+0.5 
+],
+[
+ -0.36,
+0.03 
+],
+[
+ -0.32,
+1.61 
+],
+[
+ -2.64,
+0.98 
+],
+[
+ 0.54,
+1.36 
+],
+[
+ 1.11,
+-0.74 
+],
+[
+ 1.08,
+1.39 
+],
+[
+ -1.24,
+-0.07 
+],
+[
+ 0.76,
+1 
+],
+[
+ 0.94,
+0.53 
+],
+[
+ 1.16,
+0.61 
+],
+[
+ -0.63,
+1.22 
+],
+[
+ 1.46,
+1.15 
+],
+[
+ 0.68,
+-0.35 
+],
+[
+ 1.12,
+0.76 
+],
+[
+ -0.37,
+1.62 
+],
+[
+ -0.16,
+0.78 
+],
+[
+ 1.19,
+1.03 
+],
+[
+ 0.12,
+0.08 
+],
+[
+ -0.95,
+0.04 
+],
+[
+ 1.28,
+1.07 
+],
+[
+ -0.72,
+0.12 
+],
+[
+ 1.08,
+0 
+],
+[
+ -0.56,
+0.34 
+],
+[
+ 0.78,
+-0.09 
+],
+[
+ 0.1,
+0.44 
+],
+[
+ 0.55,
+1.19 
+],
+[
+ 0.41,
+0.82 
+],
+[
+ -0.49,
+1.37 
+],
+[
+ -0.36,
+0.12 
+],
+[
+ 1.1,
+0.7 
+],
+[
+ 0.18,
+0.29 
+],
+[
+ -1.45,
+-1.49 
+],
+[
+ -0.38,
+-0.19 
+],
+[
+ 0.33,
+1.27 
+],
+[
+ -0.22,
+1.02 
+],
+[
+ 0.95,
+1.27 
+],
+[
+ 0.31,
+0.98 
+],
+[
+ 0.53,
+1.22 
+],
+[
+ 1.33,
+1.24 
+],
+[
+ 1.54,
+0.33 
+],
+[
+ 1.67,
+0.99 
+],
+[
+ 1.33,
+0.04 
+],
+[
+ -0.01,
+0.88 
+],
+[
+ 0.73,
+-0.11 
+],
+[
+ 1.78,
+0.98 
+],
+[
+ 0.45,
+-0.69 
+],
+[
+ -0.56,
+0.54 
+],
+[
+ -0.02,
+0.1 
+],
+[
+ 1.74,
+0.93 
+],
+[
+ 0.15,
+1.22 
+],
+[
+ 0.35,
+0.42 
+],
+[
+ 1.52,
+0.85 
+],
+[
+ -0.79,
+0.34 
+],
+[
+ 0.7,
+0.85 
+],
+[
+ -0.37,
+0.7 
+],
+[
+ -0.03,
+1.78 
+],
+[
+ -1.11,
+0.84 
+],
+[
+ -1.52,
+0.98 
+],
+[
+ -2.35,
+1.15 
+],
+[
+ 0.26,
+-0.62 
+],
+[
+ -0.38,
+-0.01 
+],
+[
+ -1.1,
+-0.14 
+],
+[
+ -1.29,
+-0.05 
+],
+[
+ -0.37,
+1.14 
+],
+[
+ -0.65,
+0.2 
+],
+[
+ -0.97,
+-0.52 
+],
+[
+ -0.3,
+-0.25 
+],
+[
+ -0.62,
+0.04 
+],
+[
+ -2.15,
+0.04 
+],
+[
+ -1.09,
+-0.08 
+],
+[
+ -1.32,
+-0.14 
+],
+[
+ -0.78,
+1.31 
+],
+[
+ -1.26,
+-0.07 
+],
+[
+ -0.15,
+1.46 
+],
+[
+ -0.11,
+0.44 
+],
+[
+ -0.71,
+-0.01 
+],
+[
+ -0.25,
+0.64 
+],
+[
+ -0.84,
+0.36 
+],
+[
+ -0.18,
+1.89 
+],
+[
+ 0.59,
+1.4 
+],
+[
+ -1.31,
+0.99 
+],
+[
+ -0.18,
+1.23 
+],
+[
+ -0.98,
+-0.13 
+],
+[
+ -1.02,
+1.54 
+],
+[
+ -1.23,
+1.79 
+],
+[
+ 0.97,
+1.44 
+],
+[
+ 0.4,
+1.76 
+],
+[
+ -1.35,
+0.31 
+],
+[
+ -0.86,
+0.56 
+],
+[
+ -1.25,
+0.63 
+],
+[
+ -1.81,
+1.01 
+],
+[
+ -1.12,
+0.82 
+],
+[
+ 0.54,
+0.28 
+],
+[
+ 0.01,
+-0.34 
+],
+[
+ -0.66,
+-0.56 
+],
+[
+ -1.52,
+0.01 
+],
+[
+ -1.27,
+1.13 
+],
+[
+ -0.48,
+-1.05 
+],
+[
+ -0.46,
+0.41 
+],
+[
+ -0.11,
+0.06 
+],
+[
+ -0.33,
+-0.31 
+],
+[
+ 0.85,
+-0.75 
+],
+[
+ -1.56,
+-0.57 
+],
+[
+ 0.8,
+1.66 
+],
+[
+ 0.27,
+1.75 
+],
+[
+ 0.01,
+-0.45 
+],
+[
+ -0.47,
+-0.16 
+],
+[
+ -1.59,
+0.26 
+],
+[
+ 1.66,
+0.75 
+],
+[
+ 0.08,
+-0.25 
+],
+[
+ -0.45,
+-0.52 
+],
+[
+ 0.93,
+-0.21 
+],
+[
+ 0.63,
+-0.61 
+],
+[
+ -1.34,
+2.3 
+],
+[
+ -1.16,
+0.17 
+],
+[
+ 1.11,
+1.53 
+],
+[
+ 0.3,
+-0.64 
+],
+[
+ 0.02,
+-0.58 
+],
+[
+ 1.14,
+1.08 
+],
+[
+ 1.55,
+1.46 
+],
+[
+ 1.92,
+1.01 
+],
+[
+ 0.53,
+-0.2 
+],
+[
+ 0.61,
+-0.77 
+],
+[
+ 0.8,
+0.02 
+],
+[
+ -0.31,
+-0.1 
+],
+[
+ -1.65,
+0.32 
+],
+[
+ -0.43,
+0.06 
+],
+[
+ -0.26,
+0.38 
+],
+[
+ -0.19,
+-0.28 
+],
+[
+ 0.21,
+1.15 
+],
+[
+ -0.46,
+-0.36 
+],
+[
+ 0.82,
+0.1 
+],
+[
+ 1.19,
+1.73 
+],
+[
+ -0.71,
+-0.03 
+],
+[
+ -0.61,
+-0.59 
+],
+[
+ 0.85,
+0.27 
+],
+[
+ -0.98,
+-0.05 
+],
+[
+ 1.29,
+-1.06 
+],
+[
+ -0.95,
+-0.61 
+],
+[
+ 0.52,
+1.67 
+],
+[
+ 2.03,
+-0.13 
+],
+[
+ 1.41,
+1.01 
+],
+[
+ -0.09,
+0 
+],
+[
+ 1.15,
+0.43 
+],
+[
+ -0.2,
+0.12 
+],
+[
+ -0.14,
+-1.65 
+],
+[
+ -1.79,
+0.64 
+],
+[
+ -1.47,
+-1.32 
+],
+[
+ -0.69,
+0.19 
+],
+[
+ 0.01,
+0.06 
+],
+[
+ -1.26,
+0.37 
+],
+[
+ -1.47,
+0.56 
+],
+[
+ -0.13,
+0.18 
+],
+[
+ 0.84,
+0.65 
+],
+[
+ 1.05,
+0.44 
+],
+[
+ -0.66,
+0.06 
+],
+[
+ 0.05,
+-0.33 
+],
+[
+ -0.2,
+-1.91 
+],
+[
+ 0.06,
+-0.64 
+],
+[
+ 0.21,
+0.12 
+],
+[
+ 0.37,
+1.1 
+],
+[
+ 0.44,
+-1.11 
+],
+[
+ 0.24,
+0.83 
+],
+[
+ 0.42,
+-0.57 
+],
+[
+ -0.08,
+-0.88 
+],
+[
+ 0.86,
+0.4 
+],
+[
+ -0.8,
+-0.11 
+],
+[
+ -0.18,
+-1.12 
+],
+[
+ -0.51,
+-0.29 
+],
+[
+ -0.48,
+-0.87 
+],
+[
+ 0.14,
+-1.18 
+],
+[
+ -0.64,
+-0.46 
+],
+[
+ 1.11,
+1.93 
+],
+[
+ 0.38,
+0.18 
+],
+[
+ -0.29,
+-0.58 
+],
+[
+ 0.44,
+-0.47 
+],
+[
+ -0.15,
+1.53 
+],
+[
+ 0.15,
+-0.06 
+],
+[
+ -0.06,
+-0.53 
+],
+[
+ -0.03,
+0.33 
+],
+[
+ 0.3,
+-0.02 
+],
+[
+ -0.51,
+0.65 
+],
+[
+ -0.53,
+0.67 
+],
+[
+ 0.27,
+-0.03 
+],
+[
+ 1.05,
+1.51 
+],
+[
+ -0.14,
+0.82 
+],
+[
+ 0.41,
+0.22 
+],
+[
+ 0.56,
+-0.51 
+],
+[
+ 0.84,
+0.33 
+],
+[
+ 0.55,
+-0.12 
+],
+[
+ 0.92,
+0.36 
+],
+[
+ -1.06,
+0.59 
+],
+[
+ -0.69,
+-1.31 
+],
+[
+ 0.9,
+-0.75 
+],
+[
+ 0.71,
+-1.26 
+],
+[
+ -0.02,
+-0.1 
+],
+[
+ 0.57,
+1.33 
+],
+[
+ 0.87,
+-0.57 
+],
+[
+ -1.87,
+-2.3 
+],
+[
+ -0.5,
+-1 
+],
+[
+ -0.04,
+-0.32 
+],
+[
+ -1.41,
+-0.19 
+],
+[
+ -0.44,
+-0.41 
+],
+[
+ 1.36,
+-0.83 
+],
+[
+ 1.9,
+0.87 
+],
+[
+ 1.02,
+0.16 
+],
+[
+ 0.07,
+-0.25 
+],
+[
+ -0.98,
+-0.95 
+],
+[
+ -0.47,
+-1.44 
+],
+[
+ 1.07,
+0.02 
+],
+[
+ 0.13,
+-0.26 
+],
+[
+ 0.28,
+-0.22 
+],
+[
+ -0.47,
+-1.11 
+],
+[
+ -1.06,
+-0.58 
+],
+[
+ 0.72,
+-0.43 
+],
+[
+ 1.44,
+-2.67 
+],
+[
+ 0.4,
+-0.84 
+],
+[
+ 0.91,
+-1.91 
+],
+[
+ 0.2,
+-2.41 
+],
+[
+ 1.01,
+-0.44 
+],
+[
+ 2.32,
+-2.36 
+],
+[
+ -0.49,
+-2.23 
+],
+[
+ 0.9,
+1.05 
+],
+[
+ -1.19,
+-2.39 
+],
+[
+ 2.01,
+-2.44 
+],
+[
+ 0.96,
+-0.95 
+],
+[
+ 0.37,
+-1.84 
+],
+[
+ 1.1,
+0.47 
+],
+[
+ 0.39,
+-1.7 
+],
+[
+ 0.1,
+-2.26 
+],
+[
+ -0.25,
+-1.65 
+],
+[
+ 0.58,
+-2.35 
+],
+[
+ -0.32,
+-2.39 
+],
+[
+ -0.17,
+-1.59 
+],
+[
+ 0.24,
+-3.01 
+],
+[
+ -0.15,
+-0.37 
+],
+[
+ 2.37,
+-3.91 
+],
+[
+ 0.95,
+-0.5 
+],
+[
+ 1.29,
+-0.32 
+],
+[
+ 0.58,
+0.46 
+],
+[
+ 1.78,
+-0.32 
+],
+[
+ 0.34,
+0.18 
+],
+[
+ 0.27,
+-0.9 
+],
+[
+ 0.63,
+-1.04 
+],
+[
+ 0.32,
+-0.1 
+],
+[
+ 1.39,
+-0.83 
+],
+[
+ 0.21,
+-1.91 
+],
+[
+ 0.6,
+-0.37 
+],
+[
+ 0.47,
+0.59 
+],
+[
+ 0.75,
+0.61 
+],
+[
+ 0.23,
+-0.9 
+],
+[
+ 0.95,
+-0.61 
+],
+[
+ 1.29,
+0.78 
+],
+[
+ 1.64,
+0.51 
+],
+[
+ 1.44,
+0.05 
+],
+[
+ 1.5,
+-0.23 
+],
+[
+ 1.43,
+0.43 
+],
+[
+ 2.46,
+-0.07 
+],
+[
+ 0.64,
+-0.85 
+],
+[
+ 1.5,
+-0.01 
+],
+[
+ 1.81,
+-0.89 
+],
+[
+ 0.17,
+-0.56 
+],
+[
+ -1.1,
+-1.12 
+],
+[
+ 0.08,
+-0.93 
+],
+[
+ 0.05,
+0.1 
+],
+[
+ 0.82,
+-0.23 
+],
+[
+ 1.41,
+-2.61 
+],
+[
+ 1.86,
+-0.6 
+],
+[
+ 1.06,
+-0.88 
+],
+[
+ 0.03,
+0.28 
+],
+[
+ 0.32,
+-0.57 
+],
+[
+ 0.64,
+0.26 
+],
+[
+ 1.31,
+0.09 
+],
+[
+ 0.2,
+-1.72 
+],
+[
+ 0.34,
+-1.63 
+],
+[
+ 0.99,
+-0.86 
+],
+[
+ -0.35,
+-1.03 
+],
+[
+ 1.21,
+-1.27 
+],
+[
+ -0.05,
+-1.2 
+],
+[
+ 0.64,
+-2.48 
+],
+[
+ 1.58,
+-0.96 
+],
+[
+ 0.3,
+-0.17 
+],
+[
+ 1.1,
+-0.97 
+],
+[
+ 1.07,
+-2.31 
+],
+[
+ 0.43,
+-0.75 
+],
+[
+ 0.82,
+-0.02 
+],
+[
+ 0.43,
+-1.72 
+],
+[
+ 1.54,
+-2.15 
+],
+[
+ 0.89,
+-2.64 
+],
+[
+ 1.15,
+-1.45 
+],
+[
+ 0.83,
+-1.99 
+],
+[
+ -0.82,
+-1.58 
+],
+[
+ 1.05,
+-1.11 
+],
+[
+ -0.61,
+-0.24 
+],
+[
+ -2,
+-1 
+],
+[
+ -0.32,
+-0.67 
+],
+[
+ 0.16,
+-2.36 
+],
+[
+ -1.1,
+-1.83 
+],
+[
+ 0.94,
+0.2 
+],
+[
+ 1.48,
+-3.49 
+],
+[
+ -0.19,
+-0.62 
+],
+[
+ 0.15,
+1.18 
+],
+[
+ -0.2,
+-0.73 
+],
+[
+ 1.32,
+0.36 
+],
+[
+ -0.41,
+0 
+],
+[
+ 0.67,
+0.36 
+],
+[
+ -0.1,
+0.53 
+],
+[
+ 0.2,
+0.5 
+],
+[
+ 0.81,
+0.64 
+],
+[
+ -0.91,
+0.69 
+],
+[
+ 0.3,
+0.9 
+],
+[
+ 0.58,
+0.85 
+],
+[
+ 1.35,
+-0.6 
+],
+[
+ 0.5,
+0.13 
+],
+[
+ -0.51,
+0.79 
+],
+[
+ 0.81,
+0.78 
+],
+[
+ -0.25,
+-0.62 
+],
+[
+ -0.11,
+0.81 
+],
+[
+ 1.4,
+0.19 
+],
+[
+ 0.4,
+0.76 
+],
+[
+ 0.22,
+-0.13 
+],
+[
+ 0.25,
+0.81 
+],
+[
+ 0.29,
+1.07 
+],
+[
+ 0.29,
+0.65 
+],
+[
+ 0.85,
+0.64 
+],
+[
+ 1.05,
+0.65 
+],
+[
+ 0.75,
+1.4 
+],
+[
+ 0.56,
+0.03 
+],
+[
+ -0.23,
+0.04 
+],
+[
+ -0.4,
+0.79 
+],
+[
+ 0.72,
+0.25 
+],
+[
+ 1.29,
+-0.2 
+],
+[
+ 0.63,
+-0.44 
+],
+[
+ -0.03,
+-0.59 
+],
+[
+ 0.76,
+0 
+],
+[
+ -0.3,
+0.58 
+],
+[
+ 1.66,
+1.22 
+],
+[
+ 0.68,
+1.29 
+],
+[
+ -0.22,
+-0.51 
+],
+[
+ -0.14,
+-0.28 
+],
+[
+ 1.16,
+-0.51 
+],
+[
+ 0.16,
+0.23 
+],
+[
+ -0.03,
+0.44 
+],
+[
+ 1.05,
+0.67 
+],
+[
+ 0.08,
+-0.93 
+],
+[
+ -0.33,
+0.01 
+],
+[
+ -0.22,
+0.45 
+],
+[
+ -0.13,
+-0.65 
+],
+[
+ 0.34,
+1.62 
+],
+[
+ -0.54,
+0.76 
+],
+[
+ 0.81,
+1.08 
+],
+[
+ -0.12,
+-0.67 
+],
+[
+ -0.45,
+-0.47 
+],
+[
+ 0.64,
+0.31 
+],
+[
+ 1.48,
+1.26 
+],
+[
+ 0.18,
+-0.2 
+],
+[
+ 0.33,
+0.57 
+],
+[
+ -0.21,
+0.73 
+],
+[
+ 0.45,
+0.08 
+],
+[
+ -1.24,
+0.41 
+],
+[
+ -0.7,
+-0.69 
+],
+[
+ 1.76,
+0.42 
+],
+[
+ -0.35,
+0.61 
+],
+[
+ -0.63,
+-1.16 
+],
+[
+ -1.16,
+-0.56 
+],
+[
+ -0.14,
+0.18 
+],
+[
+ -0.8,
+-0.42 
+],
+[
+ -1.26,
+1.61 
+],
+[
+ -1.24,
+-1.41 
+],
+[
+ -0.94,
+-0.86 
+],
+[
+ 0.05,
+1.03 
+],
+[
+ 0.44,
+0.09 
+],
+[
+ 0.83,
+-0.03 
+],
+[
+ -1.26,
+0.78 
+],
+[
+ 0.57,
+1.32 
+],
+[
+ 0.04,
+1.02 
+],
+[
+ -0.27,
+0.8 
+],
+[
+ -0.28,
+1.2 
+],
+[
+ 0.62,
+1.11 
+],
+[
+ 0.97,
+0.08 
+],
+[
+ 1,
+0.81 
+],
+[
+ 0.59,
+1.37 
+],
+[
+ -0.28,
+1.12 
+],
+[
+ -0.82,
+-0.02 
+],
+[
+ -0.25,
+0.58 
+],
+[
+ 0.85,
+1.58 
+],
+[
+ 0.53,
+1.22 
+],
+[
+ 0.23,
+-0.43 
+],
+[
+ 1.21,
+0.99 
+],
+[
+ 0.76,
+0.08 
+],
+[
+ 1.51,
+0.7 
+],
+[
+ 1.44,
+0.36 
+],
+[
+ 0.99,
+-0.1 
+],
+[
+ 1.1,
+-0.4 
+],
+[
+ 1.07,
+0.74 
+],
+[
+ 2.23,
+0.61 
+],
+[
+ 0.8,
+0.7 
+],
+[
+ 0.45,
+-0.04 
+],
+[
+ -0.21,
+1.25 
+],
+[
+ -0.96,
+0.68 
+],
+[
+ 2.09,
+1.17 
+],
+[
+ 1.23,
+0.33 
+],
+[
+ 0.61,
+1.25 
+],
+[
+ 0.07,
+-0.02 
+],
+[
+ 0.18,
+-0.39 
+],
+[
+ 0.03,
+0.52 
+],
+[
+ 0.21,
+0.38 
+],
+[
+ 0.35,
+0.74 
+],
+[
+ 0.59,
+1.17 
+],
+[
+ -0.16,
+-0.29 
+],
+[
+ 0.35,
+0.64 
+],
+[
+ -0.39,
+1.12 
+],
+[
+ -1.09,
+1.6 
+],
+[
+ 0.05,
+0.22 
+],
+[
+ 0.21,
+1.1 
+],
+[
+ -0.84,
+1.62 
+],
+[
+ 0.66,
+-0.67 
+],
+[
+ -1.59,
+-0.34 
+],
+[
+ 0.02,
+-0.04 
+],
+[
+ 1.29,
+1.13 
+],
+[
+ -0.81,
+0.79 
+],
+[
+ 1.61,
+0.44 
+],
+[
+ 0.81,
+1.01 
+],
+[
+ 1.19,
+1.43 
+],
+[
+ 0,
+1.85 
+],
+[
+ -0.65,
+0.31 
+],
+[
+ 0.36,
+0.61 
+],
+[
+ -1.27,
+0.72 
+],
+[
+ 1,
+0.88 
+],
+[
+ -2.45,
+0.32 
+],
+[
+ 1.19,
+0.47 
+],
+[
+ 0.13,
+0.06 
+],
+[
+ -0.25,
+-0.37 
+],
+[
+ 0.22,
+1.07 
+],
+[
+ 0.4,
+0.65 
+],
+[
+ -0.58,
+1.6 
+],
+[
+ 0.54,
+-0.41 
+],
+[
+ -1.06,
+-0.13 
+],
+[
+ -0.23,
+1.14 
+],
+[
+ 0.34,
+-1.01 
+],
+[
+ 0.75,
+1.2 
+],
+[
+ -0.31,
+0.31 
+],
+[
+ 1.95,
+0.88 
+],
+[
+ 0.88,
+-0.59 
+],
+[
+ 0.14,
+0.88 
+],
+[
+ 0.18,
+1.41 
+],
+[
+ -0.75,
+0.5 
+],
+[
+ -1.01,
+0.65 
+],
+[
+ 0.16,
+-0.22 
+],
+[
+ -0.63,
+0.14 
+],
+[
+ -0.76,
+1.21 
+],
+[
+ -1.54,
+0.78 
+],
+[
+ -0.3,
+1.07 
+],
+[
+ 0.22,
+-0.03 
+],
+[
+ -0.49,
+0.98 
+],
+[
+ 0.26,
+0.1 
+],
+[
+ -1,
+0.13 
+],
+[
+ -0.67,
+0.43 
+],
+[
+ -0.72,
+0.92 
+],
+[
+ -1.5,
+1.23 
+],
+[
+ -0.75,
+-0.35 
+],
+[
+ -1.4,
+0.1 
+],
+[
+ -0.21,
+-0.39 
+],
+[
+ -0.81,
+1.96 
+],
+[
+ -2.53,
+0.79 
+],
+[
+ -1.25,
+1.6 
+],
+[
+ 0.14,
+-0.61 
+],
+[
+ -1.15,
+-0.18 
+],
+[
+ -0.05,
+-0.26 
+],
+[
+ -0.16,
+-0.14 
+],
+[
+ -1.91,
+0.98 
+],
+[
+ -0.87,
+0.78 
+],
+[
+ -0.75,
+0.02 
+],
+[
+ -1.69,
+-0.35 
+],
+[
+ -0.1,
+0.94 
+],
+[
+ 0.51,
+1.39 
+],
+[
+ -0.55,
+1.1 
+],
+[
+ -0.45,
+-0.04 
+],
+[
+ -0.74,
+1.11 
+],
+[
+ -0.46,
+0.19 
+],
+[
+ -0.79,
+-0.87 
+],
+[
+ -1.12,
+-1.95 
+],
+[
+ 0.07,
+0.7 
+],
+[
+ -1.69,
+0.32 
+],
+[
+ -0.75,
+-0.05 
+],
+[
+ -0.65,
+-0.32 
+],
+[
+ -1.33,
+1.92 
+],
+[
+ -1.21,
+-0.97 
+],
+[
+ -1.29,
+0.89 
+],
+[
+ -1.01,
+-0.72 
+],
+[
+ 0.46,
+1.05 
+],
+[
+ -2.02,
+1.04 
+],
+[
+ -1.78,
+-0.24 
+],
+[
+ -0.58,
+-0.19 
+],
+[
+ -1.17,
+-0.65 
+],
+[
+ 0.62,
+-0.42 
+],
+[
+ -0.97,
+-0.03 
+],
+[
+ -1.86,
+0.95 
+],
+[
+ -0.69,
+-1.24 
+],
+[
+ -1.35,
+0.23 
+],
+[
+ -0.43,
+1.34 
+],
+[
+ -1.06,
+-0.34 
+],
+[
+ 0.21,
+1.06 
+],
+[
+ -0.31,
+1.33 
+],
+[
+ -0.26,
+0.26 
+],
+[
+ 0.03,
+1.26 
+],
+[
+ -1.59,
+0.73 
+],
+[
+ -0.63,
+1.85 
+],
+[
+ -1.9,
+1.5 
+],
+[
+ -1.04,
+-0.59 
+],
+[
+ -2.04,
+0.52 
+],
+[
+ -2.44,
+1.99 
+],
+[
+ -0.95,
+0.99 
+],
+[
+ 0.59,
+0.41 
+],
+[
+ 0.28,
+1.83 
+],
+[
+ 0.16,
+0.54 
+],
+[
+ -0.81,
+0.15 
+],
+[
+ 0.61,
+0.76 
+],
+[
+ -0.51,
+0.54 
+],
+[
+ -0.34,
+0.67 
+],
+[
+ -0.62,
+1.2 
+],
+[
+ -0.41,
+1.28 
+],
+[
+ 0.39,
+0.98 
+],
+[
+ 0.66,
+0.29 
+],
+[
+ 0.22,
+1.41 
+],
+[
+ -0.48,
+0.75 
+],
+[
+ 0.32,
+0.49 
+],
+[
+ -0.48,
+-0.67 
+],
+[
+ -0.39,
+1.36 
+],
+[
+ -0.81,
+-0.07 
+],
+[
+ -1.11,
+-0.11 
+],
+[
+ -0.65,
+0.19 
+],
+[
+ 0.13,
+1.64 
+],
+[
+ -1.02,
+-0.97 
+],
+[
+ -0.53,
+0.51 
+],
+[
+ -0.32,
+-0.73 
+],
+[
+ 0,
+0.71 
+],
+[
+ -0.13,
+-0.54 
+],
+[
+ -2.19,
+-0.67 
+],
+[
+ -0.27,
+0.12 
+],
+[
+ 0.19,
+0.62 
+],
+[
+ -1.17,
+1.09 
+],
+[
+ -0.62,
+-0.07 
+],
+[
+ -0.79,
+-0.03 
+],
+[
+ -1.84,
+0.46 
+],
+[
+ -0.14,
+1.51 
+],
+[
+ -2.69,
+-2.18 
+],
+[
+ -1.35,
+1.43 
+],
+[
+ -2.38,
+0.02 
+],
+[
+ -0.69,
+-0.96 
+],
+[
+ -1.27,
+0.01 
+],
+[
+ -1.4,
+1.52 
+],
+[
+ -1.8,
+0.27 
+],
+[
+ 0.09,
+-0.25 
+],
+[
+ -0.06,
+-0.04 
+],
+[
+ -0.54,
+-0.14 
+],
+[
+ -0.95,
+0.8 
+],
+[
+ 0.79,
+1.3 
+],
+[
+ 1.31,
+1.54 
+],
+[
+ 1.59,
+1.95 
+],
+[
+ 0.37,
+0.93 
+],
+[
+ 0.93,
+1.64 
+],
+[
+ 0.81,
+-0.47 
+],
+[
+ 1.65,
+1.83 
+],
+[
+ 0.16,
+0.13 
+],
+[
+ -0.01,
+-0.32 
+],
+[
+ -0.43,
+-0.32 
+],
+[
+ -0.09,
+1.48 
+],
+[
+ 1.71,
+-0.38 
+],
+[
+ -0.1,
+-0.11 
+],
+[
+ 0.07,
+-0.16 
+],
+[
+ -0.18,
+-0.01 
+],
+[
+ -0.57,
+0.37 
+],
+[
+ 0.09,
+-0.35 
+],
+[
+ 0.26,
+0.17 
+],
+[
+ -0.61,
+0.03 
+],
+[
+ -0.01,
+-0.23 
+],
+[
+ -0.17,
+-0.12 
+],
+[
+ 1.21,
+1.82 
+],
+[
+ 0.53,
+-0.2 
+],
+[
+ -1.1,
+0.27 
+],
+[
+ 0.64,
+1.67 
+],
+[
+ -0.07,
+1.5 
+],
+[
+ 0.22,
+1.96 
+],
+[
+ 0.46,
+1.47 
+],
+[
+ 0.18,
+-0.12 
+],
+[
+ 0.98,
+0.81 
+],
+[
+ -0.04,
+-0.45 
+],
+[
+ 0.68,
+-0.39 
+],
+[
+ 0.62,
+-0.3 
+],
+[
+ 0.41,
+-0.13 
+],
+[
+ -1.08,
+0.05 
+],
+[
+ 0.6,
+1.28 
+],
+[
+ 0.07,
+0.53 
+],
+[
+ 0.39,
+-0.19 
+],
+[
+ 0.08,
+-0.06 
+],
+[
+ -0.49,
+0.03 
+],
+[
+ 1.77,
+1.37 
+],
+[
+ -0.44,
+-0.03 
+],
+[
+ -1.27,
+0.02 
+],
+[
+ -2.06,
+0.47 
+],
+[
+ -0.35,
+-0.09 
+],
+[
+ 0.77,
+-0.33 
+],
+[
+ 2.78,
+0.23 
+],
+[
+ 0.66,
+-0.4 
+],
+[
+ -0.61,
+0.43 
+],
+[
+ -0.06,
+-0.32 
+],
+[
+ 0.96,
+-0.83 
+],
+[
+ 0.34,
+-0.28 
+],
+[
+ -1.32,
+-0.21 
+],
+[
+ -1.45,
+-0.32 
+],
+[
+ -0.16,
+0.08 
+],
+[
+ -0.09,
+-0.41 
+],
+[
+ -0.08,
+0.03 
+],
+[
+ -0.15,
+-0.32 
+],
+[
+ -0.11,
+0.75 
+],
+[
+ -0.01,
+0.26 
+],
+[
+ 1.36,
+1.8 
+],
+[
+ -1,
+-0.1 
+],
+[
+ 0.52,
+1.08 
+],
+[
+ 0.28,
+-0.01 
+],
+[
+ 0.07,
+-0.13 
+],
+[
+ -0.51,
+0.31 
+],
+[
+ 0.35,
+0.11 
+],
+[
+ 0.96,
+0.63 
+],
+[
+ -0.46,
+0.49 
+],
+[
+ -0.64,
+-0.29 
+],
+[
+ 0.38,
+-0.21 
+],
+[
+ -0.49,
+-0.58 
+],
+[
+ -0.17,
+-0.39 
+],
+[
+ 0.37,
+0.14 
+],
+[
+ -0.35,
+-0.03 
+],
+[
+ 0.27,
+0.09 
+],
+[
+ 0.51,
+0.95 
+],
+[
+ -0.9,
+0.84 
+],
+[
+ 1.47,
+1.09 
+],
+[
+ -0.57,
+-0.11 
+],
+[
+ 0.93,
+-0.25 
+],
+[
+ 1.53,
+0.68 
+],
+[
+ -0.08,
+0.64 
+],
+[
+ 0.7,
+-0.27 
+],
+[
+ 0.34,
+-0.53 
+],
+[
+ -0.25,
+-0.26 
+],
+[
+ 0.51,
+-0.28 
+],
+[
+ -0.43,
+0.79 
+],
+[
+ -0.53,
+0.34 
+],
+[
+ 0.88,
+-0.65 
+],
+[
+ 0.71,
+0.95 
+],
+[
+ 0.31,
+-0.05 
+],
+[
+ 0.67,
+0.83 
+],
+[
+ 0.26,
+0.27 
+],
+[
+ 0.71,
+-0.42 
+],
+[
+ -1.6,
+-1.13 
+],
+[
+ -0.47,
+0.56 
+],
+[
+ -0.43,
+-0.86 
+],
+[
+ 0.43,
+0.46 
+],
+[
+ -1.26,
+-1.15 
+],
+[
+ 0.29,
+-0.42 
+],
+[
+ -0.36,
+-0.15 
+],
+[
+ 1.16,
+1.91 
+],
+[
+ -0.72,
+-0.42 
+],
+[
+ 0.38,
+-0.48 
+],
+[
+ -0.15,
+-0.48 
+],
+[
+ -0.29,
+-0.28 
+],
+[
+ 0.58,
+-0.26 
+],
+[
+ 0.34,
+-1.42 
+],
+[
+ 1.15,
+0.26 
+],
+[
+ 0.25,
+1.13 
+],
+[
+ 0.07,
+-0.55 
+],
+[
+ -0.25,
+-1.07 
+],
+[
+ -1.33,
+0.49 
+],
+[
+ 0.11,
+-0.2 
+],
+[
+ 0.89,
+0.34 
+],
+[
+ -0.38,
+-0.44 
+],
+[
+ -0.96,
+-0.5 
+],
+[
+ 0.44,
+-0.06 
+],
+[
+ 0.09,
+0.28 
+],
+[
+ -0.2,
+1.51 
+],
+[
+ 0,
+-0.32 
+],
+[
+ 0.41,
+-0.14 
+],
+[
+ -0.2,
+-0.38 
+],
+[
+ -0.92,
+-1.37 
+],
+[
+ -0.33,
+-0.95 
+],
+[
+ 0.72,
+-0.76 
+],
+[
+ 0.64,
+0.71 
+],
+[
+ -0.8,
+-1.67 
+],
+[
+ 0.26,
+1 
+],
+[
+ 0.47,
+-1.43 
+],
+[
+ 1.1,
+0.26 
+],
+[
+ -0.34,
+-1.43 
+],
+[
+ -1.27,
+-0.34 
+],
+[
+ -0.82,
+-0.29 
+],
+[
+ 1.66,
+0.46 
+],
+[
+ 1.41,
+-0.52 
+],
+[
+ -0.39,
+-0.39 
+],
+[
+ 0.52,
+0.19 
+],
+[
+ 0.8,
+-0.38 
+],
+[
+ 0,
+-0.85 
+],
+[
+ -0.58,
+-0.22 
+],
+[
+ 0.93,
+1.47 
+],
+[
+ 1.71,
+0.89 
+],
+[
+ 0.71,
+0.66 
+],
+[
+ 0.35,
+0.42 
+],
+[
+ 1.04,
+0.23 
+],
+[
+ 0.13,
+1.2 
+],
+[
+ -0.24,
+0.6 
+],
+[
+ 1.03,
+-0.35 
+],
+[
+ 0.13,
+0.92 
+],
+[
+ 1.24,
+0.06 
+],
+[
+ 0.22,
+0.01 
+],
+[
+ 0.54,
+1.48 
+],
+[
+ 0.56,
+0.78 
+],
+[
+ -0.41,
+1.32 
+],
+[
+ -0.56,
+-0.18 
+],
+[
+ 1.32,
+-0.49 
+],
+[
+ 0.12,
+0.16 
+],
+[
+ 0.46,
+0.68 
+],
+[
+ 0.05,
+-0.25 
+],
+[
+ 0.02,
+-0.07 
+],
+[
+ -0.51,
+-1.29 
+],
+[
+ 0.23,
+0.13 
+],
+[
+ 0.08,
+-0.69 
+],
+[
+ 0.83,
+0.37 
+],
+[
+ 1.24,
+1.29 
+],
+[
+ 0.61,
+0.71 
+],
+[
+ -0.09,
+0.48 
+],
+[
+ -0.04,
+1.11 
+],
+[
+ 0.8,
+-0.53 
+],
+[
+ -0.2,
+0.1 
+],
+[
+ 0.26,
+0.39 
+],
+[
+ -0.32,
+-0.48 
+],
+[
+ 0.32,
+1 
+],
+[
+ 0.47,
+0.82 
+],
+[
+ 1.05,
+-1.47 
+],
+[
+ -0.07,
+-1.38 
+],
+[
+ 0.62,
+1.67 
+],
+[
+ 0.45,
+0.25 
+],
+[
+ -0.44,
+-1.33 
+],
+[
+ -0.34,
+-0.5 
+],
+[
+ 0.29,
+-0.63 
+],
+[
+ 0.08,
+-0.39 
+],
+[
+ -0.25,
+-0.67 
+],
+[
+ -1.13,
+-0.18 
+],
+[
+ 0.7,
+1.19 
+],
+[
+ -0.58,
+-1.45 
+],
+[
+ 0.26,
+-1.04 
+],
+[
+ -0.39,
+0.52 
+],
+[
+ -0.17,
+0.32 
+],
+[
+ 0.13,
+1.16 
+],
+[
+ 0.22,
+0.77 
+],
+[
+ 0.59,
+0.1 
+],
+[
+ -1.02,
+-0.36 
+],
+[
+ -0.31,
+-2.11 
+],
+[
+ 1.57,
+-0.26 
+],
+[
+ 0.65,
+-1.37 
+],
+[
+ 1.35,
+-0.12 
+],
+[
+ 1.19,
+-0.37 
+],
+[
+ -0.07,
+-0.04 
+],
+[
+ 0.99,
+-1.21 
+],
+[
+ 0.09,
+1.2 
+],
+[
+ 1.03,
+-0.55 
+],
+[
+ 0.74,
+-0.19 
+],
+[
+ 0.48,
+1.01 
+],
+[
+ 1.08,
+-1.03 
+],
+[
+ 0.97,
+-0.1 
+],
+[
+ -0.13,
+-0.41 
+],
+[
+ 1.22,
+-1.82 
+],
+[
+ -2.12,
+-1.69 
+],
+[
+ -0.92,
+0.02 
+],
+[
+ 0.93,
+-2.26 
+],
+[
+ 0.69,
+-1.51 
+],
+[
+ -1.06,
+0.45 
+],
+[
+ -0.35,
+-0.21 
+],
+[
+ 0.75,
+0.1 
+],
+[
+ -1.13,
+-0.85 
+],
+[
+ -0.56,
+-1.22 
+],
+[
+ 0.56,
+-1.3 
+],
+[
+ 0.17,
+-0.65 
+],
+[
+ 2.04,
+0.9 
+],
+[
+ 1.75,
+-0.9 
+],
+[
+ 1.85,
+-0.47 
+],
+[
+ -0.26,
+-1.43 
+],
+[
+ 1.16,
+-0.42 
+],
+[
+ 0.17,
+-0.48 
+],
+[
+ 0.78,
+-1.86 
+],
+[
+ -0.66,
+-2.7 
+],
+[
+ 0,
+-0.96 
+],
+[
+ -0.97,
+-1.47 
+],
+[
+ 0.13,
+-1.23 
+],
+[
+ 0.63,
+-1.71 
+],
+[
+ 1.04,
+-1.09 
+],
+[
+ -0.13,
+-1.28 
+],
+[
+ -0.11,
+-0.96 
+],
+[
+ 0.85,
+-2.01 
+],
+[
+ 0.25,
+-2.34 
+],
+[
+ 0.62,
+-0.21 
+],
+[
+ 0.99,
+-0.66 
+],
+[
+ 1.7,
+1.04 
+],
+[
+ 1.08,
+0.19 
+],
+[
+ -0.94,
+-2.52 
+],
+[
+ 1.07,
+1.42 
+],
+[
+ 1.07,
+-0.32 
+],
+[
+ 2.86,
+-0.86 
+],
+[
+ 0.64,
+-0.56 
+],
+[
+ 1.38,
+0.22 
+],
+[
+ 1.46,
+-1.09 
+],
+[
+ -0.38,
+-0.29 
+],
+[
+ 1.48,
+-0.07 
+],
+[
+ 1.31,
+-0.34 
+],
+[
+ 2.07,
+0.36 
+],
+[
+ 0.8,
+0.2 
+],
+[
+ 1.6,
+-0.31 
+],
+[
+ 2.02,
+-0.46 
+],
+[
+ 0.25,
+-2.17 
+],
+[
+ 1.08,
+0.49 
+],
+[
+ 1.18,
+-0.85 
+],
+[
+ 0.52,
+-0.59 
+],
+[
+ 1.49,
+0.1 
+],
+[
+ 0.61,
+-0.4 
+],
+[
+ 1.54,
+0.55 
+],
+[
+ 0.76,
+0.22 
+],
+[
+ 0.52,
+0.84 
+],
+[
+ 0.77,
+-1.28 
+],
+[
+ 0.97,
+-0.02 
+],
+[
+ 2.27,
+-3.39 
+],
+[
+ 0.6,
+-0.8 
+],
+[
+ 0.9,
+-0.96 
+],
+[
+ 2.23,
+-0.11 
+],
+[
+ -0.13,
+0.71 
+],
+[
+ 1.58,
+-0.63 
+],
+[
+ 0.47,
+-0.82 
+],
+[
+ 0.02,
+-1.06 
+],
+[
+ -0.01,
+0.36 
+],
+[
+ 1.14,
+0.12 
+],
+[
+ -0.35,
+1.2 
+],
+[
+ 2.23,
+1 
+],
+[
+ 1.67,
+0.35 
+],
+[
+ -0.05,
+-1.56 
+],
+[
+ -1.04,
+-0.19 
+],
+[
+ -0.39,
+-0.6 
+],
+[
+ -1.09,
+0.43 
+],
+[
+ 0.78,
+-1.41 
+],
+[
+ -0.26,
+-1.06 
+],
+[
+ 1.29,
+-0.84 
+],
+[
+ 0.98,
+-0.85 
+],
+[
+ 0.67,
+-0.3 
+],
+[
+ 1.31,
+-0.7 
+],
+[
+ 0.84,
+-0.68 
+],
+[
+ 1.64,
+-1.43 
+],
+[
+ 1.21,
+-1.39 
+],
+[
+ 0.37,
+-2.01 
+],
+[
+ 0,
+-0.55 
+],
+[
+ -0.06,
+1.03 
+],
+[
+ 0.35,
+-1.19 
+],
+[
+ 0.75,
+-1.1 
+],
+[
+ 1.67,
+-1.44 
+],
+[
+ 0.82,
+-1.54 
+],
+[
+ 0.82,
+-0.39 
+],
+[
+ 0.53,
+0.57 
+],
+[
+ 1.02,
+-0.86 
+],
+[
+ 0.43,
+-1.63 
+],
+[
+ 0.15,
+-2.03 
+],
+[
+ -0.18,
+-0.2 
+],
+[
+ 0.01,
+0.06 
+],
+[
+ 0.36,
+0.34 
+],
+[
+ 0.12,
+0.01 
+],
+[
+ 0.12,
+1.43 
+],
+[
+ 0.12,
+0.43 
+],
+[
+ 1.57,
+0.35 
+],
+[
+ -0.05,
+1.75 
+],
+[
+ 0.03,
+1.79 
+],
+[
+ 0.76,
+0.38 
+],
+[
+ -1.39,
+0 
+],
+[
+ -1.09,
+-0.71 
+],
+[
+ 0.34,
+0.06 
+],
+[
+ 0.52,
+0.11 
+],
+[
+ 0.15,
+0.57 
+],
+[
+ -0.44,
+0.07 
+],
+[
+ 1.05,
+-0.24 
+],
+[
+ 0.37,
+-0.82 
+],
+[
+ -3.47,
+0.96 
+],
+[
+ 0.42,
+-0.48 
+],
+[
+ 0.5,
+0.16 
+],
+[
+ -0.4,
+0.2 
+],
+[
+ -3.06,
+-1.2 
+],
+[
+ 1.16,
+-0.16 
+],
+[
+ 2.34,
+1.16 
+],
+[
+ -1.32,
+0.57 
+],
+[
+ 0.27,
+-0.58 
+],
+[
+ -0.67,
+-0.88 
+],
+[
+ -0.68,
+0.76 
+],
+[
+ 0.32,
+-1.41 
+],
+[
+ 0.37,
+1.07 
+],
+[
+ -0.45,
+-0.7 
+],
+[
+ -0.46,
+0.6 
+],
+[
+ 0.5,
+1.39 
+],
+[
+ 0.64,
+0.12 
+],
+[
+ -0.19,
+-0.96 
+],
+[
+ 0.8,
+0.76 
+],
+[
+ 0.17,
+-0.19 
+],
+[
+ 0.97,
+-0.75 
+],
+[
+ -0.62,
+-0.41 
+],
+[
+ 1.24,
+1.74 
+],
+[
+ -0.44,
+0.57 
+],
+[
+ -0.53,
+-0.06 
+],
+[
+ 1.55,
+-0.41 
+],
+[
+ 0.68,
+0.43 
+],
+[
+ -1.24,
+-0.66 
+],
+[
+ -0.23,
+-0.38 
+],
+[
+ 0.64,
+0.38 
+],
+[
+ 0.5,
+-0.03 
+],
+[
+ -0.28,
+0.85 
+],
+[
+ -0.72,
+0.43 
+],
+[
+ 0.45,
+0.2 
+],
+[
+ -1.45,
+1.55 
+],
+[
+ -0.8,
+-1.2 
+],
+[
+ 0.32,
+-0.54 
+],
+[
+ -0.75,
+-0.87 
+],
+[
+ 0.47,
+0.34 
+],
+[
+ 0.24,
+0.72 
+],
+[
+ -1.29,
+0.08 
+],
+[
+ 0.7,
+0.04 
+],
+[
+ 0.89,
+-0.04 
+],
+[
+ -0.82,
+-1.59 
+],
+[
+ -1.59,
+0.48 
+],
+[
+ 0.64,
+0.97 
+],
+[
+ -0.02,
+0.46 
+],
+[
+ -0.25,
+-1.83 
+],
+[
+ 0.84,
+1.82 
+],
+[
+ 0.27,
+-0.12 
+],
+[
+ -0.25,
+-0.65 
+],
+[
+ -1.29,
+0.01 
+],
+[
+ -1.55,
+1.33 
+],
+[
+ 0.28,
+0.24 
+],
+[
+ -0.89,
+-1.84 
+],
+[
+ -1.32,
+-0.36 
+],
+[
+ -0.77,
+-0.79 
+],
+[
+ -0.11,
+0.67 
+],
+[
+ -0.38,
+-0.39 
+],
+[
+ 1.4,
+-0.15 
+],
+[
+ -0.02,
+-0.65 
+],
+[
+ 0.35,
+1.37 
+],
+[
+ -1.48,
+0.32 
+],
+[
+ 1.23,
+1.16 
+],
+[
+ -0.2,
+0.99 
+],
+[
+ -0.17,
+-0.1 
+],
+[
+ 1.14,
+0.46 
+],
+[
+ 1.61,
+0.29 
+],
+[
+ 1.95,
+0.55 
+],
+[
+ 1.12,
+-0.34 
+],
+[
+ 0.98,
+0.8 
+],
+[
+ -0.35,
+0.53 
+],
+[
+ -0.22,
+1.28 
+],
+[
+ 0.85,
+0.55 
+],
+[
+ 1.62,
+0.89 
+],
+[
+ 0.13,
+0.53 
+],
+[
+ -1,
+-0.16 
+],
+[
+ 0.69,
+0.26 
+],
+[
+ 1.17,
+0.49 
+],
+[
+ -0.98,
+0.15 
+],
+[
+ 1.36,
+1.1 
+],
+[
+ 0.13,
+1.39 
+],
+[
+ 0.59,
+1.61 
+],
+[
+ 0.02,
+-0.48 
+],
+[
+ 0.25,
+0.49 
+],
+[
+ 0.69,
+0.35 
+],
+[
+ -0.75,
+0.09 
+],
+[
+ 0,
+-0.84 
+],
+[
+ 0.08,
+0.38 
+],
+[
+ 0.37,
+0.26 
+],
+[
+ -1.84,
+-0.17 
+],
+[
+ -0.28,
+1.15 
+],
+[
+ -1.92,
+-0.61 
+],
+[
+ -0.04,
+-0.25 
+],
+[
+ -0.55,
+1.16 
+],
+[
+ -0.24,
+0.68 
+],
+[
+ 0.59,
+0.54 
+],
+[
+ -1.33,
+1 
+],
+[
+ 0.32,
+0.66 
+],
+[
+ -0.69,
+0.59 
+],
+[
+ -1.45,
+1.41 
+],
+[
+ -3.41,
+-0.11 
+],
+[
+ -0.48,
+-0.19 
+],
+[
+ 0.16,
+0.21 
+],
+[
+ -0.29,
+-0.23 
+],
+[
+ -1.07,
+1.01 
+],
+[
+ 0.36,
+0.12 
+],
+[
+ 0.67,
+-0.81 
+],
+[
+ -0.64,
+0.56 
+],
+[
+ -0.08,
+0.68 
+],
+[
+ 0.98,
+1 
+],
+[
+ -0.04,
+-0.12 
+],
+[
+ 0.92,
+-0.02 
+],
+[
+ -0.03,
+-0.17 
+],
+[
+ 0.13,
+0.53 
+],
+[
+ -0.7,
+-0.5 
+],
+[
+ -0.89,
+1.05 
+],
+[
+ 0.97,
+0.39 
+],
+[
+ 0.44,
+-0.14 
+],
+[
+ 0.46,
+0.56 
+],
+[
+ 0.78,
+-0.16 
+],
+[
+ -0.29,
+0.78 
+],
+[
+ 0.71,
+-0.24 
+],
+[
+ -1.34,
+1.19 
+],
+[
+ 0.72,
+0.84 
+],
+[
+ -0.61,
+-0.39 
+],
+[
+ 0.31,
+0.89 
+],
+[
+ 0.26,
+0.15 
+],
+[
+ -0.33,
+1.06 
+],
+[
+ -0.39,
+1.11 
+],
+[
+ -0.68,
+-0.78 
+],
+[
+ -0.7,
+-0.06 
+],
+[
+ 0.12,
+-0.07 
+],
+[
+ -0.31,
+0 
+],
+[
+ -1.02,
+1.38 
+],
+[
+ -1.01,
+0.41 
+],
+[
+ -0.96,
+-0.18 
+],
+[
+ -3.96,
+0.83 
+],
+[
+ 0.46,
+1.19 
+],
+[
+ 0.32,
+0.12 
+],
+[
+ -2.96,
+1.81 
+],
+[
+ -2.03,
+0.7 
+],
+[
+ -0.38,
+1.69 
+],
+[
+ -0.81,
+1.69 
+],
+[
+ 0.06,
+1.35 
+],
+[
+ -3.43,
+1.12 
+],
+[
+ 0.16,
+0.98 
+],
+[
+ -0.2,
+0.84 
+],
+[
+ -0.76,
+0.4 
+],
+[
+ -1.1,
+-0.67 
+],
+[
+ -1.14,
+0.82 
+],
+[
+ -0.94,
+1.09 
+],
+[
+ -1.64,
+0.59 
+],
+[
+ 0.03,
+-0.26 
+],
+[
+ 0.3,
+1.12 
+],
+[
+ 0.48,
+-0.36 
+],
+[
+ 0.49,
+1.66 
+],
+[
+ -1.87,
+-0.9 
+],
+[
+ -0.41,
+-0.15 
+],
+[
+ -3.09,
+-0.1 
+],
+[
+ -0.2,
+0.88 
+],
+[
+ -1.44,
+2.13 
+],
+[
+ -0.43,
+0.02 
+],
+[
+ -2.24,
+0.61 
+],
+[
+ -1.59,
+-0.76 
+],
+[
+ -1.15,
+1.87 
+],
+[
+ -1.45,
+-0.4 
+],
+[
+ -0.35,
+-0.41 
+],
+[
+ -1.22,
+-0.21 
+],
+[
+ -2.56,
+-0.16 
+],
+[
+ -0.76,
+0.27 
+],
+[
+ 0.14,
+0.66 
+],
+[
+ -1.9,
+0.2 
+],
+[
+ -0.95,
+0.32 
+],
+[
+ -0.98,
+0.37 
+],
+[
+ 0.74,
+1.81 
+],
+[
+ 0.4,
+0.29 
+],
+[
+ -1.72,
+-1.03 
+],
+[
+ -0.97,
+-1.1 
+],
+[
+ -2.28,
+1.46 
+],
+[
+ -0.74,
+1.39 
+],
+[
+ -0.73,
+-0.76 
+],
+[
+ 0.59,
+1.91 
+],
+[
+ -1.96,
+-0.13 
+],
+[
+ -2.14,
+-1.51 
+],
+[
+ -0.84,
+1.04 
+],
+[
+ -1.24,
+0.79 
+],
+[
+ -0.23,
+1.29 
+],
+[
+ -0.63,
+0.23 
+],
+[
+ -0.33,
+-0.28 
+],
+[
+ -1.35,
+0.05 
+],
+[
+ -1.41,
+-0.27 
+],
+[
+ -1.04,
+1.81 
+],
+[
+ -0.66,
+-0.59 
+],
+[
+ -0.41,
+0.36 
+],
+[
+ -1.36,
+0.58 
+],
+[
+ -1.54,
+0.36 
+],
+[
+ -1.33,
+1.43 
+],
+[
+ -0.31,
+1.73 
+],
+[
+ -1.26,
+-0.8 
+],
+[
+ -1.34,
+1.69 
+],
+[
+ -0.37,
+0.03 
+],
+[
+ -1.76,
+1.92 
+],
+[
+ -0.67,
+2.61 
+],
+[
+ -0.78,
+-0.85 
+],
+[
+ -0.24,
+-0.4 
+],
+[
+ -0.26,
+-0.02 
+],
+[
+ -0.91,
+-0.52 
+],
+[
+ -0.55,
+-0.95 
+],
+[
+ 1.46,
+1.04 
+],
+[
+ -0.94,
+0.23 
+],
+[
+ 0.22,
+-0.15 
+],
+[
+ -0.68,
+0.29 
+],
+[
+ -1.99,
+0.56 
+],
+[
+ -0.68,
+0.21 
+],
+[
+ -1.04,
+-0.03 
+],
+[
+ -2.14,
+0.54 
+],
+[
+ -2.41,
+1.71 
+],
+[
+ -2.09,
+0.43 
+],
+[
+ -1.58,
+-0.17 
+],
+[
+ -1.88,
+-0.58 
+],
+[
+ -2.17,
+0.92 
+],
+[
+ -0.86,
+-0.34 
+],
+[
+ -0.88,
+0.51 
+],
+[
+ -0.87,
+-0.44 
+],
+[
+ 0.34,
+-0.29 
+],
+[
+ -0.69,
+0.8 
+],
+[
+ -1.03,
+-0.05 
+],
+[
+ -1.82,
+0.04 
+],
+[
+ -1.29,
+0.39 
+],
+[
+ -0.32,
+1.3 
+],
+[
+ -0.13,
+-0.37 
+],
+[
+ -2.17,
+-0.13 
+],
+[
+ -1.66,
+-0.08 
+],
+[
+ -0.16,
+0.98 
+],
+[
+ -3.16,
+2.61 
+],
+[
+ 0.03,
+0.77 
+],
+[
+ -0.57,
+-0.17 
+],
+[
+ -1.4,
+-0.03 
+],
+[
+ -1.92,
+0.46 
+],
+[
+ -0.64,
+1.7 
+],
+[
+ -0.97,
+-0.13 
+],
+[
+ -1.21,
+-0.92 
+],
+[
+ -0.41,
+-0.5 
+],
+[
+ -0.33,
+-0.54 
+],
+[
+ 0.57,
+1.71 
+],
+[
+ -2.06,
+-1.73 
+],
+[
+ -3.91,
+0.25 
+],
+[
+ -1.11,
+0.85 
+],
+[
+ -0.28,
+0.26 
+],
+[
+ -0.97,
+0.37 
+],
+[
+ -0.92,
+-0.01 
+],
+[
+ -1.39,
+-0.4 
+],
+[
+ -0.99,
+-0.8 
+],
+[
+ 0.11,
+-0.05 
+],
+[
+ 0.15,
+-0.04 
+],
+[
+ -0.8,
+0.23 
+],
+[
+ 0.69,
+1.51 
+],
+[
+ -1.65,
+-0.02 
+],
+[
+ -1.24,
+-0.23 
+],
+[
+ -2.77,
+-0.29 
+],
+[
+ -1.85,
+0.23 
+],
+[
+ -1.71,
+0.34 
+],
+[
+ -0.64,
+0.18 
+],
+[
+ -1.44,
+0.37 
+],
+[
+ -1.04,
+0.79 
+],
+[
+ -0.73,
+1.29 
+],
+[
+ -0.62,
+-0.26 
+],
+[
+ 0.33,
+0.06 
+],
+[
+ -2.89,
+-0.31 
+],
+[
+ -0.61,
+1.6 
+],
+[
+ -2.46,
+0.01 
+],
+[
+ -2.12,
+-0.24 
+],
+[
+ -1.55,
+1.62 
+],
+[
+ -2.64,
+-1.24 
+],
+[
+ 0.05,
+-0.3 
+],
+[
+ 0.03,
+1.31 
+],
+[
+ -0.55,
+2.57 
+],
+[
+ -2.51,
+1.02 
+],
+[
+ -0.79,
+0.52 
+],
+[
+ -0.2,
+0.09 
+],
+[
+ -1.09,
+2.05 
+],
+[
+ -2.23,
+0.21 
+],
+[
+ -1.69,
+1.54 
+],
+[
+ -0.97,
+-0.11 
+],
+[
+ -0.42,
+2.26 
+],
+[
+ -0.93,
+1.56 
+],
+[
+ -2.6,
+1.55 
+],
+[
+ -1.16,
+0.75 
+],
+[
+ 0.01,
+2.04 
+],
+[
+ -0.03,
+1.23 
+],
+[
+ -1.64,
+1.65 
+],
+[
+ -0.48,
+1.54 
+],
+[
+ -0.02,
+1.16 
+],
+[
+ -0.18,
+1.56 
+],
+[
+ 0.53,
+0.87 
+],
+[
+ -0.75,
+0.99 
+],
+[
+ -0.33,
+-0.54 
+],
+[
+ -0.36,
+-0.25 
+],
+[
+ -0.41,
+-0.83 
+],
+[
+ -1.72,
+-0.59 
+],
+[
+ -1.62,
+0.05 
+],
+[
+ 0.01,
+1.46 
+],
+[
+ -0.4,
+1.47 
+],
+[
+ -1.73,
+0.45 
+],
+[
+ 0.34,
+-1.29 
+],
+[
+ -0.7,
+0.46 
+],
+[
+ -0.8,
+1.93 
+],
+[
+ -0.4,
+-0.16 
+],
+[
+ 0.08,
+-0.26 
+],
+[
+ -0.1,
+1.63 
+],
+[
+ -1.11,
+1.73 
+],
+[
+ -1.34,
+-0.34 
+],
+[
+ 0.47,
+1.6 
+],
+[
+ 0.4,
+0.77 
+],
+[
+ -1.05,
+-0.07 
+],
+[
+ -1.23,
+-0.05 
+],
+[
+ -1.13,
+0.45 
+],
+[
+ -0.74,
+-0.72 
+],
+[
+ -0.64,
+-0.21 
+],
+[
+ -0.19,
+0.5 
+],
+[
+ -0.63,
+-0.04 
+],
+[
+ -1.25,
+-0.25 
+],
+[
+ 0.16,
+0.2 
+],
+[
+ -0.04,
+0.4 
+],
+[
+ -0.17,
+1.26 
+],
+[
+ -0.87,
+1.37 
+],
+[
+ -1.15,
+-0.28 
+],
+[
+ 0.07,
+1.7 
+],
+[
+ 0.43,
+0.53 
+],
+[
+ -1.3,
+0.03 
+],
+[
+ -0.13,
+-0.31 
+],
+[
+ 0.07,
+-0.51 
+],
+[
+ 0.33,
+-0.47 
+],
+[
+ -0.69,
+0.25 
+],
+[
+ -1.58,
+1.71 
+],
+[
+ -1.6,
+1.31 
+],
+[
+ 0,
+1.25 
+],
+[
+ 0.24,
+0.23 
+],
+[
+ -1.36,
+0.66 
+],
+[
+ -1.4,
+-0.51 
+],
+[
+ -0.36,
+-0.42 
+],
+[
+ -1.59,
+-1.93 
+],
+[
+ -3.15,
+0.05 
+],
+[
+ -1.09,
+-0.06 
+],
+[
+ -1.62,
+-0.24 
+],
+[
+ -0.06,
+-0.5 
+],
+[
+ -0.46,
+0.32 
+],
+[
+ -0.77,
+0.02 
+],
+[
+ -1.13,
+0.63 
+],
+[
+ -0.22,
+0.17 
+],
+[
+ -0.59,
+0.36 
+],
+[
+ -0.41,
+-1.18 
+],
+[
+ -1.69,
+-0.01 
+],
+[
+ -2.27,
+1.3 
+],
+[
+ -1.05,
+-0.12 
+],
+[
+ -1.74,
+0.11 
+],
+[
+ 0.11,
+1.35 
+],
+[
+ -1.31,
+-0.15 
+],
+[
+ -1.94,
+-0.01 
+],
+[
+ -0.38,
+0.88 
+],
+[
+ -0.24,
+1.32 
+],
+[
+ -1.18,
+0.96 
+],
+[
+ -0.3,
+-0.39 
+],
+[
+ 0.3,
+0.88 
+],
+[
+ -2.4,
+-0.21 
+],
+[
+ -1.59,
+0 
+],
+[
+ -0.97,
+0.09 
+],
+[
+ -2.88,
+-0.62 
+],
+[
+ -2.14,
+0.18 
+],
+[
+ -0.44,
+-0.22 
+],
+[
+ -2.29,
+1.46 
+],
+[
+ -0.57,
+0.04 
+],
+[
+ -2.49,
+0.54 
+],
+[
+ -1.26,
+1.14 
+],
+[
+ -0.99,
+1.78 
+],
+[
+ -1.42,
+0.28 
+],
+[
+ -1.11,
+-0.12 
+],
+[
+ -2.43,
+0.83 
+],
+[
+ -0.85,
+-0.17 
+],
+[
+ -0.44,
+0.11 
+],
+[
+ -0.98,
+0.76 
+],
+[
+ -1.12,
+-0.93 
+],
+[
+ 0.67,
+-0.28 
+],
+[
+ 0.72,
+-1.14 
+],
+[
+ 0.74,
+1.7 
+],
+[
+ -0.39,
+-0.24 
+],
+[
+ 0.57,
+0 
+],
+[
+ -0.4,
+-0.03 
+],
+[
+ -0.18,
+0.1 
+],
+[
+ -0.3,
+-0.01 
+],
+[
+ 0.06,
+-0.82 
+],
+[
+ 0.4,
+0.26 
+],
+[
+ -1.99,
+-0.22 
+],
+[
+ -0.38,
+0.27 
+],
+[
+ 0.15,
+0.57 
+],
+[
+ 0.5,
+-0.51 
+],
+[
+ -0.6,
+-0.12 
+],
+[
+ -0.43,
+-0.15 
+],
+[
+ -0.93,
+0.26 
+],
+[
+ -0.91,
+-0.13 
+],
+[
+ -0.8,
+-0.04 
+],
+[
+ -1.19,
+-0.19 
+],
+[
+ -1.17,
+0.01 
+],
+[
+ -0.71,
+-0.39 
+],
+[
+ -1.04,
+0.51 
+],
+[
+ 0.14,
+-0.03 
+],
+[
+ -0.84,
+0.47 
+],
+[
+ -0.1,
+-0.24 
+],
+[
+ 0.73,
+-0.5 
+],
+[
+ -0.68,
+-0.07 
+],
+[
+ 0.02,
+-0.04 
+],
+[
+ -0.36,
+-0.76 
+],
+[
+ 0.08,
+0.01 
+],
+[
+ -1.54,
+0.16 
+],
+[
+ -1.01,
+-0.53 
+],
+[
+ -0.11,
+-0.49 
+],
+[
+ -0.74,
+-0.62 
+],
+[
+ -1.3,
+-0.42 
+],
+[
+ 0.89,
+1.32 
+],
+[
+ -0.11,
+2.16 
+],
+[
+ 0.86,
+-0.15 
+],
+[
+ 0.57,
+-0.06 
+],
+[
+ -0.81,
+-0.03 
+],
+[
+ 0.71,
+1.33 
+],
+[
+ -0.72,
+0.02 
+],
+[
+ 0.62,
+-0.36 
+],
+[
+ -0.66,
+-0.21 
+],
+[
+ 0.87,
+-0.31 
+],
+[
+ -1.77,
+0.43 
+],
+[
+ -0.59,
+-0.26 
+],
+[
+ -0.25,
+-0.2 
+],
+[
+ 0.6,
+0.04 
+],
+[
+ -0.74,
+0.16 
+],
+[
+ -0.64,
+-0.03 
+],
+[
+ -1.09,
+-0.23 
+],
+[
+ -1.7,
+-0.03 
+],
+[
+ 0.02,
+0.03 
+],
+[
+ -0.23,
+-0.12 
+],
+[
+ 1.09,
+-0.79 
+],
+[
+ -0.68,
+0.08 
+],
+[
+ 0.06,
+-0.46 
+],
+[
+ -1.1,
+0.61 
+],
+[
+ 1.82,
+-0.34 
+],
+[
+ -0.87,
+1.76 
+],
+[
+ -1.28,
+-0.23 
+],
+[
+ 1.29,
+0.78 
+],
+[
+ 1.26,
+1.37 
+],
+[
+ 0.34,
+1.87 
+],
+[
+ 1.32,
+1.61 
+],
+[
+ 0.18,
+1.74 
+],
+[
+ 0.45,
+1.22 
+],
+[
+ -0.67,
+2.56 
+],
+[
+ 0.21,
+0.05 
+],
+[
+ 0.33,
+1.2 
+],
+[
+ 0.46,
+0.09 
+],
+[
+ 1.61,
+2.15 
+],
+[
+ 1.53,
+1.42 
+],
+[
+ -1.13,
+0.25 
+],
+[
+ 0.16,
+-0.14 
+],
+[
+ 0.23,
+-0.22 
+],
+[
+ 0.51,
+0.34 
+],
+[
+ 0.06,
+-0.1 
+],
+[
+ -0.15,
+-0.62 
+],
+[
+ -1.13,
+0.24 
+],
+[
+ -1.23,
+0.56 
+],
+[
+ -0.2,
+-0.22 
+],
+[
+ -1.05,
+-0.18 
+],
+[
+ 0.66,
+1.81 
+],
+[
+ 0.87,
+1.71 
+],
+[
+ 0.01,
+-0.31 
+],
+[
+ -1.2,
+0.04 
+],
+[
+ -0.05,
+0.02 
+],
+[
+ -0.04,
+0.5 
+],
+[
+ -1.07,
+0.18 
+],
+[
+ -0.02,
+0.14 
+],
+[
+ -0.95,
+0.51 
+],
+[
+ -0.21,
+-0.02 
+],
+[
+ -0.53,
+-0.07 
+],
+[
+ 0.44,
+-0.47 
+],
+[
+ -0.41,
+0.52 
+],
+[
+ 0.48,
+-0.1 
+],
+[
+ -0.48,
+-0.03 
+],
+[
+ 0.65,
+0.09 
+],
+[
+ -1.22,
+-1.06 
+],
+[
+ -0.42,
+-0.03 
+],
+[
+ 1.28,
+0.01 
+],
+[
+ -0.72,
+0.04 
+],
+[
+ -2.21,
+-1.1 
+],
+[
+ -0.82,
+0.04 
+],
+[
+ -0.33,
+-0.28 
+],
+[
+ -0.43,
+-0.48 
+],
+[
+ -1.01,
+-0.14 
+],
+[
+ 0.82,
+-0.37 
+],
+[
+ 0.83,
+-0.49 
+],
+[
+ -0.07,
+0.27 
+],
+[
+ -0.28,
+1.66 
+],
+[
+ 0.41,
+0.32 
+],
+[
+ -0.74,
+-0.13 
+],
+[
+ 0.95,
+-0.26 
+],
+[
+ 0.26,
+0.66 
+],
+[
+ -1.53,
+-1 
+],
+[
+ -0.86,
+0.59 
+],
+[
+ 1.79,
+1.42 
+],
+[
+ -0.16,
+-0.41 
+],
+[
+ -0.88,
+0.38 
+],
+[
+ -0.32,
+-0.56 
+],
+[
+ -0.44,
+-0.24 
+],
+[
+ 1.52,
+-0.37 
+],
+[
+ -0.04,
+0.01 
+],
+[
+ -0.37,
+0.84 
+],
+[
+ -0.13,
+0.53 
+],
+[
+ -0.18,
+0.72 
+],
+[
+ -0.23,
+0.79 
+],
+[
+ -0.88,
+-1.09 
+],
+[
+ -0.56,
+0.57 
+],
+[
+ 0.08,
+-0.85 
+],
+[
+ -2.46,
+1.26 
+],
+[
+ -1.64,
+1.53 
+],
+[
+ 1.86,
+0.32 
+],
+[
+ -0.85,
+-0.85 
+],
+[
+ 1.32,
+-0.78 
+],
+[
+ -0.09,
+-0.14 
+],
+[
+ -1.2,
+-0.74 
+],
+[
+ -0.4,
+1.41 
+],
+[
+ -1.15,
+-1.79 
+],
+[
+ -0.31,
+0.16 
+],
+[
+ -1.69,
+0.6 
+],
+[
+ 1.02,
+1.37 
+],
+[
+ 0.32,
+1.48 
+],
+[
+ 0.82,
+-1.14 
+],
+[
+ -1.55,
+0.17 
+],
+[
+ -1.56,
+-2.53 
+],
+[
+ 3.58,
+-0.84 
+],
+[
+ -1.51,
+-0.34 
+],
+[
+ -1.08,
+-0.5 
+],
+[
+ 0.21,
+-1.15 
+],
+[
+ -0.26,
+-0.41 
+],
+[
+ 0.16,
+0.77 
+],
+[
+ 0.43,
+-0.5 
+],
+[
+ 0.1,
+-0.97 
+],
+[
+ 0.09,
+-0.38 
+],
+[
+ -0.9,
+-0.63 
+],
+[
+ 0.13,
+-0.3 
+],
+[
+ 0.67,
+-0.02 
+],
+[
+ 0.25,
+-0.57 
+],
+[
+ -0.6,
+-1.1 
+],
+[
+ -0.56,
+-0.21 
+],
+[
+ 1.25,
+-0.9 
+],
+[
+ 0.12,
+-1.38 
+],
+[
+ 0.08,
+0.57 
+],
+[
+ -0.62,
+-0.59 
+],
+[
+ -0.96,
+0.58 
+],
+[
+ -0.84,
+-0.2 
+],
+[
+ -1.17,
+-0.55 
+],
+[
+ 1.1,
+0.32 
+],
+[
+ 1.09,
+0.99 
+],
+[
+ -1.37,
+0.17 
+],
+[
+ -0.95,
+0.3 
+],
+[
+ 0.54,
+0.04 
+],
+[
+ 0.3,
+-0.47 
+],
+[
+ -0.73,
+-0.83 
+],
+[
+ -0.76,
+-0.09 
+],
+[
+ 0.52,
+1.59 
+],
+[
+ -0.89,
+0.77 
+],
+[
+ -0.51,
+-0.81 
+],
+[
+ -0.63,
+0.28 
+],
+[
+ -1.34,
+-0.25 
+],
+[
+ 1.17,
+-0.13 
+],
+[
+ -0.33,
+0.46 
+],
+[
+ -0.81,
+1.66 
+],
+[
+ 0.5,
+-0.08 
+],
+[
+ -0.56,
+-0.61 
+],
+[
+ -1.44,
+-0.85 
+],
+[
+ 1.32,
+0.44 
+],
+[
+ -0.28,
+-0.73 
+],
+[
+ 1,
+0.79 
+],
+[
+ -1.49,
+-3.04 
+],
+[
+ 0.42,
+1.56 
+],
+[
+ -0.94,
+0.22 
+],
+[
+ -1.52,
+-0.52 
+],
+[
+ 1.42,
+-0.05 
+],
+[
+ 0.74,
+0.44 
+],
+[
+ 1.43,
+2.01 
+],
+[
+ 0.41,
+0.1 
+],
+[
+ -0.28,
+0.18 
+],
+[
+ -0.02,
+1.4 
+],
+[
+ -1.25,
+-1.16 
+],
+[
+ -0.61,
+-0.38 
+],
+[
+ -1.98,
+-0.28 
+],
+[
+ -0.03,
+-0.66 
+],
+[
+ -0.24,
+1.72 
+],
+[
+ 0.8,
+0.98 
+],
+[
+ -1.09,
+0.45 
+],
+[
+ -1.18,
+-0.88 
+],
+[
+ 1.42,
+0.98 
+],
+[
+ 0.03,
+-0.04 
+],
+[
+ -0.55,
+0.16 
+],
+[
+ -2.01,
+0.92 
+],
+[
+ -2.09,
+-0.47 
+],
+[
+ -2.31,
+-1.08 
+],
+[
+ -2.2,
+-0.67 
+],
+[
+ -0.48,
+-0.94 
+],
+[
+ -0.6,
+-0.47 
+],
+[
+ 1.85,
+0.54 
+],
+[
+ -1.26,
+-0.94 
+],
+[
+ 1.47,
+0.69 
+],
+[
+ -3.24,
+-0.12 
+],
+[
+ -0.09,
+-2.14 
+],
+[
+ -0.76,
+-0.48 
+],
+[
+ -0.12,
+1.47 
+],
+[
+ -0.24,
+-0.21 
+],
+[
+ -0.27,
+-0.54 
+],
+[
+ 1.17,
+-0.23 
+],
+[
+ -0.44,
+-2.26 
+],
+[
+ 0.39,
+-0.55 
+],
+[
+ -1.3,
+-0.39 
+],
+[
+ -0.66,
+-0.06 
+],
+[
+ -0.03,
+0.69 
+],
+[
+ 0.1,
+0.64 
+],
+[
+ -0.39,
+0.47 
+],
+[
+ 1.01,
+0.25 
+],
+[
+ 0.06,
+0.24 
+],
+[
+ -2,
+0.41 
+],
+[
+ -0.94,
+-0.8 
+],
+[
+ 0.18,
+-1.26 
+],
+[
+ -1.54,
+-1.95 
+],
+[
+ -0.93,
+-0.83 
+],
+[
+ 0.75,
+-0.07 
+],
+[
+ -1.64,
+0.27 
+],
+[
+ -0.31,
+-0.43 
+],
+[
+ -1.21,
+0.32 
+],
+[
+ -0.75,
+0.5 
+],
+[
+ 0.68,
+-2.09 
+],
+[
+ -0.99,
+-1.6 
+],
+[
+ -2.41,
+-0.39 
+],
+[
+ 1.18,
+0.59 
+],
+[
+ -0.68,
+0.11 
+],
+[
+ -0.18,
+-0.18 
+],
+[
+ -0.77,
+-0.2 
+],
+[
+ -1.22,
+-0.65 
+],
+[
+ 0.33,
+0.37 
+],
+[
+ -0.38,
+-0.57 
+],
+[
+ 0.29,
+-0.9 
+],
+[
+ -0.8,
+-0.68 
+],
+[
+ -1.59,
+-1.44 
+],
+[
+ -0.45,
+-0.66 
+],
+[
+ -0.93,
+-0.24 
+],
+[
+ 0.57,
+-0.87 
+],
+[
+ -1.21,
+0.03 
+],
+[
+ -0.56,
+0.18 
+],
+[
+ 1.38,
+1.86 
+],
+[
+ 0.52,
+0.16 
+],
+[
+ 0.89,
+0.99 
+],
+[
+ -0.14,
+1.05 
+],
+[
+ -1.27,
+-0.65 
+],
+[
+ 1.51,
+0.34 
+],
+[
+ -0.6,
+0.66 
+],
+[
+ -1.64,
+-0.18 
+],
+[
+ -0.16,
+-0.6 
+],
+[
+ -0.19,
+0.24 
+],
+[
+ -1.43,
+-0.49 
+],
+[
+ -0.85,
+-1.2 
+],
+[
+ -0.39,
+-0.71 
+],
+[
+ 0.22,
+-0.27 
+],
+[
+ 0.17,
+-0.98 
+],
+[
+ 0.21,
+-0.02 
+],
+[
+ -0.42,
+-0.19 
+],
+[
+ 0.86,
+-1.03 
+],
+[
+ -0.65,
+0.05 
+],
+[
+ -0.39,
+-0.47 
+],
+[
+ -1.09,
+-0.87 
+],
+[
+ -0.04,
+-0.84 
+],
+[
+ 0.42,
+0.86 
+],
+[
+ 0.63,
+-0.43 
+],
+[
+ -0.09,
+-0.64 
+],
+[
+ -0.49,
+-0.73 
+],
+[
+ 0.24,
+-0.21 
+],
+[
+ 0.11,
+-0.35 
+],
+[
+ 0.46,
+-0.05 
+],
+[
+ -0.65,
+-0.19 
+],
+[
+ -0.9,
+-1.49 
+],
+[
+ 0.19,
+-1.24 
+],
+[
+ 0.66,
+-0.19 
+],
+[
+ 0.8,
+-0.32 
+],
+[
+ -0.97,
+-0.44 
+],
+[
+ -0.11,
+-1.39 
+],
+[
+ -0.11,
+0.99 
+],
+[
+ -0.96,
+-0.3 
+],
+[
+ -0.55,
+-0.49 
+],
+[
+ -2.96,
+-0.51 
+],
+[
+ 1.02,
+-0.86 
+],
+[
+ 1.11,
+-0.15 
+],
+[
+ -0.81,
+-0.21 
+],
+[
+ -0.53,
+-0.37 
+],
+[
+ 0.27,
+-0.99 
+],
+[
+ -0.59,
+0.09 
+],
+[
+ 0.42,
+0.93 
+],
+[
+ 0.7,
+-0.01 
+],
+[
+ 0.31,
+0.84 
+],
+[
+ -0.52,
+-0.03 
+],
+[
+ -0.4,
+-0.03 
+],
+[
+ -1.68,
+-0.51 
+],
+[
+ -1.33,
+-0.73 
+],
+[
+ -0.51,
+-0.46 
+],
+[
+ -0.93,
+-0.33 
+],
+[
+ 0.12,
+-1.47 
+],
+[
+ -0.13,
+0.69 
+],
+[
+ -0.62,
+-0.77 
+],
+[
+ 0.48,
+-0.63 
+],
+[
+ -0.57,
+0.04 
+],
+[
+ -0.59,
+0.22 
+],
+[
+ 0.29,
+-0.22 
+],
+[
+ -2.25,
+-1.32 
+],
+[
+ -0.58,
+-0.1 
+],
+[
+ -0.82,
+0.09 
+],
+[
+ -0.7,
+-0.19 
+],
+[
+ -0.57,
+-0.6 
+],
+[
+ -1.82,
+0.46 
+],
+[
+ -0.47,
+-1.63 
+],
+[
+ -1.78,
+-2.68 
+],
+[
+ -0.55,
+-0.97 
+],
+[
+ -0.28,
+-1.16 
+],
+[
+ -0.68,
+-0.06 
+],
+[
+ -1.24,
+-1.02 
+],
+[
+ -2.31,
+-0.44 
+],
+[
+ -2.06,
+-1.86 
+],
+[
+ -0.92,
+-1.65 
+],
+[
+ -0.46,
+-0.18 
+],
+[
+ 1.15,
+0.19 
+],
+[
+ -0.45,
+-0.57 
+],
+[
+ 0.59,
+1.45 
+],
+[
+ -1.67,
+0.24 
+],
+[
+ -1.1,
+1.44 
+],
+[
+ -0.04,
+1.23 
+],
+[
+ -0.86,
+-2.04 
+],
+[
+ -0.17,
+0.15 
+],
+[
+ -0.92,
+-0.42 
+],
+[
+ -0.2,
+-0.56 
+],
+[
+ -1.87,
+-0.05 
+],
+[
+ -1.99,
+0.08 
+],
+[
+ -0.89,
+-0.8 
+],
+[
+ -2.16,
+-0.97 
+],
+[
+ -1.16,
+-0.28 
+],
+[
+ 0.6,
+1.52 
+],
+[
+ 0.34,
+-0.09 
+],
+[
+ 0.12,
+0.18 
+],
+[
+ 0.09,
+-0.65 
+],
+[
+ -0.08,
+-0.96 
+],
+[
+ -1.18,
+-0.01 
+],
+[
+ -1.51,
+-0.72 
+],
+[
+ 0.33,
+-0.01 
+],
+[
+ -0.16,
+-0.27 
+],
+[
+ -1.49,
+1.54 
+],
+[
+ -1.28,
+0.17 
+],
+[
+ -0.14,
+-0.14 
+],
+[
+ -1.86,
+-1.23 
+],
+[
+ -1.8,
+-0.66 
+],
+[
+ 1.21,
+-2.38 
+],
+[
+ 0.49,
+-0.31 
+],
+[
+ -0.73,
+-0.38 
+],
+[
+ 0.92,
+-1.03 
+],
+[
+ -0.23,
+-1.28 
+],
+[
+ 0.15,
+0.89 
+],
+[
+ 0.73,
+0.08 
+],
+[
+ -2.24,
+-2.32 
+],
+[
+ -2.15,
+-0.84 
+],
+[
+ -1.98,
+-1.5 
+],
+[
+ -2.39,
+0.1 
+],
+[
+ 0.1,
+1.2 
+],
+[
+ -1.38,
+0.1 
+],
+[
+ 0.06,
+-2.54 
+],
+[
+ -0.67,
+0.38 
+],
+[
+ -1.58,
+0.45 
+],
+[
+ 0.09,
+-0.08 
+],
+[
+ 1.07,
+0.14 
+],
+[
+ -0.3,
+1.3 
+],
+[
+ 0.04,
+0.27 
+],
+[
+ -0.56,
+1.81 
+],
+[
+ 1,
+0.46 
+],
+[
+ -0.23,
+-0.97 
+],
+[
+ 0.86,
+0.95 
+],
+[
+ -0.09,
+1 
+],
+[
+ -1.16,
+-0.58 
+],
+[
+ 0.37,
+-0.92 
+],
+[
+ 1.06,
+1.2 
+],
+[
+ 0.12,
+0.59 
+],
+[
+ 0.88,
+1.13 
+],
+[
+ 0.2,
+-0.34 
+],
+[
+ 0.33,
+1.21 
+],
+[
+ 0.22,
+0.69 
+],
+[
+ -0.53,
+0.06 
+],
+[
+ -0.8,
+0.16 
+],
+[
+ -0.15,
+-0.96 
+],
+[
+ -0.87,
+0.79 
+],
+[
+ 0.17,
+0.51 
+],
+[
+ 0.03,
+-0.65 
+],
+[
+ 0.11,
+0.78 
+],
+[
+ -0.68,
+0.14 
+],
+[
+ -0.31,
+1.95 
+],
+[
+ 0.78,
+1.56 
+],
+[
+ 0.55,
+0.92 
+],
+[
+ -1.04,
+0.9 
+],
+[
+ -0.89,
+-1.65 
+],
+[
+ -0.37,
+-0.08 
+],
+[
+ 0.62,
+1.29 
+],
+[
+ 0.1,
+-0.56 
+],
+[
+ -0.17,
+-0.33 
+],
+[
+ 0.21,
+0.96 
+],
+[
+ -1.03,
+-0.48 
+],
+[
+ -0.83,
+0.42 
+],
+[
+ 0.38,
+-0.42 
+],
+[
+ -0.11,
+-1.41 
+],
+[
+ 0.19,
+-0.51 
+],
+[
+ -0.56,
+0.33 
+],
+[
+ -1.23,
+0.3 
+],
+[
+ 0.23,
+-0.38 
+],
+[
+ 0.91,
+0 
+],
+[
+ 0,
+-1.75 
+],
+[
+ 0.08,
+0.23 
+],
+[
+ 0.88,
+-0.77 
+],
+[
+ 0.19,
+-1.62 
+],
+[
+ 0.43,
+-0.49 
+],
+[
+ -0.54,
+-0.47 
+],
+[
+ 0.17,
+0.87 
+],
+[
+ -0.13,
+-1.05 
+],
+[
+ 0.35,
+0.94 
+],
+[
+ -0.99,
+1.45 
+],
+[
+ -1.14,
+0.82 
+],
+[
+ 0.44,
+0.47 
+],
+[
+ -0.3,
+1.22 
+],
+[
+ -0.53,
+-0.25 
+],
+[
+ 2.03,
+1.73 
+],
+[
+ -0.57,
+-0.33 
+],
+[
+ 0.06,
+0.09 
+],
+[
+ -2.37,
+-0.61 
+],
+[
+ 0.67,
+0.48 
+],
+[
+ 1.12,
+0.93 
+],
+[
+ 0.7,
+1.42 
+],
+[
+ -1.07,
+-0.06 
+],
+[
+ -0.09,
+0.66 
+],
+[
+ -1.94,
+-2.08 
+],
+[
+ 1.17,
+1.18 
+],
+[
+ 0.5,
+1.02 
+],
+[
+ -0.18,
+1.18 
+],
+[
+ -1.36,
+-0.44 
+],
+[
+ 0.46,
+-0.26 
+],
+[
+ -0.33,
+0.42 
+],
+[
+ -0.2,
+0.95 
+],
+[
+ -1.18,
+0.9 
+],
+[
+ -1.19,
+0.7 
+],
+[
+ -0.44,
+0.19 
+],
+[
+ 0.35,
+-0.55 
+],
+[
+ 0.02,
+-0.18 
+],
+[
+ 0.35,
+0.85 
+],
+[
+ 0.57,
+0.59 
+],
+[
+ -0.94,
+0.33 
+],
+[
+ 0.98,
+-0.56 
+],
+[
+ -0.35,
+0.04 
+],
+[
+ 0.37,
+1.72 
+],
+[
+ 0.37,
+-0.71 
+],
+[
+ -0.27,
+1.41 
+],
+[
+ -0.65,
+0.7 
+],
+[
+ 0.05,
+0.67 
+],
+[
+ -1.01,
+-0.61 
+],
+[
+ -0.3,
+-1.89 
+],
+[
+ 0.09,
+1.48 
+],
+[
+ 0.67,
+0.29 
+],
+[
+ 0.08,
+1.95 
+],
+[
+ -1.26,
+-0.01 
+],
+[
+ -0.77,
+-0.67 
+],
+[
+ 1.1,
+0.04 
+],
+[
+ -0.05,
+-0.8 
+],
+[
+ -1.39,
+1.15 
+],
+[
+ -0.57,
+-1.16 
+],
+[
+ -1.14,
+-0.17 
+],
+[
+ -0.07,
+-0.36 
+],
+[
+ 0.6,
+0.24 
+],
+[
+ -0.04,
+0.69 
+],
+[
+ 1.16,
+-0.54 
+],
+[
+ -2.04,
+1.24 
+],
+[
+ 0.27,
+1.97 
+],
+[
+ 1.18,
+0.28 
+],
+[
+ -1.58,
+0.54 
+],
+[
+ -1.29,
+-1.1 
+],
+[
+ -0.17,
+-0.91 
+],
+[
+ 1.18,
+-0.31 
+],
+[
+ 0.35,
+-0.5 
+],
+[
+ -0.86,
+0.09 
+],
+[
+ 1.36,
+0.66 
+],
+[
+ -0.37,
+0.29 
+],
+[
+ -0.28,
+1 
+],
+[
+ -0.28,
+-2.33 
+],
+[
+ 0.55,
+-0.26 
+],
+[
+ 0.07,
+0.08 
+],
+[
+ -0.25,
+-0.66 
+],
+[
+ -0.37,
+0.78 
+],
+[
+ 0.27,
+0.15 
+],
+[
+ -0.3,
+-0.35 
+],
+[
+ 0.62,
+0.4 
+],
+[
+ -0.59,
+-0.07 
+],
+[
+ -0.94,
+-0.85 
+],
+[
+ -0.14,
+0.14 
+],
+[
+ 0.27,
+0.82 
+],
+[
+ -0.35,
+-0.27 
+],
+[
+ -0.84,
+-0.61 
+],
+[
+ -0.98,
+-0.64 
+],
+[
+ 1,
+0.24 
+],
+[
+ -2.13,
+-2.43 
+],
+[
+ -0.7,
+-0.36 
+],
+[
+ 0.25,
+0.9 
+],
+[
+ -1.43,
+-0.99 
+],
+[
+ 0.17,
+-2.12 
+],
+[
+ -1.98,
+-0.85 
+],
+[
+ 0.72,
+1.13 
+],
+[
+ -0.12,
+0.84 
+],
+[
+ -0.19,
+-0.28 
+],
+[
+ 0.04,
+0.16 
+],
+[
+ -0.75,
+-1.29 
+],
+[
+ -0.39,
+-1.58 
+],
+[
+ -1.05,
+-0.34 
+],
+[
+ -0.76,
+-0.58 
+],
+[
+ -1.31,
+0.44 
+],
+[
+ -0.09,
+-0.15 
+],
+[
+ 2.24,
+-0.23 
+],
+[
+ -1.05,
+-1.57 
+],
+[
+ 0.27,
+-1.26 
+],
+[
+ 0.06,
+-0.52 
+],
+[
+ -0.24,
+1.23 
+],
+[
+ -0.24,
+-0.24 
+],
+[
+ 0.39,
+1.08 
+],
+[
+ 0.83,
+0.66 
+],
+[
+ -0.84,
+-0.87 
+],
+[
+ -0.46,
+-0.13 
+],
+[
+ -0.22,
+-0.99 
+],
+[
+ 0.13,
+-0.39 
+],
+[
+ -2.7,
+-1.03 
+],
+[
+ 2.14,
+-1.17 
+],
+[
+ -1.89,
+-1.34 
+],
+[
+ -0.85,
+0.2 
+],
+[
+ -0.01,
+-1.72 
+],
+[
+ -0.9,
+0.44 
+],
+[
+ -1.62,
+-0.54 
+],
+[
+ -0.48,
+0.38 
+],
+[
+ 0.03,
+-1.2 
+],
+[
+ 2.86,
+-0.44 
+],
+[
+ 0.79,
+0.12 
+],
+[
+ 0.41,
+0.35 
+],
+[
+ -1.01,
+-0.5 
+],
+[
+ -0.25,
+1.16 
+],
+[
+ 0.36,
+-0.5 
+],
+[
+ -0.83,
+-1.02 
+],
+[
+ -0.8,
+0.06 
+],
+[
+ -0.64,
+-1.29 
+],
+[
+ 0.6,
+-0.93 
+],
+[
+ 1.07,
+-1.52 
+],
+[
+ -0.05,
+2.12 
+],
+[
+ -0.96,
+-0.17 
+],
+[
+ -1.03,
+-1.35 
+],
+[
+ -0.92,
+0.71 
+],
+[
+ 0.72,
+-0.32 
+],
+[
+ 0.19,
+0.04 
+],
+[
+ -0.4,
+-1.66 
+],
+[
+ 0.96,
+-0.84 
+],
+[
+ 0.9,
+0.52 
+],
+[
+ -1.32,
+0.43 
+],
+[
+ 0.62,
+-0.59 
+],
+[
+ 0.72,
+0.87 
+],
+[
+ -1.71,
+-0.36 
+],
+[
+ -0.48,
+-0.29 
+],
+[
+ -1.07,
+1.42 
+],
+[
+ 0.51,
+-1.7 
+],
+[
+ 1.07,
+0.35 
+],
+[
+ 1.75,
+1.1 
+],
+[
+ 1.86,
+-3 
+],
+[
+ -0.93,
+-1.17 
+],
+[
+ 1.47,
+-0.42 
+],
+[
+ 1.39,
+-0.8 
+],
+[
+ 0.48,
+-0.1 
+],
+[
+ 0.01,
+0.03 
+],
+[
+ -0.86,
+-0.62 
+],
+[
+ 0.39,
+0.47 
+],
+[
+ 1.21,
+0.76 
+],
+[
+ 0.98,
+-1.72 
+],
+[
+ 1.09,
+0.82 
+],
+[
+ -0.7,
+-1.12 
+],
+[
+ 2.43,
+-2.75 
+],
+[
+ -0.12,
+0.19 
+],
+[
+ 0.24,
+-0.49 
+],
+[
+ -2.56,
+-1.54 
+],
+[
+ 0.25,
+-2.32 
+],
+[
+ -0.3,
+-0.15 
+],
+[
+ 1.26,
+-1.62 
+],
+[
+ -0.02,
+-4.13 
+],
+[
+ 0.16,
+-1.99 
+],
+[
+ 1.76,
+-1.35 
+],
+[
+ 0.31,
+-1.34 
+],
+[
+ 1.34,
+-1.48 
+],
+[
+ 1.2,
+-0.03 
+],
+[
+ 1.83,
+-0.62 
+],
+[
+ -0.44,
+-0.87 
+],
+[
+ -0.55,
+-1.98 
+],
+[
+ 0.68,
+-5.46 
+],
+[
+ 0.58,
+-1.32 
+],
+[
+ -0.8,
+-0.25 
+],
+[
+ 1.39,
+-0.85 
+],
+[
+ 0.5,
+-1.47 
+],
+[
+ -0.73,
+-1.89 
+],
+[
+ 0.83,
+-0.77 
+],
+[
+ 0.79,
+-0.69 
+],
+[
+ -0.19,
+-0.48 
+],
+[
+ 0.76,
+-0.41 
+],
+[
+ -0.03,
+-1.46 
+],
+[
+ 0.6,
+-0.77 
+],
+[
+ -0.93,
+-1.61 
+],
+[
+ 0.87,
+-0.87 
+],
+[
+ 0.16,
+-1.88 
+],
+[
+ -0.25,
+-0.98 
+],
+[
+ -0.09,
+-0.75 
+],
+[
+ 0.09,
+0.9 
+],
+[
+ -0.5,
+-2.77 
+],
+[
+ 0.7,
+-1.06 
+],
+[
+ -0.22,
+-1.07 
+],
+[
+ -1.06,
+-2.82 
+],
+[
+ 0.64,
+-1.57 
+],
+[
+ 0.94,
+-1.03 
+],
+[
+ -1.05,
+-2.89 
+],
+[
+ -1.96,
+-5.22 
+],
+[
+ 0.06,
+-2.22 
+],
+[
+ 0.91,
+-2.94 
+],
+[
+ 1.92,
+1.06 
+],
+[
+ -1.51,
+-1.73 
+],
+[
+ 1.2,
+-1.07 
+],
+[
+ 2.2,
+-1 
+],
+[
+ 0.47,
+0.85 
+],
+[
+ 0.8,
+-1.45 
+],
+[
+ -0.39,
+-4.14 
+],
+[
+ 2.04,
+-0.9 
+],
+[
+ -0.08,
+-1.06 
+],
+[
+ 1.15,
+-0.51 
+],
+[
+ 0.84,
+-1.31 
+],
+[
+ 0.15,
+-0.46 
+],
+[
+ 0.94,
+-1.7 
+],
+[
+ 0.55,
+-1.34 
+],
+[
+ 0.68,
+-0.23 
+],
+[
+ -0.12,
+0.43 
+],
+[
+ 1.46,
+-0.54 
+],
+[
+ 1.52,
+-1.4 
+],
+[
+ -0.13,
+0.16 
+],
+[
+ 1.05,
+-1.26 
+],
+[
+ -0.46,
+0.9 
+],
+[
+ 1,
+0.64 
+],
+[
+ 0.71,
+-1.4 
+],
+[
+ -0.41,
+-0.99 
+],
+[
+ -1.18,
+-2.23 
+],
+[
+ -0.01,
+-1.11 
+],
+[
+ -0.03,
+-1.37 
+],
+[
+ 0.46,
+-1.13 
+],
+[
+ 0.52,
+-0.69 
+],
+[
+ 1.22,
+-1.03 
+],
+[
+ -0.12,
+-1.43 
+],
+[
+ 0.32,
+-0.34 
+],
+[
+ 0.37,
+-1.5 
+],
+[
+ 1.01,
+-1.14 
+],
+[
+ 1.69,
+-1 
+],
+[
+ -0.06,
+-0.7 
+],
+[
+ 0.02,
+-0.07 
+],
+[
+ 0.48,
+-0.48 
+],
+[
+ 0.16,
+-1.62 
+],
+[
+ -0.94,
+-2.28 
+],
+[
+ -0.07,
+-2.73 
+],
+[
+ 0.46,
+-1.44 
+],
+[
+ 2.14,
+-1.45 
+],
+[
+ -0.16,
+-0.05 
+],
+[
+ 1.49,
+-3.22 
+],
+[
+ 1.63,
+-2.93 
+],
+[
+ -0.19,
+-1.7 
+],
+[
+ 0.2,
+-0.06 
+],
+[
+ -0.13,
+-3.57 
+],
+[
+ 0.56,
+-1.73 
+],
+[
+ 0.62,
+-1.13 
+],
+[
+ -0.44,
+-2.12 
+],
+[
+ 0.51,
+-1.84 
+],
+[
+ 0.39,
+-1.85 
+],
+[
+ 0.46,
+-1 
+],
+[
+ -0.97,
+-2.17 
+],
+[
+ 0.39,
+-1.63 
+],
+[
+ 0.54,
+-1.18 
+],
+[
+ 0.6,
+-0.75 
+],
+[
+ 1.98,
+-0.57 
+],
+[
+ -0.07,
+-1.44 
+],
+[
+ 0.75,
+-1.26 
+],
+[
+ 0.92,
+-0.62 
+],
+[
+ 0.6,
+-2.3 
+],
+[
+ -0.28,
+0.98 
+],
+[
+ 1.12,
+-1.17 
+],
+[
+ -0.61,
+-3.29 
+],
+[
+ 0.79,
+-0.48 
+],
+[
+ 1.39,
+-1.66 
+],
+[
+ 0.21,
+-0.36 
+],
+[
+ 1.08,
+-1.06 
+],
+[
+ 0.67,
+-3.61 
+],
+[
+ -0.28,
+-2.45 
+],
+[
+ 1.28,
+-0.94 
+],
+[
+ 1.17,
+-0.95 
+],
+[
+ 0.32,
+0.12 
+],
+[
+ -0.73,
+-1.92 
+],
+[
+ 0.42,
+-3.62 
+],
+[
+ 0.4,
+-1.83 
+],
+[
+ -0.5,
+-1.28 
+],
+[
+ -2.61,
+-2.9 
+],
+[
+ 0.11,
+-0.9 
+],
+[
+ 0.61,
+-2.47 
+],
+[
+ -0.5,
+-0.99 
+],
+[
+ -0.21,
+-0.82 
+],
+[
+ 0.22,
+-2.16 
+],
+[
+ 0.3,
+-0.16 
+],
+[
+ -1.21,
+-0.36 
+],
+[
+ 1.35,
+-0.33 
+],
+[
+ 0.26,
+-0.92 
+],
+[
+ 0.59,
+1.59 
+],
+[
+ -0.34,
+1.12 
+],
+[
+ -0.59,
+0.72 
+],
+[
+ -0.18,
+1.37 
+],
+[
+ -0.89,
+0.04 
+],
+[
+ -1.87,
+2.03 
+],
+[
+ 0.93,
+-0.7 
+],
+[
+ -0.31,
+1.49 
+],
+[
+ -3.11,
+-0.09 
+],
+[
+ -1.05,
+0.9 
+],
+[
+ 0.28,
+1.33 
+],
+[
+ -2.95,
+1.7 
+],
+[
+ -0.3,
+-0.16 
+],
+[
+ -0.04,
+-0.19 
+],
+[
+ -0.17,
+0.9 
+],
+[
+ -3.06,
+1.3 
+],
+[
+ -1.75,
+-1.77 
+],
+[
+ 0.36,
+0 
+],
+[
+ -1.15,
+-0.38 
+],
+[
+ -0.79,
+-0.1 
+],
+[
+ -0.81,
+-0.48 
+],
+[
+ -0.85,
+0.59 
+],
+[
+ -1.87,
+0.08 
+],
+[
+ -2.27,
+0.13 
+],
+[
+ -1.18,
+-0.04 
+],
+[
+ 1.47,
+1.73 
+],
+[
+ -3.96,
+1.94 
+],
+[
+ -0.07,
+1.07 
+],
+[
+ 0.5,
+0.66 
+],
+[
+ -0.04,
+-0.08 
+],
+[
+ -1.63,
+0.1 
+],
+[
+ -1.58,
+0.55 
+],
+[
+ -0.22,
+-0.2 
+],
+[
+ -1.14,
+-0.34 
+],
+[
+ -1.21,
+0.75 
+],
+[
+ -1.55,
+-1.72 
+],
+[
+ -0.08,
+1.26 
+],
+[
+ -2.54,
+1.34 
+],
+[
+ -1.06,
+0.22 
+],
+[
+ -0.81,
+0.37 
+],
+[
+ 0.4,
+1.64 
+],
+[
+ -1.05,
+2.31 
+],
+[
+ 0.91,
+1.34 
+],
+[
+ -1.63,
+0.22 
+],
+[
+ -1.06,
+0.66 
+],
+[
+ -0.52,
+-0.06 
+],
+[
+ -1.17,
+0.46 
+],
+[
+ 0.37,
+-0.45 
+],
+[
+ 0.68,
+0.22 
+],
+[
+ -0.38,
+-0.06 
+],
+[
+ 0.41,
+-0.58 
+],
+[
+ -0.83,
+0.41 
+],
+[
+ 0,
+-0.11 
+],
+[
+ -0.75,
+0.22 
+],
+[
+ -0.28,
+-0.05 
+],
+[
+ -2.79,
+2.15 
+],
+[
+ -0.15,
+0.69 
+],
+[
+ -1.33,
+0.91 
+],
+[
+ -1.89,
+-1.31 
+],
+[
+ 0.2,
+0.81 
+],
+[
+ 0.16,
+0.92 
+],
+[
+ -0.4,
+0.07 
+],
+[
+ -1.52,
+1.08 
+],
+[
+ 0.8,
+-0.16 
+],
+[
+ 0.44,
+0.81 
+],
+[
+ -0.35,
+-0.32 
+],
+[
+ -1.39,
+-0.3 
+],
+[
+ -0.09,
+-0.54 
+],
+[
+ 0.08,
+0.19 
+],
+[
+ 0.19,
+-1.17 
+],
+[
+ -0.2,
+-1.6 
+],
+[
+ -0.39,
+-0.33 
+],
+[
+ -0.23,
+-0.24 
+],
+[
+ -1.31,
+-1.44 
+],
+[
+ -1.01,
+-1.28 
+],
+[
+ -0.59,
+0 
+],
+[
+ -1.91,
+-1.3 
+],
+[
+ -0.46,
+-0.97 
+],
+[
+ 0.27,
+-0.65 
+],
+[
+ 0.11,
+-0.62 
+],
+[
+ -1.44,
+0.19 
+],
+[
+ -1.08,
+-1.59 
+],
+[
+ 0.46,
+1.46 
+],
+[
+ -2.12,
+-2.72 
+],
+[
+ -0.13,
+1.4 
+],
+[
+ -0.13,
+0.36 
+],
+[
+ -0.03,
+1.46 
+],
+[
+ 1.35,
+1.3 
+],
+[
+ -1.2,
+0.54 
+],
+[
+ 0.13,
+1.49 
+],
+[
+ -1.39,
+0.17 
+],
+[
+ -0.07,
+-0.88 
+],
+[
+ -1.79,
+-0.26 
+],
+[
+ 0.38,
+-0.14 
+],
+[
+ -1.4,
+-0.44 
+],
+[
+ -0.34,
+-1.67 
+],
+[
+ 0.11,
+0.27 
+],
+[
+ -0.08,
+-0.55 
+],
+[
+ -0.5,
+-0.51 
+],
+[
+ -0.54,
+-0.58 
+],
+[
+ -0.04,
+-0.55 
+],
+[
+ 0.96,
+0.98 
+],
+[
+ -0.86,
+-0.02 
+],
+[
+ 0.54,
+-0.07 
+],
+[
+ -0.98,
+-0.85 
+],
+[
+ -0.95,
+-0.54 
+],
+[
+ 0.98,
+-1.54 
+],
+[
+ 0.08,
+-1.75 
+],
+[
+ 0.17,
+-1.01 
+],
+[
+ -1.92,
+-1.67 
+],
+[
+ 0.7,
+-0.18 
+],
+[
+ 1.42,
+-0.9 
+],
+[
+ 0.51,
+1.1 
+],
+[
+ -0.47,
+-4.7 
+],
+[
+ -0.02,
+-1.79 
+],
+[
+ 0.68,
+-1.45 
+],
+[
+ 0.48,
+-1.53 
+] 
+];
+data.addColumn('number','V1');
+data.addColumn('number','V2');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartScatterChartID4e6942846f05() {
+var data = gvisDataScatterChartID4e6942846f05();
+var options = {};
+options["allowHtml"] = true;
+options["legend"] = "none";
+options["lineWidth"] =      0;
+options["pointSize"] =      8;
+options["hAxis.title"] = "Derived Variable (Factor) 2";
+options["title"] = "Data Visualization Using the top 2 Derived Attributes (Factors)";
+options["vAxis"] = {title:'Derived Variable (Factor) 1'};
+options["hAxis"] = {title:'Derived Variable (Factor) 2'};
+options["width"] =    900;
+options["height"] =    800;
+
+    var chart = new google.visualization.ScatterChart(
+    document.getElementById('ScatterChartID4e6942846f05')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartScatterChartID4e6942846f05);
+})();
+function displayChartScatterChartID4e6942846f05() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+
+<!-- jsChart -->  
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartScatterChartID4e6942846f05"></script>
+ 
+
+<!-- divChart -->
+
+<div id="ScatterChartID4e6942846f05"
+  style="width: 900px; height: 800px;">
+</div>
+
+<h2>Intepretation, Decisions and Conclusion</h2>
+
+<p><strong><em>Team Analysis:</em></strong>
+We started with 29 variables to analyse customer behaviour. However, based on factor analysis, as displayed in the table in step 6, the observations can be described using 7 variables instead of 29 without losing a lot of information. Each new (derived) variable represents a  factor as  identified in step 4 and the values for each observations are calculated as a function of variables that define the factors. 
+As described in section 4, there are 7 factors representing 7 behavioural attributes of the  customer segment which drive their purchasing habits. We will further perform segment analysis to identify segments of customers and how these behavioural attributes and their profiling data are connected.</p>
+
+</body>
+
+</html>
