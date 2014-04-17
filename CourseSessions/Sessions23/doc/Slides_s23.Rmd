@@ -20,29 +20,6 @@ mode : standalone
   
 3. Analysis Level: Learn how to perform, read, and use key data analytics methods.
 
----
-
-## Group Project: Deliverable #1
-
-Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  <b style="color:#000;">servers before the day of sessions 4-5</b>. Delayed reports will lose 20% of the group project grade. 
-
-Provide 
-
-- summary statistics of the data, 
-
-- any initial visual/graphic summaries  
-
-- an initial analysis based on sessions 2-3
-
-
----
-
-## Group Project: Final Deliverable 
-  
-By Session 8 you need to have your final draft of the report and slides for your project.   
-  
-  
-<b style="color:#000;">Your report and slides need to be public on your servers before session 8. </b> 
 
 ---
 

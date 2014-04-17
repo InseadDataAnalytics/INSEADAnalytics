@@ -27,11 +27,12 @@ Introduction to the Tools
 
   
   
-Class Group Project (one):    40%
+Group Assignment (Part A and Part B):    50%
 
-Group Assignment (one - in 3 parts):  	30%
+Group Project (one):                     20%
 
-Class Participation: 			30%
+Class Participation:   		               30%
+
 
 ---
 
@@ -150,27 +151,11 @@ Is our Data Representative?
 
 ---
 
-## Group Project: Deliverable #1
+## Group Project
 
-Please prepare a short report  as well as  a slidify presentation. You will need to post them on your  <b style="color:#000;">servers before the day of sessions 4-5</b>. Delayed reports will lose 20% of the group project grade. 
+Please prepare a short presentation, due before session 8. 
 
-Provide 
-
-- summary statistics of the data, 
-
-- any initial visual/graphic summaries  
-
-- an initial analysis based on sessions 2-3
-
-
----
-
-## Group Project: Final Deliverable 
-  
-By Session 8 you need to have your final draft of the report and slides for your project.   
-  
-  
-<b style="color:#000;">Your report and slides need to be public on your servers before session 8. </b> 
+Instructions: see project handout
 
 ---
 
@@ -222,10 +207,6 @@ By Session 8 you need to have your final draft of the report and slides for your
 
 1. Explore the course website 
 
-2. Explore RunStudy.R in the directory of Sessions 23 on your server 
-    
-3. Read the Boats case as well as the documents in your Data_Analytics_Case_MarketSegmentation_LuxuryGoods RStudio project or the <a href="http://inseaddataanalytics.github.io/INSEADjan2014/ProjectsMenu.html" target="_blank">projects website </a>
+2. Read the Boats case as well as the documents in the Data_Analytics_Case_MarketSegmentation_LuxuryGoods  project on the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/ProjectsMenu.html" target="_blank">projects website </a>
 
-4. Become familiar with the technical instructions on the course website. 
-
-5. Do NOT push anything on github yet!!! 
+3. Become familiar with the software tools of the course
