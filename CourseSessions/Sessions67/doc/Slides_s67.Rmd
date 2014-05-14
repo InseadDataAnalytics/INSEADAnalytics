@@ -29,14 +29,11 @@ mode : standalone
 
 ---
 
-## Classification: A Process
+## Example: Boats Purchase Drivers
 
-1. Create an estimation and two validation samples in a balanced way 
-2. Setup the dependent variable (what is a success?)
-3. Assess and select the independent variables
-4. Estimate model (many methods, we consider only 2 here)
-5. Assess performance on first validation data, repeat steps 2-5 as necessary
-6. Assess performance on second validation data once
+Who would be the most likely customers to purchase a boat in the future or to recommend their brand?
+
+What would be the **key drivers** that affect people's decision to purchase or recommend?
 
 ---
 ## Various Methods
@@ -53,11 +50,44 @@ mode : standalone
 
 ---
 
-## Example: Boats Purchase Drivers
 
-Who would be the most likely customers to purchase a boat in the future or to recommend their brand?
+## Classification: A Process
 
-What would be the **key drivers** that affect people's decision to purchase or recommend?
+1. Create an estimation and two validation samples in a balanced way 
+2. Setup the dependent variable (what is a success?)
+3. Assess and select the independent variables
+4. Estimate model (many methods, we consider only 2 here)
+5. Assess performance on first validation data, repeat steps 2-5 as necessary
+6. Assess performance on second validation data once
+
+---
+
+## Data Splits: Example Split
+
+Estimation Data: `r estimation_data_percent`% of the data
+
+Validation Data: `r validation_data_percent`% of the data
+
+Test Data: `r 100 - estimation_data_percent - validation_data_percent`% of the data
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+if (random_sampling){
+  estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
+  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+  validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
+  } else {
+    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    }
+
+test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
+
+estimation_data=ProjectData[estimation_data_ids,]
+validation_data=ProjectData[validation_data_ids,]
+test_data=ProjectData[test_data_ids,]
+```
 
 ---
 
@@ -91,88 +121,6 @@ colnames (dfnew)<-change
 print(xtable(dfnew ,caption="Number of Observations per class in the Estimation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
-
----
-
-## Summary Statistics: Class 1
-
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
-show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==1,independent_variables]),2))
-#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
-row<-rownames(show_data)
-dfnew2<-cbind(row,show_data)
-change<-colnames(dfnew2)
-change[1]<-"Variables"
-colnames (dfnew2)<-change
-m2<-gvisTable(dfnew2,options=list(showRowNumber=TRUE,width=960, height=440,allowHTML=TRUE,page='disable'))
-print(m2,'chart')
-```
-
----
-
-## Summary Statistics: Class 0
-
-<div class="row">
-<div class="col-md-6">
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
-show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==0,independent_variables]),2))
-#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
-row<-rownames(show_data)
-dfnew3<-cbind(row,show_data)
-change<-colnames(dfnew3)
-change[1]<-"Variables"
-colnames (dfnew3)<-change
-m3<-gvisTable(dfnew3,options=list(showRowNumber=TRUE,width=960, height=450,allowHTML=TRUE,page='disable'))
-print(m3,'chart')
-```
-</div>
-</div>
-
----
-
-## Data Splits: Example Split
-
-Estimation Data: `r estimation_data_percent`% of the data
-
-Validation Data: `r validation_data_percent`% of the data
-
-Test Data: `r 100 - estimation_data_percent - validation_data_percent`% of the data
-
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
-
-if (random_sampling){
-  estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
-  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
-  validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
-  } else {
-    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
-    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
-    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
-    }
-
-test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
-
-estimation_data=ProjectData[estimation_data_ids,]
-validation_data=ProjectData[validation_data_ids,]
-test_data=ProjectData[test_data_ids,]
-```
-
----
-
-## Estimation Data: Example Box Plots
-
-<style="width=1100px;">
-```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis',fig.height=7,fig.width=14}
-par(mfrow=c(2,1))
-DVvalues = unique(estimation_data[,dependent_variable])
-x0 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[1]),independent_variables]
-x1 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[2]),independent_variables]
-colnames(x0) <- 1:ncol(x0)
-colnames(x1) <- 1:ncol(x1)
-boxplot(x0)
-boxplot(x1)
-```
-</style>
 
 ---
 
@@ -416,214 +364,6 @@ Why should performance be different? Why should it not? What can we do about it?
 
 ---
 
-## Confusion Matrix: Validation Data
-<div class="row">
-<div class="col-md-6">
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-validation_prediction_best = validation_predictions[which.max(validation_hit_rates),]
-conf_matrix = matrix(rep(0,4),ncol=2)
-conf_matrix[1,1]<- 100*sum(validation_prediction_best*validation_data[,dependent_variable])/sum(validation_data[,dependent_variable])
-conf_matrix[1,2]<- 100*sum((!validation_prediction_best)*validation_data[,dependent_variable])/sum(validation_data[,dependent_variable])
-conf_matrix[2,1]<- 100*sum((!validation_prediction_best)*(!validation_data[,dependent_variable]))/sum((!validation_data[,dependent_variable]))
-conf_matrix[2,2]<- 100*sum((validation_prediction_best)*(!validation_data[,dependent_variable]))/sum((!validation_data[,dependent_variable]))
-conf_matrix = round(conf_matrix,2)
-
-colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
-rownames(conf_matrix) <- c("Actual 1", "Actual 0")
-
-print(xtable(conf_matrix ,caption="Confusion Matrix for Validation data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
-```
-</div>
-</div>
-
----
-
-## ROC Curves: Validation Data
-
-(black: CART 1; red: CART 2; blue: logistic regression):
-
-
-```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
-
-validation_actual_class <- as.numeric(validation_data[,dependent_variable])
-
-pred_tree <- prediction(validation_Probability_class1_tree, validation_actual_class)
-pred_tree_large <- prediction(validation_Probability_class1_tree_large, validation_actual_class)
-pred_log <- prediction(validation_Probability_class1_log, validation_actual_class)
-```
-
-```{r echo=FALSE}
-plot(performance(pred_tree, "tpr", "fpr"),  lty=1, add=FALSE, main="ROC Curve")
-grid()
-par(new=TRUE)
-plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
-par(new=TRUE)
-plot(performance(pred_log, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
-par(new=FALSE)
-```
-
----
-
-## Lift Curves: Validation Data
-
-<style>
-.wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
-.wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
-</style>
-<div class="wrapper wrapper1">
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-validation_actual<- validation_data[,dependent_variable]
-all1s=sum(validation_actual); 
-
-probs = validation_Probability_class1_tree
-xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
-res = 100*Reduce(cbind,lapply(xaxis, function(prob){
-  useonly = which(probs >= 1-prob)
-  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
-  }))
-xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 1', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFrame,'chart')
-
-
-probs = validation_Probability_class1_tree_large
-xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
-res = 100*Reduce(cbind,lapply(xaxis, function(prob){
-  useonly = which(probs >= 1-prob)
-  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
-  }))
-xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFrame1,'chart')
-
-probs = validation_Probability_class1_log
-xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
-res = 100*Reduce(cbind,lapply(xaxis, function(prob){
-  useonly = which(probs >= prob)
-  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
-  }))
-xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFrame2,'chart')
-```
-<div>
-
----
-
-## Profit Matrix
-<div class="row">
-<div class="col-md-6">
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-
-print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
-
-```
-</div>
-</div>
-
----
-
-## Profit Curves: Validation Data
-<style>
-.wrapper{
-            
-            
-            width: 100%;
-           
-            overflow-x: scroll;
-             
-          }
-.wrapper1{
-            
-           height:450px;
-             overflow-y: scroll;
-          }
-</style>
-<div class="wrapper wrapper1">
-```{r echo=FALSE, warning=FALSE,comment=NA, results='asis',error=FALSE,message=FALSE}
-actual_class<- validation_data[,dependent_variable]
-
-probs = validation_Probability_class1_tree
-xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
-res = Reduce(cbind,lapply(xaxis, function(prob){
-  useonly = which(probs >= prob)
-  predict_class = 1*(probs >= prob)
-  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
-    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
-    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
-    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-  
-  c(100*length(useonly)/length(actual_class), theprofit) 
-  }))
-xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev1,'chart')
-
-probs = validation_Probability_class1_tree_large
-xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
-res = Reduce(cbind,lapply(xaxis, function(prob){
-  useonly = which(probs >= prob)
-  predict_class = 1*(probs >= prob)
-  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
-    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
-    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
-    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-  
-  c(100*length(useonly)/length(actual_class), theprofit) 
-  }))
-xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev2,'chart')
-
-probs = validation_Probability_class1_log
-xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
-res = Reduce(cbind,lapply(xaxis, function(prob){
-  useonly = which(probs >= prob)
-  predict_class = 1*(probs >= prob)
-  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
-    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
-    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
-    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
-  
-  c(100*length(useonly)/length(actual_class), theprofit) 
-  }))
-xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev3,'chart')
-```
-</div>
-
----
-
 ## Hit Ratios: Test Data for best validation hit rate method
 <div class="row">
 <div class="col-md-6">
@@ -762,6 +502,19 @@ LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(
 print(LineFrame2,'chart')
 
 ```
+</div>
+
+---
+
+## Profit Matrix
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+</div>
 </div>
 
 ---
