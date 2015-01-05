@@ -1,8 +1,8 @@
 ---
 
-title : (Big) Data Analytics for Business
+title : Data Analytics for Business
 subtitle : Session 2-3, Dimensionality Reduction and Derived Attributes (Technical Slides)
-author : T. Evgeniou and J. Niessing
+author : T. Evgeniou 
 job : INSEAD
 widgets : []
 mode : standalone 

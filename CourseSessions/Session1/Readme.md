@@ -1,7 +1,7 @@
-Data Analytics Course Session (Case): 
+Data Analytics Course Session: 
 ---------------------------------------------------------
 
-"Session 1 of INSEAD Big Data Analytics for Business Course: "Introduction to Data Analytics"
+"Session 1 of INSEAD Data Analytics for Business Course: "Introduction to Data Analytics"
 ---------------------------------------------------------
 
 **Organization:** INSEAD
@@ -15,8 +15,6 @@ Data Analytics Course Session (Case):
 **Author(s):** T. Evgeniou
 
 **Author(s)' Affiliations:** INSEAD
-
-**Date:** January 2014 
 
 INSTRUCTIONS FOR PROJECT
 ---------------------------------------------------------

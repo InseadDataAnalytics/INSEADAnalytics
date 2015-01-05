@@ -1,6 +1,6 @@
-Data Analytics Course Session (Case): 
+Data Analytics Course Session: 
 ---------------------------------------------------------
-Sessions 4-5 of INSEAD Big Data Analytics for Business Course: Clustering and Segmentation
+Sessions 4-5 of INSEAD Data Analytics for Business Course: Clustering and Segmentation
 ---------------------------------------------------------
 
 
@@ -15,8 +15,6 @@ Sessions 4-5 of INSEAD Big Data Analytics for Business Course: Clustering and Se
 **Author(s):** T. Evgeniou
 
 **Author(s)' Affiliations:** INSEAD
-
-**Date:** January 2014 
 
 INSTRUCTIONS FOR PROJECT
 ---------------------------------------------------------

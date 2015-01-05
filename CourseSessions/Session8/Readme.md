@@ -1,7 +1,7 @@
-Data Analytics Course Session (Case): 
+Data Analytics Course Session: 
 ---------------------------------------------------------
 
-"Session 8 of INSEAD Big Data Analytics for Business Course: "Projects and Summary"
+"Session 8 of INSEAD Data Analytics for Business Course: "Projects and Summary"
 ---------------------------------------------------------
 
 **Organization:** INSEAD
@@ -16,7 +16,6 @@ Data Analytics Course Session (Case):
 
 **Author(s)' Affiliations:** INSEAD
 
-**Date:** January 2014 
 
 INSTRUCTIONS FOR PROJECT
 ---------------------------------------------------------

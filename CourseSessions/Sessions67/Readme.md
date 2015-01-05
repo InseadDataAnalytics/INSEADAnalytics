@@ -1,6 +1,6 @@
-Data Analytics Course Session (Case): 
+Data Analytics Course Session: 
 ---------------------------------------------------------
-Sessions 6-7 of INSEAD Big Data Analytics for Business Course: Classification
+Sessions 6-7 of INSEAD Data Analytics for Business Course: Classification
 ---------------------------------------------------------
 
 
@@ -15,8 +15,6 @@ Sessions 6-7 of INSEAD Big Data Analytics for Business Course: Classification
 **Author(s):** T. Evgeniou
 
 **Author(s)' Affiliations:** INSEAD
-
-**Date:** January 2014 
 
 INSTRUCTIONS FOR PROJECT
 ---------------------------------------------------------

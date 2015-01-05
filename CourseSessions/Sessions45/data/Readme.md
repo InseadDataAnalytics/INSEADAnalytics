@@ -1,6 +1,6 @@
-Data Analytics Course Session (Case): 
+Data Analytics Course Session: 
 ---------------------------------------------------------
-Sessions 4-5 of INSEAD Big Data Analytics for Business Course: Clustering and Segmentation
+Sessions 4-5 of INSEAD Data Analytics for Business Course: Clustering and Segmentation
 ---------------------------------------------------------
 
 Each data file should be a .csv file with one worksheet which has as many rows as observations (e.g. people in a market research survey), and as many columns as attributes (e.g. people's demographics, attitudes to a product, etc). The .csv is  ";" separated (NOT other symbols, e.g. not ",") and decimals are with ","

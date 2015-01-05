@@ -1,8 +1,8 @@
 ---
 
-title : (Big) Data Analytics for Business
+title : Data Analytics for Business
 subtitle : Sessions 4-5, Clustering and Segmentation
-author : T. Evgeniou and J. Niessing
+author : T. Evgeniou 
 job : INSEAD
 widgets : []
 mode : standalone 

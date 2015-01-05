@@ -1,7 +1,7 @@
 ---
-title : (Big) Data Analytics for Business
+title : Data Analytics for Business
 subtitle : Session 8, Projects and Summary
-author : T. Evgeniou and J. Niessing
+author : T. Evgeniou 
 job : INSEAD
 widgets : []
 mode : standalone 

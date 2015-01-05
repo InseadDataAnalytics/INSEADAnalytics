@@ -5,7 +5,7 @@
 ############################################
 ############################################
 
-# Project Name: "Sessions 2-3 of INSEAD Big Data Analytics for Business Course: "Dimensionality Reduction and Derived Attributes"
+# Project Name: "Sessions 2-3 of INSEAD Data Analytics for Business Course: "Dimensionality Reduction and Derived Attributes"
 
 rm(list = ls( ))
 
@@ -16,7 +16,8 @@ rm(list = ls( ))
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
-local_directory <- "~INSEADAnalytics/CourseSessions/Sessions23"
+local_directory <- paste(getwd(),"CourseSessions/Sessions23", sep="/")
+#local_directory <- "~INSEADAnalytics/CourseSessions/Sessions23"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 
@@ -25,8 +26,8 @@ datafile_name="MBAadmin" # do not add .csv at the end! make sure the data are nu
 
 # Please ENTER the filename of the Report and Slides (in the doc directory) to generate 
 
-#report_file = "Report_s23"
-report_file = "MyBoatsFactor"
+report_file = "Report_s23"
+#report_file = "MyBoatsFactor"
 slides_file = "Slides_s23"
 
 # Please ENTER then original raw attributes to use. 

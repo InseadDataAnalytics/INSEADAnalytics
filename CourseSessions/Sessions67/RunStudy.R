@@ -1,5 +1,5 @@
 
-# Project Name: "Sessions 6-7 of INSEAD Big Data Analytics for Business Course: "Classification"
+# Project Name: "Sessions 6-7 of INSEAD Data Analytics for Business Course: "Classification"
 
 
 rm(list = ls( )) # clean up the workspace
@@ -11,7 +11,8 @@ rm(list = ls( )) # clean up the workspace
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
 # (e.g. local_directory <- "C:/user/MyDocuments" )
 # type in the Console below help(getwd) and help(setwd) for more information
-local_directory <- "~/INSEADAnalytics/CourseSessions/Sessions67"
+local_directory <- paste(getwd(),"CourseSessions/Sessions67", sep="/")
+#local_directory <- "~INSEADAnalytics/CourseSessions/Sessions67"
 
 cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE IT IF IT IS NOT CORRECT using setwd(..) - type help(setwd) for more information \n *********")
 
@@ -25,9 +26,9 @@ datafile_name="Boats" # do not add .csv at the end! make sure the data are numer
 cluster_file_ini = "Boats_cluster" # make sure this file exists in the "data" directory
 
 # Please ENTER the name Report and Slides (in the doc directory) to generate 
-#report_file = "Report_s67"
+report_file = "Report_s67"
 #report_file = "SampleBoatsDriversSegments"
-report_file = "MyBoatsDrivers"
+#report_file = "MyBoatsDrivers"
 slides_file = "Slides_s67"
 
 # Please ENTER the class (dependent) variable:

@@ -1,5 +1,5 @@
 
-# Project Name: "Sessions 2-3 of INSEAD Big Data Analytics for Business Course: "Dimensionality Reduction and Derived Attributes"
+# Project Name: "Session 1 of INSEAD Data Analytics for Business Course: "Dimensionality Reduction and Derived Attributes"
 
 rm(list = ls()) # clean up the workspace
 

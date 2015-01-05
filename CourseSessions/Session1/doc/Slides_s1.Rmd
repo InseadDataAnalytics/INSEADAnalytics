@@ -1,5 +1,5 @@
 ---
-title : (Big) Data Analytics for Business
+title : Data Analytics for Business
 subtitle : Session 1, Introduction to Data Analytics for Business
 author : T. Evgeniou 
 job : INSEAD

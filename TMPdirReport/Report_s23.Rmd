@@ -1,0 +1,428 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;} </style>
+
+
+Derived Attributes and Dimensionality Reduction 
+========================================================
+
+**T. Evgeniou, INSEAD**
+
+
+What is this for?
+---------------------------------------------------------
+
+One of the key steps in Data Analytics is to generate meaningful attributes starting from possibly a large number of **raw attributes**. Consider for example the case of customer data, where for each customer we have a very large number of raw attributes (which could be, for example, *independent variables* in the case of a regression used to predict acquisition, purchases, or churn) ranging from demographic information, to what products they bought in the past, who their friends on various social media sites are, what websites they visit more often, how they rated a number of movies or products in general, whether they use their mobile phone mostly the weekends or in the mornings, how they responded to various surveys, etc. One can easily end up with tens if not thousands of such raw attributes, for thousands or millions of customers. In such cases it is virtually impossible to use some of the "advanced" methodologies developed for data analytics, or even simple ones such as linear regression. This is not only because of compuational reasons but, more important, because of statistical/mathematical reasons as, doing so entails a high risk that the estimated models (e.g. consumer behavior models) may be of very low quality in a statistical hence also practical sense. Moreover, the insights developed may not be practical or actionable as they may correspond to complicated statements involving a very large number of raw customer attributes.  
+
+In such situations, which arise almost always in practice, one needs to spend a lot of creative effort and time - based on a deep contextual knowledge - to generate new  attributes (e.g. "this customer is price sensitive", or "this customer likes comfort", or "this customer is status conscious", etc) from the original raw ones, which we call here **derived attributes**. These attributes can be generated manually, or using what we call **data or dimensionality reduction statistical techniques**. 
+
+We will consider a specific family of such statistical techniques which we will broadly call **Factor Analysis techniques**. Such techniques are often used at the early stages of a data analytics project, for example before running a regression with many independent variables (the raw attributes in that case), in order to summarize information (the variation) in correlated raw attributes using a smaller number of manageable **factors** - which are typically uncorrelated or independent. In the process one decreases the number of raw attributes while **keeping most of the information in the data, in a statistical sense**. 
+
+Such derived variables are usually useful also for managerial interpretation and action. For example, when analyzing survey data from students regarding the quality of a school, the quality of education may be a useful variable, but in a student survey one could instead ask several questions related to this: (1) Breadth of courses; (2) Depth of courses; (3) Quality of Instruction; (4) Practicality of coursework, etc. A "good linear combination" of these raw attributes may be more managerially useful in understanding student perceptions of the quality of education than each of these variables alone. If indeed these variables are highly related to the underlying construct of "quality of education", Factor analysis will be able to summarize the information into such a single factor, while capturing most of the information in those "raw" attributes.
+
+<blockquote> <p>
+Before proceeding on understanding the statistical techniques considered here, it is important to note that this is not the only approach to generating meaningful derived attributes from large numbers of raw ones: there is always "the manual approach"" based on contextual knowledge and intuition, which can probably take a data analytics project already very far. However, in terms of mathematical techniques used in data analytics, factor analysis is one of the key ones when it comes to generating new meaningful derived attributes from the original raw ones.
+</p> </blockquote>
+
+
+Factor Analysis for Dimensionality Reduction using an Example
+--------------------------------------------
+
+There are many dimensionality reduction statistical methods. In this note we will go through the steps of one specific approach. We will do so using a simple example. For this example the "meaningful derived variables" will seem to be straightforward to design, which can help us with the intuition of what the method does. Having said this, before reading the analysis below, do try to think what "derived attributes" one could get from the raw ones below. You will see that even in this case it is not as obvious and you will most likely disagree with your colleagues about what the derived attributes should be: so we will let the numbers and statistics help us be more *objective and statistically correct*.
+
+### The "Business Decision"
+
+We consider the core decision of an MBA admissions committee: *which applicants should we accept in the MBA program?* The school is interested in predicting the MBA participant's success in the future before offering admission.
+
+### The Data
+
+To make this decision, the committee uses a number of data about the applicants. Let us consider for example the following attributes in evaluating an MBA application (of course in practice many more can be considered):
+
+1. GPA 
+2. GMAT score 
+3. Scholarships, fellowships won 
+4. Evidence of Communications skills (debating competition, personal interview score) 
+5. Prior Job Experience 
+6. Organizational Experience 
+7. Other extra curricular achievements 
+
+Let us assume that this data is converted into a numerical scale from 1-7. For example: a numerical rating may be given to the fellowships based on the prestige and the number of fellowships won. Job experience may be rated on the number of years on the job, with a numerical weighting for the level of the job in the managerial ladder.
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# let's make the data into data.matrix classes so that we can easier visualize them
+ProjectDataFactor = data.matrix(ProjectDataFactor)
+ProjectData = data.matrix(ProjectData)
+```
+
+This is how the first `r min(max_data_report, nrow(ProjectData))` data looks:
+<br>
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+show_data = data.frame(round(ProjectDataFactor,2))
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+<br> <br>
+
+We will see some descriptive statistics of the data later, when we get into statistical analysis.
+
+### The Approach
+
+How can this data inform the school's admission decisions? Does this data capture some "derived attributes" that may have a meaning? If you were to derive 2 or 3 attrributes from the data above (by combining them in various ways, for example), what would those be? Which raw attributes would be "linked" with the derived ones you think of? **Try it** intuitively before reading any further...
+
+Intuitively it may seem that the data above capture two fundamental abilities that affect the success of students in their management careers: 
+
+1. Basic intelligence 
+2. Team and Leadership skills. 
+
+The school may be interested for example in picking students who score high on these two areas. In this case, of course the admissions commitee in theory could just ask the applicants two questions: 
+
+1. "How intelligent are you?" 
+2. "How strong are your team and leadership skills?" 
+
+As you can imagine, asking these questions would not only make the admissions interviewers look naive, but would also lead to very noisy and misleading answers: of course everyone will just answer both questions with the highest mark. So instead of asking these "naive" questions, the school is using *raw attributes/data* like the ones above, which can also be gathered easier. The idea then is to see how this data can be "translated" in meaningful derived attributes that, for example, could capture the "equivalent answers" one could get if one were to ask directly the two naive questions above - or possibly other such "complex"" questions. 
+
+<blockquote> <p>
+Factor analysis is a statistical approach for finding  a few "hidden" derived attributes in data by combining together groups of the original raw attributes in such a way that the least information in the original data is lost - in a statistical sense. It is part of a general class of statistical methodologies used to do what is often called "dimensionality reduction". </p> </blockquote>
+
+Back to our example, if there is some way in which we could reduce the `r ncol(ProjectData)` attributes into a smaller set of, say, 2 or 3 attributes, then we can reduce the data to a more understandable form so that our decision making process can be made potentially simpler, more actionable, and easier to interpret and justify - without losing much information in the original data. It is  much easier to make tradeoffs between two or three attributes than it is between 10 or 20 attributes (look at any survey or application form and you will see that there are easily more than 20 questions). Hence, 
+
+<blockquote> <p>
+Data reduction is a very useful step in helping us interpret the data and make decisions.
+</p> </blockquote>
+
+Like for our example, theory may suggest that there are really one or two basic factors (like intelligence and leadership skills) that lead to success in a management career. The various attributes are really different manifestations of these basic factors. But maybe there are other hidden derived variables (factors) in the data we have: instead of us manually combining raw attributes into meaningful derived ones, which not only is diffucult with many data but also dangerous as we impose our biases, let's get *factor analysis* to do the job for us - and use our intuition and judgment in the process. 
+
+Let's now see **a** process for using factor analysis in order to create derived attributes, the goal of this report. 
+
+
+### A Process for Dimensionality Reduction
+
+<blockquote> <p>
+It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and "finding results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
+</p> </blockquote>
+
+There is *not one* process for factor analysis. However, we have to start somewhere, so we will use the following process:
+
+#### Factor Analysis in 6 steps
+
+1. Confirm the data in metric 
+
+2. Decide whether to scale or standardize the data
+
+3. Check the correlation matrix to see if Factor Analysis makes sense
+
+4. Develop a scree plot and decide on the number of factors to be derived
+
+5. Interpret the factors (consider factor rotations - technical but useful)
+
+6. Save factor scores for subsequent analyses
+
+Let's follow these steps.
+
+#### Step 1: Confirm the data are metric
+
+Steps 1-3 are about specific descriptive characteristics of the data. In particular, the methods we consider in this note require that the data are *metric* (step 1): this means not only that all data are numbers, but also that the numbers have an actual numerical meaning, that is 1 is less than 2 which is less than 3 etc. If we have other types of data (e.g. gender, categories that are not comparable, etc), there are other methods to use. However, for now we will only consider a specific method, which we will also mis-use for non-numeric data for simplicity. 
+
+The data we use here have the following descriptive statistics: 
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+show_data = data.frame(round(my_summary(ProjectDataFactor),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+<blockquote> <p>
+Note that one should spend a lot of time getting a feeling of the data based on simple summary statistics and visualizations: good data analytics require that we understand our data very well.
+</p> </blockquote>
+
+#### Step 2: Decide whether to scale or standardize the data
+
+Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the GMAT variable. Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so that we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. scaledGMAT = (GMAT-mean(GMAT))/sd(GMAT) ), or scaling them between 0 and 1 (e.g. scaledGMAT=(GMAT-min(GMAT))/(max(GMAT)-min(GMAT))). Here is for example the R code for the first approach, if we want to standardize all attributes:
+
+```{r, results='asis'}
+ProjectDatafactor_scaled=apply(ProjectDataFactor,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+```
+
+Notice now the summary statistics of the scaled dataset:
+
+<br>
+
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+show_data = data.frame(round(my_summary(ProjectDatafactor_scaled),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+<br>
+As expected all variables have mean 0 and standard deviation 1. 
+
+While this is typically a necessary step, one has to always do it with care: some times you may want your analytics findings to be driven mainly by a few attributes that take large values; other times having attributes with different scales may imply something about those attributes. For example, when students rate their schools on various factors on a 1-7 scale, if the variability is minimal on a certain variable (e.g. satisfaction about the IT infrastructure of the school) but very high on another one (e.g. satisfaction with job placement), then standardization will reduce the real big differences in placement satisfaction and magnify the small differences in IT infrastructure satisfaction. In many such cases one may choose to skip step 2 for some of the raw attributes. Hence standardization is not a necessary data transformation step, and you should use it judiciously. 
+
+
+
+#### Step 3:  Check correlation matrix to see if Factor Analysis makes sense
+
+The type of dimensionality reduction methods we will use here "groups together raw attributes that are highly correlated". Other methods (there are many!) use different criteria to create derived variables.  For this to be feasible, it is necessary that the original raw attributes do have large enough correlations (e.g. more than 0.5 in absolute value, or simply statistically significant). It is therefore useful to see the correlation matrix of the original attributes - something that one should anyway always do in order to develop a better understanding of the data. 
+
+This is the correlation matrix of the `r length(factor_attributes_used)` original variable we use for factor analysis (Note: this would be the same for the standardized ones if the standardization is done as above; there is a mathematical reason for this that we will not explore - you could confirm it yourself):
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+thecor = round(cor(ProjectDataFactor),2)
+colnames(thecor)<-colnames(ProjectDataFactor)
+rownames(thecor)<-colnames(ProjectDataFactor)
+## printing the result in a clean-slate table
+#cat(renderHeatmapX(thecor, border=1,center = 0,vrange_up = 1, vrange_down = 1))
+cat(renderHeatmapX(thecor, border=1))
+    
+```
+
+There are quite a few large (in absolute value) correlations. For example  GPA, GMAT and Fellowship seem to be highly positively correlated - as expected? Maybe those can be grouped in one "factor"? How about "Communication Skills"? Should that also be part of that same factor? With what weights should we combine these raw attributes in groups? Remember, this is a very simple example where one could possibly derive attributes manually. In practice most of the time data are not as easy to understand, with many more than `r length(factor_attributes_used)` raw attributes. However, even in this simple example people often disagree about how to group the `r length(factor_attributes_used)` raw attributes!
+
+Let's now see what factor analysis suggests as factors. 
+
+#### Step 4. Develop a scree plot and decide on the number of factors to be derived
+
+There are many statistical methods to generate derived variables from raw data. One of the most standard ones is **Principal Component Analysis**. This method finds factors, called **Principal Components**, which are **linear combinations of the original raw attributes** so that most of the information in the data, measured using  **variance explained** (roughly "how much of the variability in the data is captured by the selected components") is captured by only a few factors. The components are developed typically so that they are **uncorrelated**, leading to *at most as many factors as the number of the original raw attributes, but* so that only a few are needed (the *principal compontents*) to keep most of the information (variance/variability) in the raw data. For example, for our data we have `r ncol(ProjectData)` raw attributes hence we can only have a total of `r ncol(ProjectData)` factors/compontents, each of them being a linear combination of the `r ncol(ProjectData)` original raw data. 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
+UnRotated_Factors<-round(UnRotated_Results$loadings,2)
+UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
+colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
+```
+
+While there are as many (and for other methods, more) factors as the number of the original raw attributes, since our goal is to have a small(er) number of derived variables/factors, one question is whether we could use only a few of the components without losing much information. When this is feasible, we can say that the original raw attributes can be "compressed" to a few principal components/factors/derived variables. Note that this is not necessarily feasible - e.g. when the original raw attributes are uncorrelated and each one provides "trully different information from all the others" (in this case "different" means "uncorrelated", but other statistical measures of "different" can be used, such as "statistically independent information", leading to other well known dimensionality reduction methods such as *Independent Component Analysis (ICA)*, etc). 
+
+When using PCA, we have two measures of "how much of the information (variance in this case) in the original raw data is captured by any of the factors": 
+
+a) the *percentage of variance explained*, 
+
+b) the *eigenvalue coresponding to the compontent*.
+
+Each factor has an eigenvalue as well as the percentage of the variance explained. The sum of the eigenvalues of the components is equal to the number of original raw attributes used for factor analysis, while the sum of the percentages of the variance explained across all components is 100%. For example, for our data these are:
+
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
+Variance_Explained_Table<-Variance_Explained_Table_results$eig
+Variance_Explained_Table_copy<-Variance_Explained_Table
+
+
+row=1:nrow(Variance_Explained_Table)
+name<-paste("Component No:",row,sep="")
+Variance_Explained_Table<-cbind(name,Variance_Explained_Table)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+colnames(Variance_Explained_Table)<-c("Components", "Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+
+m<-gvisTable(Variance_Explained_Table,options=list(width=1200, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+print(m,'chart')
+```
+<br> <br>
+
+Note that the "first principal component" has the highest eigenvalue and captures most of the information (variance in this case) of the original raw data. As a rule of thumb, every component with eigenvalue more than 1 "has more information that the average original raw attribute". Typically one uses only these factors, although what is also important to consider is "what total percentage of the variance in the original data is kept when one replaces the original data/attributes with the selected factors/components".
+
+<blockquote> <p>
+Two Statistical criteria to select the number of factors/derived variables when using PCA are: a) select components with corresponding eigenvalue larger than 1; b) Select the components with the highest eigenvalues "up to the component" for which the cumulative total variance explained is relatively large (e.g. more than 50%).
+</p> </blockquote>
+
+One can also plot the eigenvalues of the generated factors in decreasing order: this plot is called the **scree plot**. For our data this plot looks as follows:
+
+
+```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+
+eigenvalues  <- Variance_Explained_Table[,2]
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
+
+
+<blockquote> <p>
+A third rule of thumb to decide how many components to use is to consider only the factors up to the "elbow" of the scree plot.
+</p> </blockquote>
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE,message=FALSE,results='asis'}
+if (factor_selectionciterion == "eigenvalue")
+  factors_selected = sum(Variance_Explained_Table_copy[,1] >= 1)
+if (factor_selectionciterion == "variance")
+  factors_selected = 1:head(which(Variance_Explained_Table_copy[,"cumulative percentage of variance"]>= minimum_variance_explained),1)
+if (factor_selectionciterion == "manual")
+  factors_selected = manual_numb_factors_used
+
+```
+
+Based on the three criteria (eigenvalue > 1, cumulative percentage of variance explained, and the elbow of the scree plot), and using our current selection criterion, namely `r factor_selectionciterion`, for this data we can decide to use `r factors_selected` components only. In practice one may try different numbers of factors/components as one needs to consider not only the statistical rules discussed here, but also the interpretation and actionability of the selected components: as always, data analytics is about both science and art. We consider interpretability of the derived attributes/factors next. 
+
+#### 5. Interpret the factors (consider factor rotations - technical but useful)
+
+
+In practice one would like to have derived variables that use only a few of the original raw attributes - while each new derived variable using different subsets of the original raw attributes. Unfortunately this is not necessarily always the case. However, there are mathematical methods, called "factor **rotations**", which transform the estimated factors into new ones which capture exactly the same information from the raw data but use only few non-overlaping raw attributes. One such rotation often used in practice is called the `r rotation_used` rotation - but others are also available. 
+
+For our data, the `r factors_selected` selected factors look as follows after the `r rotation_used` rotation: 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
+Rotated_Factors<-round(Rotated_Results$loadings,2)
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+
+sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+Rotated_Factors <- Rotated_Factors[sorted_rows,]
+
+show_data <- Rotated_Factors 
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> <br>
+
+To better visualize and interpret the factors we often "supress" loadings with small values, e.g. with absolute values smaller than `r MIN_VALUE`. In this case our factors look as follows after suppressing the small numbers:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+Rotated_Factors_thres <- Rotated_Factors
+Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-NA
+colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
+rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
+
+show_data <- Rotated_Factors_thres 
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> <br>
+
+Notice that after rotation each factor combines (we say "loads on") only a few of the original raw attributes, making interpretation easier. For example, if we only select the factors with eigenvalue more than 1, in this case we would select `r sum(eigenvalues>=1)` factors.
+
+How would you interpret the selected factors?
+
+What Factor Loads "Look Good"? We often use three **Factor Technical Quality Criteria**:
+
+1. For each factor (column) only a few loadings are large (in absolute value)
+
+2. For each raw attribute (row) only a few loadings are large (in absolute value)
+
+3. Any pair of factors (columns) should have different "patterns" of loading
+
+
+
+#### Step 6. Save factor scores for subsequent analyses
+
+Once we decided the factors to use (for now), we typically replace the original data with a new dataset where each observation (row) is now described not using the original raw attributes but using instead the selected factors/derived attributes. Afterall this was the goal of this analysis. 
+
+The way to represent our observations using the found derived attributes (factors/components) is to estimate for each observation (row) how it "scores" for each of the selected factor. These numbers are called **factor scores**. Effectively they are the "scores" the observation would take on the factor had we measured that factor directly instead of measuring the original raw attributes. 
+
+(**Note:** Sometimes for simplicity we represent each selected factor using one of the original raw attributes, typically the one on which the factor has the highest loading on. Although this is not statistically as accurate, it may help with the interpretation of subsequent analyses.)
+
+For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r min(max_data_report,nrow(Rotated_Results$scores))` observations):
+
+
+<div class="row">
+<div class="col-md-6">
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
+colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
+
+if (factors_selected >=2){ 
+  
+  show_data <- as.data.frame(NEW_ProjectData) 
+  show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+  row<-rownames(show_data)
+  dfnew<-cbind(row,show_data)
+  change<-colnames(dfnew)
+  change[1]<-"Observation"
+  colnames (dfnew)<-change
+  m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+  print(m1,'chart')
+  
+  } else {
+    print(xtable(NEW_ProjectData, caption="Only 1 derived variable generated", digits=3), type="html",html.table.attributes="class='table table-striped table-hover table-bordered'", caption.placement="top", comment=FALSE, include.rownames=TRUE, include.colnames=TRUE)
+    }
+```
+</div>
+</div>
+<br> <br>
+
+Can you describe the observations using the new derived variables? How does each person perform for each of the selected factors?
+
+We now can replace our original data with the new ones and continue our analysis. For example, we can now visualize our original data using only the newly derived attributes. Here is the plot when we use only the top 2 factors:
+
+
+```{r Fig2, echo=FALSE, comment=NA, results='asis', message=FALSE, echo=FALSE, fig.align='center', fig=TRUE}
+
+if(ncol(NEW_ProjectData) >= 2) {
+  df1  <- cbind(NEW_ProjectData[, 1], NEW_ProjectData[, 2])
+  df1  <- as.data.frame(df1)
+  sca1 <- gvisScatterChart(df1, options=list(legend="none",
+                                             lineWidth=0, pointSize=8, hAxis.title="Derived Variable (Factor) 2",
+                                             title="Data Visualization Using the top 2 Derived Attributes (Factors)", vAxis="{title:'Derived Variable (Factor) 1'}",
+                                             hAxis="{title:'Derived Variable (Factor) 2'}", width=900, height=800))
+  print(sca1,'chart')
+  } else {
+    df2  <- cbind(NEW_ProjectData[, 1], ProjectData[, 1])
+    df2  <- as.data.frame(df2)
+    sca2 <- gvisScatterChart(df2, options=list(legend="none",
+                                               lineWidth=0, pointSize=12, hAxis.title="Derived Variable (Factor) 1",
+                                               title="Only 1 Derived Variable: Using Initial Variable", vAxis="{title:'Derived Variable (Factor) 1'}",
+                                               hAxis="{title:'Initial Variable (Factor) 1'}", width=900, height=800))
+    print(sca2,'chart')
+    }
+
+```
+
+Remember that we still see a lot of the information in the original data (the total variance explained using 2 factors) using only this 2-dimensional plot! This is of course only the begining of the analysis using the new attributes. Later on one may need to come back to these tools to generate new derived variables. As always remember that 
+
+<blockquote> <p>
+Data Analytics is an iterative process, therefore we may need to return to our original raw data at any point and select new raw attributes as well as new factors and derived variables.
+</p> </blockquote>
+
+**Till then...**
+
+
