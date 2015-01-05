@@ -1,7 +1,7 @@
 ---
 title : (Big) Data Analytics for Business
 subtitle : Session 1, Introduction to Data Analytics for Business
-author : T. Evgeniou and J. Niessing
+author : T. Evgeniou 
 job : INSEAD
 widgets : []
 mode : standalone 
@@ -29,9 +29,9 @@ Introduction to the Tools
   
 Group Assignment (Part A and Part B):    50%
 
-Group Project (one):                     20%
+Group Project (one):                     40%
 
-Class Participation:   		               30%
+Class Participation:   		               10%
 
 
 ---
@@ -64,6 +64,25 @@ Knowledge management and text mining
 ---
 
 
+## Example Industries of Data Analytics Uses
+
+Telco
+
+Retail
+
+Financials
+
+Insurance
+
+Energy
+
+Healthcare
+
+Shipping
+
+---
+
+
 ## Why this class? Three goals
   
   
@@ -90,8 +109,8 @@ What <b style="color:#000;">changes</b> could it potentially imply for an organi
 For an industry?
 
 
-
 ---
+
 
 ## Project Level: The Data Analytics Project
   
