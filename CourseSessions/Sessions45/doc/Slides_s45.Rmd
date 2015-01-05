@@ -37,6 +37,8 @@ for(i in seq_along(groups)){
 ordispider(cmd, factor(kclus$cluster), label = TRUE)
 ordihull(cmd, factor(kclus$cluster), lty = "dotted")
 ```
+
+
 ---
 
 ## What is Clustering and Segmentation?
