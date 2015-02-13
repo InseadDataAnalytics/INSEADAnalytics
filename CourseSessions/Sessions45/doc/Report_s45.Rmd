@@ -3,7 +3,7 @@
 
 Cluster Analysis and Segmentation 
 ========================================================
-**T. Evgeniou, INSEAD**
+**T. Evgeniou,  INSEAD**
 
 
 ```{r include=FALSE}
