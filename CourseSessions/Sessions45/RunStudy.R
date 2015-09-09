@@ -22,7 +22,7 @@ datafile_name="Mall_Visits" # do not add .csv at the end! make sure the data are
 # Please ENTER the name Report and Slides (in the doc directory) to generate 
 report_file = "Report_s45"
 #report_file = "KeyDataBoatsSegmentation"
-#report_file = "MyBoatsSegmentation"
+report_file = "MyBoatsSegmentation"
 slides_file = "Slides_s45"
 
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
@@ -97,8 +97,11 @@ ProjectData_profile=ProjectData[,profile_attributes_used]
 cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,"cluster", sep="_"), "csv", sep="."), sep="/")
 
 source(paste(local_directory,"R/library.R", sep="/"))
+
+### TO EDIT DEPENDING ON VERSION
 if (require(shiny) == FALSE) 
-  install_libraries("shiny")
+  install.packages("shiny")
+
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 

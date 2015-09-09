@@ -1,5 +1,6 @@
 
-local_directory <- "~/INSEADjan2014/CourseSessions/Sessions67"
+#local_directory <- "YOURDIRECTORY/INSEADAnalytics/CourseSessions/Sessions67"
+local_directory <- paste(getwd(),"..",sep="/")
 source(paste(local_directory,"R/library.R",sep="/"))
 source(paste(local_directory,"R/heatmapOutput.R",sep="/"))
 

@@ -67,7 +67,7 @@ max_data_report = 50 # can also chance in server.R
 # 1: start application on LOCAL computer, 0: do not start it
 # SELECT 0 if you are running the application on a server 
 # (DEFAULT is 0). 
-start_local_webapp <- 0
+start_local_webapp <- 1
 # NOTE: You need to make sure the shiny library is installing (see below)
 
 ################################################
@@ -83,8 +83,11 @@ if (datafile_name == "Boats")
 factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
 ProjectDataFactor=ProjectData[,factor_attributes_used]
 source(paste(local_directory,"R/library.R", sep="/"))
+
+### TO EDIT DEPENDING ON VERSION
 if (require(shiny) == FALSE) 
-  install_libraries("shiny")
+  install.packages("shiny")
+
 source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 source(paste(local_directory,"R/runcode.R", sep = "/"))
 
