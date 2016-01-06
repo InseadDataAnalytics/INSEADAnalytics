@@ -3,7 +3,7 @@
 title: "Exercise Set 1"
 author: "T. Evgeniou"
 date: "6 Jan 2016"
-output: html_document
+output: pdf_document
 ---
 
 
@@ -157,8 +157,10 @@ Can you now load another dataset from some CSV file and report some basic statis
 Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html).All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, and the press "Run Document". 
 
 ```{r, eval=FALSE, echo = TRUE}
-sliderInput("startdate", "Starting Date:", min = 1, max = length(portfolio), value = 1)
-sliderInput("enddate", "End Date:", min = 1, max = length(portfolio), value = length(portfolio))
+sliderInput("startdate", "Starting Date:", min = 1, max = length(portfolio), 
+            value = 1)
+sliderInput("enddate", "End Date:", min = 1, max = length(portfolio), 
+            value = length(portfolio))
 
 renderPlot({
   pnl_plot(portfolio[input$startdate:input$enddate])
