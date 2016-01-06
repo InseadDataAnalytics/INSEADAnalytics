@@ -3,7 +3,8 @@
 title: "Exercise Set 1"
 author: "T. Evgeniou"
 date: "6 Jan 2016"
-output: pdf_document
+output: html_document
+runtime: shiny
 ---
 
 
@@ -154,9 +155,9 @@ Can you now load another dataset from some CSV file and report some basic statis
 
 ### Creating Interactive Documents
 
-Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html).All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, and the press "Run Document". 
+Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html).All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, make the output to be "html_document" and the press "Run Document". 
 
-```{r, eval=FALSE, echo = TRUE}
+```{r, eval=TRUE, echo = TRUE}
 sliderInput("startdate", "Starting Date:", min = 1, max = length(portfolio), 
             value = 1)
 sliderInput("enddate", "End Date:", min = 1, max = length(portfolio), 
