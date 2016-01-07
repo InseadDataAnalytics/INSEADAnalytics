@@ -1,8 +1,8 @@
 
 ---
-title: "Exercise Set 1"
+title: "Exercise Set 1 - Solutions Ana de Andres"
 author: "T. Evgeniou"
-date: "6 Jan 2016"
+date: "7 Jan 2016"
 output: html_document
 ---
 
@@ -65,6 +65,14 @@ pnl_plot(SPY)
 3. *(Extra points)* What if we want to also see the returns of another company, say Yahoo!, in the same period? Can you get that data and report the statistics for Yahoo!'s stock, too? 
 
 **Your Answers here:**
+
+1. in dataSet1.R, the variable mytickers = c("SPY", "AAPL") - line 9 - includes AAPL, which is the trading name of Apple. THe lines from 13 to 46 download the data for the values on mytickers, which include the whole market and Apple specifically. 
+
+2. For this question I created a variable called AAPL = StockReturns[,"AAPL"]. The cumulative return is 384.1, the average daily return is 0.139 and the std deviation is 2.188 (using the same functions as with SPY: round(100*sum(AAPL),1), round(100*mean(AAPL),3) and round(100*sd(AAPL),3))
+We can get the same results if we get the data from the second column of Stockreturns, which stores the values of Apple (example for cumulative  round(100*sum(StockReturns[,2]),1))
+
+3. We could get all the different companies traded from Yahoo. We would need to add the trading names to the variable mytickers. We would then store the data in additional columns in both StockPrices and StockReturns. 
+
 <br>
 <br>
 
@@ -101,6 +109,9 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
+1. We use the command dim(transposedData) to get all the dimensions (which returs 2 2771). If we want to get only the numer of rows we use nrow(transposedData) and for the number of columns we use ncol(transposedData), which gives us again 2 and 2771.
+
+2. I assume we are using the new variable transposedData for this question. With this variable, we would tell R to apply the sum over the columns, which is given by a 2 in the Margin argument. The code would then be portfolio2 = apply(transposedData, 2, mean). We can then plot the new variable portfolio2: pnl_plot(portfolio2).
 <br>
 <br>
 
@@ -114,6 +125,7 @@ This is an important step and will get you to think about the overall process on
 2. *(Extra Exercise)*  Can you get the returns of a few companies and plot the returns of an equal weighted portfolio with those companies during some period you select? 
 
 **Your Answers here:**
+1. We should change line 11 in DataSet1.R, which includes the variable startDate = "2005-01-01". We would assign then startDate = "2001-01-01"
 <br>
 <br>
 
@@ -143,6 +155,7 @@ myData + StockReturns[1:40,])
 ```
 
 **Your Answers here:**
+1. It reutrns a value of 20. 
 <br>
 <br>
 
