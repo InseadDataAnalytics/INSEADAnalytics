@@ -2,7 +2,7 @@
 ---
 title: "Exercise Set 1"
 author: "T. Evgeniou"
-date: "6 Jan 2016"
+date: "8 Jan 2016"
 output: html_document
 ---
 
@@ -166,6 +166,13 @@ renderPlot({
   pnl_plot(portfolio[input$startdate:input$enddate])
 })
 ```
+
+### Endless explorations (optional homework)
+
+This is a [recent research article](http://poseidon01.ssrn.com/delivery.php?ID=851091091009083082092113118102076099034023058067019062072066007100008111081022102123034016097101060099003106125099002090116089026058012038004030005113111105079028059062024121067073126072090091089069014121102110107075029090001011087028011082124103085&EXT=pdf)  that won an award in 2016. Can you implement a simple strategy as in Figure 1 of this paper? You may find these R commands useful: `names`, `which`, `str_sub`,`diff`,`as.vector`, `length`, `pmin`, `pmax`, `sapply`, `lapply`,`Reduce`,`unique`, `as.numeric`, `%in%`
+![A Simple Trading Startegy](simpletrade.png) 
+
+What if you also include information about bonds? (e.g. download the returns of the the ETF with ticker "TLT") Is there any relation between stocks and bonds? 
 
 Have fun. 
 
