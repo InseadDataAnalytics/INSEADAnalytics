@@ -53,14 +53,19 @@ For more information on downloading finance data from the internet as well as on
 * [More links](http://blog.revolutionanalytics.com/2013/12/quantitative-finance-applications-in-r.html)
 * Of course endless available code (e.g. like this one that seems to [get companies' earnings calendars](https://github.com/gsee/qmao/blob/master/R/getCalendar.R))
 
-We have `r nrow(StockReturns)` days of data, starting from `r rownames(StockReturns)[1]` until `r tail(rownames(StockReturns),1)`. 
+#### Optional Question 
+
+1. Can you find some interesting finance related R package or github repository? 
+**Your Answers here:**
+<br>
+<br>
 
 <hr>
 <hr>
 
 ### Part I: Statistics of S&P Daily Returns
 
-Here are some basic statistics about the S&P returns:
+We have `r nrow(StockReturns)` days of data, starting from `r rownames(StockReturns)[1]` until `r tail(rownames(StockReturns),1)`.  Here are some basic statistics about the S&P returns:
 
 1. The cumulative returns of the S&P index during this period is `r round(100*sum(StockReturns[,1]),1)`%.
 2. The average daily returns of the S&P index during this period is `r round(100*mean(StockReturns[,1]),3)`%;
