@@ -66,7 +66,7 @@ my_network <- getNetwork(token=token, format="adj.matrix")
 
 ### Getting code from Github Repositories
 
-An alternative way to get code (and see sample code - best way to learn) is to simply browse the vast number of public github accounts online. For example this lists some [trending repositories](https://github.com/trending?l=R) (this takes time to be created!) or even the [R language source code itself](https://github.com/wch/r-source) or of course links from many other [resources on R](http://www.r-bloggers.com/tag/github/). Welcome to the world!
+An alternative way to get code (and see sample code - best way to learn) is to simply browse the vast number of public github accounts online. For example this lists some [trending repositories](https://github.com/trending?l=R) (this takes time to be created!) or even the [R language source code itself](https://github.com/wch/r-source) or of course links from many other [resources on R](http://www.r-bloggers.com/tag/github/). Welcome to this new world!
 
 #### Questions
 
@@ -102,7 +102,7 @@ Do these look like what you see when you open the .csv file using Excel?
 
 ### Data Exploration: A Market Segmentation Case
 
-This data is from the case study ["Boats (A): A Segmentation Case"](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) - you can see the data description in the appendix (of course the data are not the actual business data, but similar in spirit). This is based on an actual project of the company (a leader in the boats market) that did a **market segmentation in order to re-define its brand and new product development strategies. Business related information on the project is provided in the [Market Segmentation Case Study slides](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/gh-pages/Sessions2_3%20Handouts.pdf). We will develop this segmentation solution step by step using the tools we will discuss in sessions 3-6 - see for example the tools of [sessions 2-3](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Sessions23). 
+This data is from the case study ["Boats (A): A Segmentation Case"](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) - you can see the data description in the appendix (of course the data are not the actual business data, but similar in spirit). This is based on an actual project of the company (a leader in the boats market) that did a **market segmentation in order to re-define its brand and new product development strategies. Business related information on the project is provided in the [Market Segmentation Case Study slides](http://inseaddataanalytics.github.io/INSEADAnalytics/BoatsSegmentationCase.pdf). We will develop this segmentation solution step by step using the tools we will discuss in sessions 3-6 - see for example the tools of [sessions 2-3](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Sessions23) as well as the readings in sessions 3-6.
 
 Let's start with some simple exploration of this data for now. Let's first get some summary statistics. For example the second column (`r colnames(ProjectData)[2]`) has the following descriptive statistics:
 
@@ -152,7 +152,7 @@ The correlation matrix does not look pretty for now, but we will see example way
 <hr>
 <hr>
 
-Once done with this, we can now move to the [S&P 500 finance data exercise set]() and explore some ways to earn some money using what we learned... 
+Once done with this, we can now move to the [S&P 500 finance data exercise set](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/Exercises/Exerciseset1/ExerciseSet1.Rmd) and explore some ways to earn some money using what we learned... 
 
 <br>
 <br>
