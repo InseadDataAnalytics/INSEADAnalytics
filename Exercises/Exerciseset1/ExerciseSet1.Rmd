@@ -44,6 +44,14 @@ source("helpersSet1.R")
 source("dataSet1.R")
 ```
 
+For more information on downloading finance data from the internet as well as on finance related R tools see these starting points (there is a lot more of course available):
+
+* [Some finance data loading tools](http://www.r-bloggers.com/r-code-yahoo-finance-data-loading/)
+* [Connecting directly to Bloomberg](http://www.r-bloggers.com/rblpapi-connecting-r-to-bloomberg/)
+* [Some time series plot tools](http://www.r-bloggers.com/plotting-time-series-in-r-using-yahoo-finance-data/)
+* [Various finance code links](https://cran.r-project.org/web/views/Finance.html)
+* [More links](http://blog.revolutionanalytics.com/2013/12/quantitative-finance-applications-in-r.html)
+
 We have `r nrow(StockReturns)` days of data, starting from `r rownames(StockReturns)[1]` until `r tail(rownames(StockReturns),1)`. 
 
 <hr>
