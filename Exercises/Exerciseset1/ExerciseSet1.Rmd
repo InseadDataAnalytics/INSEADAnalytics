@@ -51,6 +51,7 @@ For more information on downloading finance data from the internet as well as on
 * [Some time series plot tools](http://www.r-bloggers.com/plotting-time-series-in-r-using-yahoo-finance-data/)
 * [Various finance code links](https://cran.r-project.org/web/views/Finance.html)
 * [More links](http://blog.revolutionanalytics.com/2013/12/quantitative-finance-applications-in-r.html)
+* [Even more links](http://www.r-bloggers.com/financial-data-accessible-from-r-part-iv/)
 * Of course endless available code (e.g. like this one that seems to [get companies' earnings calendars](https://github.com/gsee/qmao/blob/master/R/getCalendar.R))
 
 #### Optional Question 
