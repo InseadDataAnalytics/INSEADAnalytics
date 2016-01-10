@@ -15,7 +15,7 @@ The purpose of this session is to become familiar with:
 4. Simple plots;
 4. The idea of functions
 
-Before starting, make sure you have pulled the [session 1 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Session1)  on your github repository (if you pull the course github repository you also get the session files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "Data Analytics R version/INSEADAnalytics" directory, we can do these: 
+Before starting, make sure you have pulled the [session 1 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Session1)  on your github repository (if you pull the course github repository you also get the session files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
 ```{r echo=TRUE, eval=FALSE, tidy=TRUE}
 getwd()
@@ -28,28 +28,29 @@ rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
 
 Let's start.
 
-One of the major benefits of using open source software is the impressive availability of many functions as well as code people develop and share. There is a very fast growing body of tools you can use - so avoid reinventing the wheel and ride the wave.
 
 <hr>
 <hr>
+
+One of the major benefits of using open source software is the impressive availability of many functions as well as code people develop and share. There is a very fast growing body of (free) tools you can use (also in your jobs) - so avoid reinventing the wheel and ride the wave.
 
 ### Adding libraries
 
-There are many ways to get new tools. First, "mature/tested" tools are available as "packages" that you can install through your RStudio. Take a look at this [list of R packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) and see if you like some of them there. 
+There are many ways to get new tools. First, "mature/tested" tools are available as "packages" that you can install through your RStudio. Take a look at this [list of R packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) and see which ones you like. 
 
-To install a package in R clisk on the "Packages" menu and then on "Install" and type the name of the package to install, as indicated in this figure: 
+To install a package in R click on the "Packages" menu and then on "Install" and type the name of the package to install, also selecting "Install dependencies", as indicated in this figure: 
 
 !["How to install a package"](installpackage.png)
 
-This will download the package - hence you need to be online. You then can "load" the library by either slecting it in the list of packages you have or, preferrably using the command in R `library("Rfacebook")`. 
+This will download the package - hence you need to be online. You can then "load" the library by either slecting it in the list of packages you have or using the `library` command in R, for example `library("Rfacebook")`. 
 
 !["How to load an installed package (select version)"](loadpackageclick.png)
 
 !["How to load an installed package (command version)"](loadpackagecommand.png)
 
-Once you have the library you can click on it (in the "Packages" menu) to see the commands available (also available on the [list of R packages](https://cran.r-project.org/web/packages/available_packages_by_name.html)  page, for example in this case for the [Rfacebook documentation.](https://cran.r-project.org/web/packages/Rfacebook/Rfacebook.pdf) You can then explore - always searching the internet for sample code. 
+Once you have the library you can click on it (in the "Packages" menu) to see the commands available (also available on the [list of R packages](https://cran.r-project.org/web/packages/available_packages_by_name.html)  page, for example in this case for the [Rfacebook documentation).](https://cran.r-project.org/web/packages/Rfacebook/Rfacebook.pdf) You can then explore - always searching the internet for sample code (e.g. for [facebook app examples](http://thinktostart.com/analyzing-facebook-with-r/) or [this](http://blog.revolutionanalytics.com/2013/11/how-to-analyze-you-facebook-friends-network-with-r.html)). 
 
-For example you can explore the `RFacebook` library (e.g. start from the `fbOAUth` command and using the [the Facebook app id page](https://developers.facebook.com/apps) and the [the Facebook app secret](https://developers.facebook.com/apps) pages, then create a token and use it to run commands like these:
+For example you can explore the `RFacebook` library (e.g. start from the `fbOAUth` command and using the [Facebook app id page](https://developers.facebook.com/apps) and the [Facebook app secret](https://developers.facebook.com/apps) pages, then create a token and use it to run commands like these:
 
 ```{r eval = FALSE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 my_friends <- getFriends(token=token, simplify=TRUE)
@@ -72,7 +73,8 @@ An alternative way to get code (and see sample code - best way to learn) is to s
 
 1. Can you install these packages: `datasets`, `FactoMineR`,`png` and `stringr`?
 2. Which packages would you like to explore further? 
-3. Can you find some github repositories that you would like to explore further? can you fork them in your github account?
+3. Can you find some github repositories that you would like to explore further? Can you fork them in your github account?
+4. Do you find some Facebook related use of R and code you can further explore? How about for [Twitter](https://cran.r-project.org/web/packages/twitteR/twitteR.pdf)? 
 
 <hr>
 <hr>
@@ -87,7 +89,7 @@ Let's read some data from a .csv file for now - make sure you pulled the course 
 ProjectData <- read.csv(file = "data/Boats.csv", header = TRUE, sep=";")
 ```
 
-Let's see what this data has. Run these commands to see the number of rows, number of columns, and names of the rows and the columns:
+Let's see what this data is Run these commands to see the number of rows, number of columns, and names of the rows and the columns:
 
 ```{r eval = FALSE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='markup'}
 ncol(ProjectData)
@@ -125,7 +127,7 @@ and the histogram
 hist(ProjectData[,2], main = "The second column", xlab = "Ratings", ylab = "Respondents")
 ```
 
-We can also see how the questions of the respondents correlate with each other. For example the correlation matrix of the first 10 survey questions is:
+We can also see how the answers of the respondents to the questions correlate with each other. For example the correlation matrix of the first 10 survey questions is:
 
 ```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='markup'}
 tmp = ProjectData[,2:10]
