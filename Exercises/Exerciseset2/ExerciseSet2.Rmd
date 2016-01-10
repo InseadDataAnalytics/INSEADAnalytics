@@ -1,5 +1,5 @@
 ---
-title: "Exercise Set 2: A $500 Strategy"
+title: "Exercise Set 2: A $500 Billion Strategy"
 author: "T. Evgeniou"
 date: "9 Jan 2016"
 output: html_document
