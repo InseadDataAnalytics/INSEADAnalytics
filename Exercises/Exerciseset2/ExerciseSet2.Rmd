@@ -1,5 +1,5 @@
 ---
-title: "Exercise Set 2: A $500 Billion Strategy"
+title: "Exercise Set 2: A $300 Billion Strategy"
 author: "T. Evgeniou"
 date: "9 Jan 2016"
 output: html_document
@@ -34,13 +34,13 @@ Let's now see the exercise.
 
 ### The Exercise
 
-For this exercise we will use the daily returns of futures data to develop what is considered to be a "classic" hedge fund strategy, a **futures trend following strategy**. There is a lot written about this, so it is worth doing some online search about "futures trend following" or "Commodity Trading Advisors (CTA)". There is about **$500 billion** invested on this strategy today, and is considered to be one of the [oldest hedge fund strategies.](oldest ones). Some example links are:
+For this exercise we will use the daily returns of futures data to develop what is considered to be a "classic" hedge fund strategy, a **futures trend following strategy**. There is a lot written about this, so it is worth doing some online search about "futures trend following" or "Commodity Trading Advisors (CTA)". There is about **[$300 billion](http://www.barclayhedge.com/research/indices/cta/Money_Under_Management.html)** invested on this strategy today, and is considered to be one of the [oldest hedge fund strategies.](oldest ones). Some example links are:
 
 * [A fascinating report on 2 centuries of trend following from the CFM hedge - a $6 billion fund](https://www.trendfollowing.com/whitepaper/Two_Centuries_Trend_Following.pdf)
 * [Another fascinating report on 1 century of trend following investing from AQR - a $130 billion fund](https://www.aqr.com/library/aqr-publications/a-century-of-evidence-on-trend-following-investing)
 * [Wikipedia on CTAs](https://en.wikipedia.org/wiki/Commodity_trading_advisor)
 * [Morningstar on CTAs](http://www.morningstar.co.uk/uk/news/69379/commodity-trading-advisors-(cta)-explained.aspx)
-* [A report](https://www.google.fr/url?sa=t&rct=j&q=&esrc=s&source=web&cd=7&ved=0ahUKEwjf5MzL-Z7KAhWKhhoKHR3PAx4QFghJMAY&url=https%3A%2F%2Fwww.pictet.com%2Fcontent%2Fdam%2Fpictet_documents%2Fpdf_documents%2Fpai_documentation%2Fhedgefunds_tradingstrategies_en.pdf&usg=AFQjCNERDyvnWCYt8judIUAyAp6W6MLAYg&sig2=KLkxipNVc1rLi66Fnt_YMw)
+* [A report](http://perspectives.pictet.com/wp-content/uploads/2011/01/Trading-Strategies-Final.pdf)
 * [Man AHL (a leading hedge fund on CTAs - among others) - an $80 billion fund](https://www.ahl.com)
 
 Of course there are also many starting points for developing such a strategy (for example [this one.](http://www.r-bloggers.com/system-from-trend-following-factors/) (also on [github](https://gist.github.com/timelyportfolio/2855303)) In this exercise we will develop our own strategy from scratch. 
