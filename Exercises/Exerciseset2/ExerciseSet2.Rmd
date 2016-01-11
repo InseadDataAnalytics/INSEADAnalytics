@@ -1,7 +1,6 @@
 ---
 title: "Exercise Set 2: A $300 Billion Strategy"
 author: "T. Evgeniou"
-date: "9 Jan 2016"
 output: html_document
 ---
 
@@ -47,7 +46,16 @@ Of course there are also many starting points for developing such a strategy (fo
 
 ### Getting the Futures Data
 
-We will use the package "Quandl". First install it and load it (see session 1 for how to do this)
+We will use the [Quandl package.](http://help.quandl.com/category/185-using-quandl-from-r) You can also browse the [Quandl website](https://www.quandl.com/browse) for more information about this data aggregator and R.
+
+```{r echo=TRUE,fig.width=7, fig.height=7, tidy=TRUE}
+library(png)
+library(grid)
+img <- readPNG("quandl.png")
+grid.raster(img)
+```
+
+First install and load it (see session 1 for how to do this)
 
 ```{r echo=TRUE, eval=FALSE, tidy=TRUE}
 install.packages("Quandl")
@@ -55,6 +63,12 @@ library("Quandl")
 ```
 
 Let's now get the data. 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+mydata = Quandl("FRED/GDP")
+mydata = Quandl("FRED/GDP", start_date="2001-12-31", end_date="2005-12-31")
+
+```
 
 ### Basic data analysis
 

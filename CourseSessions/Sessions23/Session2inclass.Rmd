@@ -1,7 +1,6 @@
 ---
 title: "Sessions 3-4"
 author: "T. Evgeniou"
-date: "9 Jan 2016"
 output: html_document
 ---
 
