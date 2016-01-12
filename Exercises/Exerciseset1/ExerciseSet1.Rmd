@@ -6,8 +6,6 @@ output: html_document
 ---
 
 
-<br>
-
 The purpose of this exercise is to become familiar with:
 
 1. Basic statistics functions in R;
@@ -57,11 +55,10 @@ For more information on downloading finance data from the internet as well as on
 
 1. Can you find some interesting finance related R package or github repository? 
 **Your Answers here:**
-<br>
-<br>
-
-<hr>
-<hr>
+```{r eval = FALSE, echo=TRUE}
+For daily stock variations: https://github.com/frederickpelchat/quantitative-finance.git
+For personal finance: https://github.com/shenie/romey.git
+```
 
 ### Part I: Statistics of S&P Daily Returns
 
@@ -80,18 +77,20 @@ pnl_plot(SPY)
 
 #### Questions
 
-1. Notice that the code also downloads the returns of Apple during the same period. Can you explain where this is done in the code (including the .R files used)?
+1. Notice that the code also downloads the returns of Apple during the same period. Can you explain where this is done in the code (including the .R files used)? 
 2. What are the cumulative, average daily returns, and the standard deviation of the daily returns of Apple in the same period? 
 3. *(Extra points)* What if we want to also see the returns of another company, say Yahoo!, in the same period? Can you get that data and report the statistics for Yahoo!'s stock, too? 
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
-<hr>
-<hr>
+1. Coding in dataSet1.R includes command: mytickers = c("SPY", "AAPL"), AAPL being apple.
+2. The cumulative returns of Apple during this period is `r round(100*sum(StockReturns[,2]),1)`% .
+The average daily returns of Apple during this period is `r round(100*mean(StockReturns[,2]),3)`%.
+The standard deviation of the daily returns of Apple during this period is `r round(100*sd(StockReturns[,2]),3)`%.
+3. The cumulative returns of Yahoo during this period is  `r round(100*sum(StockReturns[,3]),1)`%.
+The average daily returns of Yahoo during this period is`r round(100*mean(StockReturns[,3]),3)`%.
+The standard deviation of the daily returns of Yahoo during this period is `r round(100*sd(StockReturns[,3]),3)`%.  
+
 
 ### Part II: Simple Matrix Manipulations
 
@@ -99,7 +98,6 @@ For this part of the exercise we will do some basic manipulations of the data. F
 
 ```{r eval = FALSE, echo=TRUE}
 class(StockReturns)
-dim(StockReturns)
 nrow(StockReturns)
 ncol(StockReturns)
 StockReturns[1:4,]
@@ -126,13 +124,15 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
-
-<hr>
-<hr>
+```{r eval = FALSE, echo=TRUE}
+1. We can use the commands nrow(transposedData) and ncol(transposedData). Answers are 3 and 2774 respectively. 
+```
+2. For S&P and Apple
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
+portfolio = apply(StockReturns,1,mean)
+names(portfolio) <- rownames(StockReturns)
+pnl_plot(portfolio)
+```
 
 ### Part III: Reproducibility and Customization
 
@@ -144,13 +144,15 @@ This is an important step and will get you to think about the overall process on
 2. *(Extra Exercise)*  Can you get the returns of a few companies and plot the returns of an equal weighted portfolio with those companies during some period you select? 
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
-
-<hr>
-<hr>
+```{r eval = FALSE, echo=TRUE}
+1. You need to change line 10: startDate = "2001-01-01". To get the new exercise set, you should run dataSet1.R and proceed with the same commands we have done until now but with the new data.
+```
+2. New tickers include MMM, FB, LULU. 
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
+portfolio = apply(StockReturns,1,mean)
+names(portfolio) <- rownames(StockReturns)
+pnl_plot(portfolio)
+```
 
 ###  Part IV: Read/Write .CSV files
 
@@ -178,13 +180,11 @@ myData + StockReturns[1:40,])
 ```
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
-
-<hr>
-<hr>
+```{r eval = FALSE, echo=TRUE}
+1. It gives 20 as a result, corresponding to the sum of matches that correspond between myData and StockReturns.
+2. It reads the following: Error in FUN(left, right) : 
+  argument non numérique pour un opérateur binaire. 
+```
 
 ### Extra Question
 
