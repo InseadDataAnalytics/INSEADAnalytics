@@ -28,7 +28,7 @@ list.files()
 **Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
 Let's now see the exercise. 
-
+get
 **IMPORTANT:** You should answer all questions by simply adding your code/answers in this document through editing the file ExerciseSet1.Rmd and then clicking on the "Knit HTML" button in RStudio.  Once done, please post your .Rmd and html files in your github repository. 
 
 <hr>
@@ -81,15 +81,39 @@ pnl_plot(SPY)
 #### Questions
 
 1. Notice that the code also downloads the returns of Apple during the same period. Can you explain where this is done in the code (including the .R files used)?
+
 2. What are the cumulative, average daily returns, and the standard deviation of the daily returns of Apple in the same period? 
+
 3. *(Extra points)* What if we want to also see the returns of another company, say Yahoo!, in the same period? Can you get that data and report the statistics for Yahoo!'s stock, too? 
+
+Here are returns of Yahoo! in this period:
 
 **Your Answers here:**
 <br>
 <br>
 <br>
 <br>
+1. This is done in line 8 of dataSet1.R in which the tickers for SPY and AAPL are specified.
+2. Here are returns of Apple in this period:
 
+1. The cumulative returns of Apple during this period is `r round(100*sum(StockReturns[,2]),1)`%.
+2. The average daily returns of Apple during this period is `r round(100*mean(StockReturns[,2]),1)`%;
+2. The standard deviation of the daily returns of Apple during this period is `r round(100*sd(StockReturns[,2]),1)`%;
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=4,fig.width= 6, fig=TRUE}
+AAPL = StockReturns[,"AAPL"]
+pnl_plot(AAPL)
+```
+3. Here are the returns of Yahoo! in this period:  
+
+1. The cumulative returns of Yahoo! during this period is `r round(100*sum(StockReturns[,3]),1)`%.
+2. The average daily returns of Yahoo! during this period is `r round(100*mean(StockReturns[,3]),1)`%;
+2. The standard deviation of the daily returns of Yahoo! during this period is `r round(100*sd(StockReturns[,3]),1)`%;
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=4,fig.width= 6, fig=TRUE}
+YHOO = StockReturns[,"YHOO"]
+pnl_plot(YHOO)
+```
 <hr>
 <hr>
 
@@ -123,16 +147,26 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 #### Questions
 
 1. What R commands can you use to get the number of rows and number of columns of the new matrix called transposedData?
+
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
+<br>
+<br>
+1. ncol(transposedData) and nrow(transposedData)
+
+2.
+
+```
+portfolio2 = apply(stockreturns3,1,mean)
+names(portfolio2) <- rownames(stockreturns3)
+pnl_plot(portfolio2)
+
+```
 <hr>
 <hr>
+
 
 ### Part III: Reproducibility and Customization
 
