@@ -41,6 +41,7 @@ We download daily prices (open, high, low, close, and adjusted close) and volume
 ```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
 source("helpersSet1.R")
 source("dataSet1.R")
+source("dataSet2.R")
 ```
 
 For more information on downloading finance data from the internet as well as on finance related R tools see these starting points (there is a lot more of course available):
@@ -61,6 +62,10 @@ For more information on downloading finance data from the internet as well as on
 <br>
 
 <hr>
+*Several R finance package are interesting including:*<br>
+*- Rblpapi: a	R Interface to Bloomberg*<br>
+*- FinCal: a package to calculate the time Value of Money, the time Series Analysis and computational Finance*<br>
+*- jrvFinance: a basic finance tool to calculate NPV/IRR/Annuities/Bond-Pricing or Black Scholes*<br>
 <hr>
 
 ### Part I: Statistics of S&P Daily Returns
@@ -86,11 +91,16 @@ pnl_plot(SPY)
 
 **Your Answers here:**
 <br>
-<br>
-<br>
-<br>
 
 <hr>
+
+*line 96*ExerciseSet1.Rmd:write.csv(StockReturns[1:20,c("SPY","**AAPL**")], file = "twentydays.csv", row.names = TRUE, col.names = TRUE)<br>
+*line 8*dataSet1.R:mytickers = c("SPY", "**AAPL**")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", <br>
+
+<hr>
+Cumulative returns:`r round(100*sum(AaplStockReturns[,1]),1)`%<br>
+Average daily returns:`r round(100*mean(AaplStockReturns[,1]),3)`%<br>
+Standard deviation of the daily returns of Apple:`r round(100*sd(AaplStockReturns[,1]),3)`%<br>
 <hr>
 
 ### Part II: Simple Matrix Manipulations
@@ -126,12 +136,17 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
+<br>
 <hr>
+We can get the number of row of the matrix transposedData using `nrow(transposedData)<br>
+The transposedData matrix has nrow(transposedData) rows<br><br>
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
+portfolio = apply(AaplStockReturns,1,mean)
+names(portfolio) <- rownames(AaplStockReturns)
+pnl_plot(portfolio)
+```
+
 <hr>
 
 ### Part III: Reproducibility and Customization
