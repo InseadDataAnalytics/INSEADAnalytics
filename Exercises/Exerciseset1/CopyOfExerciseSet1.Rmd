@@ -158,9 +158,9 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 
 2.
 
-```
-portfolio2 = apply(stockreturns3,1,mean)
-names(portfolio2) <- rownames(stockreturns3)
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
+portfolio2 = apply(StockReturns,1,mean)
+names(portfolio2) <- rownames(StockReturns)
 pnl_plot(portfolio2)
 
 ```
@@ -182,7 +182,7 @@ This is an important step and will get you to think about the overall process on
 <br>
 <br>
 <br>
-
+1. From Line 9 which is startDate = "2005-01-01", you just need to replace the date with 2001-01-01 and you rerun by sourcing the "dataSet1.R" file.
 <hr>
 <hr>
 
@@ -216,6 +216,7 @@ myData + StockReturns[1:40,])
 <br>
 <br>
 <br>
+1. sum(myData != StockReturns[1:20,]) returns 20. The reason it returns 20 is because of the following: myData is different from the file StockReturns. This equation is running a logical test to check whether the two files are similiar.
 
 <hr>
 <hr>
