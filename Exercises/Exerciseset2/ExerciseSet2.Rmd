@@ -58,6 +58,7 @@ Let's load the data and see what we have.
 
 ```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
 source("helpersSet2.R")
+library(googleVis)
 load("data/FuturesTrendFollowingData.Rdata")
 ```
 
@@ -92,7 +93,7 @@ print(m1,'chart')
 
 We see quite high correlations among some of the futures. Does it make sense? Why? Do you see some negative correlations? Do those make sense? 
 
-Given such high correlations, we can try to see whether there are some "principal components" (see [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)). This analysis can also indicate whether all futures (the global economy!) are driven by some common "factors" (let's call them *"risk factors"*). 
+Given such high correlations, we can try to see whether there are some "principal components" (see [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)). This analysis can also indicate whether all futures (the global economy!) are driven by some common "factors" (let's call them **"risk factors"**). 
 
 <br>
 
@@ -126,11 +127,12 @@ print(Line, 'chart')
 
 <br>
 
-Let's now see how the 20 first principal components look like. Let's also not show any numbers less than 0.3 in absolute value, to avoid cluttering. Note again that you can sort the table according to any column by clicking on the header of that column. 
+Let's now see how the 20 first principal components look like. Let's also use the *rotated* factors (note that these are not really the "principal component", as explained in the [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)) and not show any numbers less than 0.3 in absolute value, to avoid cluttering. Note again that you can sort the table according to any column by clicking on the header of that column. 
 <br>
 
 ```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
-Rotated_Results<-principal(futures_data, nfactors=20, rotate="varimax",score=TRUE)
+corused = cor(futures_data[,apply(futures_data!=0,2,sum) > 10, drop=F])
+Rotated_Results<-principal(corused, nfactors=20, rotate="varimax",score=TRUE)
 Rotated_Factors<-round(Rotated_Results$loadings,2)
 Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
 colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
@@ -142,12 +144,9 @@ Rotated_Factors[abs(Rotated_Factors) < 0.3]<-NA
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
 show_data <- Rotated_Factors 
-row<-rownames(show_data)
-dfnew<-cbind(row,show_data)
-change<-colnames(dfnew)
-change[1]<-"Variables"
-colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+show_data<-cbind(rownames(show_data),show_data)
+colnames(show_data)<-c("Variables",colnames(Rotated_Factors))
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
 <br> 
@@ -156,9 +155,10 @@ print(m1,'chart')
 
 1. How many principal components ("factors") do we need to explain at least 50% of the variance in this data?
 2. What are the highest weights (in absolute value) of the first principal component portfolio above on the `r ncol(futures_data)` futures? 
-3. Can we interpret the first 5 components? How would you call these factors?
+3. Can we interpret the first 10 components? How would you call these factors?
 4. Can you now generate the principal components and scree plot using only: a) the pre-crisis bull market years (e.g. only using the data between November 1, 2002, and October 1, 2007)?  b) the financial crisis years (e.g. only using the data between October 1, 2007 and  March 1, 2009), (Hint: you can select subsets of the data using for example the command `crisis_data = futures_data[as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01", ])
 5. Based on your analysis in question 3, please discuss any differences you observe about the futures returns during  bull and bear markets.  What implications may these results have? What do the results imply about how assets are correlated during bear years compared to bull years? 
+6. (Extra - optional) Can you create an interactive (shiny based) tool so that we can study how the "**risk factors**" change ove time? (Hint: see [Exercise set 1](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/Exercises/Exerciseset1/ExerciseSet1.Rmd) and online resources on [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html) such as these [Shiny lessons](http://shiny.rstudio.com/tutorial/lesson1/). Note however that you may need to pay attention to various details e.g. about how to include Google Charts in Shiny tools - so keep this extra exercise for later!).
 
 <br>
 
@@ -278,6 +278,11 @@ show_data = data.frame(cbind(rownames(pnl_matrix(sample_strategy)), round(pnl_ma
 m1<-gvisTable(show_data,options=list(width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
 print(m1,'chart')
 ```
+
+<br>
+<br>
+
+**Finally**: One can develop (shiny based) interactive versions of this report and deploy them using `shinyapps::deployApp('ExerciseSet2.Rmd')` (you need a [shinyapps.io](https://www.shinyapps.io) account for this). This is for example an  [interactive version of this exercise.](https://inseaddataanalytics.shinyapps.io/ExerciseSet2/)
 
 <br>
 <br>
