@@ -5,8 +5,6 @@ author: "T. Evgeniou"
 output: html_document
 ---
 
-This is my test to see if I can push this back to git succesfully.
-
 <br>
 
 The purpose of this exercise is to become familiar with:
@@ -58,11 +56,9 @@ For more information on downloading finance data from the internet as well as on
 
 1. Can you find some interesting finance related R package or github repository? 
 **Your Answers here:**
-<br>
-<br>
 
-<hr>
-<hr>
+
+
 
 ### Part I: Statistics of S&P Daily Returns
 
@@ -86,12 +82,29 @@ pnl_plot(SPY)
 3. *(Extra points)* What if we want to also see the returns of another company, say Yahoo!, in the same period? Can you get that data and report the statistics for Yahoo!'s stock, too? 
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
-<hr>
+1. getdata.fromscratch = 1
+website_used = "yahoo"
+mytickers = c("SPY", "AAPL")
+startDate = "2005-01-01"
+
+2. APPL 
+> round(100*sum(StockReturns[,1]),1)
+[1] 382
+> round(100*mean(StockReturns[,1]),3)
+[1] 0.138
+> round(100*sd(StockReturns[,1]),3)
+[1] 2.189
+
+3. YHOO
+> round(100*sum(StockReturns[,1]),1)
+[1] 62.2
+> round(100*mean(StockReturns[,1]),3)
+[1] 0.022
+> round(100*sd(StockReturns[,1]),3)
+[1] 2.511
+
+<br>
 <hr>
 
 ### Part II: Simple Matrix Manipulations
@@ -110,6 +123,7 @@ tail(StockReturns,5)
 
 We will now use an R function for matrices that is extremely useful for analyzing data. It is called *apply*. Check it out using help in R. 
 
+help(apply)
 For example, we can now quickly estimate the average returns of S&P and Apple (of course this can be done manually, too, but what if we had 500 stocks - e.g. a matrix with 500 columns?) and plot the returns of that 50-50 on S&P and Apple portfolio:
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
@@ -120,19 +134,28 @@ pnl_plot(portfolio)
 
 
 We can also transpose the matrix of returns to create a new "horizontal" matrix. Let's call this matrix (variable name) transposedData. We can do so using this command:  `transposedData = t(StockReturns)`. 
-
+transposedData = t(StockReturns)
+ncol(t(StockReturns))
+nrow(t(StockReturns))
 #### Questions
 
 1. What R commands can you use to get the number of rows and number of columns of the new matrix called transposedData?
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
-<hr>
+1. We use ncol(t(StockReturns)) to get the nuber of rows and columns of ths new matrix, as below - 
+> ncol(t(StockReturns))
+[1] 2774
+> nrow(t(StockReturns))
+[1] 1
+
+2. 
+portfolio = apply(StockReturns,1,mean)
+names(portfolio) <- rownames(StockReturns)
+pnl_plot(portfolio)
+
+<br>
 <hr>
 
 ### Part III: Reproducibility and Customization
@@ -142,15 +165,18 @@ This is an important step and will get you to think about the overall process on
 #### Questions
 
 1. We want to re-do all this analysis with data since 2001-01-01: what change do we need to make in the code (hint: all you need to change is one line - exactly 1 number! - in data.R file), and how can you get the new exercise set with the data since 2001-01-01? 
+
 2. *(Extra Exercise)*  Can you get the returns of a few companies and plot the returns of an equal weighted portfolio with those companies during some period you select? 
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
-<hr>
+1. In the data.R file, we have to change the start date here "startDate = "2005-01-01"" to the desired date of 2001-01-01. We make this change and run the .R file again to procure the data for this new date band.
+
+2. website_used = "yahoo"
+mytickers = c("SPY", "MSFT")
+startDate = "2010-01-01"
+
+<br>
 <hr>
 
 ###  Part IV: Read/Write .CSV files
@@ -160,6 +186,7 @@ Finally, one can read and write data in .CSV files. For example, we can save the
 ```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 write.csv(StockReturns[1:20,c("SPY","AAPL")], file = "twentydays.csv", row.names = TRUE, col.names = TRUE) 
 ```
+
 
 Do not get surpsised if you see the csv file in your directories suddenly! You can then read the data from the csv file using the read.csv command. For example, this will load the data from the csv file and save it in a new variable that now is called "myData": 
 
@@ -179,18 +206,29 @@ myData + StockReturns[1:40,])
 ```
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
 
-<hr>
+1. 
+sum(myData != StockReturns[1:20,])
+The result is 20
+
+
+2. 
+sum(myData != StockReturns[1:40,])
+The sum is still 20 since there is nothing in the other 20 columns. 
+
+<br>
 <hr>
 
 ### Extra Question
 
-Can you now load another dataset from some CSV file and report some basic statistics about that data? 
+Can you now load another dataset from some CSV file and report some basic statistics about that data?
 
+myData <- read.csv(file = "MarriageAge.csv", header = TRUE, sep=";")
+
+nrow(myData)
+ncol(myData)
+apply(myData,1,mean)
+apply(myData, 1, class)
 <br>
 
 ### Creating Interactive Documents
@@ -218,8 +256,6 @@ renderPlot({
 This is a [recent research article](http://poseidon01.ssrn.com/delivery.php?ID=851091091009083082092113118102076099034023058067019062072066007100008111081022102123034016097101060099003106125099002090116089026058012038004030005113111105079028059062024121067073126072090091089069014121102110107075029090001011087028011082124103085&EXT=pdf)  that won an award in 2016. Can you implement a simple strategy as in Figure 1 of this paper? You may find these R commands useful: `names`, `which`, `str_sub`,`diff`,`as.vector`, `length`, `pmin`, `pmax`, `sapply`, `lapply`,`Reduce`,`unique`, `as.numeric`, `%in%`
 ![A Simple Trading Startegy](simpletrade.png) 
 
-What if you also include information about bonds? (e.g. download the returns of the the ETF with ticker "TLT") Is there any relation between stocks and bonds? 
+What if you also include information about bonds? (e.g. download the returns of the the ETF with ticker "TLT") Is there any relation between stocks and bonds?
 
-
-**Have fun** 
-
+**Have fun**
