@@ -1,0 +1,39 @@
+---
+title: "Sessions 3-4"
+author: "T. Evgeniou"
+output: html_document
+---
+
+<br>
+
+The purpose of this session is to become familiar with:
+
+1. Some visualization tools;
+2. Principal Component Analysis and Factor Analysis;
+3. Clustering Methods;
+4. Introduction to machine learning methods;
+5. A market segmentation case study.
+
+As always, before starting, make sure you have pulled the [session 3-4 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Sessions23)  (yes, I know, it says session 2, but it is 3-4 - need to update all filenames some time, but till then we use common sense and ignore a bit the filenames) on your github repository (if you pull the course github repository you also get the session files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("CourseSessions/Sessions23")
+list.files()
+rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
+```
+As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Let's start.
+
+<hr>
+<hr>
+
+### Analysis of Survey Data for Market Segmentation
+
+We will be using the boats case study as an example for now. At the end of this class we will be able to develop (from scratch) the readings of sessions 3-4 as well as understand the tools used and the interpretation of the results in practice - in order to make business decisions. 
+
+(work in progress)
+
+
+

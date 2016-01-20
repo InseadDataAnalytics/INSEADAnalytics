@@ -1,0 +1,64 @@
+---
+title: "Exercise Set 3: Marketing Analytics"
+author: "T. Evgeniou"
+date: "9 Jan 2016"
+output: html_document
+---
+
+<br>
+
+The purpose of this exercise is to become familiar with:
+
+1. Factor analysis and Cluster Analysis;
+2. Some Marketing analytics tools;
+3. Linking analytics with business decisions.
+
+
+While doing this exercise we will also see how to generate replicable and customizable reports. For this purpose the exercise uses the R Markdown capabilities (see [Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) or a [basic introduction to R Markdown](http://rmarkdown.rstudio.com/authoring_basics.html)).  These capabilities allow us to create dynamic reports. For example today's date is `r Sys.Date()` (you need to see the .Rmd to understand that this is *not* a static typed-in date but it changes every time you compile the .Rmd - if the date changed of course).
+
+Before starting, make sure you have pulled the [exercise files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/Exercises/Exerciseset1)  on your github repository (if you pull the course github repository you also get the exercise set files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "Data Analytics R version/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("Exercises/Exerciseset3/")
+list.files()
+```
+
+**Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Let's now see the exercise. 
+
+**IMPORTANT:** You should answer all questions by simply adding your code/answers in this document through editing the file ExerciseSet1.Rmd and then clicking on the "Knit HTML" button in RStudio.  Once done, please post your .Rmd and html files in your github repository. 
+
+<hr>
+<hr>
+
+### The Exercise
+
+For this exercise we will use the marketing segmetation data and case we disucss in class to compelte a business project on how to segment a market using quantitative tools and make decisions based on such an analysis. 
+
+### Summary of Data
+
+(work in progress)
+
+### Understanding Customer Attitudes and Needs
+
+(work in progress)
+
+### Identifying Customer Segments
+
+(work in progress)
+
+### Profiling Customer Segments
+
+(work in progress)
+
+### Linking to Business Decisions
+
+(work in progress)
+
+
+
+
+
+
