@@ -1,0 +1,100 @@
+---
+title: "Exercise Set 2: A $300 Billion Strategy"
+author: "T. Evgeniou"
+output: html_document
+---
+
+<br>
+
+The purpose of this exercise is to become familiar with:
+
+1. Some time series analysis tools;
+2. More data manipulation tools; 
+4. More statistics methods.  
+
+While doing this exercise we will also see how to generate replicable and customizable reports. For this purpose the exercise uses the R Markdown capabilities (see [Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) or a [basic introduction to R Markdown](http://rmarkdown.rstudio.com/authoring_basics.html)).  These capabilities allow us to create dynamic reports. For example today's date is `r Sys.Date()` (you need to see the .Rmd to understand that this is *not* a static typed-in date but it changes every time you compile the .Rmd - if the date changed of course).
+
+Before starting, make sure you have pulled the [exercise files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/Exercises/Exerciseset1)  on your github repository (if you pull the course github repository you also get the exercise set files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "Data Analytics R version/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("Exercises/Exerciseset2/")
+list.files()
+```
+
+**Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Let's now see the exercise. 
+
+**IMPORTANT:** You should answer all questions by simply adding your code/answers in this document through editing the file ExerciseSet1.Rmd and then clicking on the "Knit HTML" button in RStudio.  Once done, please post your .Rmd and html files in your github repository. 
+
+<hr>
+<hr>
+
+### The Exercise
+
+For this exercise we will use the daily returns of futures data to develop what is considered to be a "classic" hedge fund strategy, a **futures trend following strategy**. There is a lot written about this, so it is worth doing some online search about "futures trend following" or "Commodity Trading Advisors (CTA)". There is about **[$300 billion](http://www.barclayhedge.com/research/indices/cta/Money_Under_Management.html)** invested on this strategy today, and is considered to be one of the [oldest hedge fund strategies.](oldest ones). Some example links are:
+
+* [A fascinating report on 2 centuries of trend following from the CFM hedge - a $6 billion fund](https://www.trendfollowing.com/whitepaper/Two_Centuries_Trend_Following.pdf)
+* [Another fascinating report on 1 century of trend following investing from AQR - a $130 billion fund](https://www.aqr.com/library/aqr-publications/a-century-of-evidence-on-trend-following-investing)
+* [Wikipedia on CTAs](https://en.wikipedia.org/wiki/Commodity_trading_advisor)
+* [Morningstar on CTAs](http://www.morningstar.co.uk/uk/news/69379/commodity-trading-advisors-(cta)-explained.aspx)
+* [A report](http://perspectives.pictet.com/wp-content/uploads/2011/01/Trading-Strategies-Final.pdf)
+* [Man AHL (a leading hedge fund on CTAs - among others) - an $80 billion fund](https://www.ahl.com)
+
+Of course there are also many starting points for developing such a strategy (for example [this one.](http://www.r-bloggers.com/system-from-trend-following-factors/) (also on [github](https://gist.github.com/timelyportfolio/2855303)) In this exercise we will develop our own strategy from scratch. 
+
+### Getting the Futures Data
+
+We will use the [Quandl package.](http://help.quandl.com/category/185-using-quandl-from-r) You can also browse the [Quandl website](https://www.quandl.com/browse) for more information about this data aggregator and R.
+
+```{r echo=TRUE,fig.width=7, fig.height=7, tidy=TRUE}
+library(png)
+library(grid)
+img <- readPNG("quandl.png")
+grid.raster(img)
+```
+
+First install and load it (see session 1 for how to do this)
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+install.packages("Quandl")
+library("Quandl")
+```
+
+Let's now get the data. 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+mydata = Quandl("FRED/GDP")
+mydata = Quandl("FRED/GDP", start_date="2001-12-31", end_date="2005-12-31")
+
+```
+
+### Basic data analysis
+
+(work in progress)
+
+### Simple moving average signals
+
+(work in progress)
+
+### A simple trend following strategy
+
+(work in progress)
+
+### Reporting the performance results
+
+(work in progress)
+
+### More advanced methods
+
+(work in progress)
+
+### A class competition
+
+(work in progress)
+
+
+
+
+
