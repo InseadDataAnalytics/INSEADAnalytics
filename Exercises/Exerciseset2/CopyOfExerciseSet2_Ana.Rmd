@@ -163,10 +163,42 @@ print(m1,'chart')
 <br>
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+1. We need 6 factors (cumulative percentage = 52,29%)
+
+2. In absolute values, the highest weights are 0,93 (5yr T-Notes US and 10yr T notes), 0,86 (treasury bonds), 0,85 (2 yr T-note US), 0,79, 0,74, ...
+
+3. If we see the first 10 factors, we can see that, since the overlapping of values between the factors are low, we can explain the variables with these 10 factors. 
+
+4.
+For the pre crisis data:
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+pre_crisis_data = futures_data[as.Date(rownames(futures_data)) > "2002-11-01" & as.Date(rownames(futures_data)) < "2007-10-01", ]
+Variance_Explained_Table_results<-PCA(pre_crisis_data, graph=FALSE)
+Variance_Explained_Table<-cbind(paste("component",1:ncol(pre_crisis_data),sep=" "),Variance_Explained_Table_results$eig)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+colnames(Variance_Explained_Table)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+show_data = data.frame(Variance_Explained_Table)
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+print(m1,'chart')
+```
+For the crisis data:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+crisis_data = futures_data[as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01", ]
+
+Variance_Explained_Table_results<-PCA(crisis_data, graph=FALSE)
+Variance_Explained_Table<-cbind(paste("component",1:ncol(crisis_data),sep=" "),Variance_Explained_Table_results$eig)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table) 
+colnames(Variance_Explained_Table)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+show_data = data.frame(Variance_Explained_Table) 
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##")) 
+print(m1,'chart')
+```
+
+5.
+During the bull (pre crisis) years we need more components to explain at least 50% of the data (again 6 factors, while during the crisis years we can explain it with 4 factors)
+
 
 
 <hr>
@@ -188,7 +220,7 @@ Here is the code.
 ```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
 signal_used = 0*futures_data # just initialize the trading signal to be 0
 # Take many moving Average (MA) Signals and let them "vote" with their sign (+-1, e.g. long or short vote, for each signal)
-MAfreq<-seq(10,250,by=20)
+MAfreq<-seq(20,250,by=30)
 for (iter in 1:length(MAfreq))
   signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
 # Now make sure we invest $1 every day (so the sum of the absolute values of the weights is 1 every day)
@@ -247,9 +279,29 @@ How does this compare with **existing CTA products** such as [this one from Soci
 <br>
 
 **Your Answers here:**
-<br>
-<br>
-<br>
+
+1. The code generates a new variable (signal_used) which has the same format of futures_data. Then, it fills this variable with the "votes" of the moving averages of another new variable (MAfreq). These votes indicate the investment for each of the futures.
+
+2. If we change the values of the moving average (for example, giving a broader range), the returns will be slightly similar (although the trend is similar).
+
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+signal_used = 0*futures_data 
+MAfreq<-seq(10,400,by=10)
+for (iter in 1:length(MAfreq))
+  signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
+signal_used = t(apply(signal_used,1,function(r) {
+  res = r  
+  if ( sum(abs(r)) !=0 )
+    res = r/sum(abs(r))
+  res
+}))
+colnames(signal_used) <- colnames(futures_data)
+strategy_by_future <- scrub(shift(signal_used,2)*futures_data) 
+trading_strategy = apply(strategy_by_future,1,sum)
+names(trading_strategy) <- rownames(futures_data)
+pnl_plot(trading_strategy)
+```
+
 <br>
 
 
