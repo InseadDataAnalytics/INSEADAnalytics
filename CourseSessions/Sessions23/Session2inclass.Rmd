@@ -29,11 +29,400 @@ Let's start.
 <hr>
 <hr>
 
-### Analysis of Survey Data for Market Segmentation
+### Survey Data for Market Segmentation
 
-We will be using the boats case study as an example for now. At the end of this class we will be able to develop (from scratch) the readings of sessions 3-4 as well as understand the tools used and the interpretation of the results in practice - in order to make business decisions. 
+We will be using the [boats case study](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) as an example. At the end of this class we will be able to develop (from scratch) the readings of sessions 3-4 as well as understand the tools used and the interpretation of the results in practice - in order to make business decisions. The code used here is along the lines of the code in the session directory, e.g. in the [RunStudy.R](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/RunStudy.R) file and the report [doc/Report_s23.Rmd.](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/doc/Report_s23.Rmd) There may be a few differences, as there are many ways to write code to do the same thing. 
 
-(work in progress)
+Let's load the data: 
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+source("R/library.R")
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+ProjectData <- read.csv("data/Boats.csv", sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) 
+colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
+ProjectDataFactor=ProjectData[,c(2:30)]
+```
+<br>
+and do some basic visual exploration of the first 50 respondents first (always necessary to see the data first):
+<br>
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+show_data = data.frame(round(ProjectData,2))[1:50,]
+show_data$Variables = rownames(show_data)
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br>
+
+This is the correlation matrix of the customer responses to the `r ncol(ProjectDataFactor)` attitude questions - which are the only questions that we will use for the segmentation (see the case):
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(cbind(colnames(ProjectDataFactor), round(cor(ProjectDataFactor),2)))
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+```
+<br>
+
+#### Questions
+
+1. Do you see any high correlations between the responses? Do they make sense? 
+2. What do these correlations imply?
+
+##### Answers:
+<br>
+<br>
+<br>
+<br>
+
+<hr>
+
+### Key Customer Attitudes
+
+Clearly the survey asked many reduntant questions (can you think some reasons why?), so we may be able to actually "group" these 29 attitude questions into only a few "key factors". This not only will simplify the data, but will also greatly facilitate our understanding of the customers.
+
+To do so, we use methods called [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) and [factor analysis](https://en.wikipedia.org/wiki/Factor_analysis) as discussed in the [session readings](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html). We can use two different R commands for this (they make slightly different information easily available as output): the command `principal` (check `help(principal)` from R package [psych](http://personality-project.org/r/psych/)), and the command `PCA` from R package [FactoMineR](http://factominer.free.fr) - there are more packages and commands for this, as these methods are very widely used.  
+
+Here is how the `principal` function is used:
+<br>
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
+UnRotated_Factors<-round(UnRotated_Results$loadings,2)
+UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
+colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
+```
+
+<br>
+<br>
+
+Here is how we use `PCA` one is used:
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
+Variance_Explained_Table<-Variance_Explained_Table_results$eig
+Variance_Explained_Table_copy<-Variance_Explained_Table
+row=1:nrow(Variance_Explained_Table)
+name<-paste("Component No:",row,sep="")
+Variance_Explained_Table<-cbind(name,Variance_Explained_Table)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+colnames(Variance_Explained_Table)<-c("Components", "Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+
+eigenvalues  <- Variance_Explained_Table[,2]
+```
+
+<br>
+Let's look at the **variance explained** as well as the **eigenvalues** (see session readings):
+<br>
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+show_data = Variance_Explained_Table
+m<-gvisTable(Variance_Explained_Table,options=list(width=1200, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+print(m,'chart')
+```
+<br> 
+
+```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
+<br>
+
+#### Questions:
+
+1. Can you explain what this table and the plot are? What do they indicate? What can we learn from these?
+2. Why does the plot have this specific shape? Could the plotted line be increasing? 
+3. What characteristics of these results would we prefer to see? Why?
+
+**Your Answers here:**
+<br>
+<br>
+<br>
+<br>
+
+#### Visualization and Interpretation
+
+Let's now see how the "top factors" look like. 
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+# Choose one of these options:
+factors_selected = sum(Variance_Explained_Table_copy[,1] >= 1)
+# minimum_variance_explained = 0.5; factors_selected = 1:head(which(Variance_Explained_Table_copy[,"cumulative percentage of variance"]>= minimum_variance_explained),1)
+#factors_selected = 10
+```
+<br>
+
+To better visualise them, we will use what is called a "rotation". There are many rotations methods, we use what is called the [varimax](http://stats.stackexchange.com/questions/612/is-pca-followed-by-a-rotation-such-as-varimax-still-pca) rotation:
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
+rotation_used="varimax"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
+Rotated_Factors<-round(Rotated_Results$loadings,2)
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+Rotated_Factors <- Rotated_Factors[sorted_rows,]
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+show_data <- Rotated_Factors 
+show_data$Variables <- rownames(show_data)
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> <br>
+
+To better visualize and interpret the factors we often "supress" loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+MIN_VALUE = 0.5
+Rotated_Factors_thres <- Rotated_Factors
+Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-NA
+colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
+rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+show_data <- Rotated_Factors_thres 
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+show_data$Variables <- rownames(show_data)
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> <br>
 
 
+#### Questions
 
+1. What do the first couple of factors mean? Do they make business sense? 
+2. How many factors should we choose for this data/customer base?
+3. How would you interpret the factors you selected?
+4. What lessons about data science do you learn when doing this analysis? 
+5. (Extra) Can you make this report "dynamic" using shiny and then post it on [shinyapps.io](http://www.shinyapps.io)? (see for example exercise set 1)
+
+**Your Answers here:**
+<br>
+<br>
+<br>
+<br>
+
+<hr>
+<hr>
+
+### Market Segmentation
+
+Let's now use one representative question for each factor (we can also use the "factor scores" for each respondent - see [session readings](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)) to represent our survey respondents. We can choose the question with the highest absolute factor loading for each factor. For example, when we use 5 factors with the varimax rotation we can select questions Q.1.9 (I see my boat as a status symbol), Q1.18 (Boating gives me a feeling of adventure), Q1.4 (I only consider buying a boat from a reputable brand), Q1.11 (I tend to perform minor boat repairs and maintenance on my own) and Q1.2 (When buying a boat  getting the lowest price is more important than the boat brand) - try it. These are columns 10, 19, 5, 12, and 3, respectively of the data matrix `Projectdata`. 
+
+In market segmentation one may use variables to **profile** the segments which are not the same (necessarily) as those used to **segment** the market: the latter may be, for example, attitude/needs related (you define segments based on what the customers "need"), while the former may be any information that allows a company to identify the defined customer segments (e.g. demographics, location, etc). Of course deciding which variables to use for segmentation and which to use for profiling (and then **activation** of the segmentation for business purposes) is largely subjective.  So in this case we will use all survey questions for profiling for now:
+
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+segmentation_attributes_used = c(10,19,5,12,3) 
+profile_attributes_used = 2:ncol(ProjectData)
+ProjectData_segment=ProjectData[,segmentation_attributes_used]
+ProjectData_profile=ProjectData[,profile_attributes_used]
+```
+
+A key family of methods used for segmenation is what is called **clustering methods**. This is a very important problem in statistics and **machine learning**, used in all sorts of applications such as in [Amazon's pioneer work on recommender systems](http://www.cs.umd.edu/~samir/498/Amazon-Recommendations.pdf). There are many *mathematical methods* for clustering. We will use two very standard methods, **hierarchical clustering** and **k-means**. While the "math" behind all these methods can be complex, the R functions used are relatively simple to use, as we will see. 
+
+For example, to use hierarchical clustering we simply first define some parameters used (see session readings) and then simply call the command `hclust`: 
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+# Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
+# (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
+# DEFAULT is "euclidean"
+distance_used="euclidean"
+# Please ENTER the hierarchical clustering method to use (options are:
+# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
+# DEFAULT is "ward.D"
+hclust_method = "ward.D"
+# Define the number of clusters:
+numb_clusters_used = 3 
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
+Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
+
+# Assign observations (e.g. people) in their clusters
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) 
+cluster_ids_hclust=unique(cluster_memberships_hclust)
+ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
+colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
+```
+
+Finally, we can see the **dendrogram** (see class readings and online resources for more information) to have a first rough idea of what segments (clusters) we may have - and how many. 
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+# Display dendogram
+plot(Hierarchical_Cluster, main = NULL, sub=NULL, labels = 1:nrow(ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
+# Draw dendogram with red borders around the 3 clusters
+rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
+```
+<br>
+ We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
+<br>
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+max <- nrow(ProjectData)
+num <- max - 1
+df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
+colnames(df1) <- c("distances","index")
+Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line,'chart')
+```
+<br>
+
+To use k-means on the other hand one needs to define a priori the number of segments (which of course one can change and re-cluster). K-means also requires the choice of a few more parameters, but this is beyond our scope for now. Here is how to run K-means:
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+# Please ENTER the kmeans clustering method to use (options are:
+# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
+# DEFAULT is "Lloyd"
+kmeans_method = "Lloyd"
+# Define the number of clusters:
+numb_clusters_used = 3
+kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
+ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
+colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
+
+# Assign observations (e.g. people) in their clusters
+cluster_memberships_kmeans <- kmeans_clusters$cluster 
+cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
+```
+
+K-means does not provide much information about segmentation. However, when we profile the segments we can start getting a better (business) understanding of what is happening. **Profiling** is a central part of segmentation: this is where we really get to mix technical and business creativity.
+
+
+### Profiling
+
+There are many ways to do the profiling of the segments. For example, here we show how the *average* answers of the respondents *in each segment* compare to the *average answer of all respondents* using the ratio of the two.  The idea is that if in a segment the average response to a question is very different (e.g. away from ratio of 1) than the overall average, then that question may indicate something about the segment relative to the total population. 
+
+Here are for example the profiles of the segments using the clusters found above: 
+
+<br>
+ First let's see just the average answer people gave to each question for the different segments as well as the total population:
+ <br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+# Select whether to use the Hhierarchical clustering or the k-means clusters:
+
+cluster_memberships <- cluster_memberships_hclust
+cluster_ids <-  cluster_ids_hclust  
+# here is the k-means: uncomment these 2 lines
+#cluster_memberships <- cluster_memberships_kmeans
+#cluster_ids <-  cluster_ids_kmeans
+
+population_average = matrix(apply(ProjectData_profile, 2, mean), ncol=1)
+colnames(population_average) <- "Population"
+Cluster_Profile_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
+if (ncol(ProjectData_profile) <2)
+  Cluster_Profile_mean=t(Cluster_Profile_mean)
+colnames(Cluster_Profile_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+cluster.profile <- cbind(population_average,Cluster_Profile_mean)
+```
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(round(cluster.profile,2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+
+```
+<br>
+
+Let's now see the relative ratios, which we can also save in a .csv and explore if (absolutely) necessary - e.g. for collaboration with people using other tools. 
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+ratio_limit = 0.1
+```
+Let's see only ratios that are larger or smaller than 1 by, say, at least `r ratio_limit`.
+<br>
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
+cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
+colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
+rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
+## printing the result in a clean-slate table
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+# Save the segment profiles in a file: enter the name of the file!
+profile_file = "my_segmentation_profiles.csv"
+write.csv(cluster_profile_ratios,file=profile_file)
+# We can also save the cluster membership of our respondents:
+data_with_segment_membership = cbind(cluster_memberships,ProjectData)
+colnames(data_with_segment_membership)[1] = "Segment"
+cluster_file = "my_segments.csv"
+write.csv(data_with_segment_membership,file=cluster_file)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+#library(shiny) # need this library for heatmaps to work!
+# Please enter the minimum distance from "1" the profiling values should have in order to be colored 
+# (e.g. using heatmin = 0 will color everything - try it)
+#heatmin = 0.1
+#source("R/heatmapOutput.R")
+#cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_profile_ratios[abs(cluster_profile_ratios-1) < ratio_limit] <- NA
+show_data = data.frame(round(cluster_profile_ratios,2))
+show_data$Variables <- rownames(show_data)
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+
+<br>
+<br>
+**The further a ratio is from 1, the more important that attribute is for a segment relative to the total population.**
+
+<br>
+
+#### Questions
+
+1. How many segments are there in our market?
+2. Can you describe the segments you found based on the profiles?
+3. What if you change the number of factors and in general you "iterate the analysis"? **Iterations** are key in data science.
+4. Can you now answer the [Boats case questions](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf)? What business decisions do you recommend to this company based on your analysis?
+
+<br>
+
+**Your Answers here:**
+<br>
+<br>
+<br>
+<br>
+
+<hr>
+
+**You have now completed your first market segmentation project.** Do you have data from another survey you can use with this report now? 
+
+**Extra question**: explore and report a new segmentation analysis... 
+
+... and as always **Have Fun**
