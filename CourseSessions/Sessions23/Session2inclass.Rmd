@@ -280,9 +280,7 @@ rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red")
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-max <- nrow(ProjectData)
-num <- max - 1
-df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
+df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:(nrow(ProjectData)-1)))
 colnames(df1) <- c("distances","index")
 Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(Line,'chart')
