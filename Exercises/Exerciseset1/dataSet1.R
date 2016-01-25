@@ -5,7 +5,7 @@
 getdata.fromscratch = 1
 
 website_used = "yahoo" # can be "yahoo" or other ( see help(getSymbols) ). Depending on the website we may need to change the stock tickers' representation
-mytickers = c("SPY", "AAPL", "YHOO")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", 
+mytickers = c("SPY", "AAPL")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", 
 startDate = "2005-01-01"
 
 if (getdata.fromscratch){
