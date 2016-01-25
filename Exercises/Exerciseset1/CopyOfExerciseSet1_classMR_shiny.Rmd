@@ -3,6 +3,7 @@
 title: "Exercise Set 1"
 author: "T. Evgeniou"
 output: html_document
+runtime: shiny
 ---
 
 
@@ -73,6 +74,11 @@ Here are returns of the S&P in this period (note the use of the helper function 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=4,fig.width= 6, fig=TRUE}
 SPY = StockReturns[,"SPY"]
 pnl_plot(SPY)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=4,fig.width= 6, fig=TRUE}
+AAPL = StockReturns[,"AAPL"]
+pnl_plot(AAPL)
 ```
 
 #### Questions
@@ -196,7 +202,7 @@ Can you now load another dataset from some CSV file and report some basic statis
 
 Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html).All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, make the markdown output to be "html_document", and then press "Run Document". 
 
-```{r, eval=FALSE, echo = TRUE}
+```{r, eval=TRUE, echo = TRUE}
 sliderInput("startdate", "Starting Date:", min = 1, max = length(portfolio), 
             value = 1)
 sliderInput("enddate", "End Date:", min = 1, max = length(portfolio), 

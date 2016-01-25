@@ -75,6 +75,11 @@ SPY = StockReturns[,"SPY"]
 pnl_plot(SPY)
 ```
 
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=4,fig.width= 6, fig=TRUE}
+AAPL = StockReturns[,"AAPL"]
+pnl_plot(AAPL)
+```
+
 #### Questions
 
 1. Notice that the code also downloads the returns of Apple during the same period. Can you explain where this is done in the code (including the .R files used)? 
