@@ -208,10 +208,10 @@ print(m1,'chart')
 #### Questions
 
 1. What do the first couple of factors mean? Do they make business sense? 
-2. How many factors should we choose for this data/customer base?
+2. How many factors should we choose for this data/customer base? Please try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
 3. How would you interpret the factors you selected?
-4. What lessons about data science do you learn when doing this analysis? 
-5. (Extra) Can you make this report "dynamic" using shiny and then post it on [shinyapps.io](http://www.shinyapps.io)? (see for example exercise set 1)
+4. What lessons about data science do you learn when doing this analysis? Please comment. 
+5. (Extra/Optional) Can you make this report "dynamic" using shiny and then post it on [shinyapps.io](http://www.shinyapps.io)? (see for example exercise set 1 and interactive exercise set 2)
 
 **Your Answers here:**
 <br>
@@ -280,9 +280,7 @@ rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red")
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-max <- nrow(ProjectData)
-num <- max - 1
-df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
+df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:(nrow(ProjectData)-1)))
 colnames(df1) <- c("distances","index")
 Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 print(Line,'chart')
@@ -406,9 +404,9 @@ print(m1,'chart')
 
 #### Questions
 
-1. How many segments are there in our market?
+1. How many segments are there in our market? Why you chose that number of segments? Again, try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
 2. Can you describe the segments you found based on the profiles?
-3. What if you change the number of factors and in general you "iterate the analysis"? **Iterations** are key in data science.
+3. What if you change the number of factors and in general you *iterate the whole analysis*? **Iterations** are key in data science.
 4. Can you now answer the [Boats case questions](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf)? What business decisions do you recommend to this company based on your analysis?
 
 <br>

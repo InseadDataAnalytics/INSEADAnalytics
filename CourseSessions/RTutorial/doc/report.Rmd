@@ -1,0 +1,29 @@
+---
+title: "Exercise Set 4"
+author: "T. Evgeniou"
+output: html_document
+---
+
+```{r eval = TRUE, echo=FALSE, error = FALSE, warning=FALSE,message=FALSE,results='asis', tidy=TRUE}
+# BIG CODE CHUNK WITH ALL I WILL NEED (I WISH I HAD A CEO TO TELL ME ALL THIS)
+#source("../R/library.R")
+# Let's get the data
+#ProjectData = read.csv("../data/Boats.csv", sep=";", dec=",", header = TRUE)
+```
+
+
+We will use the [Boats Case](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) data. First we will load the data. There are `r ncol(ProjectData)` columns in the data
+
+The average response to question 1 is `r mean(ProjectData[,1])`. 
+
+```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis', tidy=TRUE}
+
+newfunction = function(x, y){
+  z = x+y
+  data.frame(result1 = z*z, result2 = z+z)
+}
+```
+
+my newfunction on the second number of the second column AND the first number of the second column is `r newfunction(ProjectData[2,2], ProjectData[1,2])`
+
+

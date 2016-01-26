@@ -1,0 +1,96 @@
+---
+title: "Example of Scalable Reusability"
+author: "T. Evgeniou"
+output: html_document
+---
+
+Here is how you can create a **very long** document using only **very few lines of code**. 
+
+Let's consider the [boats case study](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) as an example. Let's only consider the cluster analysis part of the [case solution.](http://inseaddataanalytics.github.io/INSEADAnalytics/Session2inclass.html) Here is how to get a report with all possible number of hierarchical cluster analysis methods tested (and endlessly more if needed). Of course one needs to then see all this output to decide what method is the best (statistically, interpretation, business-wise). Adding also all k-means methods (or other methods) will just make the report longer, but your write up time will not change much!
+
+Let's first run all necessary code from the [ analysis.](http://inseaddataanalytics.github.io/INSEADAnalytics/Session2inclass.html)
+
+Check this first (manually), as always. 
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("CourseSessions/Sessions45")
+list.files()
+rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
+```
+
+The focus in this example is on the hierarchical clustering segmentation part *only* (this is an example anyway), so we assume we selected the factors already (of course one can also change the number of factors used, all automatically). 
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+source("R/library.R")
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+ProjectData <- read.csv("data/Boats.csv", sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) 
+colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
+ProjectDataFactor=ProjectData[,c(2:30)]
+
+segmentation_attributes_used = c(10,19,5,12,3) 
+profile_attributes_used = 2:ncol(ProjectData)
+ProjectData_segment=ProjectData[,segmentation_attributes_used]
+ProjectData_profile=ProjectData[,profile_attributes_used]
+
+```
+
+And now we just need to call this new function `repetitioncode_example` defined in file `repetitioncode_example.R` using all possible variations of inputs (e.g. about the `distance_used` or the `hclust_method` in this example).
+
+Here is the "trick":
+<br>
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+repetitioncode_example <- function(distance_used,hclust_method,numb_clusters_used,dataset){
+  Hierarchical_Cluster_distances <- dist(dataset, method=distance_used)
+  Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
+  plot1 %<a-% {plot(Hierarchical_Cluster, main = NULL, sub=NULL, labels = 1:nrow(dataset), xlab="Our Observations", cex.lab=1, cex.axis=1) 
+    # Draw dendogram with red borders around the 3 clusters
+    rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
+  }
+  df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:(nrow(ProjectData)-1)))
+  colnames(df1) <- c("distances","index")
+  Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+  text1 = paste("We now use as distance_used the method **",distance_used, "** and as hclust_method used the method **",hclust_method,"**", sep="")
+  text2 = "Finally, we can see the **dendrogram** (see class readings and online resources for more information) to have a first rough idea of what segments (clusters) we may have - and how many."
+  text3 = "We can also plot the 'distances' traveled before we need to merge any of the lower and smaller in size clusters into larger ones - 
+  the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, 
+  this plot has n-1 numbers."
+  all_results = list(
+    plot1 = plot1, Line = Line, text1 = text1, text2 = text2, text3 = text3
+  )
+}
+```
+
+We then only need to use this function (also use `results = `asis``)) and we get a report with all the versions an with **customized, automatically generated text**
+
+<br> 
+```{r echo=TRUE, eval=TRUE, results='asis'}
+numb_clusters_used = 3  # let's not generate 100 pages! 
+
+#for (distance_used in c("euclidean","maximum")) # see help(dist), add any of these (but the more you add the longer the report will be) c("euclidean", "maximum", "manhattan", "canberra", "binary","minkowski")
+#  for (hclust_method in c("ward.D","ward.D2")) { # see help(hclust), add any of these (but the more you add the longer the report will be)  c("ward.D","ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
+
+for (distance_used in c("euclidean", "maximum", "manhattan", "canberra", "binary","minkowski")) # see help(dist), add any of these (but the more you add the longer the report will be) c("euclidean", "maximum", "manhattan", "canberra", "binary","minkowski")
+  for (hclust_method in c("ward.D","ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")) { # see help(hclust), add any of these (but the more you add the longer the report will be)  c("ward.D","ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
+    
+    tmp = repetitioncode_example(distance_used,hclust_method,numb_clusters_used,ProjectData_segment)
+    cat("<br><hr><br>")
+    cat(tmp$text1)
+    cat("<br>")
+    tmp$plot1
+    cat("<br>")
+    cat(tmp$text2)
+    cat("<br>")
+    print(tmp$Line,'chart')
+    cat("<br>")
+    cat(tmp$text3)
+    cat("<br> <br>")
+  }
+```
+
+That's all: see the html now. How long can you make the report? How much do **you** need to write in order to generate a 50 pages report? A 500 pages one?
+
+
+
