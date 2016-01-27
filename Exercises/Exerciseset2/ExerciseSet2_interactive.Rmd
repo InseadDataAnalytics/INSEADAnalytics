@@ -1,0 +1,645 @@
+---
+title: "Exercise Set 2 Interactive: A $300 Billion Strategy"
+author: "T. Evgeniou"
+output: html_document
+runtime: shiny
+---
+
+<br>
+
+The purpose of this exercise is to become familiar with:
+
+1. Some time series analysis tools;
+2. Correlation matrices and principal component analysis (PCA) (see [readings of sessions 3-4](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html));
+3. More data manipulation and reporting tools (including Google Charts).
+
+As always, while doing this exercise we will also see how to generate replicable and customizable reports. For this purpose the exercise uses the R Markdown capabilities (see [Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) or a [basic introduction to R Markdown](http://rmarkdown.rstudio.com/authoring_basics.html)).  These capabilities allow us to create dynamic reports. For example today's date is `r Sys.Date()` (you need to see the .Rmd to understand that this is *not* a static typed-in date but it changes every time you compile the .Rmd - if the date changed of course).
+
+Before starting, make sure you have pulled the [exercise set 2 souce code files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/Exercises/Exerciseset2)  on your github repository (if you pull the course github repository you also get the exercise set files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "Data Analytics R version/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("Exercises/Exerciseset2/")
+list.files()
+```
+
+**Note:** as always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Let's now see the exercise. 
+
+**IMPORTANT:** You should answer all questions by simply adding your code/answers in this document through editing the file ExerciseSet2.Rmd and then clicking on the "Knit HTML" button in RStudio.  Once done, please post your .Rmd and html files in your github repository. 
+
+<hr>
+
+### The Exercise: Introduction
+
+For this exercise we will use the Futures' daily returns  to develop what is considered to be a *"classic" hedge fund trading strategy*, a **futures trend following strategy**. There is a lot written about this, so it is worth doing some online search about "futures trend following", or "Managed Futures", or "Commodity Trading Advisors (CTA)". There is about **[$300 billion](http://www.barclayhedge.com/research/indices/cta/Money_Under_Management.html)** invested on this strategy today, and is considered to be one of the **oldest hedge fund strategies**. Some example links are:
+
+* [A fascinating report on 2 centuries of trend following from the CFM hedge - a $6 billion fund](https://www.trendfollowing.com/whitepaper/Two_Centuries_Trend_Following.pdf)
+* [Another fascinating report on 1 century of trend following investing from AQR - a $130 billion fund](https://www.aqr.com/library/aqr-publications/a-century-of-evidence-on-trend-following-investing)
+* [Wikipedia on CTAs](https://en.wikipedia.org/wiki/Commodity_trading_advisor)
+* [Morningstar on CTAs](http://www.morningstar.co.uk/uk/news/69379/commodity-trading-advisors-(cta)-explained.aspx)
+* [A report](http://perspectives.pictet.com/wp-content/uploads/2011/01/Trading-Strategies-Final.pdf)
+* [Man AHL (a leading hedge fund on CTAs - among others) - an $80 billion fund](https://www.ahl.com)
+
+Of course there are also many starting points for developing such a strategy (for example [this R bloggers one](http://www.r-bloggers.com/system-from-trend-following-factors/) (also on [github](https://gist.github.com/timelyportfolio/2855303)), or the [turtle traders website](http://turtletrader.com) which has many resources. 
+
+In this exercise we will develop our own strategy from scratch.  
+
+*Note (given today's market conditions):* **Prices of commodities, like oil or gold, can be excellent indicators of the health of the economy and of various industries, as we will also see below**.
+
+### Getting the Futures Data
+
+There are many ways to get futures data. For example, one can use  the [Quandl package,](https://www.quandl.com/browse) or the [turtle traders resources,](http://turtletrader.com/hpd/) or (for INSEAD only) get data from  the [INSEAD library finance data resources](http://sites.insead.edu/library/E_resources/ER_subject.cfm#Stockmarket) website. One has to pay attention on how to create continuous time series from underlying contracts with varying deliveries (e.g. see [here](https://www.quantstart.com/articles/Continuous-Futures-Contracts-for-Backtesting-Purposes) ). Using a combination of the resources above, we will use data for a number of commodities. 
+
+
+### Data description
+
+Let's load the data and see what we have. 
+
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+library("FactoMineR")
+library("psych")
+library("timeDate")
+library("googleVis")
+library("quantmod")
+source("helpersSet2.R")
+load("data/FuturesTrendFollowingData.Rdata")
+```
+
+<br>
+We have data from `r head(rownames(futures_data),1)` to `r tail(rownames(futures_data),1)` of daily returns for the following `r ncol(futures_data)` futures: 
+
+<br>
+
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE, results='asis'}
+show_data = data.frame(colnames(futures_data))
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> 
+
+
+
+### Basic data analysis
+
+First let's see how each of these futures performs:
+
+
+```{r, eval=TRUE, echo = FALSE}
+selectInput("asset", "Select Futures Contract:", choices = colnames(futures_data),selected = "SP500 E-Mini") 
+
+renderPlot({
+  pnl_plot(futures_data[,input$asset])
+})
+
+renderTable({
+  pnl_matrix(futures_data[,input$asset])
+})
+```
+
+
+Let's also see how any equal-weighted ("1/n" where n is the total number of contracts - long plus short - selected) long/short portfolio would do for some selected futures contracts. Select the contracts you would like to be long and those to be short:
+
+```{r, eval=TRUE, echo = FALSE}
+checkboxGroupInput("asset2l", "Select Futures Contract for Long:", choices = colnames(futures_data),selected = "SP500 E-Mini",inline=TRUE) 
+
+checkboxGroupInput("asset2s", "Select Futures Contract for Short:", choices = colnames(futures_data),selected = "SP500 E-Mini",inline=TRUE) 
+
+```
+
+<br>
+You can also scale your positions based on volatility, what is known as **[risk parity](http://www.investopedia.com/terms/r/risk-parity.asp)** - see also this [recent article.](http://www.econ.yale.edu/~af227/pdf/Leverage%20Aversion%20and%20Risk%20Parity%20-%20Asness%20,%20Frazzini%20and%20Pedersen.pdf)
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+checkboxInput("volfutures", "Do you want to scale with volatility? (Note that doing this leads to some losses of days at the beginning of the series)",value=FALSE) 
+
+sliderInput("voldays", "Enter the days of volatility to use", min=5, max=1000, value = 60)
+
+renderPlot({
+  tmp = futures_data*0
+  if (length(input$asset2l)) tmp[,input$asset2l] = tmp[,input$asset2l,drop=F] + futures_data[,input$asset2l,drop=F]
+  if (length(input$asset2s)) tmp[,input$asset2s] = tmp[,input$asset2s,drop=F] - futures_data[,input$asset2s,drop=F]
+  if (input$volfutures){
+    weights <- apply(tmp, 2, function(r){
+      res = 0*r
+      if (sum(r!=0) > 5)
+        res = scrub(1/as.numeric(shift((scrub(rolling_variance(matrix(r,ncol=1), input$voldays))),2)))
+      res
+    })
+    weights = t(apply(weights,1,function(r) r/ifelse(sum(r)!=0, sum(r), 1)))
+    tmp = tmp*weights
+  } else {
+    weights = t(apply(tmp!=0,1,function(r) r/ifelse(sum(r)!=0, sum(r), 1)))
+    tmp = tmp*weights
+  }
+  ptf = structure(apply(tmp,1,sum), .Names = rownames(tmp))
+  if (sum(ptf!=0))
+    ptf = ptf[head(which(ptf!=0),1):length(ptf)]
+  pnl_plot(ptf) # note this does not take case of days where at least some of the series are 0
+  
+})
+
+renderTable({
+   tmp = futures_data*0
+  if (length(input$asset2l)) tmp[,input$asset2l] = tmp[,input$asset2l,drop=F] + futures_data[,input$asset2l,drop=F]
+  if (length(input$asset2s)) tmp[,input$asset2s] = tmp[,input$asset2s,drop=F] - futures_data[,input$asset2s,drop=F]
+  if (input$volfutures){
+    weights <- apply(tmp, 2, function(r){
+      res = 0*r
+      if (sum(r!=0) > 5)
+        res = scrub(1/as.numeric(shift((scrub(rolling_variance(matrix(r,ncol=1), input$voldays))),2)))
+      res
+    })
+    weights = t(apply(weights,1,function(r) r/ifelse(sum(r)!=0, sum(r), 1)))
+    tmp = tmp*weights
+  } else {
+    tmp = tmp*t(apply(tmp!=0,1,function(r) r/ifelse(sum(r)!=0, sum(r), 1)))
+  }
+  ptf = structure(apply(tmp,1,sum), .Names = rownames(tmp))
+  if (sum(ptf!=0)) ptf = ptf[head(which(ptf!=0),1):length(ptf)]
+  pnl_matrix(ptf) # note this does not take case of days where at least some of the series are 0
+})
+```
+
+as well as its 250-trading days rolling correlation of this strategy with the S&P:
+
+```{r, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+renderPlot({
+  tmp = futures_data*0
+  if (length(input$asset2l)) tmp[,input$asset2l] = tmp[,input$asset2l,drop=F] + futures_data[,input$asset2l,drop=F]
+  if (length(input$asset2s)) tmp[,input$asset2s] = tmp[,input$asset2s,drop=F] - futures_data[,input$asset2s,drop=F]
+  if (input$volfutures){
+    weights <- apply(tmp, 2, function(r){
+      res = 0*r
+      if (sum(r!=0) > 5)
+        res = scrub(1/as.numeric(shift((scrub(rolling_variance(matrix(r,ncol=1), input$voldays))),2)))
+      res
+    })
+    weights = t(apply(weights,1,function(r) r/ifelse(sum(r)!=0, sum(r), 1)))
+    tmp = tmp*weights
+  } else {
+    tmp = tmp*t(apply(tmp!=0,1,function(r) r/ifelse(sum(r)!=0, sum(r), 1)))
+  }
+  ptf = structure(apply(tmp,1,sum), .Names = rownames(tmp))
+  if (sum(ptf!=0)) ptf = ptf[head(which(ptf!=0),1):length(ptf)]
+
+  tmp = rolling_correlation(matrix(ptf,ncol=1), futures_data[names(ptf),"SP500 E-Mini",drop=F], 250)
+  names(tmp) <- names(ptf)
+  tmp[1:250] <- NA
+  
+  plot(tmp, type="l",axes=FALSE,  ylab = "Correlation", xlab="",main="250-day Rolling Correlation with S&P", lwd=1.4)
+  axis(1,at=seq(1,length(tmp),length.out=15),las=2,labels=names(ptf)[seq(1,length(tmp),length.out=15)],cex.axis=0.9)
+  axis(2,cex.axis=1.1)
+})
+
+```
+
+Can you create a simple ("1/n") long/short portfolio that performed well during this period? Why did that portfolio work in this period or during some part of the period? Do you expect it to also work in the future? Why and/or why not? How was its correlation with the S&P during this period?
+
+Let's now see how these are correlated. Let's also make it look nicer (than, say, what we did in Exercise Set 1), using [Google Charts](https://code.google.com/p/google-motion-charts-with-r/wiki/GadgetExamples) (see examples online, e.g. [examples](https://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html) and the [R package used used](https://cran.r-project.org/web/packages/googleVis/googleVis.pdf) ).The correlation matrix is as follows (note that the table is "dynamic": for example you can sort it based on each column by clicking on the column's header)
+
+<br>
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(cbind(colnames(futures_data), round(cor(futures_data),2)))
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+```
+
+<br>
+
+We see quite high correlations among some of the futures. Does it make sense? Why? Do you see some negative correlations? Do those make sense? 
+
+Given such high correlations, we can try to see whether there are some "principal components" (see [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)). This analysis can also indicate whether all futures (the global economy!) are driven by some common "factors" (let's call them *"risk factors"*). 
+
+<br>
+
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+Variance_Explained_Table_results<-PCA(futures_data, graph=FALSE)
+Variance_Explained_Table<-cbind(paste("component",1:ncol(futures_data),sep=" "),Variance_Explained_Table_results$eig)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+colnames(Variance_Explained_Table)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(Variance_Explained_Table)
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'),formats=list(Eigenvalue="#.##",Percentage_of_explained_variance="#.##",Cumulative_percentage_of_explained_variance="#.##"))
+print(m1,'chart')
+```
+<br> 
+
+Here is the scree plot (see Sessions 3-4 readings):
+<br>
+
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+eigenvalues  <- Variance_Explained_Table[,2]
+```
+
+```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
+
+<br>
+
+Let's now see how the 20 first principal components look like. Let's also use the *rotated* factors (note that these are not really the "principal component", as explained in the [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)) and not show any numbers less than 0.3 in absolute value, to avoid cluttering. Note again that you can sort the table according to any column by clicking on the header of that column. 
+<br>
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+
+corused = cor(futures_data[,apply(futures_data!=0,2,sum) > 10, drop=F])
+Rotated_Results<-principal(corused, nfactors=min(20,ncol(corused)), rotate="varimax",score=TRUE)
+Rotated_Factors<-round(Rotated_Results$loadings,2)
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+
+sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+Rotated_Factors <- Rotated_Factors[sorted_rows,]
+Rotated_Factors_all = Rotated_Factors
+Rotated_Factors[abs(Rotated_Factors) < 0.3]<-NA
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+show_data <- Rotated_Factors 
+show_data<-cbind(rownames(show_data),show_data)
+colnames(show_data)<-c("Variables",colnames(Rotated_Factors))
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> 
+
+#### Questions:
+
+1. How many principal components ("factors") do we need to explain at least 50% of the variance in this data?
+2. What are the highest weights (in absolute value) of the first principal component portfolio above on the `r ncol(futures_data)` futures? 
+3. Can we interpret the first 10 components? How would you call these factors?
+4. Can you now generate the principal components and scree plot using only: a) the pre-crisis bull market years (e.g. only using the data between November 1, 2002, and October 1, 2007)?  b) the financial crisis years (e.g. only using the data between October 1, 2007 and  March 1, 2009), (Hint: you can select subsets of the data using for example the command `crisis_data = futures_data[as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01", ])
+5. Based on your analysis in question 3, please discuss any differences you observe about the futures returns during  bull and bear markets.  What implications may these results have? What do the results imply about how assets are correlated during bear years compared to bull years? 
+
+<br>
+
+**Your Answers here:**
+<br>
+<br>
+<br>
+<br>
+
+
+<hr>
+
+### Interactive Analysis of Markets Over Time
+
+We can also create an interactive tool to answer question 4 more generally. For example, one can select any time period and see how much of the variance of the `r ncol(futures_data)` futures during that time period is explained using only the top N eigenvectors (**"risk factors"** driving the returns during that time period), how the top eigenvectors change, etc. Here is an example.
+
+**Note**: once you select the sliders, you need to **wait a few seconds** until the figures "fades out" and then "fades in" again. You may also need to wait a few seconds the first time for the plots to render. 
+
+<br>
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+eigenvalues_ini = eigenvalues
+Variance_Explained_Table_ini = Variance_Explained_Table
+Rotated_Factors_all_ini = Rotated_Factors_all
+Rotated_Factors_ini = Rotated_Factors
+futures_data_ini = futures_data
+
+dummy_matrix = matrix(0,nrow=as.numeric(as.Date(tail(rownames(futures_data_ini),1)) -as.Date(head(rownames(futures_data_ini),1)))+1, ncol=ncol(futures_data_ini))
+tmprownames = head(rownames(futures_data_ini),1)
+for (iter in 1:(nrow(dummy_matrix)-1)) tmprownames= c(tmprownames,as.character(as.Date(tail(tmprownames,1))+1))
+rownames(dummy_matrix) <- tmprownames
+dummy_matrix[rownames(futures_data_ini),]<- futures_data_ini
+colnames(dummy_matrix) <- colnames(futures_data_ini)
+```
+
+```{r, eval=TRUE, echo = FALSE}
+
+dateInput("startdate", "Starting Date:", value = as.Date(head(tail(rownames(futures_data_ini), 360),1)), min = as.Date(head(rownames(futures_data_ini),1)), max = as.Date(head(tail(rownames(futures_data_ini),121),1)),startview = "year")
+
+dateInput("enddate", "End Date (allow at least 120 days from the starting day you selected - else it will automatically use data up to 120 days after your start date):", value = as.Date(tail(rownames(futures_data_ini),1)), min = as.Date(head(rownames(futures_data_ini),1)), max = as.Date(tail(rownames(futures_data_ini),1)),startview = "year")
+
+selectInput("plotfactors", "Factors used", (1:ncol(futures_data_ini)), selected = 5, multiple = FALSE)
+
+
+
+#
+new_data <- reactive({
+  starting = as.numeric(input$startdate - as.Date(head(rownames(futures_data_ini),1)))+1
+  ending = as.numeric(input$enddate     - as.Date(head(rownames(futures_data_ini),1)))+1 
+  ending = ifelse(ending - starting < 120,starting + 120, ending)
+  
+  futures_data = dummy_matrix[starting:ending,] 
+  futures_data = futures_data[apply(futures_data!=0,1,sum)!=0,]
+  
+  Variance_Explained_Table_results<-PCA(futures_data, graph=FALSE)
+  Variance_Explained_Table<-cbind(paste("component",1:ncol(futures_data),sep=" "),Variance_Explained_Table_results$eig)
+  Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+  colnames(Variance_Explained_Table)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+  ##
+  eigenvalues  <- rbind(eigenvalues_ini,Variance_Explained_Table[,2])
+  rownames(eigenvalues) <- c("2001-2016", "selected period")
+  percent_variance_explained = rbind(Variance_Explained_Table_ini[,4],Variance_Explained_Table[,4])
+  rownames(percent_variance_explained) <- c("2001-2016", "selected period")
+  ##
+  corused = cor(futures_data[,apply(futures_data!=0,2,sum) > 10, drop=F])
+  Rotated_Results<-principal(corused, nfactors=min(20,ncol(corused)), rotate="varimax",score=TRUE)
+  Rotated_Factors<-round(Rotated_Results$loadings,2)
+  Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+  colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+  sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+  Rotated_Factors <- Rotated_Factors[sorted_rows,]
+  Rotated_Factors[abs(Rotated_Factors) < 0.3]<-NA
+  
+  list(
+    futures_data = futures_data,
+    eigenvalues=eigenvalues,
+    percent_variance_explained = percent_variance_explained,
+    Rotated_Factors=Rotated_Factors,
+    plotfactors = input$plotfactors
+  )
+})
+
+#renderGvis({
+#df = new_data()$df
+#  gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#})
+
+```
+
+
+<br>
+This is the cumulative variance explained (whole period versus selected period) using tthe top selected eigenvectors (risk factors):
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+renderPlot({
+  par(las=1, mar=c(11,3,3, 2))
+  barplot(new_data()$percent_variance_explained[,1:new_data()$plotfactors,drop=F],col=c("darkblue","red"),main = paste("Futures' Percent Variance Explained: Blue is 2001-2016, red is from ", head(rownames(new_data()$futures_data),1)," to ", tail(rownames(new_data()$futures_data),1), sep=""), names.arg = as.character(1:new_data()$plotfactors), ylab = "Percent Explained", xlab = "", cex.main = 1,  cex.names=1.5, beside=TRUE, cex.axis = 2, legend = rownames(new_data()$percent_variance_explained[,1:new_data()$plotfactors,drop=F]))
+  abline(h=20, lty="dotted",lwd=2)
+  abline(h=30, lty="dotted",lwd=2)
+  abline(h=40, lty="dotted",lwd=2)
+  abline(h=50, lty="dotted",lwd=2)
+},width = "auto", height = "auto")
+
+```
+<br>
+
+And here are the first 5 eigenvectors (**risk factors**) for the selected period, showing only the factor loadings that are larger than 0.3 in absolute value. 
+
+**Note**: we show the top (rotated) principal components for the **period selected**, and compare the loadings with those in the **fist (rotated) principal components of the entire period using the same order of components (e.g. 1 to 5)**. If for example in the selected period the first principal component mainly uses futures that are not highly used by the **first** principal component of the entire period (but may be used by the second one for the entire period, for example), we still show those futures from the first principal component of the entire period (in blue color). 
+
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+renderPlot({
+  par(las=1, mar=c(11,3,3, 2))
+  barplot(rbind(Rotated_Factors_all_ini[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,1])],1],new_data()$Rotated_Factors[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,1])],1]),
+          col=c("darkblue","red"), 
+          main = paste("Risk Factor ",1," : Blue is is 2001-2016, red is from ", head(rownames(new_data()$futures_data),1)," to ", tail(rownames(new_data()$futures_data),1) ,sep=""), 
+          ylab = "Factor Loading", 
+          xlab = "", las=2, cex.main = 2,  cex.names=1.3, 
+          names.arg = rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,1]), drop=F], legend = c("All Period","Selected Period"), beside=TRUE, cex.axis = 1.2)
+},width = "auto", height = "auto")
+```
+<br>
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+renderPlot({
+  par(las=1, mar=c(11,3,3, 2))
+  barplot(rbind(Rotated_Factors_all_ini[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,2])],2],new_data()$Rotated_Factors[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,2])],2]),
+          col=c("darkblue","red"), 
+          main = paste("Risk Factor ",2," : Blue is is 2001-2016, red is from ", head(rownames(new_data()$futures_data),1)," to ", tail(rownames(new_data()$futures_data),1) ,sep=""), 
+          ylab = "Factor Loading", 
+          xlab = "", las=2, cex.main = 2,  cex.names=1.3, 
+          names.arg = rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,2]), drop=F], legend = c("All Period","Selected Period"), beside=TRUE, cex.axis = 1.2)
+},width = "auto", height = "auto")
+```
+
+<br>
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+renderPlot({
+  par(las=1, mar=c(11,3,3, 2))
+  barplot(rbind(Rotated_Factors_all_ini[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,3])],3],new_data()$Rotated_Factors[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,3])],3]),
+          col=c("darkblue","red"), 
+          main = paste("Risk Factor ",3," : Blue is is 2001-2016, red is from ", head(rownames(new_data()$futures_data),1)," to ", tail(rownames(new_data()$futures_data),1) ,sep=""), 
+          ylab = "Factor Loading", 
+          xlab = "", las=2, cex.main = 2,  cex.names=1.3, 
+          names.arg = rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,3]), drop=F], legend = c("All Period","Selected Period"), beside=TRUE, cex.axis = 1.2)
+},width = "auto", height = "auto")
+```
+
+<br>
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+renderPlot({
+  par(las=1, mar=c(11,3,3, 2))
+  barplot(rbind(Rotated_Factors_all_ini[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,4])],4],new_data()$Rotated_Factors[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,4])],4]),
+          col=c("darkblue","red"), 
+          main = paste("Risk Factor ",4," : Blue is is 2001-2016, red is from ", head(rownames(new_data()$futures_data),1)," to ", tail(rownames(new_data()$futures_data),1) ,sep=""), 
+          ylab = "Factor Loading", 
+          xlab = "", las=2, cex.main = 2,  cex.names=1.3, 
+          names.arg = rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,4]), drop=F], legend = c("All Period","Selected Period"), beside=TRUE, cex.axis = 1.2)
+},width = "auto", height = "auto")
+```
+
+<br>
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+renderPlot({
+  par(las=1, mar=c(11,3,3, 2))
+  barplot(rbind(Rotated_Factors_all_ini[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,5])],5],new_data()$Rotated_Factors[rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,5])],5]),
+          col=c("darkblue","red"), 
+          main = paste("Risk Factor ",5," : Blue is is 2001-2016, red is from ", head(rownames(new_data()$futures_data),1)," to ", tail(rownames(new_data()$futures_data),1) ,sep=""), 
+          ylab = "Factor Loading", 
+          xlab = "", las=2, cex.main = 2,  cex.names=1.3, 
+          names.arg = rownames(new_data()$Rotated_Factors)[!is.na(new_data()$Rotated_Factors[,5]), drop=F], legend = c("All Period","Selected Period"), beside=TRUE, cex.axis = 1.2)
+},width = "auto", height = "auto")
+```
+<br>
+
+```{r, eval=TRUE, echo = FALSE}
+futures_data = futures_data_ini
+```
+
+<hr>
+
+### A Simple Futures Trend Following Strategy
+
+We can now develop a simple futures trend following trading strategy, as outlined in the papers in the Exercise Introduction above. There are about $300 billion invested in such strategies! Of course we cannot develop here a sophisticated product, but with some more work... 
+
+We will do the following: 
+
+1. Calculate a number of moving averages of different "window lengths" for each of the `r ncol(futures_data)` futures - there are [many](http://www.r-bloggers.com/stock-analysis-using-r/) so called [technical indicators](http://www.investopedia.com/active-trading/technical-indicators/) one can use. We will use  the  "moving average" function `ma` for this (try for example to see what this returns `ma(1:10,2)` ). 
+2. Add the signs (can also use the actual moving average values of course - try it!) of these moving averages (as if they "vote"), and then scale this sum across all futures so that the sum of their (of the sum across all futures!) absolute value across all futures is 1 (hence we invest $1 every day - you see why?).
+3. Then invest every day in each of the `r ncol(futures_data)` an amount that is defined by the weights calculated in step 2, using however the weights calculated using data until 2 days ago (why 2 days and not 1 day?) - see the use of the helper function `shift` for this. 
+4. Finally see the performance of this strategy. 
+
+Here is the code. 
+<br>
+
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+
+signal_used = 0*futures_data # just initialize the trading signal to be 0
+# Take many moving Average (MA) Signals and let them "vote" with their sign (+-1, e.g. long or short vote, for each signal)
+MAfreq<-seq(10,250,by=20)
+for (iter in 1:length(MAfreq))
+  signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
+# Now make sure we invest $1 every day (so the sum of the absolute values of the weights is 1 every day)
+signal_used = t(apply(signal_used,1,function(r) {
+  res = r  
+  if ( sum(abs(r)) !=0 )
+    res = r/sum(abs(r))
+  res
+}))
+colnames(signal_used) <- colnames(futures_data)
+# Now create the returns of the strategy for each futures time series
+strategy_by_future <- scrub(shift(signal_used,2)*futures_data) # use the signal from 2 days ago
+# finally, this is our futures trend following strategy
+trading_strategy = apply(strategy_by_future,1,sum)
+names(trading_strategy) <- rownames(futures_data)
+```
+
+
+### Reporting the performance results
+
+Let's see how this strategy does:
+<br>
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=5,fig.width= 10, fig=TRUE}
+pnl_plot(trading_strategy)
+```
+
+<br>
+<br>
+
+Here is how this strategy has performed during this period. 
+<br>
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(cbind(rownames(pnl_matrix(trading_strategy)), round(pnl_matrix(trading_strategy),2)))
+m1<-gvisTable(show_data,options=list(width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+```
+
+<br>
+This is the 250-trading days rolling correlation of this simple strategy with the S&P:
+
+```{r Figcor, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+tmp = rolling_correlation(matrix(trading_strategy,ncol=1), futures_data[,"SP500 E-Mini",drop=F], 250)
+tmp[1:250] <- NA
+if (0){
+  df           <- cbind(as.data.frame(tmp), rownames(futures_data), rep(0, length(tmp)))
+  colnames(df) <- c("correlation", "dates", "abline")
+  Line         <- gvisLineChart(as.data.frame(df), xvar="dates", yvar=c("correlation","abline"), options=list(title='Rolling Correlation with S&P', legend="right", width=900, height=600, hAxis="{Date', titleTextStyle:{color:'black'}}", vAxes="[{title:'Correlation'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+  print(Line, 'chart')
+}
+plot(tmp, type="l",axes=FALSE,  ylab = "Correlation", xlab="",main="250-day Rolling Correlation with S&P", lwd=1.4)
+axis(1,at=seq(1,length(tmp),length.out=15),las=2,labels=rownames(futures_data)[seq(1,length(tmp),length.out=15)],cex.axis=0.9)
+axis(2,cex.axis=1.1)
+```
+<br>
+
+How does this simple strategy compare with **existing CTA products** such as [this one from Societe Generale?](https://cib.societegenerale.com/fileadmin/indices_feeds/SG_CTA_Monthly_Report.pdf) (Note: one can easily achieve a correlation of more than 0.8 with this specific product - as well as with many other ones)
+
+![Compare our strategy with this product](societegenerale.png) 
+
+<br>
+
+#### Questions
+
+1. Can you describe in more detail what the code above does?
+2. What happens if you use different moving average technical indicators in the code above? Please explore and report below the returns of a trading strategy you build. (Hint: check that the command line `MAfreq<-seq(10,250,by=20)` above does for example - but not only of course, the possibilities are endless)
+3. What does the rolling correlation of the simple futures trend following strategy with S&P indicate? Why? What does it imply?
+
+
+<br>
+
+**Your Answers here:**
+<br>
+<br>
+<br>
+<br>
+
+
+<hr>
+
+### A class competition
+
+Now you have seen how to develop some trading strategies that hedge funds have been using for centuries. Clearly this is only the very first step - as many of the online resources on technical indicators also suggest. Can you now explore more such strategies? How good a **futures trend following hedge fund strategy** can you develop? Let's call this.... a **class competition**! Explore as much as you can and report your best strategy as we move along the course... 
+
+Here is for example something that can be achieved relatively easily...
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=5,fig.width= 10, fig=TRUE}
+load("data/sample_strategy.Rdata")
+pnl_plot(sample_strategy)
+```
+<br>
+
+Or, interactively: 
+
+<br>
+```{r, eval=TRUE, echo = FALSE}
+dateInput("startdateptf", "Starting Date:", value = as.Date(head(names(sample_strategy),1)), min = as.Date(head(names(sample_strategy),1)), max = as.Date(head(tail(names(sample_strategy),3),1)),startview = "year")
+
+dateInput("enddateptf", "End Date (allow at least 2 days from the starting day you selected - else it will automatically use data up to 2 days after your start date):", value = as.Date(tail(names(sample_strategy),1)), min = as.Date(head(names(sample_strategy),1)), max = as.Date(tail(names(sample_strategy),1)),startview = "year")
+
+renderPlot({
+  pnl_plot(sample_strategy[as.Date(names(sample_strategy)) >= input$startdateptf & as.Date(names(sample_strategy)) <= input$enddateptf])
+})
+```
+
+<br>
+
+Here is how this strategy has performed during this period. 
+<br>
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(cbind(rownames(pnl_matrix(sample_strategy)), round(pnl_matrix(sample_strategy),2)))
+m1<-gvisTable(show_data,options=list(width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+```
+
+<br>
+This is the 250-trading days rolling correlation of this strategy with the S&P:
+
+```{r echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+tmp = rolling_correlation(matrix(sample_strategy,ncol=1), futures_data[,"SP500 E-Mini",drop=F], 250)
+tmp[1:250] <- NA
+if (0){
+  df           <- cbind(as.data.frame(tmp), rownames(futures_data), rep(0, length(tmp)))
+  colnames(df) <- c("correlation", "dates", "abline")
+  Line         <- gvisLineChart(as.data.frame(df), xvar="dates", yvar=c("correlation","abline"), options=list(title='Rolling Correlation with S&P', legend="right", width=900, height=600, hAxis="{Date', titleTextStyle:{color:'black'}}", vAxes="[{title:'Correlation'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+  print(Line, 'chart')
+}
+plot(tmp, type="l",axes=FALSE,  ylab = "Correlation", xlab="",main="250-day Rolling Correlation with S&P", lwd=1.4)
+axis(1,at=seq(1,length(tmp),length.out=15),las=2,labels=rownames(futures_data)[seq(1,length(tmp),length.out=15)],cex.axis=0.9)
+axis(2,cex.axis=1.1)
+```
+<br>
+
+<br>
+
+Finally, deploy this shiny app using `shinyapps::deployApp('ExerciseSet2.Rmd')` (you need a [shinyapps.io](https://www.shinyapps.io) account for this).
+
+<br>
+<br>
+
+As always, **have fun** 
+
+
+
+
+
