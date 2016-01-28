@@ -420,14 +420,10 @@ print(m1,'chart')
 <br>
 
 **Your Answers here:**
-<br>
-1. There are 3 segments in the market. I chose 3 segments because 1) the dendrogram noted that there are three very distinct segments that we could classify; 2) when interpreting each segment, there appears very distinct customer characteristics that don't overlap; 3) there is a clear customer target that has emerged from this segmentation exercise.  
-<br>
-2. Segment 1 describes the customer that boats for social purposes and is not a boating enthusiast. Segment 2 describes the customer that refers to the customer who doesn't care about purchasing a  boat now and Segment 3 relates to the customer who cares about boats and about being knowledgeable about boats.
-<br>
-3.If I change the number of factors, I could create smaller clusters and do a microsegmentation exercise. However, those clusters may not be as distinct. 
-<br>
-4. The best customer target would be Segement 3. These customers care about a powerful boat that is affordable. They also tend to boat by themselves and to fix boats by themselves and are great resources about boating knowledge to their peers. They know so much about boating that they can identify what makes a great boat, but understands that high quality does not necessarily simply correlate just with price. 
+<br> 1. There are 3 segments in the market. I chose 3 segments because 1) the dendrogram noted that there are three very distinct segments that we could classify; 2) when interpreting each segment, there appears very distinct customer characteristics that don't overlap; 3) there is a clear customer target that has emerged from this segmentation exercise.  
+<br> 2. Segment 1 describes the customer that boats for social purposes and is not a boating enthusiast. Segment 2 describes the customer that refers to the customer who doesn't care about purchasing a  boat now and Segment 3 relates to the customer who cares about boats and about being knowledgeable about boats.
+<br> 3.If I change the number of factors, I could create smaller clusters and do a microsegmentation exercise. However, those clusters may not be as distinct. 
+<br> 4. The best customer target would be Segment 3. These customers care about a powerful boat that is affordable. They also tend to boat by themselves and to fix boats by themselves and are great resources about boating knowledge to their peers. They know so much about boating that they can identify what makes a great boat, but understands that high quality does not necessarily simply correlate just with price. 
 <hr>
 
 **You have now completed your first market segmentation project.** Do you have data from another survey you can use with this report now? 

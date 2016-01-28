@@ -1,0 +1,82 @@
+"","Segment 1","Segment 2","Segment 3"
+"Q1_1_When buying a boat  I do a lot of shopping around and visit multiple dealers",0.969085855219129,1.00243419533919,1.02088724002367
+"Q1_2_When buying a boat  getting the lowest price is more important than the boat brand",0.93598947006561,0.789054259033547,1.17592857368833
+"Q1_3_The brand of boat I buy says a lot about who I am",0.958862867140965,0.886908184484566,1.09925627131016
+"Q1_4_I only consider buying a boat from a reputable brand",0.996862222289363,1.02849109057601,0.984769815835655
+"Q1_5_I am willing to pay a premium for a brand with a reputation for high quality",0.980876625118639,0.991905700702264,1.01881807705959
+"Q1_6_Owning a boat is a way of rewarding myself for my hard work",0.966215309643798,0.968733197772046,1.0436680233971
+"Q1_7_Owning a boat gives me a sense of achievement",0.961762173296414,0.922898329262622,1.07504844699397
+"Q1_8_When buying a boat  functionality is more important than style",0.954785737367644,1.0145343602553,1.02380775604664
+"Q1_9_I see my boat as a status symbol",0.95070753653073,0.725292298707604,1.20444116952354
+"Q1_10_When buying a boat  I rely more on expert opinion than my own  e g  consumer reports  salespeople ",1.02027519865161,0.93846124391687,1.02312339378211
+"Q1_11_I tend to perform minor boat repairs and maintenance on my own",0.593053565960419,1.19859448280022,1.17264257793775
+"Q1_12_When it comes to boating  I tend to prefer a basic boat with little to no frills",0.946010022091707,0.963351782826827,1.06160291209401
+"Q1_13_When buying a boat  I tend to buy the latest and greatest",0.959315964500531,0.91089109383533,1.08419557487592
+"Q1_14_When buying accessories for my boat  I tend to buy the latest and greatest",0.945185941553501,0.943493842512379,1.07439825044909
+"Q1_15_I am serious about the technology on my boat",0.933957833211565,0.992642083897158,1.05233601602055
+"Q1_16_People tend to come to me for advice about boating",0.860714020628,0.981293884507547,1.11233741262006
+"Q1_17_I consider myself more knowledgeable about boating than the rest of my boating peers",0.876441317090686,0.973336366735163,1.10583876791083
+"Q1_18_Boating gives me a feeling of adventure",0.979888496615341,0.975670886090722,1.02950651257439
+"Q1_19_Boating allows me to experience nature",0.982143775085962,0.994553608088615,1.01627402786587
+"Q1_20_When not on my boat  I often find myself doing boating related activities",0.898854246943792,0.961266480168951,1.09702578725445
+"Q1_21_Boating helps me escape from everyday life and relax",0.980179474821873,0.995407745930895,1.01717153215895
+"Q1_22_Boating helps me stay active",0.96361722700017,0.99701959651288,1.02817282914367
+"Q1_23_Boating allows me to excel in the sports that I am passionate about   e g  fishing  racing  water sports ",0.930159236660946,0.968712032934219,1.06978646095588
+"Q1_24_Boating gives me an outlet to socialize with family and or friends",0.988055052648163,0.983734327148293,1.01864038352524
+"Q1_25_Being in charge of my boat is very important to me",0.924306421036947,0.978394928569761,1.06807585624586
+"Q1_26_Having a powerful boat is what is most important to me",0.949132230769646,0.864715958724501,1.11993410931191
+"Q1_27_Boating is the number one thing I do with my spare time",0.931635469868499,0.923540301686887,1.09646651936652
+"Q1_28_Boating is my true passion in life",0.928151752230221,0.936492711029493,1.09103217818511
+"Q1_29_Boating is one of many things I do in my spare time",0.966863729270273,1.00929035575492,1.0182843881153
+"Q2_How many powerboats do you currently own ",0.898178656105001,1.05410638076403,1.04048360361424
+"Q2_Cluster_Own a boat ",0.906641607106285,1.08496947741108,1.01539710424242
+"Q3_How likely would you be to purchase a new boat in the future ",0.983348978594942,0.986253503593707,1.02050016665674
+"Q4_Approximately how much did you pay for your current Boat ",1.02279641514257,0.973995656607951,0.999469270305523
+"Q5_What is the horse power of your engine brand current boat engine   the boat you want to buy ",0.936879810094137,0.910194557735728,1.10086775331779
+"Q6_Length of Boat  in Feet ",1.00097486096853,1.0032627770663,0.997289861882308
+"Q7_1_I normally boat alone",0.844298342220291,1.00116703962958,1.11201471458011
+"Q7_2_I boat with my spouse or significant other",1.01841618110156,0.995820535242101,0.989233691368772
+"Q7_3_I boat with my family  including kids",1.00285850926616,0.985168666703359,1.0070412250502
+"Q7_4_I boat with my friends",0.988009094205088,0.985873434731061,1.01735960987624
+"Q8_How would you rate your experience regarding boating ",0.904790779828667,1.08104465493911,1.01914815525289
+"Q9_1_Fishing   Below is a list of activities that may or may not do while boating  Please indicate how often you engage in each of these activities",0.922427601500898,1.02167968781551,1.04284644205907
+"Q9_2_Swimming   Below is a list of activities that may or may not do while boating  Please indicate how often you engage in each of these activities",0.978417913081855,0.966212271588259,1.03638165336823
+"Q9_3_Cruising   Below is a list of activities that may or may not do while boating  Please indicate how often you engage in each of these activities",1.02085547755277,0.951350857611285,1.01478519973133
+"Q9_4_Water Sports   Below is a list of activities that may or may not do while boating  Please indicate how often you engage in each of these activities",0.98211541784195,0.959250364804307,1.03798125641669
+"Q9_5_Entertaining socializing   Below is a list of activities that may or may not do while boating  Please indicate how often you engage in each of these activities",1.01955284074351,0.930296479659966,1.02866199272127
+"Q10_During your boating season  how many days out of the year do you typically use your boat",0.968648047740412,1.04023881038973,0.997980938936067
+"Q11_Gender",1.11959142537482,0.942285015025742,0.948867200660436
+"Q12_HOUSEHOLD income",1.02476471040929,1.02040162771506,0.969537102537053
+"Q13_Are you now married  widowed  divorced  separated  never married  or living with a partner ",0.994705652311881,0.889526054146616,1.07169710957772
+"Q14_Current Employment Status",1.06843847194306,1.06710779739726,0.909224795229445
+"Q15_Age in cluster",1.02059276125658,1.14386299421411,0.896715671006892
+"Q16_Name of the Brand rated",1.06335982474045,1.00339149592327,0.952042624408788
+"Q16_1_Is a brand that has been around for a long time",0.974346443215178,0.978253009418616,1.03193289609245
+"Q16_2_Has best in class customer service",0.967112706370983,0.993907650026989,1.02755368194591
+"Q16_3_Has a strong dealer network",0.970090843843911,0.993758446051961,1.02548909674111
+"Q16_4_Is a leader in cutting edge technology",0.96925313153796,1.00548251764731,1.01889355102999
+"Q16_5_Is a leader in safety",0.974214314077916,0.990871681003591,1.02427694112758
+"Q16_6_Is known for its innovative products",0.976159446721211,1.00458036184027,1.01444741022931
+"Q16_7_Is a brand for people who are serious about boating",0.97684801611045,1.00070693282858,1.01632830806939
+"Q16_8_Is a good brand for people that are new to boating",0.976936885107549,1.00287575365428,1.01493166344207
+"Q16_9_Is a brand I see in the water all the time",0.984855378554489,0.992276714849976,1.01570945386942
+"Q16_10_Offers boats that provide a fast and powerful boating experience",0.983475202100561,1.0041436351402,1.00941891321845
+"Q16_11_Offers the best boats for socializing",0.975300304730839,0.977193147471324,1.03189334879313
+"Q16_12_Offers the best boats for water sports  e g   tubing  ski  wakeboard ",1.00032798104795,0.965781773888558,1.02078270789991
+"Q16_13_Offers boats with superior interior style",0.988186362893155,0.974149641646227,1.02443316105029
+"Q16_14_Offers boats with superior exterior style",0.978376219522149,0.990049573844506,1.02176864316302
+"Q16_15_Offers boats that stand out from the crowd",0.979982149929026,1.00367323586057,1.01223692943546
+"Q16_16_Offers boats that look cool",0.987828856018205,0.972750510476158,1.02555148725375
+"Q16_17_Offers boats that can handle rough weather or choppy water",0.979350631966809,1.00072911580375,1.01450272899247
+"Q16_18_Offers boats that can handle frequent and heavy usage",0.975805686959677,1.00407552235943,1.01501366220657
+"Q16_19_Offers a wide breadth of product offerings and accessories",0.978422562274943,1.01156245836643,1.00851977682937
+"Q16_20_Offers boats that I can move around safely",0.981458017090593,1.0068903803132,1.00919208317759
+"Q16_21_Offers boats that are easy to maintain and or repair",0.981997232493005,1.00010814625158,1.01296798871045
+"Q16_22_Offers boats that are easy to use",0.967951401085621,1.0155015861365,1.0136813445549
+"Q16_23_Offers boats that are easy to clean up",0.973405101616198,1.00785112101934,1.01443240071405
+"Q16_24_Has low prices",0.97946104976172,0.973792615545082,1.03096981111365
+"Q16_25_Is a brand that gives me peace of mind",0.962115313243631,0.989577413308403,1.03383196486275
+"Q16_26_Makes me feel I made a smart decision",0.978905235194047,0.998163082879804,1.01640151446202
+"Q16_27_Is a brand that impresses others",0.975374062488222,0.969061704608967,1.03683507220842
+"Q17_Recommend",0.850261187935872,1.0829519434365,1.0574572062413
+"Q18_PurchaseFuture",1.05504028196557,1.10230889952301,0.897301444439306

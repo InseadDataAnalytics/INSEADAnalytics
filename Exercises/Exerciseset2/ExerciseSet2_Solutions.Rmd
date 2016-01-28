@@ -2,7 +2,6 @@
 title: "Exercise Set 2: A $300 Billion Strategy"
 author: "T. Evgeniou"
 output: html_document
-self_contained: no
 ---
 
 <br>
@@ -70,8 +69,8 @@ We have data from `r head(rownames(futures_data),1)` to `r tail(rownames(futures
 
 ```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE, results='asis'}
 show_data = data.frame(colnames(futures_data))
-m1<- gvisTable(show_data,options=list(showRowNumber=TRUE,width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
-plot(m1,'chart')
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
 ```
 <br> 
 
@@ -119,7 +118,7 @@ Here is the scree plot (see Sessions 3-4 readings):
 eigenvalues  <- Variance_Explained_Table[,2]
 ```
 
-```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+```{r, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
 Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
@@ -157,19 +156,181 @@ print(m1,'chart')
 1. How many principal components ("factors") do we need to explain at least 50% of the variance in this data?
 2. What are the highest weights (in absolute value) of the first principal component portfolio above on the `r ncol(futures_data)` futures? 
 3. Can we interpret the first 10 components? How would you call these factors?
-4. Can you now generate the principal components and scree plot using only: a) the pre-crisis bull market years (e.g. only using the data between November 1, 2002, and October 1, 2007)?  b) the financial crisis years (e.g. only using the data between October 1, 2007 and  March 1, 2009), (Hint: you can select subsets of the data using for example the command `crisis_data = futures_data[as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01", ])
+4. Can you now generate the principal components and scree plot using only: a) the pre-crisis bull market years (e.g. only using the data between November 1, 2002, and October 1, 2007)?  b) the financial crisis years (e.g. only using the data between October 1, 2007 and  March 1, 2009), (Hint: you can select subsets of the data using for example the command `crisis_years = futures_data[as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01", ])
 5. Based on your analysis in question 3, please discuss any differences you observe about the futures returns during  bull and bear markets.  What implications may these results have? What do the results imply about how assets are correlated during bear years compared to bull years? 
 6. (Extra - optional) Can you create an interactive (shiny based) tool so that we can study how the "**risk factors**" change ove time? (Hint: see [Exercise set 1](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/Exercises/Exerciseset1/ExerciseSet1.Rmd) and online resources on [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html) such as these [Shiny lessons](http://shiny.rstudio.com/tutorial/lesson1/). Note however that you may need to pay attention to various details e.g. about how to include Google Charts in Shiny tools - so keep this extra exercise for later!).
 
 <br>
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+*Question 1:*
+
+We need at least 6. 
+
+*Question 2:*
+
+We don't need any code to answer this, as we can just see them above. If we want to automatically answer this we can do this:
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+answer = Rotated_Factors[,1][!is.na(Rotated_Factors[,1])]
+names(answer) <- rownames(Rotated_Factors)[!is.na(Rotated_Factors[,1])]
+```
+
+They are: `r answer`. 
+
+*Question 3:*
+
+Again, no coding needed here! The components  ("key risk factors") seem to be: fixed income, FX, equities, equities (again - clearly they matter), Europe related FX, oil, industrial metals, agricultural commodities, precious metals, Asia equities (e.g. Japan). 
+
+*Question 4:*
+
+Let's just re-use the code above. See also this [example of how to efficiently generate long reports by automatically re-using what you wrote before](http://inseaddataanalytics.github.io/INSEADAnalytics/reusability_example.html) (and [source code](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/reusability_example.Rmd)). 
+
+**Note**: code chunks also have names (e.g "Fig1"). You should **not** use the same code chunk name more than once in the file. Hence below we removed the names of the code chunks (which anyway we do not use in this case - but in general they may be useful as references).
+
+Just in case we will need the variables we created also later, let's save them somewhere (with an "_orig" name) and then at the end of this question "get them back" (this is just one simple way to do this - a better way is to use what is called `environments`, but that is more advanced).
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+futures_data_orig = futures_data
+Variance_Explained_Table_results_orig = Variance_Explained_Table_results
+Variance_Explained_Table_orig = Variance_Explained_Table
+eigenvalues_orig = eigenvalues
+corused_orig = corused
+Rotated_Results_orig = Rotated_Results
+Rotated_Factors_orig = Rotated_Factors
+```
+
+Now we do first the pre-crisis years. We use the same name for the data, so we can later copy the whole code and make minor changes (see the crisis-years analysis below):
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+# THIS IS ALL WE CHANGE! NOTE WE HAVE STORED THE ORIGINAL DATA IN futures_data_orig. 
+futures_data = futures_data_orig[as.Date(rownames(futures_data_orig)) > "2002-11-01" & as.Date(rownames(futures_data_orig)) < "2007-10-01", ]
+
+Variance_Explained_Table_results<-PCA(futures_data, graph=FALSE)
+Variance_Explained_Table<-cbind(paste("component",1:ncol(futures_data),sep=" "),Variance_Explained_Table_results$eig)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+colnames(Variance_Explained_Table)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+eigenvalues  <- Variance_Explained_Table[,2]
+corused = cor(futures_data[,apply(futures_data!=0,2,sum) > 10, drop=F])
+Rotated_Results<-principal(corused, nfactors=20, rotate="varimax",score=TRUE)
+Rotated_Factors<-round(Rotated_Results$loadings,2)
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+
+sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+Rotated_Factors <- Rotated_Factors[sorted_rows,]
+Rotated_Factors[abs(Rotated_Factors) < 0.3]<-NA
+
+```
+
+Here is the scree plot for the **pre-crisis years**:
+<br> 
+
+```{r, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
 
 
+Here are the principal components for the **pre-crisis years**:
+<br> 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+show_data <- Rotated_Factors 
+show_data<-cbind(rownames(show_data),show_data)
+colnames(show_data)<-c("Variables",colnames(Rotated_Factors))
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> 
+
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+Variance_Explained_Table_results_orig = Variance_Explained_Table_results
+Variance_Explained_Table_orig = Variance_Explained_Table
+eigenvalues_orig = eigenvalues
+corused_orig = corused
+Rotated_Results_orig = Rotated_Results
+Rotated_Factors_orig = Rotated_Factors
+```
+
+<br>
+<hr> 
+<br>
+
+And now we do the financial crisis years: note that **we use the exact same code, except we changed the definition of the variable `futures_data` in the very first line of the very first code chunk.** 
+<br>
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+futures_data = futures_data_orig[as.Date(rownames(futures_data_orig)) > "2007-10-01" & as.Date(rownames(futures_data_orig)) < "2009-03-01", ]
+
+Variance_Explained_Table_results<-PCA(futures_data, graph=FALSE)
+Variance_Explained_Table<-cbind(paste("component",1:ncol(futures_data),sep=" "),Variance_Explained_Table_results$eig)
+Variance_Explained_Table<-as.data.frame(Variance_Explained_Table)
+colnames(Variance_Explained_Table)<-c("Component","Eigenvalue", "Percentage_of_explained_variance", "Cumulative_percentage_of_explained_variance")
+eigenvalues  <- Variance_Explained_Table[,2]
+corused = cor(futures_data[,apply(futures_data!=0,2,sum) > 10, drop=F])
+Rotated_Results<-principal(corused, nfactors=20, rotate="varimax",score=TRUE)
+Rotated_Factors<-round(Rotated_Results$loadings,2)
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+
+sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+Rotated_Factors <- Rotated_Factors[sorted_rows,]
+Rotated_Factors[abs(Rotated_Factors) < 0.3]<-NA
+
+```
+
+Here is the scree plot for the **crisis years**:
+<br> 
+
+```{r, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line, 'chart')
+```
+
+
+Here are the principal components for the **crisis years**:
+<br> 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+show_data <- Rotated_Factors 
+show_data<-cbind(rownames(show_data),show_data)
+colnames(show_data)<-c("Variables",colnames(Rotated_Factors))
+m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+<br> 
+
+<br>
+**Finally, let's get back our variables**
+
+
+```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
+futures_data = futures_data_orig
+Variance_Explained_Table_results = Variance_Explained_Table_results_orig
+Variance_Explained_Table = Variance_Explained_Table_orig
+eigenvalues = eigenvalues_orig
+corused = corused_orig
+Rotated_Results = Rotated_Results_orig
+Rotated_Factors = Rotated_Factors_orig
+```
+
+
+*Question 5:*
+
+So many things to say here! For example: does the largest eigenvalue increase during the crisis years? If so, this means that **more of the risk (variance) across all assets is explained by one (the first) risk factor** - does this make sense? What is the main risk factor (e.g. first principal component) during the specific crisis? How about in "normal times"? Is it commodities (e.g. oil), fixed income, or equities? How are the relative weights in the principal components changing across different periods? Is long-term or short-term bonds that "matter" more? Are the crisis of 2000, 2007, and possibly today, driven by the same factors? 
+
+*Question 6:*
+
+An interative tool and source code for this exercise are already posted on the course website.
+
+<br>
 <hr>
 
 ### A Simple Futures Trend Following Strategy
@@ -248,9 +409,16 @@ How does this compare with **existing CTA products** such as [this one from Soci
 <br>
 
 **Your Answers here:**
-<br>
-<br>
-<br>
+
+*Question 1:* 
+
+The code computes the moving average returns of each future for different rolling window sizes (in this case for the window lengths of `r MAfreq` days), lets those "windows" vote (with the sign of the returns in that window), and then "buys" futures for which the total vote is positive and "shorts" those for which the total vote is negative. 
+
+*Question 2:* 
+
+Try for example (in the Console, line by line) the code above with `MAfreq<-seq(10,250,by=5)`
+
+
 <br>
 
 
