@@ -175,24 +175,22 @@ Is our Data Representative?
 
 Please prepare a short presentation, due before session 8. 
 
-Instructions: see project handout
-
 ---
 
 ## Some Data Analytics Tools Covered
 
 1. Finding important factors that summarize your data, and visualizing your data: 
-<b style="color:#000;">Factor Analysis and Perceptual Maps</b> (Sessions 2 and 3)
+<b style="color:#000;">Factor Analysis and Perceptual Maps</b> (Sessions 3 and 4)
   
   
   
 2. Finding a few clusters of similar data: 
-<b style="color:#000;">Cluster Analysis</b> (Sessions 4 and 5) 
+<b style="color:#000;">Cluster Analysis</b> (Sessions 5 and 6) 
   
   
   
 3. Discriminating among and predicting successes vs failures: 
-<b style="color:#000;">Logistic Regression and Tree Analysis</b> (Sessions 6 and 7)
+<b style="color:#000;">Logistic Regression and Tree Analysis</b> (Extra material available on course website)
 
 
 ---
@@ -202,23 +200,19 @@ Instructions: see project handout
   
  See course website for instructions and links to various resources
   
-  
-- <b style="color:#000;">Great visualization examples</b>
-
+- <b style="color:#000;">R and Rstudio</b>
 
 - <b style="color:#000;">Github for collaboration</b>
-  
-  
-- <b style="color:#000;">R and Rstudio</b>
-  
-  
+
+- <b style="color:#000;">Great visualization examples</b>
+
 - <b style="color:#000;">Knitr and creating nice reports</b>
-  
-  
+
+- <b style="color:#000;">Customized Data Analytics Web Application Tools</b>
+
 - <b style="color:#000;">Slidify</b>
   
   
-- <b style="color:#000;">Customized Data Analytics Web Application Tools</b>
 
 
 ---
@@ -227,6 +221,7 @@ Instructions: see project handout
 
 1. Explore the course website 
 
-2. Read the Boats case as well as the documents in the Data_Analytics_Case_MarketSegmentation_LuxuryGoods  project on the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/ProjectsMenu.html" target="_blank">projects website </a>
+2. Become familiar with the software tools of the course
 
-3. Become familiar with the software tools of the course
+2. Read the Boats case, the readings for sessions 3-4 (on Factor Analysis), and work on Exercise 2. 
+
