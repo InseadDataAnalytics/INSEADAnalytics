@@ -3,3 +3,11 @@
 *.Rproj
 .Rhistory
 .gitignore
+Exercises/Exerciseset1/twentydays.csv
+Exercises/Exerciseset1/DataSet1.Rdata
+CourseSessions/Sessions45/my_segments.csv
+CourseSessions/Sessions23/my_segments.csv
+CourseSessions/Sessions23/my_segmentation_profiles.csv
+CourseSessions/Sessions45/my_segmentation_profiles.csv
+SOLUTIONS/*
+
