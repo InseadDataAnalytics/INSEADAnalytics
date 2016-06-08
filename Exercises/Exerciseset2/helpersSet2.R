@@ -172,6 +172,12 @@ rolling_variance<-function(data,window){
   average_square - average_move*average_move
 }
 
+rolling_covariance<-function(security,hedge,window){
+  comovement <- (security*hedge)%|%moving_average(window)
+  product_of_means <- (security%|%moving_average(window))*(hedge%|%moving_average(window))
+  comovement-product_of_means
+}
+
 rolling_correlation<-function(security1,security2,window){
   covariance<-rolling_covariance(security1,security2,window)
   variance1<-rolling_variance(security1,window)
