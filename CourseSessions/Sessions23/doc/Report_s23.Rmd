@@ -205,9 +205,13 @@ colnames(thecor)<-colnames(ProjectDataFactor)
 rownames(thecor)<-colnames(ProjectDataFactor)
 ## printing the result in a clean-slate table
 #cat(renderHeatmapX(thecor, border=1,center = 0,vrange_up = 1, vrange_down = 1))
-cat(renderHeatmapX(thecor, border=1))
-    
+#cat(renderHeatmapX(thecor, border=1))
+
+show_data = data.frame(round(thecor,2))
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
 ```
+
 
 There are quite a few large (in absolute value) correlations. For example  GPA, GMAT and Fellowship seem to be highly positively correlated - as expected? Maybe those can be grouped in one "factor"? How about "Communication Skills"? Should that also be part of that same factor? With what weights should we combine these raw attributes in groups? Remember, this is a very simple example where one could possibly derive attributes manually. In practice most of the time data are not as easy to understand, with many more than `r length(factor_attributes_used)` raw attributes. However, even in this simple example people often disagree about how to group the `r length(factor_attributes_used)` raw attributes!
 
