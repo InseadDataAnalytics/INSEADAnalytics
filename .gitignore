@@ -18,3 +18,4 @@ CourseSessions/tmp
 Exercises/*/*.md
 Exercises/*/*.pdf
 Exercises/*/figure
+*.csv
