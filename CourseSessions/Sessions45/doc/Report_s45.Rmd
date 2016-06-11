@@ -531,7 +531,10 @@ cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profil
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
-cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
+#cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
+show_data = data.frame(round(cluster_profile_ratios,2))
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
 ```
 
 **The further a ratio is from 1, the more important that attribute is for a segment relative to the total population.**

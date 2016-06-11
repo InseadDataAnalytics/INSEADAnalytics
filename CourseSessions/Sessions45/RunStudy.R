@@ -22,7 +22,7 @@ datafile_name="Mall_Visits" # do not add .csv at the end! make sure the data are
 # Please ENTER the name Report and Slides (in the doc directory) to generate 
 report_file = "Report_s45"
 #report_file = "KeyDataBoatsSegmentation"
-report_file = "MyBoatsSegmentation"
+#report_file = "MyBoatsSegmentation"
 slides_file = "Slides_s45"
 
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
@@ -76,7 +76,7 @@ max_data_report = 50 # can also chance in server.R
 # 1: start application on LOCAL computer, 0: do not start it
 # SELECT 0 if you are running the application on a server 
 # (DEFAULT is 0). 
-start_local_webapp <- 0
+start_local_webapp <- 1
 # NOTE: You need to make sure the shiny library is installing (see below)
 
 ################################################
