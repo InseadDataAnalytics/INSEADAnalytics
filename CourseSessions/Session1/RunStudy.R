@@ -20,5 +20,5 @@ cat("\n *********\n WORKING DIRECTORY IS ", local_directory, "\n PLEASE CHANGE I
 
 source(paste(local_directory,"library.R", sep="/"))
 
-slidify(paste(local_directory,"doc/Slides_s1.Rmd", sep="/"))
-file.remove(paste(local_directory,"doc/Slides_s1.md", sep="/"))
+slidify(paste(local_directory,"Slides_s1.Rmd", sep="/"))
+file.remove(paste(local_directory,"Slides_s1.md", sep="/"))
