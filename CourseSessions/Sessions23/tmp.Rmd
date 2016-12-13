@@ -1,0 +1,79 @@
+---
+title: "Derived Attributes and Dimensionality Reduction "
+author: "T. Evgeniou"
+output: html_document
+---
+
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# SET UP
+
+# When running the case on a local computer, modify this in case you saved the case in a different directory 
+# (e.g. local_directory <- "C:/user/MyDocuments" )
+# type in the Console below help(getwd) and help(setwd) for more information
+local_directory <- paste(getwd(),"CourseSessions/Sessions23", sep="/")
+#local_directory <- "~INSEADAnalytics/CourseSessions/Sessions23"
+
+# Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
+datafile_name="MBAadmin" #  do not add .csv at the end! make sure the data are numeric!!!! check your file!
+
+# Please ENTER then original raw attributes to use. 
+# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+factor_attributes_used= c(1:7)
+
+# Please ENTER the selection criterions for the factors to use. 
+# Choices: "eigenvalue", "variance", "manual"
+factor_selectionciterion = "eigenvalue"
+
+# Please ENTER the desired minumum variance explained 
+# (ONLY USED in case "variance" is the factor selection criterion used). 
+minimum_variance_explained = 65  # between 1 and 100
+
+# Please ENTER the number of factors to use 
+# (ONLY USED in case "manual" is the factor selection criterion used).
+manual_numb_factors_used = 2
+
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
+rotation_used="varimax"
+
+# Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
+MIN_VALUE=0.5
+
+# Please enter the maximum number of observations to show in the report and slides 
+# (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
+max_data_report = 50 # can also chance in server.R
+
+################################################
+# Now run everything
+
+# this loads the selected data: DO NOT EDIT THIS LINE
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) 
+
+if (datafile_name == "Boats")
+  colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
+
+factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+ProjectDataFactor=ProjectData[,factor_attributes_used]
+
+source(paste(local_directory,"library.R", sep="/"))
+source(paste(local_directory,"heatmapOutput.R", sep = "/"))
+```
+
+
+### What is this for?
+
+
+One of the key steps in Data Analytics is to generate meaningful attributes starting from possibly a large number of **raw attributes**. Consider for example the case of customer data, where for each customer we have a very large number of raw attributes (which could be, for example, *independent variables* in the case of a regression used to predict acquisition, purchases, or churn) ranging from demographic information, to what products they bought in the past, who their friends on various social media sites are, what websites they visit more often, how they rated a number of movies or products in general, whether they use their mobile phone mostly the weekends or in the mornings, how they responded to various surveys, etc. One can easily end up with tens if not thousands of such raw attributes, for thousands or millions of customers. In such cases it is virtually impossible to use some of the "advanced" methodologies developed for data analytics, or even simple ones such as linear regression. This is not only because of compuational reasons but, more important, because of statistical/mathematical reasons as, doing so entails a high risk that the estimated models (e.g. consumer behavior models) may be of very low quality in a statistical hence also practical sense. Moreover, the insights developed may not be practical or actionable as they may correspond to complicated statements involving a very large number of raw customer attributes.  
+
+In such situations, which arise almost always in practice, one needs to spend a lot of creative effort and time - based on a deep contextual knowledge - to generate new  attributes (e.g. "this customer is price sensitive", or "this customer likes comfort", or "this customer is status conscious", etc) from the original raw ones, which we call here **derived attributes**. These attributes can be generated manually, or using what we call **data or dimensionality reduction statistical techniques**. 
+
+We will consider a specific family of such statistical techniques which we will broadly call **Factor Analysis techniques**. Such techniques are often used at the early stages of a data analytics project, for example before running a regression with many independent variables (the raw attributes in that case), in order to summarize information (the variation) in correlated raw attributes using a smaller number of manageable **factors** - which are typically uncorrelated or independent. In the process one decreases the number of raw attributes while **keeping most of the information in the data, in a statistical sense**. 
+
+Such derived variables are usually useful also for managerial interpretation and action. For example, when analyzing survey data from students regarding the quality of a school, the quality of education may be a useful variable, but in a student survey one could instead ask several questions related to this: (1) Breadth of courses; (2) Depth of courses; (3) Quality of Instruction; (4) Practicality of coursework, etc. A "good linear combination" of these raw attributes may be more managerially useful in understanding student perceptions of the quality of education than each of these variables alone. If indeed these variables are highly related to the underlying construct of "quality of education", Factor analysis will be able to summarize the information into such a single factor, while capturing most of the information in those "raw" attributes.
+
+<blockquote> <p>
+Before proceeding on understanding the statistical techniques considered here, it is important to note that this is not the only approach to generating meaningful derived attributes from large numbers of raw ones: there is always "the manual approach"" based on contextual knowledge and intuition, which can probably take a data analytics project already very far. However, in terms of mathematical techniques used in data analytics, factor analysis is one of the key ones when it comes to generating new meaningful derived attributes from the original raw ones.
+</p> </blockquote>
+

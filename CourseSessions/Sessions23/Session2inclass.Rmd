@@ -36,7 +36,7 @@ We will be using the [boats case study](http://inseaddataanalytics.github.io/INS
 Let's load the data: 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-source("R/library.R")
+source("library.R")
 ```
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
@@ -152,6 +152,8 @@ Let's now see how the "top factors" look like.
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Choose one of these options:
 factors_selected = sum(Variance_Explained_Table_copy[,1] >= 1)
 # minimum_variance_explained = 0.5; factors_selected = 1:head(which(Variance_Explained_Table_copy[,"cumulative percentage of variance"]>= minimum_variance_explained),1)
@@ -163,6 +165,8 @@ To better visualise them, we will use what is called a "rotation". There are man
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
 ```
@@ -231,7 +235,9 @@ In market segmentation one may use variables to **profile** the segments which a
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
-segmentation_attributes_used = c(10,19,5,12,3) 
+### THIS BECOMES INTERACTIVE
+
+segmentation_attributes_used = c(10,19,5,12,3)  # Default values
 profile_attributes_used = 2:ncol(ProjectData)
 ProjectData_segment=ProjectData[,segmentation_attributes_used]
 ProjectData_profile=ProjectData[,profile_attributes_used]
@@ -242,17 +248,31 @@ A key family of methods used for segmenation is what is called **clustering meth
 For example, to use hierarchical clustering we simply first define some parameters used (see session readings) and then simply call the command `hclust`: 
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
 # (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
 # DEFAULT is "euclidean"
 distance_used="euclidean"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the hierarchical clustering method to use (options are:
 # "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
 # DEFAULT is "ward.D"
 hclust_method = "ward.D"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
+### THIS BECOMES INTERACTIVE
+
 # Define the number of clusters:
 numb_clusters_used = 3 
 ```
+
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
 Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
@@ -291,12 +311,23 @@ To use k-means on the other hand one needs to define a priori the number of segm
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the kmeans clustering method to use (options are:
 # "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
 # DEFAULT is "Lloyd"
 kmeans_method = "Lloyd"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Define the number of clusters:
 numb_clusters_used = 3
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
 ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
 colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
@@ -320,13 +351,28 @@ Here are for example the profiles of the segments using the clusters found above
  <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
-# Select whether to use the Hhierarchical clustering or the k-means clusters:
+### THIS BECOMES INTERACTIVE
 
+# Select whether to use the Hhierarchical clustering or the k-means clusters:
+Selected_Method = "Hierarchical Clustering" # c("Hierarchical Clustering","K-means")
+```
+
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
+if (Selected_Method == "Hierarchical Clustering"){
 cluster_memberships <- cluster_memberships_hclust
-cluster_ids <-  cluster_ids_hclust  
-# here is the k-means: uncomment these 2 lines
-#cluster_memberships <- cluster_memberships_kmeans
-#cluster_ids <-  cluster_ids_kmeans
+cluster_ids <-  cluster_ids_hclust  }
+
+if (Selected_Method == "K-means"){
+cluster_memberships <- cluster_memberships_kmeans
+cluster_ids <-  cluster_ids_kmeans
+}
+
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
 
 population_average = matrix(apply(ProjectData_profile, 2, mean), ncol=1)
 colnames(population_average) <- "Population"
@@ -355,6 +401,8 @@ print(m1,'chart')
 Let's now see the relative ratios, which we can also save in a .csv and explore if (absolutely) necessary - e.g. for collaboration with people using other tools. 
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 ratio_limit = 0.1
 ```
 Let's see only ratios that are larger or smaller than 1 by, say, at least `r ratio_limit`.
@@ -370,12 +418,12 @@ rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_use
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
 # Save the segment profiles in a file: enter the name of the file!
-profile_file = "my_segmentation_profiles.csv"
+profile_file = "data/my_segmentation_profiles.csv"
 write.csv(cluster_profile_ratios,file=profile_file)
 # We can also save the cluster membership of our respondents:
 data_with_segment_membership = cbind(cluster_memberships,ProjectData)
 colnames(data_with_segment_membership)[1] = "Segment"
-cluster_file = "my_segments.csv"
+cluster_file = "data/my_segments.csv"
 write.csv(data_with_segment_membership,file=cluster_file)
 ```
 
