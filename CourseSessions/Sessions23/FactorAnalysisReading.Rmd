@@ -1,5 +1,5 @@
 ---
-title: "Derived Attributes and Dimensionality Reduction "
+title: "Derived Attributes and Dimensionality Reduction"
 author: "T. Evgeniou"
 output: html_document
 ---

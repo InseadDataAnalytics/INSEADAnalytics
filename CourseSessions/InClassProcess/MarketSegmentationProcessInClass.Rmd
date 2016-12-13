@@ -4,6 +4,9 @@ author: "T. Evgeniou"
 output: html_document
 ---
 
+**IMPORTANT** Please make sure you create a copy of this file with a customised name, so that your work is not over-written when you pull the latest content from the course github. 
+
+
 <br>
 
 This is a template for market segmentation based on survey data, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
