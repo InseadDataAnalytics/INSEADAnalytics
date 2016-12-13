@@ -1,28 +1,20 @@
 ---
-title: "Sessions 5-6"
+title: "A Market Segmentation Process"
 author: "T. Evgeniou"
-date: "9 Jan 2016"
 output: html_document
 ---
+
 <br>
 
-In this session (and report) we combine the report of [sessions 3-4](http://inseaddataanalytics.github.io/INSEADAnalytics/Session2inclass.html) to complete the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
+This is a template for market segmentation based on survey data, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
 
-The purpose of this session is to become familiar with:
+The report is split in 3 parts, corresponding to Sessions 3-4, 4-5, and an optional last part. 
 
-1. Understand the use of segmentation in practice;
-2. Learn about classification and scoring methods;
-3. See how these tools can be used in practice;
-4. Introduce advanced methods for data analytics
-
-The first part of this report is identical to that of [sessions 3-4](http://inseaddataanalytics.github.io/INSEADAnalytics/Session2inclass.html), hence you can move to the last part . The content is repeated so that we have the complete solution of the Boats case all in one report 
-
-
-As always, before starting, make sure you have pulled the [session 5-6 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Sessions56)  (yes, I know, it says sessions 4-5, but it is 5-6 - need to update all filenames some time, but till then we use common sense and ignore a bit the filenames) on your github repository (if you pull the course github repository you also get the session files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
+Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository. Moreover, make sure you are in the directory of this file. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
 ```{r echo=TRUE, eval=FALSE, tidy=TRUE}
 getwd()
-setwd("CourseSessions/Sessions45")
+setwd("CourseSessions/InClassProcess")
 list.files()
 rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
 ```
@@ -31,6 +23,18 @@ As always, you can use the `help` command in Rstudio to find out about any R fun
 Let's start.
 
 <hr>
+
+### Part 1: Sessions 2-3
+
+The purpose of this session is to become familiar with:
+
+1. Some visualization tools;
+2. Principal Component Analysis and Factor Analysis;
+3. Clustering Methods;
+4. Introduction to machine learning methods;
+5. A market segmentation case study.
+
+
 <hr>
 
 ### Survey Data for Market Segmentation
@@ -40,7 +44,7 @@ We will be using the [boats case study](http://inseaddataanalytics.github.io/INS
 Let's load the data: 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-source("R/library.R")
+source("library.R")
 ```
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
@@ -156,6 +160,8 @@ Let's now see how the "top factors" look like.
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Choose one of these options:
 factors_selected = sum(Variance_Explained_Table_copy[,1] >= 1)
 # minimum_variance_explained = 0.5; factors_selected = 1:head(which(Variance_Explained_Table_copy[,"cumulative percentage of variance"]>= minimum_variance_explained),1)
@@ -167,6 +173,8 @@ To better visualise them, we will use what is called a "rotation". There are man
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
 ```
@@ -226,6 +234,16 @@ print(m1,'chart')
 <hr>
 <hr>
 
+## Part 2: Sessions 4-5
+
+The purpose of this session is to become familiar with:
+
+1. Understand the use of segmentation in practice;
+2. Learn about classification and scoring methods;
+3. See how these tools can be used in practice;
+4. Introduce advanced methods for data analytics
+
+
 ### Market Segmentation
 
 Let's now use one representative question for each factor (we can also use the "factor scores" for each respondent - see [session readings](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)) to represent our survey respondents. We can choose the question with the highest absolute factor loading for each factor. For example, when we use 5 factors with the varimax rotation we can select questions Q.1.9 (I see my boat as a status symbol), Q1.18 (Boating gives me a feeling of adventure), Q1.4 (I only consider buying a boat from a reputable brand), Q1.11 (I tend to perform minor boat repairs and maintenance on my own) and Q1.2 (When buying a boat  getting the lowest price is more important than the boat brand) - try it. These are columns 10, 19, 5, 12, and 3, respectively of the data matrix `Projectdata`. 
@@ -235,7 +253,9 @@ In market segmentation one may use variables to **profile** the segments which a
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
-segmentation_attributes_used = c(10,19,5,12,3) 
+### THIS BECOMES INTERACTIVE
+
+segmentation_attributes_used = c(10,19,5,12,3)  # Default values
 profile_attributes_used = 2:ncol(ProjectData)
 ProjectData_segment=ProjectData[,segmentation_attributes_used]
 ProjectData_profile=ProjectData[,profile_attributes_used]
@@ -246,17 +266,31 @@ A key family of methods used for segmenation is what is called **clustering meth
 For example, to use hierarchical clustering we simply first define some parameters used (see session readings) and then simply call the command `hclust`: 
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
 # (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
 # DEFAULT is "euclidean"
 distance_used="euclidean"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the hierarchical clustering method to use (options are:
 # "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
 # DEFAULT is "ward.D"
 hclust_method = "ward.D"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
+### THIS BECOMES INTERACTIVE
+
 # Define the number of clusters:
 numb_clusters_used = 3 
 ```
+
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
 Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
@@ -279,7 +313,7 @@ plot(Hierarchical_Cluster, main = NULL, sub=NULL, labels = 1:nrow(ProjectData_se
 rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
 ```
 <br>
-We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
+ We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
 <br>
 
 
@@ -295,12 +329,23 @@ To use k-means on the other hand one needs to define a priori the number of segm
 <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Please ENTER the kmeans clustering method to use (options are:
 # "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
 # DEFAULT is "Lloyd"
 kmeans_method = "Lloyd"
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 # Define the number of clusters:
 numb_clusters_used = 3
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
 ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
 colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
@@ -320,17 +365,32 @@ There are many ways to do the profiling of the segments. For example, here we sh
 Here are for example the profiles of the segments using the clusters found above: 
 
 <br>
-First let's see just the average answer people gave to each question for the different segments as well as the total population:
-<br>
+ First let's see just the average answer people gave to each question for the different segments as well as the total population:
+ <br>
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
-# Select whether to use the Hhierarchical clustering or the k-means clusters:
+### THIS BECOMES INTERACTIVE
 
+# Select whether to use the Hhierarchical clustering or the k-means clusters:
+Selected_Method = "Hierarchical Clustering" # c("Hierarchical Clustering","K-means")
+```
+
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
+if (Selected_Method == "Hierarchical Clustering"){
 cluster_memberships <- cluster_memberships_hclust
-cluster_ids <-  cluster_ids_hclust  
-# here is the k-means: uncomment these 2 lines
-#cluster_memberships <- cluster_memberships_kmeans
-#cluster_ids <-  cluster_ids_kmeans
+cluster_ids <-  cluster_ids_hclust  }
+
+if (Selected_Method == "K-means"){
+cluster_memberships <- cluster_memberships_kmeans
+cluster_ids <-  cluster_ids_kmeans
+}
+
+```
+
+```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+
 
 population_average = matrix(apply(ProjectData_profile, 2, mean), ncol=1)
 colnames(population_average) <- "Population"
@@ -359,6 +419,8 @@ print(m1,'chart')
 Let's now see the relative ratios, which we can also save in a .csv and explore if (absolutely) necessary - e.g. for collaboration with people using other tools. 
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+### THIS BECOMES INTERACTIVE
+
 ratio_limit = 0.1
 ```
 Let's see only ratios that are larger or smaller than 1 by, say, at least `r ratio_limit`.
@@ -374,12 +436,12 @@ rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_use
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
 # Save the segment profiles in a file: enter the name of the file!
-profile_file = "my_segmentation_profiles.csv"
+profile_file = "data/my_segmentation_profiles.csv"
 write.csv(cluster_profile_ratios,file=profile_file)
 # We can also save the cluster membership of our respondents:
 data_with_segment_membership = cbind(cluster_memberships,ProjectData)
 colnames(data_with_segment_membership)[1] = "Segment"
-cluster_file = "my_segments.csv"
+cluster_file = "data/my_segments.csv"
 write.csv(data_with_segment_membership,file=cluster_file)
 ```
 
@@ -422,8 +484,8 @@ print(m1,'chart')
 <br>
 
 <hr>
-<hr>
 
+## Part 3: (Optional)
 ### Discrmininant Analysis and Scoring (New Material)
 
 We will now use the [classification methods discussed in the readings of sessions 5-6](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s67.html). Most code will be like in the [source code of that reading.](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions67/doc/Report_s67.Rmd)
@@ -797,7 +859,10 @@ Clearly there are **many** variations one can explore (How many?!). For our busi
 <br>
 <br>
 
-<hr>
-  As always **Have Fun**
-  <br>
-  
+
+
+**You have now completed your first market segmentation project.** Do you have data from another survey you can use with this report now? 
+
+**Extra question**: explore and report a new segmentation analysis... 
+
+... and as always **Have Fun**
