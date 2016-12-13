@@ -1,0 +1,451 @@
+---
+title: "Cluster Analysis and Segmentation: Interactive Tool"
+author: "T. Evgeniou"
+output: html_document
+---
+
+This tool follows the 9 steps for cluster analysis outlined in the [Cluster Analysis and Segmentation](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s45.html) reading of the course. 
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# SET UP
+# When running the case on a local computer, modify this in case you saved the case in a different directory 
+# (e.g. local_directory <- "C:/user/MyDocuments" )
+# type in the Console below help(getwd) and help(setwd) for more information
+local_directory <- paste(getwd(),"CourseSessions/Sessions45", sep="/")
+#local_directory <- "~INSEADAnalytics/CourseSessions/Sessions45"
+```
+
+First we load the data:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
+#datafile_name="Boats" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
+datafile_name="Mall_Visits" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
+
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+max_data_report = 50 # can also chance in server.R
+# this loads the selected data: DO NOT EDIT THIS LINE
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) 
+if (datafile_name == "Boats")
+  colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
+
+segmentation_attributes_used = unique(sapply(segmentation_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+profile_attributes_used = unique(sapply(profile_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+
+ProjectData_segment=ProjectData[,segmentation_attributes_used]
+ProjectData_profile=ProjectData[,profile_attributes_used]
+# this is the file name where the CLUSTER_IDs of the observations will be saved
+cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,"cluster", sep="_"), "csv", sep="."), sep="/")
+
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
+
+ProjectData = data.matrix(ProjectData)
+
+```
+
+We also need to select which variables to consider for the cluster analysis: 
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
+# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+# for boats possibly use: c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24), for Mall_Visits use c(2:9)
+segmentation_attributes_used = c(2:7) 
+
+```
+
+
+
+
+Here is how the first rows look like:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+show_data = data.frame(round(ProjectData,2))
+
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+<br> <br>
+
+#### Step 1. Confirm the data in metric 
+
+The data we use here have the following descriptive statistics: 
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+show_data = data.frame(round(my_summary(ProjectData),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+#### 2. Decide whether to scale or standardize the data
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please enter the variables you would like to standardize: 
+standardize_vars = NULL
+
+```
+
+
+```{r, results='asis'}
+if (!is.null(standardize_vars))
+ProjectData_scaled[,standardize_vars,drop=F] <- apply(ProjectData[,standardize_vars,drop=F] ,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+
+```
+
+These are the summary statistics of the scaled dataset:
+
+<br>
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+
+show_data = data.frame(round(my_summary(ProjectData_scaled),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+#### Step 3. Decide which variables to use for clustering
+
+We did this at the begining. 
+
+#### Step 4. Define similarity or dissimilarity measures between observations
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+# Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
+# (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
+# DEFAULT is "euclidean"
+distance_used="euclidean"
+
+```
+
+
+#### Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+This is the histogram of all pairwise distances for the `r distance_used` distance:
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+Pairwise_Distances <- dist(ProjectData_segment, method = distance_used) 
+hist(Pairwise_Distances, main = NULL, xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency")
+```
+
+
+#### Step 6. Select the clustering method to use and decide how many clusters to have
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please ENTER the hierarchical clustering method to use (options are:
+# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
+# DEFAULT is "ward"
+hclust_method = "ward"
+
+```
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please ENTER the number of clusters to eventually use for this report
+numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
+
+```
+
+This is the hierarchical clustering dendrogram:
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
+Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
+# Display dendogram
+plot(Hierarchical_Cluster, main = NULL, sub=NULL, labels = 1:nrow(ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
+# Draw dendogram with red borders around the 3 clusters
+rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
+```
+
+This is a plot of the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers:
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+max <- nrow(ProjectData)
+num <- max - 1
+df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
+colnames(df1) <- c("distances","index")
+Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(Line,'chart')
+```
+
+
+
+ We can also see the segment each observation (respondent in this case) belongs to for the first `r min(max_data_report,nrow(ProjectData))` people:
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
+cluster_ids_hclust=unique(cluster_memberships_hclust)
+
+ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
+colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
+```
+
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+show_data = data.frame(round(ProjectData_with_hclust_membership,2))
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Observation"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+<br> <br>
+
+**Using Kmean Clustering**
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please ENTER the kmeans clustering method to use (options are:
+# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
+# DEFAULT is "Lloyd"
+kmeans_method = "Lloyd"
+
+```
+
+Here are the clusters our observations belong to when we select `r numb_clusters_used` clusters and the `r kmeans_method` kmeans method, for the first `r min(max_data_report,nrow(ProjectData))` data (note that the cluster IDs may differ from those from hierarchical clustering):
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
+
+ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
+colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
+```
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+show_data = data.frame(round(ProjectData_with_kmeans_membership,2))
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Observation"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+<br> <br>
+
+
+#### Step 7. Profile and interpret the clusters 
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
+# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+profile_attributes_used = c(2:9) # for boats use c(2:82), for Mall_Visits use c(2:9)
+
+```
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please enter the method to use for the profiling (e.g. "hclust" or "kmeans"):
+profile_with = "hclust"
+
+```
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
+MIN_VALUE=0.5
+
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships_kmeans <- kmeans_clusters$cluster 
+cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+cluster_memberships <- cluster_memberships_hclust
+cluster_ids <-  cluster_ids_hclust  
+if (profile_with == "hclust"){
+  cluster_memberships <- cluster_memberships_hclust
+  cluster_ids <-  cluster_ids_hclust  
+  }
+if (profile_with == "kmeans"){
+  cluster_memberships <- cluster_memberships_kmeans
+  cluster_ids <-  cluster_ids_kmeans
+  }
+
+# SAVE THE DATA in the cluster file
+NewData = matrix(cluster_memberships,ncol=1)
+write.csv(NewData,file=cluster_file)
+
+population_average = matrix(apply(ProjectData_profile, 2, mean), ncol=1)
+colnames(population_average) <- "Population"
+Cluster_Profile_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
+if (ncol(ProjectData_profile) <2)
+  Cluster_Profile_mean=t(Cluster_Profile_mean)
+colnames(Cluster_Profile_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+cluster.profile <- cbind (population_average,Cluster_Profile_mean)
+```
+
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(round(cluster.profile,2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+
+```
+</div>
+</div>
+
+We can also "visualize" the segments using **snake plots** for each cluster. For example, we can plot the means of the profiling variables for each of our clusters to better visualize differences between segments. For better visualization we plot the standardized profiling variables.
+
+```{r Fig2, fig.width=6, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
+ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F]
+
+Cluster_Profile_standar_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
+if (ncol(ProjectData_scaled_profile) < 2)
+  Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
+colnames(Cluster_Profile_standar_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+
+plot(Cluster_Profile_standar_mean[, 1,drop=F], type="l", col="red", main="Snake plot for each cluster", ylab="mean of cluster", xlab="profiling variables (standardized)",ylim=c(min(Cluster_Profile_standar_mean),max(Cluster_Profile_standar_mean))) 
+for(i in 2:ncol(Cluster_Profile_standar_mean))
+  lines(Cluster_Profile_standar_mean[, i], col="blue")
+```
+
+We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. avg(cluster)/avg(population)) and explore a matrix as the following one:
+
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+## THIS BECOMES INTERACTIVE
+
+# Please enter the minimum distance from "1" the profiling values should have in order to be colored 
+# (e.g. using heatmin = 0 will color everything - try it)
+heatmin = 0.1
+
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
+cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
+colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
+rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
+## printing the result in a clean-slate table
+#cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
+show_data = data.frame(round(cluster_profile_ratios,2))
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+```
+
+#### Step 8. Assess the robustness of our clusters
+
+For the two `r numb_clusters_used`-segments solutions found above (one using Kmeans and the other using Hierarchical Clustering), these percentages are as follows:
+
+
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+# First, make sure the segment ids are correctly aligned
+cluster_overlaps <- Reduce(cbind,lapply(1:length(cluster_ids_kmeans), function(i) {
+  overlaps <- sapply(1:length(cluster_ids_hclust), function(j) {
+    length(intersect(which(cluster_memberships_kmeans==i), 
+                     which(cluster_memberships_hclust==j))) } );
+  overlaps}))
+max_cluster_overlap = rep(0,length(cluster_ids_kmeans))
+for (i in 1:length(cluster_ids_kmeans)){
+  highest_now = which.max(cluster_overlaps)
+  hclust_id_now = highest_now %% length(cluster_ids_kmeans)
+  hclust_id_now = ifelse(hclust_id_now == 0, 3, hclust_id_now)
+  kmeans_id_now = ceiling(highest_now/length(cluster_ids_kmeans))
+  max_cluster_overlap[kmeans_id_now] <- hclust_id_now
+  cluster_overlaps[hclust_id_now,] <- 0
+  cluster_overlaps[,kmeans_id_now] <- 0
+}
+cluster_memberships_kmeans_aligned <- rep(0,length(cluster_memberships_kmeans))
+for (i in 1:length(cluster_ids_kmeans))
+  cluster_memberships_kmeans_aligned[(cluster_memberships_kmeans==i)] <- max_cluster_overlap[i]
+
+# Now calculate the overlaps
+# First, the total overlap
+total_observations_overlapping <- 100*sum(cluster_memberships_kmeans_aligned==cluster_memberships_hclust) / length(cluster_memberships_hclust)
+# Then, per cluster
+per_cluster_observations_overlapping <- sapply(1:length(cluster_ids_kmeans), function(i) 100*length(intersect(which(cluster_memberships_kmeans_aligned==i),which(cluster_memberships_hclust==i)))/sum(cluster_memberships_kmeans_aligned==i))
+per_cluster_observations_overlapping <- matrix(per_cluster_observations_overlapping, nrow=1)
+colnames(per_cluster_observations_overlapping) <- paste("Segment",1:length(per_cluster_observations_overlapping),sep=" ")
+```
+
+<div class="row">
+<div class="col-md-3">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+print(xtable(per_cluster_observations_overlapping, caption = paste(paste("The percentage of observations belonging to the same segment is", total_observations_overlapping, sep=" "), "%."), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+```
+</div>
+</div>
+
+
