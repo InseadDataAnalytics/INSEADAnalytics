@@ -59,8 +59,8 @@ ProjectDataFactor=ProjectData[,factor_attributes_used]
 
 ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
 
-source(paste(local_directory,"library.R", sep="/"))
-source(paste(local_directory,"heatmapOutput.R", sep = "/"))
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 ```
 
 

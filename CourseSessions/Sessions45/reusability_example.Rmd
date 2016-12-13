@@ -21,7 +21,8 @@ rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
 The focus in this example is on the hierarchical clustering segmentation part *only* (this is an example anyway), so we assume we selected the factors already (of course one can also change the number of factors used, all automatically). 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-source("R/library.R")
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 ```
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}

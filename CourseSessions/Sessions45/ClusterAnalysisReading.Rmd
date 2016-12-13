@@ -72,9 +72,8 @@ ProjectData_profile=ProjectData[,profile_attributes_used]
 # this is the file name where the CLUSTER_IDs of the observations will be saved
 cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,"cluster", sep="_"), "csv", sep="."), sep="/")
 
-source(paste(local_directory,"library.R", sep="/"))
-
-source(paste(local_directory,"heatmapOutput.R", sep = "/"))
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 
 ```
 

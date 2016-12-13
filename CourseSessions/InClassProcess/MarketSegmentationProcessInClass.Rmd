@@ -44,7 +44,8 @@ We will be using the [boats case study](http://inseaddataanalytics.github.io/INS
 Let's load the data: 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-source("library.R")
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 ```
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}

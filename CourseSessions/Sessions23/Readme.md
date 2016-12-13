@@ -19,7 +19,7 @@ Sessions 2-3 of INSEAD Data Analytics for Business Course: Dimensionality Reduct
 INSTRUCTIONS FOR PROJECT
 ---------------------------------------------------------
 
-(*NOTE: The very first time you run the project it may take a couple of minutes as it will also install all necessary R libraries. These are listed in the library.R file in the R_code directory*).
+(*NOTE: The very first time you run the project it may take a couple of minutes as it will also install all necessary R libraries.*).
 
 
 [1] Please open and source the file FactorAnalysisReading.Rmd
