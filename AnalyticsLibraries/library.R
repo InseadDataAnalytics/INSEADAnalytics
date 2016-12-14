@@ -4,7 +4,7 @@
 get_libraries <- function(filenames_list) { 
   lapply(filenames_list,function(thelibrary){    
     if (do.call(require,list(thelibrary)) == FALSE) 
-      do.call(install.packages,list(thelibrary)) 
+      do.call(install.packages,list(thelibrary, repos="http://cran.r-project.org/")) 
     do.call(library,list(thelibrary))
   })
 }
