@@ -50,7 +50,7 @@ max_data_report = 10
 # Now run everything
 
 # this loads the selected data: DO NOT EDIT THIS LINE
-ProjectData <- read.csv(paste0("data/", datafile_name, ".csv"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData <- read.csv(paste0("data/", datafile_name, ".csv")) # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) 
 
 if (datafile_name == "Boats")
