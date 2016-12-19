@@ -304,6 +304,12 @@ NEW_ProjectDataX <- eventReactive({
 })
 
 renderFormattable(dformat(NEW_ProjectDataX()))
+
+renderUI(downloadButton("downloadData", "Save Dataset"))
+output$downloadData <- downloadHandler( # TODO: use `outputArgs`
+ filename = "dataset.csv",
+ content = function(file) write.csv(NEW_ProjectDataX(), file)
+)
 ```
 
 We now can replace our original data with the new ones and continue our analysis. For example, we can now visualize our original data using only the newly derived attributes:
