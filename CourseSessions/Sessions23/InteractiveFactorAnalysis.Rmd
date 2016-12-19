@@ -20,7 +20,8 @@ opts_chunk$set(echo=FALSE, fig.align="center")
 options(knitr.kable.NA = '')
 
 tags$style(type="text/css", "p { text-align:justify; }")
-tags$style(type="text/css", "label { display: none }")
+tags$style(type="text/css", "label { display: none; }")
+tags$style(type="text/css", ".c3 svg { font-size:13px; font-family:\"Roboto\", \"Helvetica Neue\", Helvetica, Arial, sans-serif; }")
 
 dformat <-function(df) {
   if (class(df) != "data.frame")
