@@ -24,8 +24,9 @@ get_libraries <- function(filenames_list) suppressPackageStartupMessages({
 libraries_used=c("devtools","knitr","graphics","grDevices","xtable","pryr",
                  "Hmisc","vegan","fpc","GPArotation","FactoMineR","cluster",
                  "psych","stringr","googleVis", "png","ggplot2","googleVis", 
-                 "gridExtra", "reshape2", "ramnathv/slidifyLibraries",
-                 "ramnathv/slidify", "cttobin/ggthemr")
+                 "gridExtra", "reshape2", "DT", "ramnathv/slidifyLibraries",
+                 "ramnathv/slidify", "cttobin/ggthemr", "dplyr", "mrjoh3/c3",
+                 "formattable")
 get_libraries(libraries_used)
 
 #############

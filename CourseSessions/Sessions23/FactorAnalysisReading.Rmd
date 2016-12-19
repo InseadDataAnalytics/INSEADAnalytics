@@ -2,6 +2,9 @@
 title: "Derived Attributes and Dimensionality Reduction"
 author: "T. Evgeniou"
 output:
+  pdf_document:
+    includes:
+      in_header: ../../AnalyticsStyles/default.sty
   html_document:
     css: ../../AnalyticsStyles/default.css
     theme: paper
@@ -9,9 +12,6 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
-  pdf_document:
-    includes:
-      in_header: ../../AnalyticsStyles/default.sty
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
@@ -65,7 +65,7 @@ source("../../AnalyticsLibraries/library.R")
 ggthemr('fresh')  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center")
-
+options(knitr.kable.NA = '')
 ```
 
 
@@ -112,7 +112,7 @@ Let us assume that this data is converted into a numerical scale from 1-7. For e
 This is how the first `r min(max_data_report, nrow(ProjectData))` data looks:
 
 ```{r}
-rownames(ProjectDataFactor) <- paste0("data ", sprintf("%02i", 1:nrow(ProjectDataFactor)))
+rownames(ProjectDataFactor) <- paste0("observation ", sprintf("%02i", 1:nrow(ProjectDataFactor)))
 knitr::kable(round(ProjectDataFactor, 2)[1:min(max_data_report,nrow(ProjectDataFactor)), ])
 ```
 
@@ -255,7 +255,7 @@ One can also plot the eigenvalues of the generated factors in decreasing order: 
 
 
 ```{r figure01}
-eigenvalues  <- Variance_Explained_Table[,2]
+eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
 ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line()
@@ -341,24 +341,18 @@ knitr::kable(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , dro
 
 Can you describe the observations using the new derived variables? How does each person perform for each of the selected factors?
 
-We now can replace our original data with the new ones and continue our analysis. For example, we can now visualize our original data using only the newly derived attributes. Here is the plot when we use only the top 2 factors:
+We now can replace our original data with the new ones and continue our analysis. For example, we can now visualize our original data using only the newly derived attributes:
 
 
 ```{r figure02}
-if(ncol(NEW_ProjectData) == 1) {
-  NEW_ProjectData <- cbind(
-    NEW_ProjectData, 
-    list(`Derived Variable (Factor) 2`=NEW_ProjectData$`Derived Variable (Factor) 1`)
-  )
-}
-  
-ggplot(
-  as.data.frame(NEW_ProjectData), 
-  aes(
-    x = `Derived Variable (Factor) 1`,
-    y = `Derived Variable (Factor) 2`
-  )) +
-geom_point()
+df <- as.data.frame(NEW_ProjectData)
+colnames(df) <- paste("Derived Variable", 1:ncol(df))
+df <- cbind(
+  list(observations = 1:nrow(df)),
+  df
+)
+
+ggplot(melt(df, id="observations"), aes(x=observations, y=value, colour=variable)) + geom_point()
 ```
 
 Remember that we still see a lot of the information in the original data (the total variance explained using 2 factors) using only this 2-dimensional plot! This is of course only the begining of the analysis using the new attributes. Later on one may need to come back to these tools to generate new derived variables. As always remember that 
