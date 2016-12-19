@@ -323,13 +323,3 @@ tags$div(style='height:480px', renderC3({
 
 <div style="height: 450px;" class="tocify-extend-page" data-unique="tocify-extend-page">
 </div>
-
-<script>
-$(document).ready(function() {
-    console.log("Initializing 'selectize-control' patch...");
-    setTimeout(function() {
-        console.log("Applying 'selectize-control' patch...");
-        $(".selectize-control").addClass("single");
-    }, 1000);
-});
-</script>
