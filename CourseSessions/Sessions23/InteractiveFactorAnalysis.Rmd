@@ -283,7 +283,7 @@ Rotated_Factors_thresX <- eventReactive({
   Rotated_Factors_thres
 })
 
-renderFormattable(dformat(Rotated_Factors_thresX()))
+renderUI(HTML(gsub("NA", "", dformat(Rotated_Factors_thresX()))))
 ```
 
 
