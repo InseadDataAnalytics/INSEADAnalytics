@@ -25,13 +25,11 @@ tags$style(type="text/css", ".c3 svg { font-size:13px; font-family:\"Roboto\", \
 tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:415px; }")
 tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
 
-MAX_COLUMNS <- 40
-MAX_ROWS <- 10
+SAMPLE_ROWS <- 10
 
 dformat <-function(df) {
   if (class(df) != "data.frame")
     df <- as.data.frame(df)
-  df <- head(df, MAX_ROWS)
   x <- lapply(colnames(df), function(col) {
     if (is.numeric(df[, col]))
       normalize_bar(rgb(238, 238, 238, max=255), min=0.1, na.rm=TRUE)
@@ -87,7 +85,7 @@ selectizeInput("factorAttributes", "",
                )
 observeEvent(ProjectDataX(), {
   attributes <- colnames(ProjectDataX())
-  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=head(attributes, MAX_COLUMNS))
+  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=attributes)
 })
 
 ProjectDataFactorX <- eventReactive(input$factorAttributes, {
@@ -95,10 +93,10 @@ ProjectDataFactorX <- eventReactive(input$factorAttributes, {
 })
 ```
 
-Here is how the first `r MAX_ROWS` rows look like:
+Here is how the first `r SAMPLE_ROWS` rows look like:
 
 ```{r}
-renderFormattable(dformat(ProjectDataFactorX()))
+renderFormattable(dformat(head(ProjectDataFactorX(), SAMPLE_ROWS)))
 ```
 
 
@@ -295,7 +293,7 @@ renderUI(tags$div(class="formattable_widget",HTML(gsub("NA", "", dformat(Rotated
 
 ### Step 6: Save factor scores for subsequent analyses
 
-For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r MAX_ROWS` observations):
+For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r SAMPLE_ROWS` observations):
 
 ```{r}
 NEW_ProjectDataX <- eventReactive({
@@ -309,7 +307,7 @@ NEW_ProjectDataX <- eventReactive({
   NEW_ProjectData
 })
 
-renderFormattable(dformat(NEW_ProjectDataX()))
+renderFormattable(dformat(head(NEW_ProjectDataX(), SAMPLE_ROWS)))
 
 renderUI(downloadButton("downloadData", "Save Dataset"))
 output$downloadData <- downloadHandler( # TODO: use `outputArgs`
@@ -323,7 +321,8 @@ We now can replace our original data with the new ones and continue our analysis
 ```{r}
 tags$div(style='height:480px', renderC3({
   df <- as.data.frame(NEW_ProjectDataX())
-  df <- head(df, MAX_ROWS)
+  # TODO: An error occurs when ncol(df) > 9. Should investigate.
+  df <- head(df[, head(colnames(df), 9), drop=F], SAMPLE_ROWS)
   colnames(df) <- paste("Derived Variable", 1:ncol(df))
   df <- cbind(
     list(observations = 1:nrow(df)),
