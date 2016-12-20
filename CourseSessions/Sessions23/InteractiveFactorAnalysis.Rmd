@@ -22,11 +22,16 @@ options(knitr.kable.NA = '')
 tags$style(type="text/css", "p { text-align:justify; }")
 tags$style(type="text/css", "label { display: none; }")
 tags$style(type="text/css", ".c3 svg { font-size:13px; font-family:\"Roboto\", \"Helvetica Neue\", Helvetica, Arial, sans-serif; }")
+tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:415px; }")
+tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
+
+MAX_COLUMNS <- 40
+MAX_ROWS <- 10
 
 dformat <-function(df) {
   if (class(df) != "data.frame")
     df <- as.data.frame(df)
-  df <- df[seq(min(10, nrow(df))), , drop=F]
+  df <- head(df, MAX_ROWS)
   x <- lapply(colnames(df), function(col) {
     if (is.numeric(df[, col]))
       normalize_bar(rgb(238, 238, 238, max=255), min=0.1, na.rm=TRUE)
@@ -82,7 +87,7 @@ selectizeInput("factorAttributes", "",
                )
 observeEvent(ProjectDataX(), {
   attributes <- colnames(ProjectDataX())
-  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=attributes)
+  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=head(attributes, MAX_COLUMNS))
 })
 
 ProjectDataFactorX <- eventReactive(input$factorAttributes, {
@@ -90,7 +95,7 @@ ProjectDataFactorX <- eventReactive(input$factorAttributes, {
 })
 ```
 
-Here is how the first 10 rows look like:
+Here is how the first `r MAX_ROWS` rows look like:
 
 ```{r}
 renderFormattable(dformat(ProjectDataFactorX()))
@@ -284,13 +289,13 @@ Rotated_Factors_thresX <- eventReactive({
   Rotated_Factors_thres
 })
 
-renderUI(HTML(gsub("NA", "", dformat(Rotated_Factors_thresX()))))
+renderUI(tags$div(class="formattable_widget",HTML(gsub("NA", "", dformat(Rotated_Factors_thresX())))))
 ```
 
 
 ### Step 6: Save factor scores for subsequent analyses
 
-For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first 10 observations):
+For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r MAX_ROWS` observations):
 
 ```{r}
 NEW_ProjectDataX <- eventReactive({
@@ -318,6 +323,7 @@ We now can replace our original data with the new ones and continue our analysis
 ```{r}
 tags$div(style='height:480px', renderC3({
   df <- as.data.frame(NEW_ProjectDataX())
+  df <- head(df, MAX_ROWS)
   colnames(df) <- paste("Derived Variable", 1:ncol(df))
   df <- cbind(
     list(observations = 1:nrow(df)),
