@@ -2,9 +2,6 @@
 title: "Derived Attributes and Dimensionality Reduction"
 author: "T. Evgeniou"
 output:
-  pdf_document:
-    includes:
-      in_header: ../../AnalyticsStyles/default.sty
   html_document:
     css: ../../AnalyticsStyles/default.css
     theme: paper
@@ -12,6 +9,9 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
+  pdf_document:
+    includes:
+      in_header: ../../AnalyticsStyles/default.sty
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
