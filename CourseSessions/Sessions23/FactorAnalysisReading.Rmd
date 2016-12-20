@@ -2,6 +2,9 @@
 title: "Derived Attributes and Dimensionality Reduction"
 author: "T. Evgeniou"
 output:
+  pdf_document:
+    includes:
+      in_header: ../../AnalyticsStyles/default.sty
   html_document:
     css: ../../AnalyticsStyles/default.css
     theme: paper
@@ -9,9 +12,6 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
-  pdf_document:
-    includes:
-      in_header: ../../AnalyticsStyles/default.sty
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
@@ -85,7 +85,7 @@ Such derived variables are usually useful also for managerial interpretation and
 
 
 
-# Factor Analysis for Dimensionality Reduction using an Example
+# An Example
 
 
 There are many dimensionality reduction statistical methods. In this note we will go through the steps of one specific approach. We will do so using a simple example. For this example the "meaningful derived variables" will seem to be straightforward to design, which can help us with the intuition of what the method does. Having said this, before reading the analysis below, do try to think what "derived attributes" one could get from the raw ones below. You will see that even in this case it is not as obvious and you will most likely disagree with your colleagues about what the derived attributes should be: so we will let the numbers and statistics help us be more *objective and statistically correct*.
@@ -147,13 +147,11 @@ Like for our example, theory may suggest that there are really one or two basic 
 Let's now see **a** process for using factor analysis in order to create derived attributes, the goal of this report. 
 
 
-# A Process for Dimensionality Reduction
+# A 6-steps Process for Dimensionality Reduction
 
 > It is important to remember that Data Analytics Projects require a delicate balance between experimentation, intuition, but also following (once a while) a process to avoid getting fooled by randomness and "finding results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
 
 There is *not one* process for factor analysis. However, we have to start somewhere, so we will use the following process:
-
-## Factor Analysis in 6 steps
 
 1. Confirm the data in metric 
 2. Decide whether to scale or standardize the data
@@ -164,7 +162,7 @@ There is *not one* process for factor analysis. However, we have to start somewh
 
 Let's follow these steps.
 
-### Step 1: Confirm the data are metric
+## Step 1: Confirm data is metric
 
 Steps 1-3 are about specific descriptive characteristics of the data. In particular, the methods we consider in this note require that the data are *metric* (step 1): this means not only that all data are numbers, but also that the numbers have an actual numerical meaning, that is 1 is less than 2 which is less than 3 etc. If we have other types of data (e.g. gender, categories that are not comparable, etc), there are other methods to use. However, for now we will only consider a specific method, which we will also mis-use for non-numeric data for simplicity. 
 
@@ -176,7 +174,9 @@ knitr::kable(round(my_summary(ProjectDataFactor), 2))
 
 > Note that one should spend a lot of time getting a feeling of the data based on simple summary statistics and visualizations: good data analytics require that we understand our data very well.
 
-### Step 2: Decide whether to scale or standardize the data
+## Step 2: Scale the  data
+
+This step is optional (many methods standardize the data automatically anyway). 
 
 Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the GMAT variable. Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so that we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. `scaledGMAT = (GMAT-mean(GMAT)) / sd(GMAT)`), or scaling them between 0 and 1 (e.g. `scaledGMAT = (GMAT-min(GMAT)) / (max(GMAT)-min(GMAT))`). Here is for example the R code for the first approach, if we want to standardize all attributes:
 
@@ -196,7 +196,7 @@ While this is typically a necessary step, one has to always do it with care: som
 
 
 
-### Step 3:  Check correlation matrix to see if Factor Analysis makes sense
+## Step 3:  Check correlations 
 
 The type of dimensionality reduction methods we will use here "groups together raw attributes that are highly correlated". Other methods (there are many!) use different criteria to create derived variables.  For this to be feasible, it is necessary that the original raw attributes do have large enough correlations (e.g. more than 0.5 in absolute value, or simply statistically significant). It is therefore useful to see the correlation matrix of the original attributes - something that one should anyway always do in order to develop a better understanding of the data. 
 
@@ -215,7 +215,7 @@ There are quite a few large (in absolute value) correlations. For example  GPA, 
 
 Let's now see what factor analysis suggests as factors. 
 
-### Step 4: Develop a scree plot and decide on the number of factors to be derived
+## Step 4: Choose number of factors 
 
 There are many statistical methods to generate derived variables from raw data. One of the most standard ones is **Principal Component Analysis**. This method finds factors, called **Principal Components**, which are **linear combinations of the original raw attributes** so that most of the information in the data, measured using  **variance explained** (roughly "how much of the variability in the data is captured by the selected components") is captured by only a few factors. The components are developed typically so that they are **uncorrelated**, leading to *at most as many factors as the number of the original raw attributes, but* so that only a few are needed (the *principal compontents*) to keep most of the information (variance/variability) in the raw data. For example, for our data we have `r ncol(ProjectData)` raw attributes hence we can only have a total of `r ncol(ProjectData)` factors/compontents, each of them being a linear combination of the `r ncol(ProjectData)` original raw data. 
 
@@ -278,7 +278,7 @@ if (factor_selectionciterion == "manual")
 
 Based on the three criteria (eigenvalue > 1, cumulative percentage of variance explained, and the elbow of the scree plot), and using our current selection criterion, namely `r factor_selectionciterion`, for this data we can decide to use `r factors_selected` components only. In practice one may try different numbers of factors/components as one needs to consider not only the statistical rules discussed here, but also the interpretation and actionability of the selected components: as always, data analytics is about both science and art. We consider interpretability of the derived attributes/factors next. 
 
-### Step 5: Interpret the factors (consider factor rotations - technical but useful)
+## Step 5: Interpret the factors
 
 
 In practice one would like to have derived variables that use only a few of the original raw attributes - while each new derived variable using different subsets of the original raw attributes. Unfortunately this is not necessarily always the case. However, there are mathematical methods, called "factor **rotations**", which transform the estimated factors into new ones which capture exactly the same information from the raw data but use only few non-overlaping raw attributes. One such rotation often used in practice is called the `r rotation_used` rotation - but others are also available. 
@@ -321,7 +321,7 @@ What Factor Loads "Look Good"? We often use three **Factor Technical Quality Cri
 
 
 
-### Step 6. Save factor scores for subsequent analyses
+## Step 6. Save factor scores 
 
 Once we decided the factors to use (for now), we typically replace the original data with a new dataset where each observation (row) is now described not using the original raw attributes but using instead the selected factors/derived attributes. Afterall this was the goal of this analysis. 
 

@@ -11,19 +11,28 @@ output: html_document
 
 This is a template for market segmentation based on survey data, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
 
-The report is split in 3 parts, corresponding to Sessions 3-4, 4-5, and an optional last part. 
+The report is split in 3 parts, corresponding to Sessions 3-4, 4-5, and an optional last part.  Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository. 
 
-Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository. Moreover, make sure you are in the directory of this file. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
+In case you would like to manually go through the commands below, make sure you are in the directory of this file. For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
 ```{r echo=TRUE, eval=FALSE, tidy=TRUE}
-getwd()
-setwd("CourseSessions/InClassProcess")
-list.files()
-rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
+# FOR MANUALLY RUNNING THE CODE IN THIS FILE STEP-BY-STEP
+#rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
+#getwd()
+#setwd("CourseSessions/InClassProcess")
+#list.files()
+#local_directory <- "MYDIRECTORY/INSEADAnalytics"
 ```
+
 As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
 Let's start.
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+# FOR THIS DOCUMENT YOU NEED TO INSTALL GTK+ FROM http://r.research.att.com/libs/GTK_2.24.17-X11.pkg
+# If the package still does not load, please ensure that GTK+ is installed and that it is on your PATH environment variable. RESTART R BEFORE TRYING TO LOAD THE PACKAGE AGAIN
+```
+
 
 <hr>
 
@@ -47,8 +56,8 @@ We will be using the [boats case study](http://inseaddataanalytics.github.io/INS
 Let's load the data: 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
-source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
+source("../../AnalyticsLibraries/library.R")
+source("../../AnalyticsLibraries/heatmapOutput.R")
 ```
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
