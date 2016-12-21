@@ -22,7 +22,7 @@ options(knitr.kable.NA = '')
 tags$style(type="text/css", "p { text-align:justify; }")
 tags$style(type="text/css", "label { display: none; }")
 tags$style(type="text/css", ".c3 svg { font-size:13px; font-family:\"Roboto\", \"Helvetica Neue\", Helvetica, Arial, sans-serif; }")
-tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:415px; }")
+tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:425px; }")
 tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
 
 MAX_VARIABLES <- 30     # limits initial dataset filters
