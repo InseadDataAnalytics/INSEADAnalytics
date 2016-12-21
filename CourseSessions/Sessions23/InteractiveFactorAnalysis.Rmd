@@ -25,7 +25,9 @@ tags$style(type="text/css", ".c3 svg { font-size:13px; font-family:\"Roboto\", \
 tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:415px; }")
 tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
 
-SAMPLE_ROWS <- 10
+MAX_VARIABLES <- 30     # limits initial dataset filters
+SAMPLE_ROWS <- 10       # limits sample dataset presentations
+SAMPLE_XPOINTS <- 100   # limits sample dataset plots
 
 dformat <-function(df) {
   if (class(df) != "data.frame")
@@ -69,7 +71,7 @@ ProjectDataX <- eventReactive(input$dataFile, ignoreNULL=FALSE, {
 })
 ```
 
-We also need to select which variables to consider for factor analysis: 
+We also need to select which variables to consider for factor analysis (`r MAX_VARIABLES` at most): 
 
 ```{r}
 # Please ENTER then original raw attributes to use. 
@@ -79,13 +81,14 @@ selectizeInput("factorAttributes", "",
                multiple = TRUE,
                options = list(
                  plugins = c("remove_button","drag_drop"),
+                 maxItems = MAX_VARIABLES,
                  placeholder = "None"
                ),
                width="100%"
                )
 observeEvent(ProjectDataX(), {
   attributes <- colnames(ProjectDataX())
-  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=attributes)
+  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=head(attributes, MAX_VARIABLES))
 })
 
 ProjectDataFactorX <- eventReactive(input$factorAttributes, {
@@ -322,7 +325,7 @@ We now can replace our original data with the new ones and continue our analysis
 tags$div(style='height:480px', renderC3({
   df <- as.data.frame(NEW_ProjectDataX())
   # TODO: An error occurs when ncol(df) > 9. Should investigate.
-  df <- head(df[, head(colnames(df), 9), drop=F], SAMPLE_ROWS)
+  df <- head(df[, head(colnames(df), 9), drop=F], SAMPLE_XPOINTS)
   colnames(df) <- paste("Derived Variable", 1:ncol(df))
   df <- cbind(
     list(observations = 1:nrow(df)),
