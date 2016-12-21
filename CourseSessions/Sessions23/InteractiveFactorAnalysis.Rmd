@@ -93,7 +93,7 @@ observeEvent(ProjectDataX(), {
 })
 
 ProjectDataFactorX <- eventReactive(input$factorAttributes, {
-  ProjectDataX()[, input$factorAttributes]
+  ProjectDataX()[, input$factorAttributes, drop=F]
 })
 ```
 
@@ -134,9 +134,11 @@ observeEvent(ProjectDataFactorX(), {
   updateSelectizeInput(session, "standardizedVariables", choices=attributes, selected=attributes)
 })
 
-ProjectDataFactorStandardized <- eventReactive(input$standardizedVariables, {
+ProjectDataFactorStandardized <- eventReactive(input$standardizedVariables, ignoreNULL=FALSE, {
   df <- ProjectDataFactorX()
   columns <- input$standardizedVariables
+  if (length(columns) == 0)
+    return(df)
   df[, columns] <- apply(df[, columns, drop=F], 2, function(r) {
     if (sd(r) != 0) 
       (r - mean(r)) / sd(r)
