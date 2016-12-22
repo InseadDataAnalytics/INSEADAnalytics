@@ -14,11 +14,40 @@ output:
       in_header: ../../AnalyticsStyles/default.sty
 ---
 
-```{r setup, echo=FALSE, message=FALSE}
-# SET UP
+```{r setuplibraries, echo=FALSE, message=FALSE}
 
-# Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
-datafile_name="MBAadmin" #  do not add .csv at the end! make sure the data are numeric!!!! check your file!
+source("../../AnalyticsLibraries/library.R")
+source("../../AnalyticsLibraries/heatmapOutput.R")
+ggthemr('fresh')  # ggplot theme
+opts_knit$set(progress=FALSE, verbose=FALSE)
+opts_chunk$set(echo=FALSE, fig.align="center")
+options(knitr.kable.NA = '')
+```
+
+```{r setup, echo=FALSE, message=FALSE}
+# Load the data
+
+# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. 
+
+datafile_name="Boats" #  do not add .csv at the end, make sure the data are numeric, check your file.
+
+# Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
+MIN_VALUE=0.5
+
+# Please enter the maximum number of observations to show in the report and slides 
+# (DEFAULT is 15. If the number is large the report and slides may not be generated - very slow or will crash!!)
+max_data_report = 10
+
+ProjectData <- read.csv(paste0("data/", datafile_name, ".csv")) # this contains only the matrix ProjectData
+ProjectData=data.matrix(ProjectData) 
+
+if (datafile_name == "Boats")
+  colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
+
+```
+
+```{r setup, echo=FALSE, message=FALSE}
+# SET UP OF ALL THE INPUTS FOR THIS READING
 
 # Please ENTER then original raw attributes to use. 
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
@@ -39,33 +68,13 @@ manual_numb_factors_used = 2
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
 
-# Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
-MIN_VALUE=0.5
+```
 
-# Please enter the maximum number of observations to show in the report and slides 
-# (DEFAULT is 15. If the number is large the report and slides may not be generated - very slow or will crash!!)
-max_data_report = 10
 
-################################################
-# Now run everything
-
-# this loads the selected data: DO NOT EDIT THIS LINE
-ProjectData <- read.csv(paste0("data/", datafile_name, ".csv")) # this contains only the matrix ProjectData
-ProjectData=data.matrix(ProjectData) 
-
-if (datafile_name == "Boats")
-  colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
-
+```{r setup, echo=FALSE, message=FALSE}
 factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
 ProjectDataFactor=ProjectData[,factor_attributes_used]
-
 ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
-
-source("../../AnalyticsLibraries/library.R")
-ggthemr('fresh')  # ggplot theme
-opts_knit$set(progress=FALSE, verbose=FALSE)
-opts_chunk$set(echo=FALSE, fig.align="center")
-options(knitr.kable.NA = '')
 ```
 
 
@@ -321,7 +330,7 @@ What Factor Loads "Look Good"? We often use three **Factor Technical Quality Cri
 
 
 
-## Step 6. Save factor scores 
+## Step 6: Save factor scores 
 
 Once we decided the factors to use (for now), we typically replace the original data with a new dataset where each observation (row) is now described not using the original raw attributes but using instead the selected factors/derived attributes. Afterall this was the goal of this analysis. 
 

@@ -104,7 +104,7 @@ renderFormattable(dformat(head(ProjectDataFactorX(), SAMPLE_ROWS)))
 ```
 
 
-### Step 1: Confirm the data are metric
+### Step 1: Confirm data is metric
 
 The data we use here have the following descriptive statistics: 
 
@@ -113,7 +113,7 @@ renderFormattable(dformat(round(my_summary(ProjectDataFactorX()), 2)))
 ```
 
 
-### Step 2: Decide whether to scale or standardize the data
+### Step 2: Scale the  data
 
 Select variables to standardize:
 
@@ -154,7 +154,7 @@ renderFormattable(dformat(round(my_summary(ProjectDataFactorStandardized()), 2))
 ```
 
 
-### Step 3:  Check correlation matrix to see if Factor Analysis makes sense
+### Step 3:  Check correlations 
 
 This is the correlation matrix of the original variables we use for factor analysis:
 
@@ -163,7 +163,7 @@ renderFormattable(dformat(round(cor(ProjectDataFactorStandardized()), 2)))
 ```
 
 
-### Step 4: Develop a scree plot and decide on the number of factors to be derived
+### Step 4: Choose number of factors 
 
 This is the Variance Explained table, using all data selected for factor analysis:
 
@@ -237,7 +237,7 @@ factors_selectedX <- eventReactive({
 ```
 
 
-### Step 5: Interpret the factors (consider factor rotations - technical but useful)
+### Step 5: Interpret the factors
 
 We can now use a rotation to get easier to interpret results:
 
@@ -295,7 +295,7 @@ renderUI(tags$div(class="formattable_widget",HTML(gsub("NA", "", dformat(Rotated
 ```
 
 
-### Step 6: Save factor scores for subsequent analyses
+### Step 6: Save factor scores 
 
 For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r SAMPLE_ROWS` observations):
 

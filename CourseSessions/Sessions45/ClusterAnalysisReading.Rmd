@@ -12,14 +12,15 @@ Cluster Analysis and Segmentation
 # type in the Console below help(getwd) and help(setwd) for more information
 local_directory <- paste(getwd(),"CourseSessions/Sessions45", sep="/")
 #local_directory <- "~INSEADAnalytics/CourseSessions/Sessions45"
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 
 # Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute. THE NAME OF THIS MATRIX NEEDS TO BE ProjectData (otherwise you will need to replace the name of the ProjectData variable below with whatever your variable name is, which you can see in your Workspace window after you load your file)
 #datafile_name="Boats" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 datafile_name="Mall_Visits" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
-# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-# for boats possibly use: c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24), for Mall_Visits use c(2:9)
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 segmentation_attributes_used = c(2:7) 
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
@@ -29,12 +30,8 @@ profile_attributes_used = c(2:9) # for boats use c(2:82), for Mall_Visits use c(
 # Please ENTER the number of clusters to eventually use for this report
 numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
 
-# Please enter the minimum distance from "1" the profiling values should have in order to be colored 
-# (e.g. using heatmin = 0 will color everything - try it)
-heatmin = 0.1
-
-# Please enter the method to use for the profiling (e.g. "hclust" or "kmeans"):
-profile_with = "hclust"
+# Please enter the method to use for the segmentation:
+profile_with = "hclust" #  "hclust" or "kmeans"
 
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
 # (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
@@ -58,6 +55,7 @@ MIN_VALUE=0.5
 # (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
 max_data_report = 50 # can also chance in server.R
 
+
 # this loads the selected data: DO NOT EDIT THIS LINE
 ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) 
@@ -71,9 +69,6 @@ ProjectData_segment=ProjectData[,segmentation_attributes_used]
 ProjectData_profile=ProjectData[,profile_attributes_used]
 # this is the file name where the CLUSTER_IDs of the observations will be saved
 cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,"cluster", sep="_"), "csv", sep="."), sep="/")
-
-source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
-source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 
 ```
 
@@ -221,7 +216,7 @@ There is *not one* process for clustering and segmentation. However, we have to 
 
 Let's follow these steps.
 
-#### Step 1. Confirm the data in metric 
+## Step 1: Confirm data is metric
 
 While one can cluster data even if they are not metric, many of the statistical methods available for clustering require that the data are so: this means not only that all data are numbers, but also that the numbers have an actual numerical meaning, that is, 1 is less than 2, which is less than 3 etc. The main reason for this is that one needs to define distances between observations (see step 4 below), and often ("black box" mathematical) distances (e.g. the "Euclideal distance") are defined only with metric data. 
 
@@ -255,7 +250,7 @@ Note that one should spend a lot of time getting a feeling of the data based on 
 </p> </blockquote>
 
 
-#### 2. Decide whether to scale or standardize the data
+## Step 2: Scale the  data
 
 Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the Income variable. 
 
@@ -292,7 +287,7 @@ As expected all variables have mean 0 and standard deviation 1.
 
 While this is typically a necessary step, one has to always do it with care: some times you may want your analytics findings to be driven mainly by a few attributes that take large values; other times having attributes with different scales may imply something about those attributes. In many such cases one may choose to skip step 2 for some of the raw attributes.  
 
-#### Step 3. Decide which variables to use for clustering
+## Step 3: Select Segmentation Variables
 
 The decision about which variables to use for clustering is a **critically important decision** that will have a big impact on the clustering solution. So we need to think carefully about the variables we will choose for clustering. Good exploratory research that gives us a good sense of what variables may distinguish people or products or assets or regions is critical. Clearly this is a step where a lot of contextual knowledge, creativity, and experimentation/iterations are needed. 
 
@@ -300,7 +295,7 @@ Moreover, we often use only a few of the data attributes for segmentation (the *
 
 In our case, we can use the 6 attitudinal questions for segmentation, and the remaining 2 (Income and Mall.Visits) for profiling later. 
 
-#### Step 4. Define similarity or dissimilarity measures between observations
+## Step 4: Define similarity measure
 
 Remember that the goal of clustering and segmentation is to group observations based on how similar they are. It is therefore **crucial** that we have a good undestanding of what makes two observations (e.g. customers, products, companies, assets, investments, etc) "similar". 
 
@@ -373,7 +368,7 @@ print(xtable(Manual_Pairwise, caption="Pairwise Distances between the first 5 ob
 
 In general a lot of creative thinking and exploration should be spent in this step, and as always one may need to come back to this step even after finishing the complete segmentation process - multiple times. 
 
-#### Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+## Step 5: Visualize Pair-wise Distances 
 
 Having defined what we mean "two observations are similar", the next step is to get a first understanding of the data through visualizing for example individual attributes as well the pairwise distances (using various distance metrics) between the observations. If there are indeed multiple segments in our data, some of these plots should show "mountains and valleys", with the mountains being potential segments. 
 
@@ -408,7 +403,7 @@ Visualization is very important for data analytics, as it can provide a first un
 
 <br> 
 
-#### Step 6. Select the clustering method to use and decide how many clusters to have
+## Step 6: Method and Number of Segments
 
 There are many statistical methods for clustering and segmentation. In practice one may use various approaches and then eventually select the solution that is statistically robust (see last step below), interpretable, and actionable - among other criteria.
 
@@ -517,7 +512,7 @@ Note that the observations do not need to be in the same clusters as we use diff
 The segments found should be relatively robust to changes in the clustering methodology and data subsets used. Most of the observations should belong in the same clusters independent of how the clusters are found. Large changes may indicate that our segmentation is not valid. Moreover, the profiles of the clusters found using different approaches should be as consistent across different approaches as possible. Judging the quality of segmentation is a matter of both robustness of the statistical characteristics of the segments (e.g. changes from different methods and data used) as well as a matter of many qualitative criteria: interpretability, actionability, stability over time, etc. 
 </p> </blockquote>
 
-#### Step 7. Profile and interpret the clusters 
+## Step 7: Profile and interpret the segments 
 
 Having decided (for now) how many clusters to use, we would like to get a better understanding of who the customers in those clusters are and interpret the segments. 
 
@@ -536,16 +531,14 @@ cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
 ```
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
-cluster_memberships <- cluster_memberships_hclust
-cluster_ids <-  cluster_ids_hclust  
 if (profile_with == "hclust"){
   cluster_memberships <- cluster_memberships_hclust
   cluster_ids <-  cluster_ids_hclust  
-  }
+}
 if (profile_with == "kmeans"){
   cluster_memberships <- cluster_memberships_kmeans
   cluster_ids <-  cluster_ids_kmeans
-  }
+}
 
 # SAVE THE DATA in the cluster file
 NewData = matrix(cluster_memberships,ncol=1)
@@ -603,7 +596,6 @@ cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profil
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
-#cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
 show_data = data.frame(round(cluster_profile_ratios,2))
 m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
 print(m1,'chart')
@@ -613,7 +605,7 @@ print(m1,'chart')
 
 Both the snake plot as well as this matrix of relative values of the profiling attributes for each cluster are some of the many ways to visualize our segments and interpret them. 
 
-#### Step 8. Assess the robustness of our clusters
+## Step 8: Robustness Analysis
 
 The segmentation process outlined so far can be followed with many different approaches, for example:
 

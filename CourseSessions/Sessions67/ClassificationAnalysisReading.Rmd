@@ -13,6 +13,9 @@ Classification Methods
 ========================================================
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
+
 # SET UP
 
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
@@ -88,8 +91,6 @@ rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
 test_data_percent = 100-estimation_data_percent-validation_data_percent
 CART_control = rpart.control(cp = CART_cp)
 
-source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
-source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 
 ```
 
@@ -103,7 +104,8 @@ A bank is interested in knowing which customers are likely to default on loan pa
 
 Classification (or categorization) techniques are useful to help answer such questions. They help predict the group membership (or class - hence called **classification techniques**) of individuals (data), for **predefined group memberships** (e.g. "success" vs "failure" for **binary** classification, the focus of this note), and also to describe which characteristics of individuals can predict their group membership. Examples of group memberships/classes could be: (1) loyal customers versus customers who will churn; (2) high price sensitive versus low price sensitive customers; (3) satisfied versus dissatisfied customers; (4) purchasers versus non-purchasers; (5) assets that increase in value versus not; (6) products that may be good recommendations to a customer versus not, etc. Characteristics that are useful in classifying individuals/data into predefined groups/classes could include for example (1) demographics; (2) psychographics; (3) past behavior; (4) attitudes towards specific products, (5) social network data,  etc. 
 
-There are many techniques for solving classification problems: classification trees, logistic regression, discriminant analysis, neural networks, boosted trees, random forests, deep learning methods (an area Facebook <a href="https://sites.google.com/site/deeplearningworkshopnips2013/schedule">  (e.g. see recent academic conference) </a>  has <a href="http://www.wired.com/wiredenterprise/2013/12/facebook-yann-lecun-qa/"> invested in</a>) nearest neighbors, support vector machines, etc, (e.g. see the R package "e1071" for more example methods). In this report, for simplicity  we focus on the first two, although one can always use some of the other methods instead of the ones discussed here. The focus of this note is not do explain any specific ("black box, math") classification method, but to describe a process for classification independent of the method used (e.g. independent of the method selected in one of the steps in the process outlined below).
+There are many techniques for solving classification problems: classification trees, logistic regression, discriminant analysis, neural networks, boosted trees, random forests, deep learning methods, nearest neighbors, support vector machines, etc, (e.g. see the R package "e1071" for more example methods). 
+There are also many <a href="https://cran.r-project.org/web/views/MachineLearning.html">  R packages </a> for everything developed in the past - including the "fashionable" methods on <a href="http://deeplearning.netl">  deep learning </a>  - see various news <a href="http://www.bloomberg.com/news/articles/2015-12-08/why-2015-was-a-breakthrough-year-in-artificial-intelligence">   here </a> or <a href="http://www.bloomberg.com/news/articles/2015-12-08/why-2015-was-a-breakthrough-year-in-artificial-intelligence">   here </a>  or <a href="http://www.forbes.com/sites/anthonykosner/2014/12/29/tech-2015-deep-learning-and-machine-intelligence-will-eat-the-world/#3e2e74bf282c">   here </a> for example. Microsoft also has a large collection of methods they <a href="https://azure.microsoft.com/en-us/documentation/articles/machine-learning-algorithm-choice/">  they develop. </a> In this report, for simplicity  we focus on the first two, although one can always use some of the other methods instead of the ones discussed here. The focus of this note is not do explain any specific ("black box, math") classification method, but to describe a process for classification independent of the method used (e.g. independent of the method selected in one of the steps in the process outlined below).
 
 An important question when using classification methods is to assess the relative performance of all available methods/models i.e. in order to use the best one according to our criteria. To this purpose there are standard performance **classification assessment metrics**, which we discuss below - this is a key focus of this note.  
 
@@ -207,7 +209,7 @@ There is *not a single best* process for classification. However, we have to sta
 
 Let's follow these steps.
 
-#### Step 1: Splitting the data into estimation and validation samples
+## Step 1: Split the data 
 
 It is very important that you finally measure and report (or expect to see from the data scientists working on the project) the performance of the models on **data that have not been used at all during the analysis, called "out-of-sample" or test data** (steps 2-5 above). The idea is that in practice we want our models to be used for predicting the class of observations/data we have not seen yet (e.g. "the future data"): although the performance of a classification method may be high in the data used to estimate the model parameters, it may be significantly poorer on data not used for parameter estimation, such as the **out-of-sample** (future) data in practice. The second validation data mimic such out-of-sample data, and the performance on this validation set is a better approximation of the performance one should expect in practice from the selected classification method.  This is why we split the data into an estimation sample and two validation samples  - using some kind of randomized splitting technique.  The estimation data and the first validation data are used during steps 2-5 (with a few iterations of these steps), while the second validation data is only used once at the very end before making final business decisions based on the analysis. The split can be, for example, 80% estimation, 10% validation, and 10% test data, depending on the number of observations - for example, when there is a lot of data, you may only keep a few hundreds of them for the validation and test sets, and use the rest for estimation. 
 
@@ -239,7 +241,7 @@ We typically call the three data samples as **estimation_data** (e.g. `r estimat
 In our case we use for example `r nrow(estimation_data)` observations in the estimation data, 
 `r nrow(validation_data)` in the validation data, and `r nrow(test_data)` in the test data. 
 
-#### Step 2: Setting up the dependent variable
+## Step 2: Choose dependent variable
 
 First, make sure the dependent variable is set up as a categorical 0-1 variable. In this illustrative example, the "intent to recommend" and "intent to purchase" are 0-1 variables: we will use the later as our dependent variable but a similar analysis could be done for the former. 
 
@@ -273,7 +275,7 @@ print(xtable(class_percentages ,caption="Number of Observations per class in the
 </div>
 
 
-#### Step 3: Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics.
+## Step 3: Simple Analysis
 
 Good data analytics starts with good contextual knowledge as well as a simple statistical and visualization exploration of the data. In the case of classification, one can explore "simple classifications" by assessing how the  classes differ along any of the independent variables. For example, these are the statistics of our independent variables across the two classes, class 1, "purchase" (first table), and class 0, "no purchase" (second table):
 
@@ -337,7 +339,7 @@ Can you see which variables appear to be the most discrimatory ones?
 
 
 
-#### Step 4: Estimate the classification model using the estimation data, and interpret the results.
+## Step 4: Classification and Interpretation
 
 Once we decide which  dependent and independent variables to use (which can be revisited in later iterations), one can use a number of classification methods to develop a model that discriminates the different classes. 
 
@@ -542,7 +544,7 @@ cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
 
 In general it is not necessary for all methods to agree on the most important drivers: when there is "major" disagreement, particularly among models that have satisfactory performance as discussed next, we may need to reconsider the overall analysis, including the objective of the analysis as well as the data used, as the results may not be robust. **As always, interpreting and using the results of data analytics requires a balance between quantitative and qualitative analysis.** 
 
-#### Step 5: Assess the accuracy of classification in the first validation sample
+## Step 5: Validation accuracy 
 
 
 Using the predicted class probabilities  of the validation data, as outlined above, we can  generate four basic measures of classification performance. Before discussing them, note that given the probability an observation belongs to a class, **a reasonable class prediction choice is to predict the class that has the highest probability**. However, this does not need to be the only choice in practice.
@@ -894,7 +896,7 @@ Notice that for us to maximize expected profit we need to have the cost/profit f
 
 
 
-#### Step 6: Finally, assess the accuracy of classification in the test data.
+## Step 6: Test Accuracy
 
 Having iterated steps 2-5 until we are satisfyed with the performance of our selected model on the validation data, in this step the performance analysis outlined in step 5 needs to be done with the test sample. This is the performance that "best mimics" what one should expect in practice upon deployment of the classification solution, **assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed.** 
 

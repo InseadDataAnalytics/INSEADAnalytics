@@ -85,7 +85,7 @@ print(m1,'chart')
 </div>
 <br> <br>
 
-#### Step 1. Confirm the data in metric 
+#### Step 1: Confirm data is metric 
 
 The data we use here have the following descriptive statistics: 
 
@@ -105,7 +105,7 @@ print(m1,'chart')
 </div>
 </div>
 
-#### 2. Decide whether to scale or standardize the data
+## Step 2: Scale the  data
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 ## THIS BECOMES INTERACTIVE
@@ -143,11 +143,11 @@ print(m1,'chart')
 </div>
 </div>
 
-#### Step 3. Decide which variables to use for clustering
+## Step 3: Select Segmentation Variables
 
 We did this at the begining. 
 
-#### Step 4. Define similarity or dissimilarity measures between observations
+## Step 4: Define similarity measure
 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
@@ -160,7 +160,8 @@ distance_used="euclidean"
 ```
 
 
-#### Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+## Step 5: Visualize Pair-wise Distances 
+
 This is the histogram of all pairwise distances for the `r distance_used` distance:
 
 
@@ -170,7 +171,7 @@ hist(Pairwise_Distances, main = NULL, xlab="Histogram of all pairwise Distances 
 ```
 
 
-#### Step 6. Select the clustering method to use and decide how many clusters to have
+## Step 6: Method and Number of Segments
 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
@@ -287,7 +288,7 @@ print(m1,'chart')
 <br> <br>
 
 
-#### Step 7. Profile and interpret the clusters 
+## Step 7: Profile and interpret the segments 
 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
@@ -404,7 +405,7 @@ m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_da
 print(m1,'chart')
 ```
 
-#### Step 8. Assess the robustness of our clusters
+## Step 8: Robustness Analysis
 
 For the two `r numb_clusters_used`-segments solutions found above (one using Kmeans and the other using Hierarchical Clustering), these percentages are as follows:
 

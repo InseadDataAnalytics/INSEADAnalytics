@@ -108,7 +108,7 @@ There is *not a single best* process for classification. However, we have to sta
 
 Let's follow these steps.
 
-#### Step 1: Splitting the data into estimation and validation samples
+## Step 1: Split the data 
 
 You text...
 
@@ -135,7 +135,7 @@ test_data=ProjectData[test_data_ids,]
 In our case we use for example `r nrow(estimation_data)` observations in the estimation data, 
 `r nrow(validation_data)` in the validation data, and `r nrow(test_data)` in the test data. 
 
-#### Step 2: Setting up the dependent variable
+## Step 2: Choose dependent variable
 
 
 Your text...
@@ -164,7 +164,7 @@ print(xtable(class_percentages ,caption="Number of Observations per class in the
 </div>
 
 
-#### Step 3: Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics.
+## Step 3: Simple Analysis
 
 
 <div class="row">
@@ -219,7 +219,7 @@ Can you see which variables appear to be the most discrimatory ones?
 Your text
 
 
-#### Step 4: Estimate the classification model using the estimation data, and interpret the results.
+## Step 4: Classification and Interpretation
 
 Your text
 
@@ -404,7 +404,7 @@ cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
 <br>
 <br>
 
-#### Step 5: Assess the accuracy of classification in the first validation sample
+## Step 5: Validation accuracy 
 
 Your text
 
@@ -742,7 +742,7 @@ We can then select the threshold that corresponds to the maximum expected profit
 YOUR TEXT/INTERPRETATION
 
 
-#### Step 6: Finally, assess the accuracy of classification in the test data.
+## Step 6: Test Accuracy
 
 
 Let's see in our case how the **Confusion Matrix, ROC Curve, Lift Curve, and Profit Curve** look like for our test data:
