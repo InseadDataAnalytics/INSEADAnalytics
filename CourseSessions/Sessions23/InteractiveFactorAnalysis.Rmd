@@ -64,7 +64,12 @@ ProjectDataX <- eventReactive(input$dataFile, ignoreNULL=FALSE, {
   datapath <- input$dataFile$datapath
   if (is.null(datapath))
     datapath <- "data/MBAadmin.csv"
-  df <- read.csv(datapath, stringsAsFactors=FALSE)
+  df <- try(read.csv(datapath, stringsAsFactors=FALSE), silent=TRUE)
+  df.valid <- class(df) == "data.frame" && any(sapply(df, is.numeric))
+  if (!df.valid) {
+    showModal(modalDialog(title="Error", HTML("The data file contains no valid numeric variables.<br><br>Please ensure it can be processed with `read.csv` in the command line. Common problems include a column separator other than the comma (`,`) and a decimal point other than the period (`.`).")))
+    shiny::validate(need(df.valid, message=FALSE))
+  }
   if (is.null(rownames(df)) || identical(rownames(df), as.character(1:nrow(df))))
     rownames(df) <- paste0("observation ", sprintf("%02i", 1:nrow(df)))
   df
@@ -93,7 +98,7 @@ observeEvent(ProjectDataX(), {
 })
 
 ProjectDataFactorX <- eventReactive(input$factorAttributes, {
-  ProjectDataX()[, input$factorAttributes]
+  ProjectDataX()[, input$factorAttributes, drop=F]
 })
 ```
 
@@ -134,9 +139,11 @@ observeEvent(ProjectDataFactorX(), {
   updateSelectizeInput(session, "standardizedVariables", choices=attributes, selected=attributes)
 })
 
-ProjectDataFactorStandardized <- eventReactive(input$standardizedVariables, {
+ProjectDataFactorStandardized <- eventReactive(input$standardizedVariables, ignoreNULL=FALSE, {
   df <- ProjectDataFactorX()
   columns <- input$standardizedVariables
+  if (length(columns) == 0)
+    return(df)
   df[, columns] <- apply(df[, columns, drop=F], 2, function(r) {
     if (sd(r) != 0) 
       (r - mean(r)) / sd(r)
