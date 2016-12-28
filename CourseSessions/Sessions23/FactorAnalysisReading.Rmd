@@ -44,9 +44,6 @@ ProjectData=data.matrix(ProjectData)
 if (datafile_name == "Boats")
   colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
 
-```
-
-```{r setup, echo=FALSE, message=FALSE}
 # SET UP OF ALL THE INPUTS FOR THIS READING
 
 # Please ENTER then original raw attributes to use. 
@@ -68,10 +65,6 @@ manual_numb_factors_used = 2
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
 
-```
-
-
-```{r setup, echo=FALSE, message=FALSE}
 factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
 ProjectDataFactor=ProjectData[,factor_attributes_used]
 ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
