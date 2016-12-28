@@ -20,7 +20,7 @@ source("../../AnalyticsLibraries/library.R")
 source("../../AnalyticsLibraries/heatmapOutput.R")
 ggthemr('fresh')  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
-opts_chunk$set(echo=FALSE, fig.align="center")
+opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.5)
 options(knitr.kable.NA = '')
 ```
 
