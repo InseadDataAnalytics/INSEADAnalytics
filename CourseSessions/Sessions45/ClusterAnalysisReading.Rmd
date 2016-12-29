@@ -324,7 +324,7 @@ colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Me
 knitr::kable(round(head(ProjectData_with_hclust_membership, max_data_report), 2))
 ```
 
-### Using Kmean Clustering
+**Using Kmean Clustering**
 
 As always, much like Hierarchical Clustering can be performed using various distance metrics, so can Kmeans. Moreover, there are variations of Kmeans (e.g. "Hartigan-Wong", "Lloyd", or "MacQueen" - see `help(kmeans)` in R) one can explore, which are beyond the scope of this note. **Note:** K-means does not necessarily lead to the same solution every time you run it.
 
