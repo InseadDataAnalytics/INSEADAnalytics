@@ -6,7 +6,10 @@ author : T. Evgeniou, INSEAD
 
 ```{r include=FALSE}
 # let's make the data into data.matrix classes so that we can easier visualize them
-local_directory <- "/Users/theos/Documents/Theos/Teaching/MBA_COURSES/Data Analytics R version/CourseWebsite/CourseSessions/Sessions45"
+local_directory <- "."
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
+
 datafile_name="Mall_Visits" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 report_file = "Report_s45"
 slides_file = "Slides_s45"
@@ -30,13 +33,11 @@ ProjectData_segment=ProjectData[,segmentation_attributes_used]
 ProjectData_profile=ProjectData[,profile_attributes_used]
 # this is the file name where the CLUSTER_IDs of the observations will be saved
 cluster_file = paste(paste(local_directory,"data", sep="/"),paste(paste(datafile_name,"cluster", sep="_"), "csv", sep="."), sep="/")
-source(paste(local_directory,"R/library.R", sep="/"))
 
 ### TO EDIT DEPENDING ON VERSION
 if (require(shiny) == FALSE) 
   install.packages("shiny")
 
-source(paste(local_directory,"R/heatmapOutput.R", sep = "/"))
 ```
 
 Clustering and Segmentation
@@ -672,8 +673,10 @@ change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
 m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
-#print(m1,'chart')
-cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
+show_data = data.frame(round(cluster_profile_ratios,2))
+m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+#cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
 ```
 </div>
 </div>
