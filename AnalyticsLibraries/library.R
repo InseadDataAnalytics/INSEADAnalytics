@@ -26,7 +26,7 @@ libraries_used=c("devtools","knitr","graphics","grDevices","xtable","pryr",
                  "psych","stringr","googleVis", "png","ggplot2","googleVis", 
                  "gridExtra", "reshape2", "DT", "ramnathv/slidifyLibraries",
                  "ramnathv/slidify", "cttobin/ggthemr", "dplyr", "mrjoh3/c3",
-                 "rpart.plot","vkapartzianis/formattable", "ggdendro")
+                 "rpart.plot","vkapartzianis/formattable", "ggdendro","ROCR")
 get_libraries(libraries_used)
 
 #############

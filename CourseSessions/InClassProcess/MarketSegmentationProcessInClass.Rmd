@@ -65,12 +65,12 @@ First we load the data to use.
 
 datafile_name="Boats" #  do not add .csv at the end, make sure the data are numeric, check your file.
 
-ProjectData <- read.csv(paste0("data/", datafile_name, ".csv")) # this contains only the matrix ProjectData
+ProjectData <- read.csv(paste0("../Sessions23/data/", datafile_name, ".csv")) # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) 
 
 if (datafile_name == "Boats")
   colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
-
+ProjectData_INITIAL = ProjectData
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
@@ -385,18 +385,29 @@ Here are the differences between the observations using the selected distance me
 <div class="row">
 <div class="col-md-4">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5 observations using The Euclidean Distance Metric:", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+knitr::kable(round(euclidean_pairwise))
+#print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5 observations using The Euclidean Distance Metric:", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
 
 ## Step 5: Visualize Pair-wise Distances
 
-These is the histogram of the pairwise distances. 
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+We can see the histogram of, say, the first 2 variables (can you change the code below to see other variables?)
+
+```{r echo=TRUE}
+variables_to_plot = 1:2
+do.call(grid.arrange, lapply(variables_to_plot, function(n) {
+  qplot(ProjectData_segment[, n], xlab=paste("Histogram of Variable", n), ylab="Frequency", binwidth=1)
+}))
+```
+
+or the histogram of all pairwise distances for the `r distance_used` distance:
+
+```{r}
 Pairwise_Distances <- dist(ProjectData_segment, method = distance_used) 
-hist(Pairwise_Distances, main = NULL, xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency")
+qplot(as.vector(Pairwise_Distances), xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency", binwidth=1)
 ```
 
 ## Step 6: Method and Number of Segments
@@ -433,14 +444,20 @@ It may be useful to see the dendrogram from Hierarchical Clustering, to have a q
 Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
 Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
 # Display dendogram
-plot(Hierarchical_Cluster, main = NULL, sub=NULL, labels = 1:nrow(ProjectData_segment), xlab="Our Observations", cex.lab=1, cex.axis=1) 
-# Draw dendogram with red borders around the 3 clusters
-rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
+ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE) + xlab("Our Observations") + ylab("Height")
+# TODO: Draw dendogram with red borders around the 3 clusters
+# rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
 ```
 
 We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+max <- nrow(ProjectData)
+num <- max - 1
+df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
+colnames(df1) <- c("distances","index")
+ggplot(df1, aes(x=index, y=distances)) + geom_line() + xlab("Number of Components") +ylab("Distances")
+
 max <- nrow(ProjectData)
 num <- max - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
@@ -457,6 +474,8 @@ cluster_ids_hclust=unique(cluster_memberships_hclust)
 
 ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
 colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
+knitr::kable(round(head(ProjectData_with_hclust_membership, max_data_report), 2))
+
 ```
 
 
@@ -483,6 +502,7 @@ kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.
 
 ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
 colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
+knitr::kable(round(head(ProjectData_with_kmeans_membership, max_data_report), 2))
 ```
 
 <div class="row">
@@ -552,28 +572,52 @@ if (ncol(ProjectData_profile) <2)
 colnames(Cluster_Profile_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
 cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 
+knitr::kable(round(cluster.profile, 2))
+```
+
+Or see a "snake plot":
+
+```{r}
+ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F]
+
+Cluster_Profile_standar_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
+if (ncol(ProjectData_scaled_profile) < 2)
+  Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
+colnames(Cluster_Profile_standar_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+
+ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster_Profile_standar_mean)), id="id"), aes(x=id, y=value, colour=variable)) + geom_line() + xlab("Profiling variables (standardized)") + ylab("Mean of cluster")
+```
+
+or, finally, the ratio of the average for each cluster to the average of the population (e.g. `avg(cluster)` `/` `avg(population)`) and explore a matrix as the following one:
+
+```{r}
 population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
 cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
-#cat(renderHeatmapX(cluster_profile_ratios, border=1, center = 1, minvalue = heatmin))
-show_data = data.frame(round(cluster_profile_ratios,2))
-m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
-print(m1,'chart')
+knitr::kable(round(cluster_profile_ratios, 2))
 ```
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
-population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
-cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
-colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
-rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
 show_data = data.frame(round(cluster_profile_ratios,2))
 m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
 print(m1,'chart')
 ```
 
+
+#### Questions
+
+1. What do the numbers in the last table indicate? What numbers are the more informative?
+2. Based on the tables and snake plot above, what are some key features of each of the segments of this solution?
+
+<br>
+
+**Your Answers here:**
+<br>
+<br>
 
 <br>
 
@@ -605,18 +649,70 @@ We should also consider the robustness of our analysis as we change the clusteri
 We will now use the [classification methods ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
 
 
-We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now: 
+We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this analysis: 
 
 ```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+ProjectData = ProjectData_INITIAL # Just to initialize the data
+
 dependent_variable= 82 # Q18_PurchaseFuture
 independent_variables= c(54:80) # use columns 54-80 for boats, corresponding to Question 16
+
+# Please ENTER the attributes to use as independent variables 
+# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+independent_variables= c(54:80) # use 54-80 for boats
+
+# Please ENTER the profit/cost values for the correctly and wrong classified data:
+actual_1_predict_1 = 100
+actual_1_predict_0 = -75
+actual_0_predict_1 = -50
+actual_0_predict_0 = 0
+
+Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predict_0, actual_0_predict_0), ncol=2)
+colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
+rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
+
+# Please ENTER the probability threshold above which an observations  
+# is predicted as class 1:
+Probability_Threshold=50 # between 1 and 99%
+Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
+
+# Please ENTER the percentage of data used for estimation
+estimation_data_percent = 80
+validation_data_percent = 10
+test_data_percent = 100-estimation_data_percent-validation_data_percent
+
+# Please enter 0 if you want to "randomly" split the data in estimation and validation/test
+random_sampling = 0
+# Please enter the minimum size of a segment for the analysis to be done only for that segment
+min_segment = 100
+
 ```
+
+#### Questions
+
+1. How do you select the profit/cost values for the analysis? Does the variable `r Profit_Matrix` above relate to the final business decisions? How?
+2. What does the variable `r Probability_Threshold` affect? Does it relate to the final business decisions? How?
+<br>
+
+**Your Answers here:**
+<br>
+<br>
+<br>
 
 We will use two classification trees and logistic regression. You can select "complexity" control for one of the classification trees here:
 
 ```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
 CART_control = 0.001
 ```
+
+#### Question
+
+1. How can this parameter affect the final results? What business implications can this parameter choice have?
+<br>
+
+**Your Answers here:**
+<br>
+
 
 <br>
 
@@ -667,13 +763,179 @@ formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,s
 
 
 
+This is the classification results without considering any customer segments:
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
+
+estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
+estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
+
+validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
+validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
+
+test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
+test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
+
+
+estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
+estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
+
+validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
+validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
+
+test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
+test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
+
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+Classification_Table_large=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table_large)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
+
+
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
+
+logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
+
+log_coefficients = round(summary(logreg_solution)$coefficients,1)
+
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+
+estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
+validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
+test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_log)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+log_importance = log_importance/max(abs(log_importance))
+
+tree_importance = CART_tree$variable.importance
+tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+tree_importance_final = rep(0,length(independent_variables))
+tree_importance_final[tree_ordered_drivers] <- tree_importance
+tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+tree_importance_final <- tree_importance_final*sign(log_importance)
+
+large_tree_importance = CART_tree_large$variable.importance
+large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
+large_tree_importance_final = rep(0,length(independent_variables))
+large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
+large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+large_tree_importance_final <- large_tree_importance_final*sign(log_importance)
+
+Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log_importance)
+colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
+rownames(Importance_table) <- rownames(log_importance)
+
+```
+
+The profit curves for the test data in this case are:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = test_Probability_class1_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = test_Probability_class1_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = test_Probability_class1_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+<br>
+<br>
+<hr>
+
+**Segment Specific Analysis: Five Segments Solution**
+
+Let's see first how many observations we have in each segment:
+
 Let's see first how many observations we have in each segment, for the segments we selected above:
 
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-cluster_ids <- data.matrix(cluster_ids)
-cluster_ids = cluster_ids[,2]
+# Let's rename cluster_memberships as cluster_ids
+cluster_ids <- cluster_memberships
 
 cluster_size = NULL
 for (i in sort(unique(cluster_ids))){
@@ -682,12 +944,15 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(cluster_size,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
 
+And now the segment specific analysis and solution:
+
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
 actual_class<- test_data[,dependent_variable]
 probs_tree = 0*test_Probability_class1_tree
 probs_tree_large = 0*test_Probability_class1_tree_large
@@ -750,7 +1015,8 @@ for (i in sort(unique(cluster_ids))){
     }
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
-cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+knitr::kable(round(tail(Log_Drivers,-1), 2))
+#cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
 
 ```
 <br>
