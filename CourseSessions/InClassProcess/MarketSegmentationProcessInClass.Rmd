@@ -20,7 +20,7 @@ output:
 
 <br>
 
-This is a template process for market segmentation based on survey data, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
+This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
 
 The process is split in 3 parts, corresponding to Sessions 3-4, 5-6, and an optional last part: 
 1. *Part 1*: We use some of the survery questions (e.g. in this case the first 29 "attitude" questions) to construct key variables ("factors") using *dimensionality reduction* that will be used for the segmentation.
@@ -32,7 +32,7 @@ Finally, we will use the results of this analysis to make business decisions e.g
 
 Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository. In case you would like to manually go through the commands below, make sure you are in the directory of this file. For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
-```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+```{r, echo=FALSE}
 # FOR MANUALLY RUNNING THE CODE IN THIS FILE STEP-BY-STEP
 #rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
 #getwd()
@@ -43,22 +43,29 @@ As always, you can use the `help` command in Rstudio to find out about any R fun
 
 Let's start.
 
-```{r setuplibraries, echo=FALSE, message=FALSE}
-source("../../AnalyticsLibraries/library.R")
-source("../../AnalyticsLibraries/heatmapOutput.R")
-ggthemr('fresh')  # ggplot theme
+```{r setuplibraries, echo=FALSE, warning=FALSE}
+# SET UP
+# When running the case on a local computer, modify this in case you saved the case in a different directory 
+# (e.g. local_directory <- "C:/user/MyDocuments" )
+# type in the Console below help(getwd) and help(setwd) for more information
+local_directory <- "."
+suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/")))
+suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/")))
+
+# Package options
+suppressWarnings(ggthemr('fresh'))  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
-opts_chunk$set(echo=FALSE, fig.align="center")
+opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.5)
 options(knitr.kable.NA = '')
 ```
 
 
 <hr>
-## The Data
+# The Data
 
 First we load the data to use. 
 
-```{r setupdata, echo=FALSE, message=FALSE}
+```{r setupdata1E, echo=FALSE}
 # Load the data
 
 # Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. 
@@ -83,7 +90,10 @@ max_data_report = 10
 
 
 <hr>
-## Part 1: Dimensionality Reduction
+# Part 1: Dimensionality Reduction
+
+The code used here is along the lines of the code in the session 3-4 reading  [FactorAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/FactorAnalysisReading.Rmd). We follow the process described in the [Dimensionality Reduction ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading. 
+
 
 In this part we also become familiar with:
 
@@ -91,12 +101,13 @@ In this part we also become familiar with:
 2. Principal Component Analysis and Factor Analysis;
 3. Introduction to machine learning methods;
 
-The code used here is along the lines of the code in the session 3-4 reading  [FactorAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/FactorAnalysisReading.Rmd). All user inputs for this part should be selected here: 
+All user inputs for this part should be selected here: 
 
-```{r setupfactor, echo=FALSE, message=FALSE}
+```{r setupfactor}
 # SET UP OF ALL THE INPUTS FOR THIS PART
 
-# Please ENTER then original raw attributes to use in this part
+
+# Please ENTER then original raw attributes to use. 
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 factor_attributes_used= c(2:30)
 
@@ -115,26 +126,24 @@ manual_numb_factors_used = 10
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
 
+factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+ProjectDataFactor=ProjectData[,factor_attributes_used]
+ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
+
 ```
 
 
 
 <hr>
 
-### Steps 1/2: Check the Data 
+## Steps 1/2: Check the Data 
 
 
 Start by some basic visual exploration of, say, a few data:
 
-```{r, echo=TRUE, message=FALSE}
-factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
-ProjectDataFactor=ProjectData[,factor_attributes_used]
-ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
-```
-
 <br>
 
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+```{r}
 rownames(ProjectDataFactor) <- paste0("observation ", sprintf("%02i", 1:nrow(ProjectDataFactor)))
 knitr::kable(round(ProjectDataFactor, 2)[1:min(max_data_report,nrow(ProjectDataFactor)), ])
 ```
@@ -146,12 +155,12 @@ knitr::kable(round(my_summary(ProjectDataFactor), 2))
 ```
 
 
-### Step 3: Check Correlations
+## Step 3: Check Correlations
 
 This is the correlation matrix of the customer responses to the `r ncol(ProjectDataFactor)` attitude questions - which are the only questions that we will use for the segmentation (see the case):
 <br>
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+```{r}
 thecor = round(cor(ProjectDataFactor),2)
 colnames(thecor)<-colnames(ProjectDataFactor)
 rownames(thecor)<-colnames(ProjectDataFactor)
@@ -160,12 +169,12 @@ knitr::kable(round(thecor,2))
 ```
 <br>
 
-#### Questions
+**Questions**
 
 1. Do you see any high correlations between the responses? Do they make sense? 
 2. What do these correlations imply?
 
-##### Answers:
+**Answers:**
 <br>
 <br>
 <br>
@@ -173,15 +182,15 @@ knitr::kable(round(thecor,2))
 
 <hr>
 
-### Step 4: Choose number of factors
+## Step 4: Choose number of factors
 
-Clearly the survey asked many reduntant questions (can you think some reasons why?), so we may be able to actually "group" these 29 attitude questions into only a few "key factors". This not only will simplify the data, but will also greatly facilitate our understanding of the customers.
+Clearly the survey asked many redundant questions (can you think some reasons why?), so we may be able to actually "group" these 29 attitude questions into only a few "key factors". This not only will simplify the data, but will also greatly facilitate our understanding of the customers.
 
-To do so, we use methods called [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) and [factor analysis](https://en.wikipedia.org/wiki/Factor_analysis) as discussed in the [session readings](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html). We can use two different R commands for this (they make slightly different information easily available as output): the command `principal` (check `help(principal)` from R package [psych](http://personality-project.org/r/psych/)), and the command `PCA` from R package [FactoMineR](http://factominer.free.fr) - there are more packages and commands for this, as these methods are very widely used.  
+To do so, we use methods called [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) and [factor analysis](https://en.wikipedia.org/wiki/Factor_analysis) as also discussed in the [Dimensionality Reduction readings](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html). We can use two different R commands for this (they make slightly different information easily available as output): the command `principal` (check `help(principal)` from R package [psych](http://personality-project.org/r/psych/)), and the command `PCA` from R package [FactoMineR](http://factominer.free.fr) - there are more packages and commands for this, as these methods are very widely used.  
 
 Here is how the `principal` function is used:
 <br>
-```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+```{r}
 UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
 UnRotated_Factors<-round(UnRotated_Results$loadings,2)
 UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
@@ -194,7 +203,7 @@ colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" "
 Here is how we use the `PCA` function:
 <br>
 
-```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+```{r}
 Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
 Variance_Explained_Table<-Variance_Explained_Table_results$eig
 Variance_Explained_Table_copy<-Variance_Explained_Table
@@ -210,12 +219,12 @@ Let's look at the **variance explained** as well as the **eigenvalues** (see ses
 <br>
 <br>
 
-```{r echo=FALSE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis'}
+```{r}
 knitr::kable(round(Variance_Explained_Table, 2))
 ```
 <br> 
 
-```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
+```{r figure011}
 eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
@@ -224,7 +233,7 @@ ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) +
 ```
 <br>
 
-#### Questions:
+**Questions:**
 
 1. Can you explain what this table and the plot are? What do they indicate? What can we learn from these?
 2. Why does the plot have this specific shape? Could the plotted line be increasing? 
@@ -236,12 +245,12 @@ ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) +
 <br>
 <br>
 
-### Step 5: Interpret the factors
+## Step 5: Interpret the factors
 
 Let's now see how the "top factors" look like. 
 <br>
 
-```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+```{r}
 if (factor_selectionciterion == "eigenvalue")
   factors_selected = sum(Variance_Explained_Table_copy[,1] >= 1)
 if (factor_selectionciterion == "variance")
@@ -255,7 +264,7 @@ To better visualise them, we will use what is called a "rotation". There are man
 
 <br>
 
-```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+```{r}
 
 Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
 Rotated_Factors<-round(Rotated_Results$loadings,2)
@@ -272,7 +281,7 @@ knitr::kable(Rotated_Factors)
 To better visualize and interpret the factors we often "supress" loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:
 <br>
 
-```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+```{r}
 Rotated_Factors_thres <- Rotated_Factors
 Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-NA
 colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
@@ -284,7 +293,7 @@ knitr::kable(Rotated_Factors_thres)
 <br> <br>
 
 
-#### Questions
+**Questions**
 
 1. What do the first couple of factors mean? Do they make business sense? 
 2. How many factors should we choose for this data/customer base? Please try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
@@ -299,7 +308,7 @@ knitr::kable(Rotated_Factors_thres)
 <br>
 
 
-### Step 6:  Save factor scores 
+## Step 6:  Save factor scores 
 
 We can now either replace all initial variables used in this part with the factors scores or just select one of the initial variables for each of the selected factors in order to represent that factor. Here is how to get the factor scores and how they are for the first few respondents:
 
@@ -311,7 +320,7 @@ knitr::kable(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , dro
 ```
 
 
-#### Questions
+**Questions**
 
 1. Can you describe some of the people using the new derived variables (factor scores)? 
 2. Which of the 29 initial variables would you select to represent each of the factors you selected?  
@@ -326,21 +335,64 @@ knitr::kable(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , dro
 <hr>
 
 
-## Part 2: Cluster Analysis and Segmentation 
+# Part 2: Cluster Analysis and Segmentation 
+
+The code used here is along the lines of the code in the session 5-6 reading  [ClusterAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/ClusterAnalysisReading.Rmd). We follow the process described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading. 
+
 
 In this part we also become familiar with:
 
 1. Some clustering Methods;
 2. How these tools can be used in practice.
 
-The code used here is along the lines of the code in the session 5-6 reading  [ClusterAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/ClusterAnalysisReading.Rmd). All user inputs for this part should be selected here: 
-
 A key family of methods used for segmentation is what is called **clustering methods**. This is a very important problem in statistics and **machine learning**, used in all sorts of applications such as in [Amazon's pioneer work on recommender systems](http://www.cs.umd.edu/~samir/498/Amazon-Recommendations.pdf). There are many *mathematical methods* for clustering. We will use two very standard methods, **hierarchical clustering** and **k-means**. While the "math" behind all these methods can be complex, the R functions used are relatively simple to use, as we will see. 
 
-
-We follow the process described in the [Clsuter Analysis ](https://github.com/InseadDataAnalytics/INSEADAnalytics/Sessions45/ClusterAnalysisReading.Rmd) reading. 
-
 <br>
+All user inputs for this part should be selected here: 
+
+```{r setupcluster, echo=FALSE, message=FALSE}
+# Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+segmentation_attributes_used = c(10,19,5,12,3) 
+
+# Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
+# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+profile_attributes_used = c(2:82) 
+
+# Please ENTER the number of clusters to eventually use for this report
+numb_clusters_used = 5 # for boats possibly use 5, for Mall_Visits use 3
+
+# Please enter the method to use for the segmentation:
+profile_with = "hclust" #  "hclust" or "kmeans"
+
+# Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
+# (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
+# DEFAULT is "euclidean"
+distance_used="euclidean"
+
+# Please ENTER the hierarchical clustering method to use (options are:
+# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
+# DEFAULT is "ward"
+hclust_method = "ward.D"
+
+# Please ENTER the kmeans clustering method to use (options are:
+# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
+# DEFAULT is "Lloyd"
+kmeans_method = "Lloyd"
+
+# Same as the initial data
+ProjectData <- ProjectData_INITIAL
+
+segmentation_attributes_used = unique(sapply(segmentation_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+profile_attributes_used = unique(sapply(profile_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+
+ProjectData_segment=ProjectData[,segmentation_attributes_used]
+ProjectData_profile=ProjectData[,profile_attributes_used]
+
+ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
+
+```
+
 
 ## Step 1/2: Explore the data
 
@@ -350,53 +402,26 @@ We follow the process described in the [Clsuter Analysis ](https://github.com/In
 
 For simplicity will use one representative question for each of the factor we found in Part 1 (we can also use the "factor scores" for each respondent) to represent our survey respondents. These are the `segmentation_attributes_used` selected below. We can choose the question with the highest absolute factor loading for each factor. For example, when we use 5 factors with the varimax rotation we can select questions Q.1.9 (I see my boat as a status symbol), Q1.18 (Boating gives me a feeling of adventure), Q1.4 (I only consider buying a boat from a reputable brand), Q1.11 (I tend to perform minor boat repairs and maintenance on my own) and Q1.2 (When buying a boat  getting the lowest price is more important than the boat brand) - try it. These are columns 10, 19, 5, 12, and 3, respectively of the data matrix `Projectdata`. 
 
-```{r, echo=FALSE, message=FALSE}
-# SET UP OF ALL THE INPUTS FOR THIS PART
-
-# Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
-# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-segmentation_attributes_used = c(10,19,5,12,3) 
-
-segmentation_attributes_used = unique(sapply(segmentation_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
-ProjectData_segment=ProjectData[,segmentation_attributes_used]
-
-```
-
-
 ## Step 4: Define similarity measure
 
-We need to define a distance metric that measures how different people (observations in general) are from each other. This can be an important choice. 
+We need to define a distance metric that measures how different people (observations in general) are from each other. This can be an important choice. Here are the differences between the observations using the distance metric we selected:
 
-```{r, echo=FALSE, message=FALSE}
-# Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
-# (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
-# DEFAULT is "euclidean"
-distance_used="euclidean"
-```
 
-```{r include=FALSE, echo=FALSE, comment=NA, warning=FALSE, message=FALSE}
-euclidean_pairwise <- as.matrix(dist(head(ProjectData_segment, 5), method="euclidean"))
+```{r}
+euclidean_pairwise <- as.matrix(dist(head(ProjectData_segment, max_data_report), method="euclidean"))
 euclidean_pairwise <- euclidean_pairwise*lower.tri(euclidean_pairwise) + euclidean_pairwise*diag(euclidean_pairwise) + 10e10*upper.tri(euclidean_pairwise)
 euclidean_pairwise[euclidean_pairwise==10e10] <- NA
-```
 
-Here are the differences between the observations using the selected distance metric:
-
-<div class="row">
-<div class="col-md-4">
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
 knitr::kable(round(euclidean_pairwise))
-#print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5 observations using The Euclidean Distance Metric:", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
-</div>
-</div>
+
 
 ## Step 5: Visualize Pair-wise Distances
 
 
 We can see the histogram of, say, the first 2 variables (can you change the code below to see other variables?)
 
-```{r echo=TRUE}
+```{r}
 variables_to_plot = 1:2
 do.call(grid.arrange, lapply(variables_to_plot, function(n) {
   qplot(ProjectData_segment[, n], xlab=paste("Histogram of Variable", n), ylab="Frequency", binwidth=1)
@@ -412,35 +437,9 @@ qplot(as.vector(Pairwise_Distances), xlab="Histogram of all pairwise Distances b
 
 ## Step 6: Method and Number of Segments
 
-We now need to select the clustering method to use, as well as the number of cluster: 
+We need to select the clustering method to use, as well as the number of cluster. It may be useful to see the dendrogram from Hierarchical Clustering, to have a quick idea of how the data may be segmented and how many segments there may be. Here is the dendrogram for our data:
 
-```{r, echo=FALSE, message=FALSE}
-# Please ENTER the number of clusters to eventually use for this report
-numb_clusters_used = 5
-
-
-# Please enter the method to use for the segmentation:
-profile_with = "hclust" #  "hclust" or "kmeans"
-
-# Please ENTER the hierarchical clustering method to use in case we use hclust (options are:
-# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
-# DEFAULT is "ward"
-hclust_method = "ward"
-
-# Please ENTER the kmeans clustering method to use in case we use kmeans (options are:
-# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
-# DEFAULT is "Lloyd"
-kmeans_method = "Lloyd"
-
-# Please enter the method to use for the segmentation:
-profile_with = "hclust" #  "hclust" or "kmeans"
-
-```
-
-
-It may be useful to see the dendrogram from Hierarchical Clustering, to have a quick idea of how the data may be segmented and how many segments there may be. Here is the dendrogram for our data:
-
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+```{r}
 Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
 Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
 # Display dendogram
@@ -451,94 +450,46 @@ ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE) + xlab("Our Observations"
 
 We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
+```{r}
 max <- nrow(ProjectData)
 num <- max - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
 colnames(df1) <- c("distances","index")
 ggplot(df1, aes(x=index, y=distances)) + geom_line() + xlab("Number of Components") +ylab("Distances")
 
-max <- nrow(ProjectData)
-num <- max - 1
-df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
-colnames(df1) <- c("distances","index")
-Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(Line,'chart')
+#Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(Line,'chart')
 ```
 
 Here is the segment membership if we use hierarchical clustering:
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+```{r}
 cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
 
 ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
 colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
+
 knitr::kable(round(head(ProjectData_with_hclust_membership, max_data_report), 2))
-
 ```
 
-
-<div class="row">
-<div class="col-md-6">
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-show_data = data.frame(round(ProjectData_with_hclust_membership,2))
-show_data = show_data[1:min(max_data_report,nrow(show_data)),]
-row<-rownames(show_data)
-dfnew<-cbind(row,show_data)
-change<-colnames(dfnew)
-change[1]<-"Observation"
-colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
-print(m1,'chart')
-```
-</div>
-</div>
 
 while this is the segment membership if we use k-means:
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+```{r}
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
 
 ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
 colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
+
 knitr::kable(round(head(ProjectData_with_kmeans_membership, max_data_report), 2))
 ```
-
-<div class="row">
-<div class="col-md-6">
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-show_data = data.frame(round(ProjectData_with_kmeans_membership,2))
-show_data = show_data[1:min(max_data_report,nrow(show_data)),]
-row<-rownames(show_data)
-dfnew<-cbind(row,show_data)
-change<-colnames(dfnew)
-change[1]<-"Observation"
-colnames (dfnew)<-change
-m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
-print(m1,'chart')
-```
-</div>
-</div>
 
 
 ## Step 7: Profile and interpret the segments 
 
 
 In market segmentation one may use variables to **profile** the segments which are not the same (necessarily) as those used to **segment** the market: the latter may be, for example, attitude/needs related (you define segments based on what the customers "need"), while the former may be any information that allows a company to identify the defined customer segments (e.g. demographics, location, etc). Of course deciding which variables to use for segmentation and which to use for profiling (and then **activation** of the segmentation for business purposes) is largely subjective.  In this case we can use all survey questions for profiling for now - the `profile_attributes_used` variables selected below. 
-
-
-```{r, echo=FALSE, message=FALSE}
-
-# Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
-# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-profile_attributes_used = c(2:82) 
-
-profile_attributes_used = unique(sapply(profile_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
-ProjectData_profile=ProjectData[,profile_attributes_used]
-
-```
-
 
 There are many ways to do the profiling of the segments. For example, here we show how the *average* answers of the respondents *in each segment* compare to the *average answer of all respondents* using the ratio of the two.  The idea is that if in a segment the average response to a question is very different (e.g. away from ratio of 1) than the overall average, then that question may indicate something about the segment relative to the total population. 
 
@@ -549,7 +500,10 @@ Here are for example the profiles of the segments using the clusters found above
  <br>
 
 
-```{r echo=TRUE, eval=TRUE, tidy=TRUE}
+```{r}
+cluster_memberships_kmeans <- kmeans_clusters$cluster 
+cluster_ids_kmeans <- unique(cluster_memberships_kmeans)
+
 if (profile_with == "hclust"){
   cluster_memberships <- cluster_memberships_hclust
   cluster_ids <-  cluster_ids_hclust  
@@ -558,12 +512,10 @@ if (profile_with == "kmeans"){
   cluster_memberships <- cluster_memberships_kmeans
   cluster_ids <-  cluster_ids_kmeans
 }
-```
-<br>
 
-We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. avg(cluster)/avg(population)) and explore a matrix as the following one:
+# WE WILL USE THESE IN THE CLASSIFICATION PART LATER
+NewData = matrix(cluster_memberships,ncol=1)
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 population_average = matrix(apply(ProjectData_profile, 2, mean), ncol=1)
 colnames(population_average) <- "Population"
 Cluster_Profile_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
@@ -574,11 +526,11 @@ cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 
 knitr::kable(round(cluster.profile, 2))
 ```
+<br>
 
-Or see a "snake plot":
+We can also "visualize" the segments using **snake plots** for each cluster. For example, we can plot the means of the profiling variables for each of our clusters to better visualize differences between segments. For better visualization we plot the standardized profiling variables.
 
 ```{r}
-ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
 ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F]
 
 Cluster_Profile_standar_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
@@ -589,7 +541,8 @@ colnames(Cluster_Profile_standar_mean) <- paste("Segment", 1:length(cluster_ids)
 ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster_Profile_standar_mean)), id="id"), aes(x=id, y=value, colour=variable)) + geom_line() + xlab("Profiling variables (standardized)") + ylab("Mean of cluster")
 ```
 
-or, finally, the ratio of the average for each cluster to the average of the population (e.g. `avg(cluster)` `/` `avg(population)`) and explore a matrix as the following one:
+
+We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. avg(cluster)/avg(population)) and explore a matrix as the following one:
 
 ```{r}
 population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
@@ -602,13 +555,13 @@ knitr::kable(round(cluster_profile_ratios, 2))
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 ## printing the result in a clean-slate table
-show_data = data.frame(round(cluster_profile_ratios,2))
-m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
-print(m1,'chart')
+#show_data = data.frame(round(cluster_profile_ratios,2))
+#m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+#print(m1,'chart')
 ```
 
 
-#### Questions
+**Questions**
 
 1. What do the numbers in the last table indicate? What numbers are the more informative?
 2. Based on the tables and snake plot above, what are some key features of each of the segments of this solution?
@@ -626,7 +579,7 @@ print(m1,'chart')
 
 We should also consider the robustness of our analysis as we change the clustering method and parameters. Once we are confortable with the solution we can finally answer our first business questions: 
 
-#### Questions
+**Questions**
 
 1. How many segments are there in our market? How many do you select and why? Try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
 2. Can you describe the segments you found based on the profiles?
@@ -644,18 +597,20 @@ We should also consider the robustness of our analysis as we change the clusteri
 <hr>
 
 
-## Part 3: Classification Analysis
+# Part 3: Classification Analysis
 
 We will now use the [classification methods ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
 
 
-We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this analysis: 
+We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this part of the analysis: 
 
-```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+```{r eval = TRUE, echo=FALSE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
 ProjectData = ProjectData_INITIAL # Just to initialize the data
 
-dependent_variable= 82 # Q18_PurchaseFuture
-independent_variables= c(54:80) # use columns 54-80 for boats, corresponding to Question 16
+# Please ENTER the class (dependent) variable:
+# Please use numbers, not column names! e.g. 82 uses the 82nd column are dependent variable.
+# YOU NEED TO MAKE SURE THAT THE DEPENDENT VARIABLES TAKES ONLY 2 VALUES: 0 and 1!!!
+dependent_variable= 82
 
 # Please ENTER the attributes to use as independent variables 
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
@@ -667,28 +622,50 @@ actual_1_predict_0 = -75
 actual_0_predict_1 = -50
 actual_0_predict_0 = 0
 
-Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predict_0, actual_0_predict_0), ncol=2)
-colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
-rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
-
 # Please ENTER the probability threshold above which an observations  
 # is predicted as class 1:
 Probability_Threshold=50 # between 1 and 99%
-Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
 
 # Please ENTER the percentage of data used for estimation
 estimation_data_percent = 80
 validation_data_percent = 10
-test_data_percent = 100-estimation_data_percent-validation_data_percent
 
 # Please enter 0 if you want to "randomly" split the data in estimation and validation/test
 random_sampling = 0
+
+# Tree parameter
+# PLEASE ENTER THE Tree (CART) complexity control cp (e.g. 0.001 to 0.02, depending on the data)
+CART_cp = 0.01
+
 # Please enter the minimum size of a segment for the analysis to be done only for that segment
 min_segment = 100
 
+# Please enter the maximum number of observations to show in the report and slides 
+# (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
+max_data_report = 50 # can also chance in server.R
+
+
+Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
+
+dependent_variable = unique(sapply(dependent_variable,function(i) min(ncol(ProjectData), max(i,1))))
+independent_variables = unique(sapply(independent_variables,function(i) min(ncol(ProjectData), max(i,1))))
+
+if (length(unique(ProjectData[,dependent_variable])) !=2){
+  cat("\n*****\n BE CAREFUL, THE DEPENDENT VARIABLE TAKES MORE THAN 2 VALUES...")
+  cat("\nSplitting it around its median...\n*****\n ")
+  new_dependent = ProjectData[,dependent_variable] >= median(ProjectData[,dependent_variable])
+  ProjectData[,dependent_variable] <- 1*new_dependent
+}
+
+Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predict_0, actual_0_predict_0), ncol=2)
+colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
+rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
+test_data_percent = 100-estimation_data_percent-validation_data_percent
+CART_control = rpart.control(cp = CART_cp)
+
 ```
 
-#### Questions
+**Questions**
 
 1. How do you select the profit/cost values for the analysis? Does the variable `r Profit_Matrix` above relate to the final business decisions? How?
 2. What does the variable `r Probability_Threshold` affect? Does it relate to the final business decisions? How?
@@ -701,11 +678,11 @@ min_segment = 100
 
 We will use two classification trees and logistic regression. You can select "complexity" control for one of the classification trees here:
 
-```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+```{r eval = TRUE, echo=FALSE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
 CART_control = 0.001
 ```
 
-#### Question
+**Question**
 
 1. How can this parameter affect the final results? What business implications can this parameter choice have?
 <br>
@@ -719,7 +696,6 @@ CART_control = 0.001
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 # FIrst we split the data in estimation, validation, and test
-random_sampling = 0
 
 if (random_sampling){
   estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
@@ -736,6 +712,9 @@ test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validatio
 estimation_data=ProjectData[estimation_data_ids,]
 validation_data=ProjectData[validation_data_ids,]
 test_data=ProjectData[test_data_ids,]
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
 # just name the variables numerically so that they look ok on the tree plots
 independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
@@ -757,18 +736,22 @@ estimation_data = data.frame(estimation_data)
 validation_data = data.frame(validation_data)
 test_data = data.frame(test_data)
 
-formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+```
 
+```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis'}
+formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+
+#fancyRpartPlot(CART_tree)
+```
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
 ```
 
 
-
-This is the classification results without considering any customer segments:
-
-```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
-CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
-CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
-
+```{r echo=FALSE, message=FALSE,warning=FALSE, results='asis'}
+# Let's first calculate all probabilites for the estimation, validation, and test data
 estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
 estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
 
@@ -788,22 +771,20 @@ validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1
 test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
 test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
 
+```
 
-Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
-rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
-colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
-
-Classification_Table_large=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
-rownames(Classification_Table_large)<-c("Actual Class","Probability of Class 1")
-colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
-
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
 formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
 
 logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
+#print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
 validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
 test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
@@ -811,10 +792,9 @@ test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=t
 estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
 validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
 test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+```
 
-Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_log)
-rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
-colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
 log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
 log_importance = log_importance/max(abs(log_importance))
@@ -925,15 +905,15 @@ print(LineFramev3,'chart')
 <br>
 <hr>
 
-**Segment Specific Analysis: Five Segments Solution**
+# Part 4: Business Decisions
 
-Let's see first how many observations we have in each segment:
+We will now get the results of the overall process (parts 1-3) and based on them make business decisions (e.g. answer the questions of the Boats case study). Specifically, we will study the purchase drivers for each segment we found. 
+
+**Final Solution: Segment Specific Analysis**
 
 Let's see first how many observations we have in each segment, for the segments we selected above:
 
-<div class="row">
-<div class="col-md-6">
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+```{r}
 # Let's rename cluster_memberships as cluster_ids
 cluster_ids <- cluster_memberships
 
@@ -944,14 +924,14 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-print(xtable(cluster_size,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(cluster_size)
+
+#print(xtable(cluster_size,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
-</div>
-</div>
 
-And now the segment specific analysis and solution:
+This is our final segment specific analysis and solution. We can study now the purchase drivers (average answers to Q16 of the survey) for each segment. They are as follows:
 
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+```{r}
 
 actual_class<- test_data[,dependent_variable]
 probs_tree = 0*test_Probability_class1_tree
@@ -1115,7 +1095,8 @@ print(LineFramev3,'chart')
 2. How different are the purchase drivers you find when you use segmentation versus when you study all customers as "one segment"? Why? 
 3. Based on the overall analysis, what segmentation would you choose?
 4. What is the business profit the company can achieve (as measured with the test data) based on your solution? 
- 
+5. What business decisions can the company make based on this analysis?
+
 **Answers:**
 
 <br>

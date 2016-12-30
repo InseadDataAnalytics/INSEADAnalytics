@@ -258,7 +258,7 @@ In our data the number of 0/1's in our estimation sample is as follows:
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 class_percentages=matrix(c(sum(estimation_data[,dependent_variable]==1),sum(estimation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
 rownames(class_percentages)<-"# of Observations"
-print(xtable(class_percentages ,caption="Number of Observations per class in the Estimation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(class_percentages ,caption="Number of Observations per class in the Estimation Sample", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 
 </div>
@@ -270,7 +270,7 @@ while in the validation sample they are:
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 class_percentages=matrix(c(sum(validation_data[,dependent_variable]==1),sum(validation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
 rownames(class_percentages)<-"# of Observations"
-print(xtable(class_percentages ,caption="Number of Observations per class in the Validation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(class_percentages ,caption="Number of Observations per class in the Validation Sample", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
@@ -469,7 +469,7 @@ formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Re
 logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
-print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 
