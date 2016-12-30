@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 <style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;}</style>
 <style>
@@ -13,6 +18,8 @@ Classification Methods
 ========================================================
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+make_pdf_file = 0 # SET THIS TO 1 IF WE COMPILE PDF FILE, 0 OTHERWISE (FOR HTML)
+
 local_directory = "."
 source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
 source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
@@ -29,6 +36,11 @@ dformat <-function(df) {
   names(x) <- colnames(df)
   formattable(df, x)
 }
+
+if (make_pdf_file) {
+  dformat<- function(df) knitr::kable(df)
+}
+
 # SET UP
 
 # When running the case on a local computer, modify this in case you saved the case in a different directory 
