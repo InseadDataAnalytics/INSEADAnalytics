@@ -94,7 +94,7 @@ max_data_report = 10
 
 
 <hr>
-# Part 1: Dimensionality Reduction
+# Part 1: Key Customer Characteristics
 
 The code used here is along the lines of the code in the session 3-4 reading  [FactorAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/FactorAnalysisReading.Rmd). We follow the process described in the [Dimensionality Reduction ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading. 
 
@@ -333,7 +333,7 @@ dformat(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , drop=F])
 <hr>
 
 
-# Part 2: Cluster Analysis and Segmentation 
+# Part 2: Customer Segmentation 
 
 The code used here is along the lines of the code in the session 5-6 reading  [ClusterAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/ClusterAnalysisReading.Rmd). We follow the process described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading. 
 
@@ -584,7 +584,7 @@ We should also consider the robustness of our analysis as we change the clusteri
 <hr>
 
 
-# Part 3: Classification Analysis
+# Part 3: Purchase Drivers
 
 We will now use the [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) methods to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
 
