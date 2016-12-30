@@ -6,7 +6,7 @@ td.tableRow
 text-align:center;
 }
 </style>
-<script src='//api.tiles.mapbox.com/mapbox.js/v1.6.0/mapbox.js'></script>
+
 
 
 Classification Methods
@@ -258,7 +258,8 @@ In our data the number of 0/1's in our estimation sample is as follows:
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 class_percentages=matrix(c(sum(estimation_data[,dependent_variable]==1),sum(estimation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
 rownames(class_percentages)<-"# of Observations"
-print(xtable(class_percentages ,caption="Number of Observations per class in the Estimation Sample", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(class_percentages)
+#print(xtable(class_percentages ,caption="Number of Observations per class in the Estimation Sample", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 
 </div>
@@ -270,7 +271,8 @@ while in the validation sample they are:
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 class_percentages=matrix(c(sum(validation_data[,dependent_variable]==1),sum(validation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
 rownames(class_percentages)<-"# of Observations"
-print(xtable(class_percentages ,caption="Number of Observations per class in the Validation Sample", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(class_percentages)
+#print(xtable(class_percentages ,caption="Number of Observations per class in the Validation Sample", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
@@ -388,7 +390,7 @@ test_data = data.frame(test_data)
 formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
-fancyRpartPlot(CART_tree)
+#fancyRpartPlot(CART_tree)
 ```
 </center>
 
@@ -400,7 +402,7 @@ One can estimate larger trees through changing the tree's **complexity control**
 ```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
 CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
 
-fancyRpartPlot(CART_tree_large)
+#fancyRpartPlot(CART_tree_large)
 ```
 </center>
 
@@ -469,7 +471,8 @@ formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Re
 logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
-print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(log_coefficients)
+#print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 
@@ -537,7 +540,8 @@ Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log
 colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
 rownames(Importance_table) <- rownames(log_importance)
 ## printing the result in a clean-slate table
-cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
+knitr::kable(Importance_table)
+#cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
 ```
 
 <br>
@@ -573,8 +577,8 @@ validation_hit_rates = rbind(
   )
 colnames(validation_hit_rates) <- "Hit Ratio"
 rownames(validation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
-
-print(xtable(validation_hit_rates ,caption="Validation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(validation_hit_rates)
+#print(xtable(validation_hit_rates ,caption="Validation Data Hit Ratios for different classifiers tested", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -596,8 +600,8 @@ estimation_hit_rates = rbind(
   )
 colnames(estimation_hit_rates) <- "Hit Ratio"
 rownames(estimation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
-
-print(xtable(estimation_hit_rates ,caption="Estimation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(estimation_hit_rates)
+#print(xtable(estimation_hit_rates ,caption="Estimation Data Hit Ratios for different classifiers tested", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -625,8 +629,8 @@ conf_matrix = round(conf_matrix,2)
 
 colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
 rownames(conf_matrix) <- c("Actual 1", "Actual 0")
-
-print(xtable(conf_matrix ,caption="Confusion Matrix for Validation data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+knitr::kable(conf_matrix)
+#print(xtable(conf_matrix ,caption="Confusion Matrix for Validation data", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
 ```
 
 </div>
@@ -702,7 +706,7 @@ which, if we plot all in the same graph for comparison, are (black: CART 1; red:
 
 ```{r echo=FALSE}
 plot(performance(pred_tree, "tpr", "fpr"),  lty=1, add=FALSE, main="ROC Curve")
-grid()
+#grid()
 par(new=TRUE)
 plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
 par(new=TRUE)
@@ -802,8 +806,8 @@ Given the values and costs of correct classifications and misclassifications, we
 <div class="row">
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-
-print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(Profit_Matrix)
+#print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -923,7 +927,8 @@ test_hit_rates = rbind(
 colnames(test_hit_rates) <- "Hit Ratio"
 rownames(test_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(test_hit_rates ,caption="Test Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(test_hit_rates)
+#print(xtable(test_hit_rates ,caption="Test Data Hit Ratios for different classifiers tested", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 
@@ -945,8 +950,8 @@ conf_matrix = round(conf_matrix,2)
 
 colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
 rownames(conf_matrix) <- c("Actual 1", "Actual 0")
-
-print(xtable(conf_matrix ,caption="Confusion Matrix for test data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+knitr::kable(conf_matrix)
+#print(xtable(conf_matrix ,caption="Confusion Matrix for test data", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
 ```
 </div>
 </div>
@@ -1010,7 +1015,7 @@ which, if we plot all in the same graph for comparison, are (black: CART 1; red:
 <br>
 ```{r echo=FALSE}
 plot(performance(pred_tree_large_test, "tpr", "fpr"), col="red", lty=1, add=FALSE)
-grid()
+#grid()
 par(new=TRUE)
 plot(performance(pred_log_test, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
 par(new=TRUE)
@@ -1208,7 +1213,8 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(cluster_size)
+#print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
@@ -1281,7 +1287,8 @@ for (i in sort(unique(cluster_ids))){
     }
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
-cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+knitr::kable(Log_Drivers)
+#cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
 
 ```
 <br>
@@ -1395,7 +1402,8 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+knitr::kable(cluster_size)
+#print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
@@ -1468,7 +1476,8 @@ for (i in sort(unique(cluster_ids))){
     }
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
-cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+knitr::kable(tail(Log_Drivers,-1))
+#cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
 
 ```
 <br>
