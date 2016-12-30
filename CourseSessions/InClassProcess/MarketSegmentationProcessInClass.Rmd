@@ -23,31 +23,22 @@ output:
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
 
 The process is split in 3 parts, corresponding to Sessions 3-4, 5-6, and an optional last part: 
-1. *Part 1*: We use some of the survery questions (e.g. in this case the first 29 "attitude" questions) to construct key variables ("factors") using *dimensionality reduction* that will be used for the segmentation.
-2. *Part 2*: We use the selected variables to segment the market using *cluster analysis* and profile the segments using profiling variables that we select. 
-3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the key purchase drivers per segment. 
+
+1. *Part 1*: We use some of the survery questions (e.g. in this case the first 29 "attitude" questions) to find **key customer descriptors** ("factors") using *dimensionality reduction* techniques described in the [Dimensionality Reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading of Sessions 3-4.
+
+2. *Part 2*: We use the selected customer descriptors to **segment the market** using *cluster analysis* techniques described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading of Sessions 5-6.
+
+3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For ths part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) techniques.
 
 Finally, we will use the results of this analysis to make business decisions e.g. about brand positioning, product development, etc depending on our market segments and key purchase drivers we find at the end of this process.
 
 
-Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository. In case you would like to manually go through the commands below, make sure you are in the directory of this file. For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
+Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository.  As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
-```{r, echo=FALSE}
-# FOR MANUALLY RUNNING THE CODE IN THIS FILE STEP-BY-STEP
-#rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
-#getwd()
-#setwd("CourseSessions/InClassProcess")
-```
-
-As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
-
-Let's start.
 
 ```{r setuplibraries, echo=FALSE, warning=FALSE}
 # SET UP
-# When running the case on a local computer, modify this in case you saved the case in a different directory 
-# (e.g. local_directory <- "C:/user/MyDocuments" )
-# type in the Console below help(getwd) and help(setwd) for more information
+# type in the Console below help(getwd) and help(setwd) for more information, to make sure you are in the right directory
 local_directory <- "."
 suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/")))
 suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/")))
@@ -57,13 +48,26 @@ suppressWarnings(ggthemr('fresh'))  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.5)
 options(knitr.kable.NA = '')
+
+dformat <-function(df) {
+  if (class(df) != "data.frame")
+    df <- as.data.frame(df)
+  x <- lapply(colnames(df), function(col) {
+    if (is.numeric(df[, col]))
+      normalize_bar(rgb(238, 238, 238, max=255), min=0.1, na.rm=TRUE)
+    else
+      formatter("span")
+  })
+  names(x) <- colnames(df)
+  formattable(df, x)
+}
 ```
 
 
 <hr>
 # The Data
 
-First we load the data to use. 
+First we load the data to use (see the raw .rmd file to change the data file as needed)
 
 ```{r setupdata1E, echo=FALSE}
 # Load the data
@@ -101,7 +105,7 @@ In this part we also become familiar with:
 2. Principal Component Analysis and Factor Analysis;
 3. Introduction to machine learning methods;
 
-All user inputs for this part should be selected here: 
+(All user inputs for this part should be selected in the code chunk in the raw .Rmd file here) 
 
 ```{r setupfactor}
 # SET UP OF ALL THE INPUTS FOR THIS PART
@@ -113,7 +117,7 @@ factor_attributes_used= c(2:30)
 
 # Please ENTER the selection criterions for the factors to use. 
 # Choices: "eigenvalue", "variance", "manual"
-factor_selectionciterion = "eigenvalue"
+factor_selectionciterion = "manual"
 
 # Please ENTER the desired minumum variance explained 
 # (ONLY USED in case "variance" is the factor selection criterion used). 
@@ -121,7 +125,7 @@ minimum_variance_explained = 65  # between 1 and 100
 
 # Please ENTER the number of factors to use 
 # (ONLY USED in case "manual" is the factor selection criterion used).
-manual_numb_factors_used = 10
+manual_numb_factors_used = 15
 
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
 rotation_used="varimax"
@@ -145,13 +149,14 @@ Start by some basic visual exploration of, say, a few data:
 
 ```{r}
 rownames(ProjectDataFactor) <- paste0("observation ", sprintf("%02i", 1:nrow(ProjectDataFactor)))
-knitr::kable(round(ProjectDataFactor, 2)[1:min(max_data_report,nrow(ProjectDataFactor)), ])
+
+dformat(round(ProjectDataFactor, 2)[1:min(max_data_report,nrow(ProjectDataFactor)), ])
 ```
 <br>
 The data we use here have the following descriptive statistics: 
 
 ```{r}
-knitr::kable(round(my_summary(ProjectDataFactor), 2))
+dformat(round(my_summary(ProjectDataFactor), 2))
 ```
 
 
@@ -165,7 +170,7 @@ thecor = round(cor(ProjectDataFactor),2)
 colnames(thecor)<-colnames(ProjectDataFactor)
 rownames(thecor)<-colnames(ProjectDataFactor)
 
-knitr::kable(round(thecor,2))
+dformat(round(thecor,2))
 ```
 <br>
 
@@ -188,22 +193,16 @@ Clearly the survey asked many redundant questions (can you think some reasons wh
 
 To do so, we use methods called [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) and [factor analysis](https://en.wikipedia.org/wiki/Factor_analysis) as also discussed in the [Dimensionality Reduction readings](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html). We can use two different R commands for this (they make slightly different information easily available as output): the command `principal` (check `help(principal)` from R package [psych](http://personality-project.org/r/psych/)), and the command `PCA` from R package [FactoMineR](http://factominer.free.fr) - there are more packages and commands for this, as these methods are very widely used.  
 
-Here is how the `principal` function is used:
-<br>
 ```{r}
+# Here is how the `principal` function is used 
 UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
 UnRotated_Factors<-round(UnRotated_Results$loadings,2)
 UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
 colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
 ```
 
-<br>
-<br>
-
-Here is how we use the `PCA` function:
-<br>
-
 ```{r}
+# Here is how we use the `PCA` function 
 Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
 Variance_Explained_Table<-Variance_Explained_Table_results$eig
 Variance_Explained_Table_copy<-Variance_Explained_Table
@@ -220,7 +219,7 @@ Let's look at the **variance explained** as well as the **eigenvalues** (see ses
 <br>
 
 ```{r}
-knitr::kable(round(Variance_Explained_Table, 2))
+dformat(round(Variance_Explained_Table, 2))
 ```
 <br> 
 
@@ -228,7 +227,8 @@ knitr::kable(round(Variance_Explained_Table, 2))
 eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
-ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line()
+#ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line()
+c3(melt(df, id="components"), x="components", y="value", group="variable") %>% c3_line('spline')
 
 ```
 <br>
@@ -248,7 +248,6 @@ ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) +
 ## Step 5: Interpret the factors
 
 Let's now see how the "top factors" look like. 
-<br>
 
 ```{r}
 if (factor_selectionciterion == "eigenvalue")
@@ -258,7 +257,6 @@ if (factor_selectionciterion == "variance")
 if (factor_selectionciterion == "manual")
   factors_selected = manual_numb_factors_used
 ```
-<br>
 
 To better visualise them, we will use what is called a "rotation". There are many rotations methods. In this case we selected the `r rotation_used` rotation. For our data, the `r factors_selected` selected factors look as follows after this rotation: 
 
@@ -274,7 +272,7 @@ colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
 sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
 Rotated_Factors <- Rotated_Factors[sorted_rows,]
 
-knitr::kable(Rotated_Factors)
+dformat(Rotated_Factors)
 ```
 <br> <br>
 
@@ -283,11 +281,11 @@ To better visualize and interpret the factors we often "supress" loadings with s
 
 ```{r}
 Rotated_Factors_thres <- Rotated_Factors
-Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-NA
+Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-"-"
 colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
 rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
 
-knitr::kable(Rotated_Factors_thres)
+dformat(Rotated_Factors_thres)
 ```
 
 <br> <br>
@@ -310,13 +308,13 @@ knitr::kable(Rotated_Factors_thres)
 
 ## Step 6:  Save factor scores 
 
-We can now either replace all initial variables used in this part with the factors scores or just select one of the initial variables for each of the selected factors in order to represent that factor. Here is how to get the factor scores and how they are for the first few respondents:
+We can now either replace all initial variables used in this part with the factors scores or just select one of the initial variables for each of the selected factors in order to represent that factor. Here is how the factor scores  are for the first few respondents:
 
 ```{r}
 NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
 colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
 
-knitr::kable(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , drop=F])
+dformat(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , drop=F])
 ```
 
 
@@ -347,20 +345,19 @@ In this part we also become familiar with:
 
 A key family of methods used for segmentation is what is called **clustering methods**. This is a very important problem in statistics and **machine learning**, used in all sorts of applications such as in [Amazon's pioneer work on recommender systems](http://www.cs.umd.edu/~samir/498/Amazon-Recommendations.pdf). There are many *mathematical methods* for clustering. We will use two very standard methods, **hierarchical clustering** and **k-means**. While the "math" behind all these methods can be complex, the R functions used are relatively simple to use, as we will see. 
 
-<br>
-All user inputs for this part should be selected here: 
+(All user inputs for this part should be selected in the code chunk in the raw .Rmd file here) 
 
 ```{r setupcluster, echo=FALSE, message=FALSE}
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-segmentation_attributes_used = c(10,19,5,12,3) 
+segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) #c(10,19,5,12,3) 
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 profile_attributes_used = c(2:82) 
 
 # Please ENTER the number of clusters to eventually use for this report
-numb_clusters_used = 5 # for boats possibly use 5, for Mall_Visits use 3
+numb_clusters_used = 7 # for boats possibly use 5, for Mall_Visits use 3
 
 # Please enter the method to use for the segmentation:
 profile_with = "hclust" #  "hclust" or "kmeans"
@@ -412,14 +409,14 @@ euclidean_pairwise <- as.matrix(dist(head(ProjectData_segment, max_data_report),
 euclidean_pairwise <- euclidean_pairwise*lower.tri(euclidean_pairwise) + euclidean_pairwise*diag(euclidean_pairwise) + 10e10*upper.tri(euclidean_pairwise)
 euclidean_pairwise[euclidean_pairwise==10e10] <- NA
 
-knitr::kable(round(euclidean_pairwise))
+dformat(round(euclidean_pairwise))
 ```
 
 
 ## Step 5: Visualize Pair-wise Distances
 
 
-We can see the histogram of, say, the first 2 variables (can you change the code below to see other variables?)
+We can see the histogram of, say, the first 2 variables (can you change the code chunk in the raw .Rmd file to see other variables?)
 
 ```{r}
 variables_to_plot = 1:2
@@ -448,20 +445,20 @@ ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE) + xlab("Our Observations"
 # rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
 ```
 
-We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
+We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers, we see the first 20 here. 
 
 ```{r}
-max <- nrow(ProjectData)
-num <- max - 1
+num <- nrow(ProjectData) - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
 colnames(df1) <- c("distances","index")
-ggplot(df1, aes(x=index, y=distances)) + geom_line() + xlab("Number of Components") +ylab("Distances")
+part_to_plot = 1:20
+ggplot(df1[part_to_plot,], aes(x=index, y=distances)) + geom_line() + xlab("Number of Components") +ylab("Distances")
 
 #Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
 #print(Line,'chart')
 ```
 
-Here is the segment membership if we use hierarchical clustering:
+Here is the segment membership of the first `r max_data_report` respondents if we use hierarchical clustering:
 
 ```{r}
 cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
@@ -493,11 +490,7 @@ In market segmentation one may use variables to **profile** the segments which a
 
 There are many ways to do the profiling of the segments. For example, here we show how the *average* answers of the respondents *in each segment* compare to the *average answer of all respondents* using the ratio of the two.  The idea is that if in a segment the average response to a question is very different (e.g. away from ratio of 1) than the overall average, then that question may indicate something about the segment relative to the total population. 
 
-Here are for example the profiles of the segments using the clusters found above: 
-
-<br>
- First let's see just the average answer people gave to each question for the different segments as well as the total population:
- <br>
+Here are for example the profiles of the segments using the clusters found above.  First let's see just the average answer people gave to each question for the different segments as well as the total population:
 
 
 ```{r}
@@ -524,7 +517,7 @@ if (ncol(ProjectData_profile) <2)
 colnames(Cluster_Profile_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
 cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 
-knitr::kable(round(cluster.profile, 2))
+dformat(round(cluster.profile, 2))
 ```
 <br>
 
@@ -542,7 +535,7 @@ ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster
 ```
 
 
-We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. avg(cluster)/avg(population)) and explore a matrix as the following one:
+We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population, minus 1, (e.g. avg(cluster)/avg(population) -1) for each segment and variable:
 
 ```{r}
 population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
@@ -550,15 +543,9 @@ cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profil
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
-knitr::kable(round(cluster_profile_ratios, 2))
+dformat(round(cluster_profile_ratios-1, 2))
 ```
 
-```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
-## printing the result in a clean-slate table
-#show_data = data.frame(round(cluster_profile_ratios,2))
-#m1<-gvisTable(show_data,options=list(width=1920, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
-#print(m1,'chart')
-```
 
 
 **Questions**
@@ -599,7 +586,7 @@ We should also consider the robustness of our analysis as we change the clusteri
 
 # Part 3: Classification Analysis
 
-We will now use the [classification methods ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
+We will now use the [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) methods to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
 
 
 We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this part of the analysis: 
@@ -676,7 +663,7 @@ CART_control = rpart.control(cp = CART_cp)
 <br>
 <br>
 
-We will use two classification trees and logistic regression. You can select "complexity" control for one of the classification trees here:
+We will use two classification trees and logistic regression. You can select "complexity" control for one of the classification trees in the code chunk of the raw .Rmd file here
 
 ```{r eval = TRUE, echo=FALSE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
 CART_control = 0.001
@@ -693,6 +680,7 @@ CART_control = 0.001
 
 <br>
 
+This is a "small tree" classification for example. 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 # FIrst we split the data in estimation, validation, and test
@@ -713,6 +701,8 @@ estimation_data=ProjectData[estimation_data_ids,]
 validation_data=ProjectData[validation_data_ids,]
 test_data=ProjectData[test_data_ids,]
 ```
+<br>
+
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
@@ -742,7 +732,7 @@ test_data = data.frame(test_data)
 formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
-#fancyRpartPlot(CART_tree)
+rpart.plot(CART_tree)
 ```
 
 ```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
@@ -794,6 +784,8 @@ validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > 
 test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
 ```
 
+After also running the large tree and the logistic regression classifiers, we can then check how much "weight" these three methods put on the different purchase drivers (Q16 of the survey):
+
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
 log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
@@ -817,26 +809,13 @@ Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log
 colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
 rownames(Importance_table) <- rownames(log_importance)
 
+dformat(Importance_table)
 ```
 
-The profit curves for the test data in this case are:
 
-<style>
-.wrapper{
+Finally, if we were to use the estimated classification models on the test data, we would get the following profit curves (see the raw .Rmd file to select the business profit parameters). 
 
-
-width: 100%;
-
-overflow-x: scroll;
-
-}
-.wrapper1{
-
-height:450px;
-overflow-y: scroll;
-}
-</style>
-<div class="wrapper wrapper1">
+The profit curve using the small classification tree: 
 
 ```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 
@@ -855,11 +834,18 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   c(100*length(useonly)/length(actual_class), theprofit) 
   }))
 xaxis = res[1,]; yaxis = res[2,]
-names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev1,'chart')
+df<-data.frame(Percentile = xaxis, Profit = yaxis)
+c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+
+best_profits_small_tree = df[which.max(df$Profit),]
+
+#LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(LineFramev1,'chart')
+```
+
+The profit curve using the large classification tree: 
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 
 probs = test_Probability_class1_tree_large
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
@@ -875,10 +861,18 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev2,'chart')
+df<-data.frame(Percentile = 100*xaxis, Profit = yaxis)
+c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+best_profits_large_tree = df[which.max(df$Profit),]
+
+#LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(LineFramev2,'chart')
+```
+
+
+The profit curve using the logistic regression classifier: 
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 
 probs = test_Probability_class1_log
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
@@ -894,20 +888,30 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev3,'chart')
-```
-</div>
+df<-data.frame(Percentile = xaxis, Profit = yaxis)
+c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
 
+best_profits_logistic = df[which.max(df$Profit),]
+
+#LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(LineFramev3,'chart')
+```
+
+
+These are the maximum total profit achieved in the test data using the three classifiers (without any segment specific analysis so far).
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+best_profits = rbind(best_profits_small_tree, best_profits_large_tree, best_profits_logistic)
+rownames(best_profits) <- c("Small Tree", "Large Tree", "Logistic Regression")
+dformat(round(best_profits, 2))
+```
 <br>
 <br>
 <hr>
 
 # Part 4: Business Decisions
 
-We will now get the results of the overall process (parts 1-3) and based on them make business decisions (e.g. answer the questions of the Boats case study). Specifically, we will study the purchase drivers for each segment we found. 
+We will now get the results of the overall process (parts 1-3) and based on them make business decisions (e.g. answer the questions of the Boats case study). Specifically, we will study the purchase drivers for each segment we found and consider the profit curves of the developed models on our test data. 
 
 **Final Solution: Segment Specific Analysis**
 
@@ -924,7 +928,7 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-knitr::kable(cluster_size)
+dformat(cluster_size)
 
 #print(xtable(cluster_size,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
@@ -995,31 +999,15 @@ for (i in sort(unique(cluster_ids))){
     }
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
-knitr::kable(round(tail(Log_Drivers,-1), 2))
+dformat(round(tail(Log_Drivers,-1), 2))
 #cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
 
 ```
 <br>
 <br>
 
-The profit curves for the test data in this case are:
+The profit curves for the test data in this case are as follows. The profit curve using the small classification tree is: 
 
-<style>
-.wrapper{
-
-
-width: 100%;
-
-overflow-x: scroll;
-
-}
-.wrapper1{
-
-height:450px;
-overflow-y: scroll;
-}
-</style>
-<div class="wrapper wrapper1">
 
 ```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 
@@ -1039,10 +1027,20 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev1,'chart')
+df<-data.frame(Percentile = xaxis, Profit = yaxis)
+c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+
+best_profits_small_tree = df[which.max(df$Profit),]
+
+#LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(LineFramev1,'chart')
+
+```
+
+The profit curve using the large classification tree is: 
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
 
 probs = probs_tree_large
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
@@ -1058,10 +1056,19 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev2,'chart')
+df<-data.frame(Percentile = xaxis, Profit = yaxis)
+c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+
+best_profits_large_tree = df[which.max(df$Profit),]
+
+#LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(LineFramev2,'chart')
+
+```
+
+The profit curve using the logistic regression classifier: 
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 
 probs = probs_log
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
@@ -1077,15 +1084,23 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
-frame<-cbind(xaxis,yaxis)
-frame<-as.data.frame(frame)
-LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-print(LineFramev3,'chart')
-```
-</div>
+df<-data.frame(Percentile = xaxis, Profit = yaxis)
+c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
 
-<br>
-<br>
+best_profits_logistic = df[which.max(df$Profit),]
+
+#LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+#print(LineFramev3,'chart')
+```
+
+These are the maximum total profit achieved in the test data using the three classifiers with the selected market segmentation solution.
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+best_profits = rbind(best_profits_small_tree, best_profits_large_tree, best_profits_logistic)
+rownames(best_profits) <- c("Small Tree", "Large Tree", "Logistic Regression")
+dformat(round(best_profits, 2))
+```
+
 <br>
 <hr>
 
