@@ -205,7 +205,7 @@ test_data = data.frame(test_data)
 formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
-fancyRpartPlot(CART_tree)
+rpart.plot(CART_tree)
 ```
 </center>
 
@@ -218,7 +218,7 @@ Another Classification Tree
 ```{r echo=FALSE, warning=FALSE,message=FALSE, prompt=FALSE, results='asis'}
 CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
 
-fancyRpartPlot(CART_tree_large)
+rpart.plot(CART_tree_large)
 ```
 </center>
 
@@ -492,7 +492,7 @@ pred_log_test <- prediction(test_Probability_class1_log, test_actual_class)
 
 ```{r echo=FALSE}
 plot(performance(pred_tree_large_test, "tpr", "fpr"), col="red", lty=1, add=FALSE)
-grid()
+#grid()
 par(new=TRUE)
 plot(performance(pred_log_test, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
 par(new=TRUE)
