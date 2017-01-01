@@ -53,7 +53,7 @@ and do some basic visual exploration of the first 50 respondents first (always n
 show_data = data.frame(round(ProjectData,2))[1:50,]
 show_data$Variables = rownames(show_data)
 m1<-gvisTable(show_data,options=list(showRowNumber=TRUE,width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE,page='disable'))
-print(m1,'chart')
+plot(m1,'chart')
 ```
 <br>
 
