@@ -285,7 +285,7 @@ renderFormattable(dformat({
 
 ## Step 7: Profile and interpret the segments 
 
-We now select the original raw attributes to use for the profiling of the segments (the "profiling attributes")
+We now select the original raw attributes to use for the profiling of the segments, the "profiling attributes" (`r MAX_VARIABLES` at most)
 
 ```{r}
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
@@ -294,13 +294,15 @@ selectizeInput("profile_attributes_used", "",
                multiple = TRUE,
                options = list(
                  plugins = c("remove_button","drag_drop"),
+                 maxItems = MAX_VARIABLES,
                  placeholder = "None"
                ),
                width="100%"
                )
 observeEvent(ProjectDataX(), {
   attributes <- colnames(ProjectDataX())
-  updateSelectizeInput(session, "profile_attributes_used", choices=attributes, selected=attributes)
+  attributes <- attributes[sapply(ProjectDataX(), is.numeric)]
+  updateSelectizeInput(session, "profile_attributes_used", choices=attributes, selected=head(attributes, MAX_VARIABLES))
 })
 
 ProjectData_profileX <- eventReactive(input$profile_attributes_used, {
