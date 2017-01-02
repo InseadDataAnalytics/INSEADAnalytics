@@ -235,10 +235,10 @@ This is a plot of the "distances" traveled before we need to merge any of the lo
 
 ```{r}
 renderFormattable(dformat({
-  num <-  nrow(ProjectDataX()) - 1
-  df1 <- cbind(as.data.frame(Hierarchical_ClusterX()$height[length(Hierarchical_ClusterX()$height):1]), c(1:num))
-  colnames(df1) <- c("distances","index")
-  round(df1, 2)
+  h <- Hierarchical_ClusterX()$height
+  df <- cbind(h[length(h):1], 1:length(h))
+  colnames(df) <- c("distances","index")
+  head(round(df, 2), SAMPLE_XPOINTS)
 }))
 ```
 
