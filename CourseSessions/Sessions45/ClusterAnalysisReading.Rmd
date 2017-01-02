@@ -301,8 +301,7 @@ Dendrograms are a helpful visualization tool for segmentation, even if the numbe
 We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers. 
 
 ```{r}
-max <- nrow(ProjectData)
-num <- max - 1
+num <- nrow(ProjectData) - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
 colnames(df1) <- c("distances","index")
 ggplot(df1, aes(x=index, y=distances)) + geom_line() + xlab("Number of Components") +ylab("Distances")
