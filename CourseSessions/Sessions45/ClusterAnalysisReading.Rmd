@@ -72,7 +72,7 @@ max_data_report = 10 # can also chance in server.R
 
 
 # this loads the selected data: DO NOT EDIT THIS LINE
-ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/")) # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) 
 if (datafile_name == "Boats")
   colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))

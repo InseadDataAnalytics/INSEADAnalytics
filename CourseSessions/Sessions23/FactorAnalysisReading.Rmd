@@ -29,7 +29,7 @@ options(knitr.kable.NA = '')
 
 # Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. 
 
-datafile_name="Boats" #  do not add .csv at the end, make sure the data are numeric, check your file.
+datafile_name="MBAadmin" #  do not add .csv at the end, make sure the data are numeric, check your file.
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE=0.5
