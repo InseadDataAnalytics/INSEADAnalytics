@@ -25,7 +25,7 @@ source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "
 # Package options
 ggthemr('fresh')  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
-opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.5)
+opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.2)
 options(knitr.kable.NA = '')
 
 dformat <-function(df) {
@@ -728,10 +728,7 @@ Notice that for us to maximize expected profit we need to have the cost/profit f
 
 Having iterated steps 2-5 until we are satisfyed with the performance of our selected model on the validation data, in this step the performance analysis outlined in step 5 needs to be done with the test sample. This is the performance that "best mimics" what one should expect in practice upon deployment of the classification solution, **assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed.** 
 
-Let's see in our case how the **Confusion Matrix, ROC Curve, Lift Curve, and Profit Curve** look like for our test data:
-
-
-**Will the performance in the test data be similar to the performance in the  validation data above? More important: should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?**
+Let's see in our case how the **Confusion Matrix, ROC Curve, Lift Curve, and Profit Curve** look like for our test data. **Will the performance in the test data be similar to the performance in the  validation data above? More important: should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?**
 
 ```{r}
 ######for train data#####
