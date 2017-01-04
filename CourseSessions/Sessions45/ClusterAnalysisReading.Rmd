@@ -148,14 +148,14 @@ There is *not one* process for clustering and segmentation. However, we have to 
 
 # Clustering and Segmentation in 9 steps
 
-1. Confirm the data in metric 
-2. Decide whether to scale or standardize the data
-3. Decide which variables to use for clustering
-4. Define similarity or dissimilarity measures between observations
-5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
-6. Select the clustering method to use and decide how many clusters to have
-7. Profile and interpret the clusters 
-8. Assess the robustness of our clusters
+1. Confirm data is metric
+2. Scale the  data
+3. Select Segmentation Variables
+4. Define similarity measure
+5. Visualize Pair-wise Distances 
+6. Method and Number of Segments
+7. Profile and interpret the segments 
+8. Robustness Analysis
 
 Let's follow these steps.
 
@@ -178,7 +178,7 @@ knitr::kable(round(my_summary(ProjectData),2))
 
 ## Step 2: Scale the  data
 
-Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the Income variable. 
+This is an optional step. Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the Income variable. 
 
 Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so that we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. `scaledIncome` `=` `(Income-mean(Income))` `/` `sd(Income)`), or scaling them between 0 and 1 (e.g. `scaledIncome` `=` `(Income-min(Income))` `/` `(max(Income)-min(Income))`). Here is for example the R code for the first approach, if we want to standardize all attributes:
 
@@ -395,18 +395,18 @@ ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster
 
 Can we see differences between the segments? Do the segments differ in terms of their average household income and in terms of how often they visit the mall? What else can we say about these segments?
 
-We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population (e.g. `avg(cluster)` `/` `avg(population)`) and explore a matrix as the following one:
+We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population and subtract 1 (e.g. `avg(cluster)` `/` `avg(population)` `- 1`) and explore a matrix as the following one:
 
 ```{r}
 population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
-cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
+cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix-1))
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
 knitr::kable(round(cluster_profile_ratios, 2))
 ```
 
-> The further a ratio is from 1, the more important that attribute is for a segment relative to the total population.
+> The further a ratio is from 0, the more important that attribute is for a segment relative to the total population.
 
 Both the snake plot as well as this matrix of relative values of the profiling attributes for each cluster are some of the many ways to visualize our segments and interpret them. 
 

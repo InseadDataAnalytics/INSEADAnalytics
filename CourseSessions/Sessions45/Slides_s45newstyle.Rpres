@@ -1,6 +1,5 @@
 Session 5-6, Clustering and Segmentation (Technical Slides)
 ========================================================
-title : Data Analytics for Business
 author : T. Evgeniou, INSEAD
 
 
@@ -23,8 +22,7 @@ hclust_method = "ward"
 kmeans_method = "Lloyd"
 MIN_VALUE=0.5
 max_data_report = 50 # can also chance in server.R
-ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
-ProjectData=data.matrix(ProjectData) 
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/")) # ProjectData=data.matrix(ProjectData) 
 if (datafile_name == "Boats")
   colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
 segmentation_attributes_used = unique(sapply(segmentation_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
@@ -107,21 +105,14 @@ A Segmentation Process
 
 <br>
 
-1. Confirm the data in metric 
-
-2. Decide whether to scale or standardize the data
-
-3. Decide which variables to use for clustering
-
-4. Define similarity or dissimilarity measures between observations
-
-5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
-
-6. Select the clustering method to use and decide how many clusters to have
-
-7. Profile and interpret the clusters 
-
-8. Assess the robustness of our clusters
+1. Confirm data is metric
+2. Scale the  data (Optional)
+3. Select Segmentation Variables
+4. Define similarity measure
+5. Visualize Pair-wise Distances 
+6. Method and Number of Segments
+7. Profile and interpret the segments 
+8. Robustness Analysis
 
 
  Example Data: Market Research Survey
@@ -134,8 +125,6 @@ ProjectData_segment = data.matrix(ProjectData_segment)
 ProjectData_profile = data.matrix(ProjectData_profile)
 ProjectData = data.matrix(ProjectData)
 ```
-
-Size of data: `r nrow(ProjectData)` observations with `r ncol(ProjectData)` variables each
 
 V1: Shopping is fun (scale 1-7)
 
@@ -155,7 +144,7 @@ Mall.Visits: how often they visit the mall (scale 1-7)
 
 
 
-Step 1: Confirm the data are metric 
+Step 1: Confirm data is metric
 ========================================================
 
 
@@ -177,6 +166,7 @@ dfnew<-cbind(row,show_data)
 change<-colnames(dfnew)
 change[1]<-"Variables"
 colnames (dfnew)<-change
+dfnew = as.data.frame(dfnew)
 m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
 print(m1,'chart')
 ```
@@ -185,7 +175,7 @@ print(m1,'chart')
 </div>
 
 
- Step 2: Decide whether to scale or standardize the data: Summary Statistics
+ Step 2: Scale the  data (Optional)
 ========================================================
 
 <br>
@@ -264,11 +254,9 @@ print(m1,'chart')
 </div>
 
 
-Step 3. Decide which variables to use for clustering
+Step 3. Select Segmentation Variables
 ========================================================
 
-<br>
-<br>
 <br>
 
 The choice of the variables used for clustering is critically important 
@@ -282,7 +270,8 @@ Tpically we use different variables for segmentation (the "segmentation variable
 
 Remember: Segmentation is an iterative process
 
-## Step 4. Define similarity or dissimilarity measures between observations
+Step 4. Define similarity measure
+========================================================
 
 
 Defining what we mean when we say "similar" or "different" observations is a key part of cluster analysis which often requires a lot of contextual knowledge and creativity 
@@ -301,8 +290,8 @@ The user can manually define such distance metrics
 Distances across our data using the Euclidean distance
 ========================================================
 
-<br>
-<br>
+
+Pairwise Distances between the first 5 observations using The Euclidean Distance Metric
 
 ```{r include=FALSE, echo=FALSE, comment=NA, warning=FALSE, message=FALSE}
 euclidean_pairwise <- as.matrix(dist(head(ProjectData_segment, 5), method="euclidean"))
@@ -321,7 +310,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5 observations using The Euclidean Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(euclidean_pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -330,8 +319,7 @@ print(xtable(euclidean_pairwise, caption="Pairwise Distances between the first 5
  Distances across our data using the Manhattan distance
 ========================================================
 
-<br>
-<br>
+Pairwise Distances between the first 5 observations using The Manhattan Distance Metric
 
 ```{r include=FALSE, echo=FALSE, comment=NA, warning=FALSE, message=FALSE}
 manhattan_pairwise <- as.matrix(dist(head(ProjectData_segment, 5), method="manhattan"))
@@ -350,7 +338,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(manhattan_pairwise, caption="Pairwise Distances between the first 5 observations using The Manhattan Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(manhattan_pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -371,8 +359,7 @@ My_Distance_function<-function(x,y){sum(abs(x-y)>2)}
  Manually Defined Distances: an Example
 ========================================================
 
-<br>
-<br>
+Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric
 
 ```{r include=FALSE, echo=FALSE, comment=NA, warning=FALSE, fig.align='center', message=FALSE}
 Manual_Pairwise=apply(head(ProjectData_segment,5),1,function(i) apply(head(ProjectData_segment,5),1,function(j) My_Distance_function(i,j) ))
@@ -391,14 +378,14 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(Manual_Pairwise, caption="Pairwise Distances between the first 5 observations using a simple manually defined Distance Metric", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(Manual_Pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
 </div>
 
 
- Step 5. Visualize Individual Attributes and  Pair-wise Distances between the Observations
+Step 5. Visualize Pair-wise Distances 
 ========================================================
 
  Histogram of all pairwise distances 
@@ -411,7 +398,7 @@ hist(Pairwise_Distances, main = NULL, xlab="Histogram of all pairwise Distances 
 ```
 
 
- Step 6. Select the clustering method to use and decide how many clusters to have
+ Step 6. Method and Number of Segments
 ========================================================
 
 <br>
@@ -512,7 +499,6 @@ print(m1,'chart')
 
 Note: K-means does not necessarily lead to the same solution every time you run it
 
-<br>
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
@@ -547,7 +533,7 @@ print(m1,'chart')
 </div>
 </div>
 
- Step 7. Profile and interpret the clusters 
+ Step 7. Profile and interpret the segments 
 ========================================================
 
 <br>
@@ -642,13 +628,13 @@ for(i in 2:ncol(Cluster_Profile_standar_mean))
 </div>
 
 
- Interpretation: Ratio to Average of Total Population (1 = Average)
+ Interpretation: Ratio to Average of Total Population -1 (0 = Average)
 ========================================================
 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
-cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
+cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix-1))
 colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
@@ -685,8 +671,6 @@ print(m1,'chart')
  The data
 ========================================================
 
-Size of data: `r nrow(ProjectData)` observations with `r ncol(ProjectData)` variables each
-
 V1: Shopping is fun (scale 1-7)
 
 V2: Shopping is bad for your budget (scale 1-7)
@@ -704,14 +688,12 @@ Income: the household income of the respondent (in dollars)
 Mall.Visits: how often they visit the mall (scale 1-7)
 
 
- Step 8. Assess the robustness of our clusters
+ Step 8. Robustness Analysis
 ========================================================
 
 <br>
-<br>
 
 Are the clusters stable when we use:
-<br>
 <br>
 
 - using different subsets of the original data
@@ -724,8 +706,6 @@ Are the clusters stable when we use:
  Example Robustness Test: Different Methods
 ========================================================
 
-<br>
-<br>
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 # First, make sure the segment ids are correctly aligned
@@ -758,12 +738,12 @@ colnames(per_cluster_observations_overlapping) <- paste("Segment",1:length(per_c
 ```
 
 <br>
-<br>
 
+The percentage of observations belonging to the same segment is
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(per_cluster_observations_overlapping, caption = paste(paste("The percentage of observations belonging to the same segment is", total_observations_overlapping, sep=" "), "%."), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable(per_cluster_observations_overlapping, caption = paste(paste("", total_observations_overlapping, sep=" "), "%."), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
