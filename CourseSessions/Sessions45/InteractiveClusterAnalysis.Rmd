@@ -22,7 +22,8 @@ options(knitr.kable.NA = '')
 tags$style(type="text/css", "p { text-align:justify; }")
 tags$style(type="text/css", "label { display: none; }")
 tags$style(type="text/css", ".c3 svg, .dendroNetwork svg text { font-size:13px; font-family:\"Roboto\", \"Helvetica Neue\", Helvetica, Arial, sans-serif !important; }")
-tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:425px; }")
+tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:425px; margin-bottom:23px; }")
+tags$style(type="text/css", ".formattable_widget table { margin-bottom:0; }")
 tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
 
 MAX_VARIABLES <- 20     # limits initial dataset filters
