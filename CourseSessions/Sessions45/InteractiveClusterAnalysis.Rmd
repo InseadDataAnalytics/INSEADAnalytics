@@ -25,7 +25,8 @@ tags$style(type="text/css", ".c3 svg, .dendroNetwork svg text { font-size:13px; 
 tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:425px; }")
 tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
 
-MAX_VARIABLES <- 30     # limits initial dataset filters
+MAX_VARIABLES <- 20     # limits initial dataset filters
+MAX_VARIABLES_PROFILE <- 100     # limits initial dataset filters
 SAMPLE_ROWS <- 10       # limits sample dataset presentations
 SAMPLE_XPOINTS <- 100   # limits sample dataset plots
 
@@ -285,7 +286,7 @@ renderFormattable(dformat({
 
 ## Step 7: Profile and interpret the segments 
 
-We now select the original raw attributes to use for the profiling of the segments, the "profiling attributes" (`r MAX_VARIABLES` at most)
+We now select the original raw attributes to use for the profiling of the segments, the "profiling attributes" (`r MAX_VARIABLES_PROFILE` at most)
 
 ```{r}
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
@@ -294,7 +295,7 @@ selectizeInput("profile_attributes_used", "",
                multiple = TRUE,
                options = list(
                  plugins = c("remove_button","drag_drop"),
-                 maxItems = MAX_VARIABLES,
+                 maxItems = MAX_VARIABLES_PROFILE,
                  placeholder = "None"
                ),
                width="100%"
@@ -412,15 +413,6 @@ tags$div(style='height:480px', renderC3({
 ```
 
 We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population minus 1 (e.g. `avg(cluster)` `/` `avg(population)` `-1`) and explore a matrix as the following one:
-
-```{r}
-## TODO: THIS BECOMES INTERACTIVE
-
-# Please enter the minimum distance from "1" the profiling values should have in order to be colored 
-# (e.g. using heatmin = 0 will color everything - try it)
-heatmin = 0.1
-
-```
 
 ```{r}
 cluster_profile_ratiosX <- eventReactive({
