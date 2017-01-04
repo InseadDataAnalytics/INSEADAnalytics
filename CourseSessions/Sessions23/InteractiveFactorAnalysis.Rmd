@@ -29,12 +29,13 @@ MAX_VARIABLES <- 30     # limits initial dataset filters
 SAMPLE_ROWS <- 10       # limits sample dataset presentations
 SAMPLE_XPOINTS <- 100   # limits sample dataset plots
 
-dformat <-function(df) {
+normalize.abs <- function(x, min=0, max=1, na.rm=FALSE) normalize(abs(x), min, max, na.rm)
+dformat <- function(df) {
   if (class(df) != "data.frame")
     df <- as.data.frame(df)
   x <- lapply(colnames(df), function(col) {
     if (is.numeric(df[, col]))
-      normalize_bar(rgb(238, 238, 238, max=255), min=0.1, na.rm=TRUE)
+      color_bar(rgb(238, 238, 238, max=255), normalize.abs, min=0.1, na.rm=TRUE)
     else
       formatter("span")
   })
