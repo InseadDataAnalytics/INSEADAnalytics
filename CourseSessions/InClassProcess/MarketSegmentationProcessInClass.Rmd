@@ -12,14 +12,10 @@ output:
   pdf_document:
     includes:
       in_header: ../../AnalyticsStyles/default.sty
+always_allow_html: yes
 ---
 
-
-**IMPORTANT** Please make sure you create a copy of this file with a customised name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
-
-
-<br>
-
+> **IMPORTANT**: Please make sure you create a copy of this file with a customised name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
 
 The process is split in 3 parts, corresponding to Sessions 3-4, 5-6, and an optional last part: 
@@ -32,72 +28,119 @@ The process is split in 3 parts, corresponding to Sessions 3-4, 5-6, and an opti
 
 Finally, we will use the results of this analysis to make business decisions e.g. about brand positioning, product development, etc depending on our market segments and key purchase drivers we find at the end of this process.
 
-
 Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository.  As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
-
-```{r setuplibraries, echo=FALSE, warning=FALSE}
+```{r setuplibraries, echo=FALSE, message=FALSE}
 # SET UP
 # type in the Console below help(getwd) and help(setwd) for more information, to make sure you are in the right directory
 local_directory <- "."
 suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/")))
-suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/")))
 
 # Package options
 suppressWarnings(ggthemr('fresh'))  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
-opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.5)
+opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
 options(knitr.kable.NA = '')
 
-dformat <-function(df) {
-  if (class(df) != "data.frame")
-    df <- as.data.frame(df)
-  x <- lapply(colnames(df), function(col) {
-    if (is.numeric(df[, col]))
-      normalize_bar(rgb(238, 238, 238, max=255), min=0.1, na.rm=TRUE)
-    else
-      formatter("span")
-  })
-  names(x) <- colnames(df)
-  formattable(df, x)
+# Determine document output format, return "html" by default
+getDocumentOutputFormat <- function() {
+  format <- opts_knit$get('rmarkdown.pandoc.to')
+  if (!is.null(format)) format else "html"
+}
+
+# Format tables for html/latex output
+normalize.abs <- function(x, min=0, max=1, na.rm=FALSE) normalize(abs(x), min, max, na.rm)
+iprint.df <- function(df, scale=FALSE) {
+  if (getDocumentOutputFormat() == "html") {
+    if (class(df) != "data.frame")
+      df <- as.data.frame(df)
+    x <- lapply(colnames(df), function(col) {
+      if (is.numeric(df[, col]))
+        color_bar(rgb(238, 238, 238, max=255), normalize.abs, min=0.1, na.rm=TRUE)
+      else
+        formatter("span")
+    })
+    names(x) <- colnames(df)
+    tags$div(class="formattable_container", HTML(gsub("NA", "", format_table(df, x))))
+  } else if (opts_knit$get('rmarkdown.pandoc.to') == "latex") {
+    cat(ifelse(scale, "\\setkeys{Gin}{height=\\textheight}\\adjustbox{width=\\linewidth}{", "\\begin{center}"))
+    cat(kable(df, format="latex", booktabs=TRUE, longtable=!scale))
+    cat(ifelse(scale, "}\\setkeys{Gin}{height=\\maxheight}", "\\end{center}"))
+  } else {
+    kable(df)
+  }
+}
+
+# Format plots for html/latex output
+iplot.df <- function(df, x=colnames(df)[1], y="value", v="variable", type="line", xlab=NULL, ylab=NULL) {
+  if (getDocumentOutputFormat() == "html") {
+    p <- c3(df, x=x, y=y, group=v, width="100%", height="480px")
+    p <- switch(type,
+      line = p %>% c3_line('spline'),
+      bar  = p %>% c3_bar(bar_width=0.90)
+    )
+    if (!is.null(xlab)) p <- p %>% xAxis(label=xlab)
+    if (!is.null(ylab)) p <- p %>% yAxis(label=ylab)
+    p
+  } else {  # latex, etc.
+    p <- ggplot(df, aes_string(x=x, y=y, colour=v))
+    p <- switch(type,
+      line = p + geom_line(),
+      bar  = p + geom_bar(stat="identity")
+    )
+    if (!is.null(xlab)) p <- p + labs(x=xlab)
+    if (!is.null(ylab)) p <- p + labs(y=ylab)
+    p
+  }
+}
+
+iplot.hist <- function(x, breaks="Sturges", xlab=NULL) {
+  h <- hist(x, breaks=breaks, plot=FALSE)
+  df <- data.frame(x=head(h$breaks, -1), Frequency=h$counts)
+  iplot.df(df, x="x", y="Frequency", v=NULL, type="bar", xlab=xlab)
+}
+
+iplot.grid <- if (getDocumentOutputFormat() == "html") tags$div else grid.arrange
+
+iplot.dendrogram <- function(cluster) {
+  labels <- (length(cluster$labels) > 40)
+  if (getDocumentOutputFormat() == "html") {
+    cluster$labels <- if (!labels) NULL else cluster$labels
+    margins <- list(top=10, right=0, bottom=ifelse(labels, 120, 10), left=0)
+    dendroNetwork(cluster, width="100%", height="480px", fontSize=14,
+                  treeOrientation="vertical", margins=margins, textRotate=90)
+  } else {  # latex, etc.
+    ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE, labels=labels) +
+      xlab("Observations") + ylab("Height")
+  }
 }
 ```
 
-
-<hr>
 # The Data
 
-First we load the data to use (see the raw .rmd file to change the data file as needed)
+First we load the data to use (see the raw .Rmd file to change the data file as needed):
 
-```{r setupdata1E, echo=FALSE}
-# Load the data
+```{r setupdata1E, echo=TRUE, tidy=TRUE}
+# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
+datafile_name = "Boats"
 
-# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. 
-
-datafile_name="Boats" #  do not add .csv at the end, make sure the data are numeric, check your file.
-
-ProjectData <- read.csv(paste0("../Sessions23/data/", datafile_name, ".csv")) # this contains only the matrix ProjectData
-ProjectData=data.matrix(ProjectData) 
-
-if (datafile_name == "Boats")
-  colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
-ProjectData_INITIAL = ProjectData
+ProjectData <- read.csv(paste0("../Sessions23/data/", datafile_name, ".csv"))
+ProjectData <- data.matrix(ProjectData) 
+ProjectData_INITIAL <- ProjectData
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
-MIN_VALUE=0.5
+MIN_VALUE = 0.5
 
-# Please enter the maximum number of observations to show in the report and slides 
-# (DEFAULT is 15. If the number is large the report and slides may not be generated - very slow or will crash!!)
+# Please enter the maximum number of observations to show in the report and slides. 
+# DEFAULT is 10. If the number is large the report and slides may not be generated.
 max_data_report = 10
-
 ```
 
+<hr>\clearpage
 
-<hr>
 # Part 1: Key Customer Characteristics
 
 The code used here is along the lines of the code in the session 3-4 reading  [FactorAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/FactorAnalysisReading.Rmd). We follow the process described in the [Dimensionality Reduction ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading. 
-
 
 In this part we also become familiar with:
 
@@ -105,15 +148,12 @@ In this part we also become familiar with:
 2. Principal Component Analysis and Factor Analysis;
 3. Introduction to machine learning methods;
 
-(All user inputs for this part should be selected in the code chunk in the raw .Rmd file here) 
+(All user inputs for this part should be selected in the code chunk in the raw .Rmd file) 
 
-```{r setupfactor}
-# SET UP OF ALL THE INPUTS FOR THIS PART
-
-
+```{r setupfactor, echo=TRUE, tidy=TRUE}
 # Please ENTER then original raw attributes to use. 
 # Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-factor_attributes_used= c(2:30)
+factor_attributes_used = c(2:30)
 
 # Please ENTER the selection criterions for the factors to use. 
 # Choices: "eigenvalue", "variance", "manual"
@@ -128,51 +168,36 @@ minimum_variance_explained = 65  # between 1 and 100
 manual_numb_factors_used = 15
 
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
-rotation_used="varimax"
+rotation_used = "varimax"
 
-factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
-ProjectDataFactor=ProjectData[,factor_attributes_used]
+factor_attributes_used <- intersect(factor_attributes_used, 1:ncol(ProjectData))
+ProjectDataFactor <- ProjectData[,factor_attributes_used]
 ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
-
 ```
 
-
-
-<hr>
-
-## Steps 1/2: Check the Data 
-
+## Steps 1-2: Check the Data 
 
 Start by some basic visual exploration of, say, a few data:
 
-<br>
-
 ```{r}
-rownames(ProjectDataFactor) <- paste0("observation ", sprintf("%02i", 1:nrow(ProjectDataFactor)))
-
-dformat(round(ProjectDataFactor, 2)[1:min(max_data_report,nrow(ProjectDataFactor)), ])
+rownames(ProjectDataFactor) <- paste0("Obs.", sprintf("%02i", 1:nrow(ProjectDataFactor)))
+iprint.df(t(head(round(ProjectDataFactor, 2), max_data_report)))
 ```
-<br>
+
 The data we use here have the following descriptive statistics: 
 
 ```{r}
-dformat(round(my_summary(ProjectDataFactor), 2))
+iprint.df(round(my_summary(ProjectDataFactor), 2))
 ```
-
 
 ## Step 3: Check Correlations
 
 This is the correlation matrix of the customer responses to the `r ncol(ProjectDataFactor)` attitude questions - which are the only questions that we will use for the segmentation (see the case):
-<br>
 
 ```{r}
 thecor = round(cor(ProjectDataFactor),2)
-colnames(thecor)<-colnames(ProjectDataFactor)
-rownames(thecor)<-colnames(ProjectDataFactor)
-
-dformat(round(thecor,2))
+iprint.df(round(thecor,2), scale=TRUE)
 ```
-<br>
 
 **Questions**
 
@@ -180,12 +205,17 @@ dformat(round(thecor,2))
 2. What do these correlations imply?
 
 **Answers:**
-<br>
-<br>
-<br>
-<br>
 
-<hr>
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
 ## Step 4: Choose number of factors
 
@@ -198,7 +228,7 @@ To do so, we use methods called [Principal Component Analysis](https://en.wikipe
 UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
 UnRotated_Factors<-round(UnRotated_Results$loadings,2)
 UnRotated_Factors<-as.data.frame(unclass(UnRotated_Factors))
-colnames(UnRotated_Factors)<-paste("Component",1:ncol(UnRotated_Factors),sep=" ")
+colnames(UnRotated_Factors)<-paste("Comp",1:ncol(UnRotated_Factors),sep="")
 ```
 
 ```{r}
@@ -207,31 +237,22 @@ Variance_Explained_Table_results<-PCA(ProjectDataFactor, graph=FALSE)
 Variance_Explained_Table<-Variance_Explained_Table_results$eig
 Variance_Explained_Table_copy<-Variance_Explained_Table
 
-
-rownames(Variance_Explained_Table) <- paste("Component", 1:nrow(Variance_Explained_Table))
+rownames(Variance_Explained_Table) <- paste("Component", 1:nrow(Variance_Explained_Table), sep=" ")
 colnames(Variance_Explained_Table) <- c("Eigenvalue", "Pct of explained variance", "Cumulative pct of explained variance")
-
 ```
 
-<br>
 Let's look at the **variance explained** as well as the **eigenvalues** (see session readings):
-<br>
-<br>
 
 ```{r}
-dformat(round(Variance_Explained_Table, 2))
+iprint.df(round(Variance_Explained_Table, 2))
 ```
-<br> 
 
-```{r figure011}
+```{r}
 eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
-#ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line()
-c3(melt(df, id="components"), x="components", y="value", group="variable") %>% c3_line('spline')
-
+iplot.df(melt(df, id="components"))
 ```
-<br>
 
 **Questions:**
 
@@ -239,11 +260,18 @@ c3(melt(df, id="components"), x="components", y="value", group="variable") %>% c
 2. Why does the plot have this specific shape? Could the plotted line be increasing? 
 3. What characteristics of these results would we prefer to see? Why?
 
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+**Answers**
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
 ## Step 5: Interpret the factors
 
@@ -260,36 +288,28 @@ if (factor_selectionciterion == "manual")
 
 To better visualise them, we will use what is called a "rotation". There are many rotations methods. In this case we selected the `r rotation_used` rotation. For our data, the `r factors_selected` selected factors look as follows after this rotation: 
 
-<br>
-
 ```{r}
-
 Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
 Rotated_Factors<-round(Rotated_Results$loadings,2)
 Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
-colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+colnames(Rotated_Factors)<-paste("Comp.",1:ncol(Rotated_Factors),sep="")
 
 sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
 Rotated_Factors <- Rotated_Factors[sorted_rows,]
 
-dformat(Rotated_Factors)
+iprint.df(Rotated_Factors, scale=TRUE)
 ```
-<br> <br>
 
 To better visualize and interpret the factors we often "supress" loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:
-<br>
 
 ```{r}
 Rotated_Factors_thres <- Rotated_Factors
-Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-"-"
+Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-NA
 colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
 rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
 
-dformat(Rotated_Factors_thres)
+iprint.df(Rotated_Factors_thres, scale=TRUE)
 ```
-
-<br> <br>
-
 
 **Questions**
 
@@ -297,14 +317,19 @@ dformat(Rotated_Factors_thres)
 2. How many factors should we choose for this data/customer base? Please try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
 3. How would you interpret the factors you selected?
 4. What lessons about data science do you learn when doing this analysis? Please comment. 
-5. (Extra/Optional) Can you make this report "dynamic" using shiny and then post it on [shinyapps.io](http://www.shinyapps.io)? (see for example exercise set 1 and interactive exercise set 2)
 
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+**Answers**
 
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
 ## Step 6:  Save factor scores 
 
@@ -312,31 +337,34 @@ We can now either replace all initial variables used in this part with the facto
 
 ```{r}
 NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
-colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
+colnames(NEW_ProjectData)<-paste("DV (Factor)",1:ncol(NEW_ProjectData),sep=" ")
 
-dformat(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , drop=F])
+iprint.df(t(head(NEW_ProjectData, 10)), scale=TRUE)
 ```
-
 
 **Questions**
 
 1. Can you describe some of the people using the new derived variables (factor scores)? 
 2. Which of the 29 initial variables would you select to represent each of the factors you selected?  
 
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+**Answers**
 
-<hr>
-<hr>
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
+<hr>\clearpage
 
 # Part 2: Customer Segmentation 
 
 The code used here is along the lines of the code in the session 5-6 reading  [ClusterAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/ClusterAnalysisReading.Rmd). We follow the process described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading. 
-
 
 In this part we also become familiar with:
 
@@ -345,9 +373,9 @@ In this part we also become familiar with:
 
 A key family of methods used for segmentation is what is called **clustering methods**. This is a very important problem in statistics and **machine learning**, used in all sorts of applications such as in [Amazon's pioneer work on recommender systems](http://www.cs.umd.edu/~samir/498/Amazon-Recommendations.pdf). There are many *mathematical methods* for clustering. We will use two very standard methods, **hierarchical clustering** and **k-means**. While the "math" behind all these methods can be complex, the R functions used are relatively simple to use, as we will see. 
 
-(All user inputs for this part should be selected in the code chunk in the raw .Rmd file here) 
+(All user inputs for this part should be selected in the code chunk in the raw .Rmd file) 
 
-```{r setupcluster, echo=FALSE, message=FALSE}
+```{r setupcluster, echo=TRUE, tidy=TRUE}
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) #c(10,19,5,12,3) 
@@ -365,63 +393,58 @@ profile_with = "hclust" #  "hclust" or "kmeans"
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
 # (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
 # DEFAULT is "euclidean"
-distance_used="euclidean"
+distance_used = "euclidean"
 
 # Please ENTER the hierarchical clustering method to use (options are:
-# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
+# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
 # DEFAULT is "ward"
 hclust_method = "ward.D"
 
 # Please ENTER the kmeans clustering method to use (options are:
-# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"
+# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen").
 # DEFAULT is "Lloyd"
 kmeans_method = "Lloyd"
 
 # Same as the initial data
 ProjectData <- ProjectData_INITIAL
 
-segmentation_attributes_used = unique(sapply(segmentation_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
-profile_attributes_used = unique(sapply(profile_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
+segmentation_attributes_used <- intersect(segmentation_attributes_used, 1:ncol(ProjectData))
+profile_attributes_used <- intersect(profile_attributes_used, 1:ncol(ProjectData))
 
-ProjectData_segment=ProjectData[,segmentation_attributes_used]
-ProjectData_profile=ProjectData[,profile_attributes_used]
+ProjectData_segment <- ProjectData[,segmentation_attributes_used]
+ProjectData_profile <- ProjectData[,profile_attributes_used]
 
-ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
-
+ProjectData_scaled <- apply(ProjectData, 2, function(r) if (sd(r)!=0) (r-mean(r))/sd(r) else 0*r)
 ```
 
-
-## Step 1/2: Explore the data
+## Steps 1-2: Explore the data
 
 (This was done above, so we skip it)
 
 ## Step 3. Select Segmentation Variables
 
 For simplicity will use one representative question for each of the factor we found in Part 1 (we can also use the "factor scores" for each respondent) to represent our survey respondents. These are the `segmentation_attributes_used` selected below. We can choose the question with the highest absolute factor loading for each factor. For example, when we use 5 factors with the varimax rotation we can select questions Q.1.9 (I see my boat as a status symbol), Q1.18 (Boating gives me a feeling of adventure), Q1.4 (I only consider buying a boat from a reputable brand), Q1.11 (I tend to perform minor boat repairs and maintenance on my own) and Q1.2 (When buying a boat  getting the lowest price is more important than the boat brand) - try it. These are columns 10, 19, 5, 12, and 3, respectively of the data matrix `Projectdata`. 
-
 ## Step 4: Define similarity measure
 
 We need to define a distance metric that measures how different people (observations in general) are from each other. This can be an important choice. Here are the differences between the observations using the distance metric we selected:
-
 
 ```{r}
 euclidean_pairwise <- as.matrix(dist(head(ProjectData_segment, max_data_report), method="euclidean"))
 euclidean_pairwise <- euclidean_pairwise*lower.tri(euclidean_pairwise) + euclidean_pairwise*diag(euclidean_pairwise) + 10e10*upper.tri(euclidean_pairwise)
 euclidean_pairwise[euclidean_pairwise==10e10] <- NA
+rownames(euclidean_pairwise) <- colnames(euclidean_pairwise) <- sprintf("Obs.%02d", 1:max_data_report)
 
-dformat(round(euclidean_pairwise))
+iprint.df(round(euclidean_pairwise))
 ```
 
-
 ## Step 5: Visualize Pair-wise Distances
-
 
 We can see the histogram of, say, the first 2 variables (can you change the code chunk in the raw .Rmd file to see other variables?)
 
 ```{r}
 variables_to_plot = 1:2
-do.call(grid.arrange, lapply(variables_to_plot, function(n) {
-  qplot(ProjectData_segment[, n], xlab=paste("Histogram of Variable", n), ylab="Frequency", binwidth=1)
+do.call(iplot.grid, lapply(variables_to_plot, function(n){
+  iplot.hist(ProjectData_segment[, n], breaks=5, xlab = paste("Variable", n))
 }))
 ```
 
@@ -429,7 +452,7 @@ or the histogram of all pairwise distances for the `r distance_used` distance:
 
 ```{r}
 Pairwise_Distances <- dist(ProjectData_segment, method = distance_used) 
-qplot(as.vector(Pairwise_Distances), xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency", binwidth=1)
+iplot.hist(Pairwise_Distances, breaks=10)
 ```
 
 ## Step 6: Method and Number of Segments
@@ -440,22 +463,17 @@ We need to select the clustering method to use, as well as the number of cluster
 Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
 Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
 # Display dendogram
-ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE) + xlab("Our Observations") + ylab("Height")
+iplot.dendrogram(Hierarchical_Cluster)
 # TODO: Draw dendogram with red borders around the 3 clusters
 # rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
 ```
 
 We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers, we see the first 20 here. 
-
 ```{r}
 num <- nrow(ProjectData) - 1
 df1 <- cbind(as.data.frame(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1]), c(1:num))
 colnames(df1) <- c("distances","index")
-part_to_plot = 1:20
-ggplot(df1[part_to_plot,], aes(x=index, y=distances)) + geom_line() + xlab("Number of Components") +ylab("Distances")
-
-#Line <- gvisLineChart(as.data.frame(df1), xvar="index", yvar="distances", options=list(title='Distances plot', legend="right", width=900, height=600, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Distances'}]", series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(Line,'chart')
+iplot.df(melt(head(df1, 20), id="index"), xlab="Number of Components")
 ```
 
 Here is the segment membership of the first `r max_data_report` respondents if we use hierarchical clustering:
@@ -467,9 +485,8 @@ cluster_ids_hclust=unique(cluster_memberships_hclust)
 ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
 colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
 
-knitr::kable(round(head(ProjectData_with_hclust_membership, max_data_report), 2))
+iprint.df(round(head(ProjectData_with_hclust_membership, max_data_report), 2))
 ```
-
 
 while this is the segment membership if we use k-means:
 
@@ -479,19 +496,16 @@ kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.
 ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
 colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
 
-knitr::kable(round(head(ProjectData_with_kmeans_membership, max_data_report), 2))
+iprint.df(round(head(ProjectData_with_kmeans_membership, max_data_report), 2))
 ```
 
-
 ## Step 7: Profile and interpret the segments 
-
 
 In market segmentation one may use variables to **profile** the segments which are not the same (necessarily) as those used to **segment** the market: the latter may be, for example, attitude/needs related (you define segments based on what the customers "need"), while the former may be any information that allows a company to identify the defined customer segments (e.g. demographics, location, etc). Of course deciding which variables to use for segmentation and which to use for profiling (and then **activation** of the segmentation for business purposes) is largely subjective.  In this case we can use all survey questions for profiling for now - the `profile_attributes_used` variables selected below. 
 
 There are many ways to do the profiling of the segments. For example, here we show how the *average* answers of the respondents *in each segment* compare to the *average answer of all respondents* using the ratio of the two.  The idea is that if in a segment the average response to a question is very different (e.g. away from ratio of 1) than the overall average, then that question may indicate something about the segment relative to the total population. 
 
 Here are for example the profiles of the segments using the clusters found above.  First let's see just the average answer people gave to each question for the different segments as well as the total population:
-
 
 ```{r}
 cluster_memberships_kmeans <- kmeans_clusters$cluster 
@@ -514,12 +528,11 @@ colnames(population_average) <- "Population"
 Cluster_Profile_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_profile[(cluster_memberships==i), ], 2, mean))
 if (ncol(ProjectData_profile) <2)
   Cluster_Profile_mean=t(Cluster_Profile_mean)
-colnames(Cluster_Profile_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+colnames(Cluster_Profile_mean) <- paste("Seg.", 1:length(cluster_ids), sep="")
 cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 
-dformat(round(cluster.profile, 2))
+iprint.df(round(cluster.profile, 2))
 ```
-<br>
 
 We can also "visualize" the segments using **snake plots** for each cluster. For example, we can plot the means of the profiling variables for each of our clusters to better visualize differences between segments. For better visualization we plot the standardized profiling variables.
 
@@ -529,38 +542,39 @@ ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F
 Cluster_Profile_standar_mean <- sapply(sort(cluster_ids), function(i) apply(ProjectData_scaled_profile[(cluster_memberships==i), ,drop = F], 2, mean))
 if (ncol(ProjectData_scaled_profile) < 2)
   Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
-colnames(Cluster_Profile_standar_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
+colnames(Cluster_Profile_standar_mean) <- paste("Seg ", 1:length(cluster_ids), sep="")
 
-ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster_Profile_standar_mean)), id="id"), aes(x=id, y=value, colour=variable)) + geom_line() + xlab("Profiling variables (standardized)") + ylab("Mean of cluster")
+iplot.df(melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), Cluster_Profile_standar_mean), id="idx"), xlab="Profiling variables (standardized)",  ylab="Mean of cluster")
 ```
 
-
-We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population, minus 1, (e.g. avg(cluster)/avg(population) -1) for each segment and variable:
+We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population, minus 1, (e.g. `avg(cluster)` `/` `avg(population)` `-1`) for each segment and variable:
 
 ```{r}
 population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
 cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
-colnames(cluster_profile_ratios) <- paste("Segment", 1:ncol(cluster_profile_ratios), sep=" ")
+colnames(cluster_profile_ratios) <- paste("Seg.", 1:ncol(cluster_profile_ratios), sep="")
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
-dformat(round(cluster_profile_ratios-1, 2))
+iprint.df(round(cluster_profile_ratios-1, 2))
 ```
-
-
 
 **Questions**
 
 1. What do the numbers in the last table indicate? What numbers are the more informative?
 2. Based on the tables and snake plot above, what are some key features of each of the segments of this solution?
 
-<br>
+**Answers**
 
-**Your Answers here:**
-<br>
-<br>
-
-<br>
-
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
 ## Step 8: Robustness Analysis
 
@@ -573,25 +587,28 @@ We should also consider the robustness of our analysis as we change the clusteri
 3. What if you change the number of factors and in general you *iterate the whole analysis*? **Iterations** are key in data science.
 4. Can you now answer the [Boats case questions](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf)? What business decisions do you recommend to this company based on your analysis?
 
-<br>
+**Answers**
 
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
-<hr>
-
+<hr>\clearpage
 
 # Part 3: Purchase Drivers
 
 We will now use the [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) methods to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
 
-
 We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this part of the analysis: 
 
-```{r eval = TRUE, echo=FALSE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+```{r setup_classification}
 ProjectData = ProjectData_INITIAL # Just to initialize the data
 
 # Please ENTER the class (dependent) variable:
@@ -809,7 +826,7 @@ Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log
 colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
 rownames(Importance_table) <- rownames(log_importance)
 
-dformat(Importance_table)
+iprint.df(Importance_table)
 ```
 
 
@@ -903,7 +920,7 @@ These are the maximum total profit achieved in the test data using the three cla
 ```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 best_profits = rbind(best_profits_small_tree, best_profits_large_tree, best_profits_logistic)
 rownames(best_profits) <- c("Small Tree", "Large Tree", "Logistic Regression")
-dformat(round(best_profits, 2))
+iprint.df(round(best_profits, 2))
 ```
 <br>
 <br>
@@ -928,7 +945,7 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-dformat(cluster_size)
+iprint.df(cluster_size)
 
 #print(xtable(cluster_size,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
@@ -999,7 +1016,7 @@ for (i in sort(unique(cluster_ids))){
     }
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
-dformat(round(tail(Log_Drivers,-1), 2))
+iprint.df(round(tail(Log_Drivers,-1), 2))
 #cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
 
 ```
@@ -1098,7 +1115,7 @@ These are the maximum total profit achieved in the test data using the three cla
 ```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
 best_profits = rbind(best_profits_small_tree, best_profits_large_tree, best_profits_logistic)
 rownames(best_profits) <- c("Small Tree", "Large Tree", "Logistic Regression")
-dformat(round(best_profits, 2))
+iprint.df(round(best_profits, 2))
 ```
 
 <br>
