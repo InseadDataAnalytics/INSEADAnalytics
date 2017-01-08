@@ -20,9 +20,11 @@ While doing this exercise we will also see how to generate replicable and custom
 Before starting, make sure you have pulled the [exercise files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/Exercises/Exerciseset1)  on your github repository (if you pull the course github repository you also get the exercise set files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
 ```{r echo=TRUE, eval=FALSE, tidy=TRUE}
-getwd()
-setwd("Exercises/Exerciseset1/")
-list.files()
+#getwd()
+
+#setwd("Exercises/Exerciseset1/")
+
+#list.files()
 ```
 
 **Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
@@ -174,7 +176,7 @@ Try it!
 2. *(Extra exercise)* What do you think will happen if you now run this command, and why:  
 
 ```{r eval = FALSE, echo=TRUE}
-myData + StockReturns[1:40,])
+myData + StockReturns[1:40,]
 ```
 
 **Your Answers here:**
