@@ -878,7 +878,7 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
-df<-data.frame(Percentile = 100*xaxis, Profit = yaxis)
+df<-data.frame(Percentile = xaxis, Profit = yaxis)
 c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
 best_profits_large_tree = df[which.max(df$Profit),]
 
