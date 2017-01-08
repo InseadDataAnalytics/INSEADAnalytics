@@ -122,18 +122,21 @@ First we load the data to use (see the raw .Rmd file to change the data file as 
 
 ```{r setupdata1E, echo=TRUE, tidy=TRUE}
 # Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
-datafile_name = "Boats"
-
-ProjectData <- read.csv(paste0("../Sessions23/data/", datafile_name, ".csv"))
-ProjectData <- data.matrix(ProjectData) 
-ProjectData_INITIAL <- ProjectData
+datafile_name = "../Sessions23/data/Boats.csv"
 
 # Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
 MIN_VALUE = 0.5
 
 # Please enter the maximum number of observations to show in the report and slides. 
-# DEFAULT is 10. If the number is large the report and slides may not be generated.
+# DEFAULT is 10. If the number is large the report may be slow.
 max_data_report = 10
+```
+
+```{r setupdata2E, echo=FALSE, tidy=TRUE}
+ProjectData <- read.csv(datafile_name)
+ProjectData <- data.matrix(ProjectData) 
+ProjectData_INITIAL <- ProjectData
+
 ```
 
 <hr>\clearpage
@@ -152,7 +155,7 @@ In this part we also become familiar with:
 
 ```{r setupfactor, echo=TRUE, tidy=TRUE}
 # Please ENTER then original raw attributes to use. 
-# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 factor_attributes_used = c(2:30)
 
 # Please ENTER the selection criterions for the factors to use. 
@@ -160,15 +163,19 @@ factor_attributes_used = c(2:30)
 factor_selectionciterion = "manual"
 
 # Please ENTER the desired minumum variance explained 
-# (ONLY USED in case "variance" is the factor selection criterion used). 
+# (Only used in case "variance" is the factor selection criterion used). 
 minimum_variance_explained = 65  # between 1 and 100
 
 # Please ENTER the number of factors to use 
-# (ONLY USED in case "manual" is the factor selection criterion used).
+# (Only used in case "manual" is the factor selection criterion used).
 manual_numb_factors_used = 15
 
-# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
 rotation_used = "varimax"
+
+```
+
+```{r setupfactor2, echo=FALSE, tidy=TRUE}
 
 factor_attributes_used <- intersect(factor_attributes_used, 1:ncol(ProjectData))
 ProjectDataFactor <- ProjectData[,factor_attributes_used]
@@ -381,7 +388,7 @@ A key family of methods used for segmentation is what is called **clustering met
 segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) #c(10,19,5,12,3) 
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
-# Please use numbers, not column names! e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 profile_attributes_used = c(2:82) 
 
 # Please ENTER the number of clusters to eventually use for this report
@@ -404,6 +411,10 @@ hclust_method = "ward.D"
 # "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen").
 # DEFAULT is "Lloyd"
 kmeans_method = "Lloyd"
+
+```
+
+```{r setupcluster2, echo=FALSE, tidy=TRUE}
 
 # Same as the initial data
 ProjectData <- ProjectData_INITIAL
