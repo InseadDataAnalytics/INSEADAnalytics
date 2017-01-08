@@ -9,7 +9,7 @@ output: html_document
 The purpose of this exercise is to become familiar with:
 
 1. Some time series analysis tools;
-2. Correlation matrices and principal component analysis (PCA) (see [readings of sessions 3-4](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html));
+2. Correlation matrices and principal component analysis (PCA) (see [readings of sessions 3-4](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html));
 3. More data manipulation and reporting tools (including Google Charts).
 
 As always, while doing this exercise we will also see how to generate replicable and customizable reports. For this purpose the exercise uses the R Markdown capabilities (see [Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) or a [basic introduction to R Markdown](http://rmarkdown.rstudio.com/authoring_basics.html)).  These capabilities allow us to create dynamic reports. For example today's date is `r Sys.Date()` (you need to see the .Rmd to understand that this is *not* a static typed-in date but it changes every time you compile the .Rmd - if the date changed of course).
@@ -93,7 +93,7 @@ print(m1,'chart')
 
 We see quite high correlations among some of the futures. Does it make sense? Why? Do you see some negative correlations? Do those make sense? 
 
-Given such high correlations, we can try to see whether there are some "principal components" (see [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)). This analysis can also indicate whether all futures (the global economy!) are driven by some common "factors" (let's call them **"risk factors"**). 
+Given such high correlations, we can try to see whether there are some "principal components" (see [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html)). This analysis can also indicate whether all futures (the global economy!) are driven by some common "factors" (let's call them **"risk factors"**). 
 
 <br>
 
@@ -127,7 +127,7 @@ print(Line, 'chart')
 
 <br>
 
-Let's now see how the 20 first (**rotated**) principal components look like. Let's also use the *rotated* factors (note that these are not really the "principal component", as explained in the [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html)) and not show any numbers less than 0.3 in absolute value, to avoid cluttering. Note again that you can sort the table according to any column by clicking on the header of that column. 
+Let's now see how the 20 first (**rotated**) principal components look like. Let's also use the *rotated* factors (note that these are not really the "principal component", as explained in the [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html)) and not show any numbers less than 0.3 in absolute value, to avoid cluttering. Note again that you can sort the table according to any column by clicking on the header of that column. 
 <br>
 
 ```{r echo=TRUE, comment=NA, warning=FALSE, error=FALSE,message=FALSE,results='asis',tidy=TRUE}
