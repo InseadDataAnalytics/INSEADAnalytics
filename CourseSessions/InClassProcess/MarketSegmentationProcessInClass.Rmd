@@ -24,7 +24,7 @@ The process is split in 3 parts, corresponding to Sessions 3-4, 5-6, and an opti
 
 2. *Part 2*: We use the selected customer descriptors to **segment the market** using *cluster analysis* techniques described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading of Sessions 5-6.
 
-3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For ths part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) techniques.
+3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For ths part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.html) techniques.
 
 Finally, we will use the results of this analysis to make business decisions e.g. about brand positioning, product development, etc depending on our market segments and key purchase drivers we find at the end of this process.
 
@@ -536,7 +536,7 @@ We should also consider the robustness of our analysis as we change the clusteri
 
 # Part 3: Purchase Drivers
 
-We will now use the [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions67/ClassificationAnalysisReading.html) methods to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
+We will now use the [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.html) methods to understand the key purchase drivers for boats (a similar analysis can be done for recommendation drivers). For simplicity we do not follow the "generic" steps of classification discussed in that reading, and only consider the classification and purchase drivers analysis for the segments we found above. 
 
 We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this part of the analysis: 
 
@@ -1035,4 +1035,3 @@ iprint.df(round(best_profits, 2))
 **You have now completed your first market segmentation project.** Do you have data from another survey you can use with this report now? 
 
 **Extra question**: explore and report a new segmentation analysis... 
-
