@@ -132,7 +132,7 @@ MIN_VALUE = 0.5
 max_data_report = 10
 ```
 
-```{r setupdata2E, echo=FALSE, tidy=TRUE}
+```{r}
 ProjectData <- read.csv(datafile_name)
 ProjectData <- data.matrix(ProjectData) 
 ProjectData_INITIAL <- ProjectData
@@ -175,8 +175,7 @@ rotation_used = "varimax"
 
 ```
 
-```{r setupfactor2, echo=FALSE, tidy=TRUE}
-
+```{r}
 factor_attributes_used <- intersect(factor_attributes_used, 1:ncol(ProjectData))
 ProjectDataFactor <- ProjectData[,factor_attributes_used]
 ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
@@ -414,8 +413,7 @@ kmeans_method = "Lloyd"
 
 ```
 
-```{r setupcluster2, echo=FALSE, tidy=TRUE}
-
+```{r}
 # Same as the initial data
 ProjectData <- ProjectData_INITIAL
 
@@ -619,9 +617,7 @@ We will now use the [classification analysis ](http://inseaddataanalytics.github
 
 We are interested in understanding the purchase drivers, hence our **dependent** variable is column 82 of the Boats data (`r colnames(ProjectData)[82]`) - why is that? We will use only the subquestions of **Question 16** of the case for now, and also select some of the parameters for this part of the analysis: 
 
-```{r setup_classification}
-ProjectData = ProjectData_INITIAL # Just to initialize the data
-
+```{r setupclassification, echo=TRUE, tidy=TRUE}
 # Please ENTER the class (dependent) variable:
 # Please use numbers, not column names! e.g. 82 uses the 82nd column are dependent variable.
 # YOU NEED TO MAKE SURE THAT THE DEPENDENT VARIABLES TAKES ONLY 2 VALUES: 0 and 1!!!
@@ -654,11 +650,10 @@ CART_cp = 0.01
 
 # Please enter the minimum size of a segment for the analysis to be done only for that segment
 min_segment = 100
+```
 
-# Please enter the maximum number of observations to show in the report and slides 
-# (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
-max_data_report = 50 # can also chance in server.R
-
+```{r}
+ProjectData = ProjectData_INITIAL # Just to initialize the data
 
 Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
 
@@ -677,40 +672,52 @@ colnames(Profit_Matrix)<- c("Predict 1", "Predict 0")
 rownames(Profit_Matrix) <- c("Actual 1", "Actual 0")
 test_data_percent = 100-estimation_data_percent-validation_data_percent
 CART_control = rpart.control(cp = CART_cp)
-
 ```
 
 **Questions**
 
 1. How do you select the profit/cost values for the analysis? Does the variable `r Profit_Matrix` above relate to the final business decisions? How?
 2. What does the variable `r Probability_Threshold` affect? Does it relate to the final business decisions? How?
-<br>
 
-**Your Answers here:**
-<br>
-<br>
-<br>
+**Answers**
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
 We will use two classification trees and logistic regression. You can select "complexity" control for one of the classification trees in the code chunk of the raw .Rmd file here
 
-```{r eval = TRUE, echo=FALSE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+```{r CART_control, echo=TRUE, tidy=TRUE}
 CART_control = 0.001
 ```
 
 **Question**
 
 1. How can this parameter affect the final results? What business implications can this parameter choice have?
-<br>
 
-**Your Answers here:**
-<br>
+**Answer**
 
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
-<br>
+This is a "small tree" classification for example:
 
-This is a "small tree" classification for example. 
-
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+```{r}
 # FIrst we split the data in estimation, validation, and test
 
 if (random_sampling){
@@ -729,11 +736,8 @@ estimation_data=ProjectData[estimation_data_ids,]
 validation_data=ProjectData[validation_data_ids,]
 test_data=ProjectData[test_data_ids,]
 ```
-<br>
 
-
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-
+```{r}
 # just name the variables numerically so that they look ok on the tree plots
 independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
 
@@ -753,22 +757,20 @@ test_data_nolabel = data.frame(test_data_nolabel)
 estimation_data = data.frame(estimation_data)
 validation_data = data.frame(validation_data)
 test_data = data.frame(test_data)
-
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis'}
+```{r}
 formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
 rpart.plot(CART_tree)
 ```
 
-```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
+```{r}
 CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
 ```
 
-
-```{r echo=FALSE, message=FALSE,warning=FALSE, results='asis'}
+```{r}
 # Let's first calculate all probabilites for the estimation, validation, and test data
 estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
 estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
@@ -788,21 +790,17 @@ validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1
 
 test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
 test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
-
 ```
 
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-
+```{r}
 formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
 
 logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
-#print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
-
 ```
 
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+```{r}
 estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
 validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
 test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
@@ -814,8 +812,7 @@ test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_
 
 After also running the large tree and the logistic regression classifiers, we can then check how much "weight" these three methods put on the different purchase drivers (Q16 of the survey):
 
-```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-
+```{r}
 log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
 log_importance = log_importance/max(abs(log_importance))
 
@@ -840,13 +837,11 @@ rownames(Importance_table) <- rownames(log_importance)
 iprint.df(Importance_table)
 ```
 
-
 Finally, if we were to use the estimated classification models on the test data, we would get the following profit curves (see the raw .Rmd file to select the business profit parameters). 
 
 The profit curve using the small classification tree: 
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
-
+```{r}
 actual_class<- test_data[,dependent_variable]
 
 probs = test_Probability_class1_tree
@@ -863,18 +858,14 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
   }))
 xaxis = res[1,]; yaxis = res[2,]
 df<-data.frame(Percentile = xaxis, Profit = yaxis)
-c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+iplot.df(df, x="Percentile", y="Profit", v=NULL)
 
 best_profits_small_tree = df[which.max(df$Profit),]
-
-#LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(LineFramev1,'chart')
 ```
 
 The profit curve using the large classification tree: 
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
-
+```{r}
 probs = test_Probability_class1_tree_large
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
 res = Reduce(cbind,lapply(xaxis, function(prob){
@@ -890,18 +881,14 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 df<-data.frame(Percentile = xaxis, Profit = yaxis)
-c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+iplot.df(df, x="Percentile", y="Profit", v=NULL)
+
 best_profits_large_tree = df[which.max(df$Profit),]
-
-#LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(LineFramev2,'chart')
 ```
-
 
 The profit curve using the logistic regression classifier: 
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
-
+```{r}
 probs = test_Probability_class1_log
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
 res = Reduce(cbind,lapply(xaxis, function(prob){
@@ -917,25 +904,20 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 df<-data.frame(Percentile = xaxis, Profit = yaxis)
-c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+iplot.df(df, x="Percentile", y="Profit", v=NULL)
 
 best_profits_logistic = df[which.max(df$Profit),]
-
-#LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(LineFramev3,'chart')
 ```
-
 
 These are the maximum total profit achieved in the test data using the three classifiers (without any segment specific analysis so far).
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+```{r}
 best_profits = rbind(best_profits_small_tree, best_profits_large_tree, best_profits_logistic)
 rownames(best_profits) <- c("Small Tree", "Large Tree", "Logistic Regression")
 iprint.df(round(best_profits, 2))
 ```
-<br>
-<br>
-<hr>
+
+<hr>\clearpage
 
 # Part 4: Business Decisions
 
@@ -956,15 +938,12 @@ for (i in sort(unique(cluster_ids))){
 cluster_size = matrix(cluster_size, nrow=1)
 colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
 rownames(cluster_size) <- "Number of Obs."
-iprint.df(cluster_size)
-
-#print(xtable(cluster_size,caption="Number of Observations per segment in the Dataset", digits=1),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+iprint.df(cluster_size, scale=TRUE)
 ```
 
 This is our final segment specific analysis and solution. We can study now the purchase drivers (average answers to Q16 of the survey) for each segment. They are as follows:
 
 ```{r}
-
 actual_class<- test_data[,dependent_variable]
 probs_tree = 0*test_Probability_class1_tree
 probs_tree_large = 0*test_Probability_class1_tree_large
@@ -1028,17 +1007,11 @@ for (i in sort(unique(cluster_ids))){
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
 iprint.df(round(tail(Log_Drivers,-1), 2))
-#cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
-
 ```
-<br>
-<br>
 
 The profit curves for the test data in this case are as follows. The profit curve using the small classification tree is: 
 
-
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
-
+```{r}
 actual_class<- test_data[,dependent_variable]
 
 probs = probs_tree
@@ -1056,20 +1029,14 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 df<-data.frame(Percentile = xaxis, Profit = yaxis)
-c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+iplot.df(df, x="Percentile", y="Profit", v=NULL)
 
 best_profits_small_tree = df[which.max(df$Profit),]
-
-#LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(LineFramev1,'chart')
-
 ```
 
 The profit curve using the large classification tree is: 
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
-
-
+```{r}
 probs = probs_tree_large
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
 res = Reduce(cbind,lapply(xaxis, function(prob){
@@ -1085,19 +1052,14 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 df<-data.frame(Percentile = xaxis, Profit = yaxis)
-c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+iplot.df(df, x="Percentile", y="Profit", v=NULL)
 
 best_profits_large_tree = df[which.max(df$Profit),]
-
-#LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(LineFramev2,'chart')
-
 ```
 
 The profit curve using the logistic regression classifier: 
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
-
+```{r}
 probs = probs_log
 xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
 res = Reduce(cbind,lapply(xaxis, function(prob){
@@ -1113,24 +1075,18 @@ res = Reduce(cbind,lapply(xaxis, function(prob){
 xaxis = res[1,]; yaxis = res[2,]
 names(xaxis)<- NULL; names(yaxis) <- NULL
 df<-data.frame(Percentile = xaxis, Profit = yaxis)
-c3(df, x="Percentile", y="Profit") %>% c3_line('spline')
+iplot.df(df, x="Percentile", y="Profit", v=NULL)
 
 best_profits_logistic = df[which.max(df$Profit),]
-
-#LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
-#print(LineFramev3,'chart')
 ```
 
 These are the maximum total profit achieved in the test data using the three classifiers with the selected market segmentation solution.
 
-```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+```{r}
 best_profits = rbind(best_profits_small_tree, best_profits_large_tree, best_profits_logistic)
 rownames(best_profits) <- c("Small Tree", "Large Tree", "Logistic Regression")
 iprint.df(round(best_profits, 2))
 ```
-
-<br>
-<hr>
 
 **Questions:**
 
@@ -1142,13 +1098,16 @@ iprint.df(round(best_profits, 2))
 
 **Answers:**
 
-<br>
-<br>
-<br>
-<br>
-<br>
-
-
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
 
 **You have now completed your first market segmentation project.** Do you have data from another survey you can use with this report now? 
 
