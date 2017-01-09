@@ -352,7 +352,7 @@ test_data = data.frame(test_data)
 formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
-rpart.plot(CART_tree)
+rpart.plot(CART_tree, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 ```
 
 The leaves of the tree indicate the number of estimation data observations that belong to each class which "reach that leaf" as well as the pecentage of all data points that reach the leaf. A perfect classification would only have data from one class in each of the tree leaves. However, such a perfect classification of the estimation data would most likely not be able to classify well out-of-sample data due to over-fitting of the estimation data.
@@ -361,7 +361,7 @@ One can estimate larger trees through changing the tree's **complexity control**
 
 ```{r}
 CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
-rpart.plot(CART_tree_large)
+rpart.plot(CART_tree_large, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 ```
 
 One can also use the percentage of data in each leaf of the tree to have an estimated probability that an observation (e.g. person) belongs to a given class.  The **purity of the leaf** can indicate the probability an observation which "reaches that leaf" belongs to a class. In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the first CART above, is:

@@ -205,7 +205,7 @@ test_data = data.frame(test_data)
 formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
 CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
 
-rpart.plot(CART_tree)
+rpart.plot(CART_tree, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 ```
 </center>
 
@@ -218,7 +218,7 @@ Another Classification Tree
 ```{r echo=FALSE, warning=FALSE,message=FALSE, prompt=FALSE, results='asis'}
 CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
 
-rpart.plot(CART_tree_large)
+rpart.plot(CART_tree_large, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 ```
 </center>
 
