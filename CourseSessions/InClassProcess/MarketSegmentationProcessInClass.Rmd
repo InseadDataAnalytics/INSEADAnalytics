@@ -15,16 +15,16 @@ output:
 always_allow_html: yes
 ---
 
-> **IMPORTANT**: Please make sure you create a copy of this file with a customised name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
+> **IMPORTANT**: Please make sure you create a copy of this file with a customized name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). 
 
 The process is split in 3 parts, corresponding to Sessions 3-4, 5-6, and an optional last part: 
 
-1. *Part 1*: We use some of the survery questions (e.g. in this case the first 29 "attitude" questions) to find **key customer descriptors** ("factors") using *dimensionality reduction* techniques described in the [Dimensionality Reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading of Sessions 3-4.
+1. *Part 1*: We use some of the survey questions (e.g. in this case the first 29 "attitude" questions) to find **key customer descriptors** ("factors") using *dimensionality reduction* techniques described in the [Dimensionality Reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading of Sessions 3-4.
 
 2. *Part 2*: We use the selected customer descriptors to **segment the market** using *cluster analysis* techniques described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading of Sessions 5-6.
 
-3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For ths part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.html) techniques.
+3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For this part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.html) techniques.
 
 Finally, we will use the results of this analysis to make business decisions e.g. about brand positioning, product development, etc depending on our market segments and key purchase drivers we find at the end of this process.
 
@@ -38,6 +38,22 @@ opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
 options(knitr.kable.NA = '')
 ```
+
+<hr>\clearpage
+
+# The Business Questions
+
+This process can be used as a (starting) template for projects like the one described in the [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf). For example (but not only), in this case some of the business questions were: 
+
+- What are the main purchase drivers of the customers (and prospects) of this company? 
+
+- Are there different market segments? Which ones? Do the purchase drivers differ across segments? 
+
+- What (possibly market segment specific) product development or brand positioning strategy should the company follow in order to increase its sales? 
+
+See for example some of the analysis of this case in  these slides: <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions2_3 Handouts.pdf"  target="_blank"> part 1</a> and <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions4_5 Handouts.pdf"  target="_blank"> part 2</a>.
+
+<hr>\clearpage
 
 # The Data
 
@@ -215,7 +231,7 @@ if (factor_selectionciterion == "manual")
   factors_selected = manual_numb_factors_used
 ```
 
-To better visualise them, we will use what is called a "rotation". There are many rotations methods. In this case we selected the `r rotation_used` rotation. For our data, the `r factors_selected` selected factors look as follows after this rotation: 
+To better visualize them, we will use what is called a "rotation". There are many rotations methods. In this case we selected the `r rotation_used` rotation. For our data, the `r factors_selected` selected factors look as follows after this rotation: 
 
 ```{r}
 Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
@@ -229,7 +245,7 @@ Rotated_Factors <- Rotated_Factors[sorted_rows,]
 iprint.df(Rotated_Factors, scale=TRUE)
 ```
 
-To better visualize and interpret the factors we often "supress" loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:
+To better visualize and interpret the factors we often "suppress" loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:
 
 ```{r}
 Rotated_Factors_thres <- Rotated_Factors
@@ -510,7 +526,7 @@ iprint.df(round(cluster_profile_ratios-1, 2))
 
 ## Step 8: Robustness Analysis
 
-We should also consider the robustness of our analysis as we change the clustering method and parameters. Once we are confortable with the solution we can finally answer our first business questions: 
+We should also consider the robustness of our analysis as we change the clustering method and parameters. Once we are comfortable with the solution we can finally answer our first business questions: 
 
 **Questions**
 
