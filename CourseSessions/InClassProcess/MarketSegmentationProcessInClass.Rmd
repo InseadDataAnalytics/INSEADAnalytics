@@ -31,89 +31,12 @@ Finally, we will use the results of this analysis to make business decisions e.g
 Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository.  As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
 ```{r setuplibraries, echo=FALSE, message=FALSE}
-# SET UP
-# type in the Console below help(getwd) and help(setwd) for more information, to make sure you are in the right directory
-local_directory <- "."
-suppressWarnings(source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/")))
-
+suppressWarnings(source("../../AnalyticsLibraries/library.R"))
 # Package options
 suppressWarnings(ggthemr('fresh'))  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
 options(knitr.kable.NA = '')
-
-# Determine document output format, return "html" by default
-getDocumentOutputFormat <- function() {
-  format <- opts_knit$get('rmarkdown.pandoc.to')
-  if (!is.null(format)) format else "html"
-}
-
-# Format tables for html/latex output
-normalize.abs <- function(x, min=0, max=1, na.rm=FALSE) normalize(abs(x), min, max, na.rm)
-iprint.df <- function(df, scale=FALSE) {
-  if (getDocumentOutputFormat() == "html") {
-    if (class(df) != "data.frame")
-      df <- as.data.frame(df)
-    x <- lapply(colnames(df), function(col) {
-      if (is.numeric(df[, col]))
-        color_bar(rgb(238, 238, 238, max=255), normalize.abs, min=0.1, na.rm=TRUE)
-      else
-        formatter("span")
-    })
-    names(x) <- colnames(df)
-    tags$div(class="formattable_container", HTML(gsub("NA", "", format_table(df, x))))
-  } else if (opts_knit$get('rmarkdown.pandoc.to') == "latex") {
-    cat(ifelse(scale, "\\setkeys{Gin}{height=\\textheight}\\adjustbox{width=\\linewidth}{", "\\begin{center}"))
-    cat(kable(df, format="latex", booktabs=TRUE, longtable=!scale))
-    cat(ifelse(scale, "}\\setkeys{Gin}{height=\\maxheight}", "\\end{center}"))
-  } else {
-    kable(df)
-  }
-}
-
-# Format plots for html/latex output
-iplot.df <- function(df, x=colnames(df)[1], y="value", v="variable", type="line", xlab=NULL, ylab=NULL) {
-  if (getDocumentOutputFormat() == "html") {
-    p <- c3(df, x=x, y=y, group=v, width="100%", height="480px")
-    p <- switch(type,
-      line = p %>% c3_line('spline'),
-      bar  = p %>% c3_bar(bar_width=0.90)
-    )
-    if (!is.null(xlab)) p <- p %>% xAxis(label=xlab)
-    if (!is.null(ylab)) p <- p %>% yAxis(label=ylab)
-    p
-  } else {  # latex, etc.
-    p <- ggplot(df, aes_string(x=x, y=y, colour=v))
-    p <- switch(type,
-      line = p + geom_line(),
-      bar  = p + geom_bar(stat="identity")
-    )
-    if (!is.null(xlab)) p <- p + labs(x=xlab)
-    if (!is.null(ylab)) p <- p + labs(y=ylab)
-    p
-  }
-}
-
-iplot.hist <- function(x, breaks="Sturges", xlab=NULL) {
-  h <- hist(x, breaks=breaks, plot=FALSE)
-  df <- data.frame(x=head(h$breaks, -1), Frequency=h$counts)
-  iplot.df(df, x="x", y="Frequency", v=NULL, type="bar", xlab=xlab)
-}
-
-iplot.grid <- if (getDocumentOutputFormat() == "html") tags$div else grid.arrange
-
-iplot.dendrogram <- function(cluster) {
-  labels <- (length(cluster$labels) > 40)
-  if (getDocumentOutputFormat() == "html") {
-    cluster$labels <- if (!labels) NULL else cluster$labels
-    margins <- list(top=10, right=0, bottom=ifelse(labels, 120, 10), left=0)
-    dendroNetwork(cluster, width="100%", height="480px", fontSize=14,
-                  treeOrientation="vertical", margins=margins, textRotate=90)
-  } else {  # latex, etc.
-    ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE, labels=labels) +
-      xlab("Observations") + ylab("Height")
-  }
-}
 ```
 
 # The Data
