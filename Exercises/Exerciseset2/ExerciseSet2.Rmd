@@ -121,7 +121,7 @@ iprint.df(show_data)
 Here is the scree plot (see Sessions 3-4 readings):
 
 ```{r echo=TRUE}
-eigenvalues  <- Variance_Explained_Table[,2]
+eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
 ```
 
 ```{r}
