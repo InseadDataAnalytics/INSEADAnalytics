@@ -95,7 +95,7 @@ print(colnames(futures_data))
 
 # Basic data analysis
 
-Let's see how these are correlated. Let's also make it look nicer (than, say, what we did in Exercise Set 1), using [Google Charts](https://code.google.com/p/google-motion-charts-with-r/wiki/GadgetExamples) (see examples online, e.g. [examples](https://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html) and the [R package used used](https://cran.r-project.org/web/packages/googleVis/googleVis.pdf) ).The correlation matrix is as follows:
+Let's see how these are correlated. The correlation matrix is as follows:
 
 ```{r}
 show_data = round(cor(futures_data),2)
