@@ -2,7 +2,7 @@
 *.md
 *figure*
 *.pdf
-*.html
+#*.html
 *.Rproj
 .Rhistory
 .gitignore
