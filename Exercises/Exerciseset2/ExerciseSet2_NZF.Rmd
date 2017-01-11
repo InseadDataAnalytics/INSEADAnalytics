@@ -314,11 +314,40 @@ How does this compare with **existing CTA products** such as [this one from Soci
 
 **Your Answers here:**
 <br>
+The code uses the moving average for 20 days to determine on the sign of the returns.
 <br>
 <br>
+```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
+signal_used = 0*futures_data # just initialize the trading signal to be 0
+# Take many moving Average (MA) Signals and let them "vote" with their sign (+-1, e.g. long or short vote, for each signal)
+MAfreq<-seq(10,250,by=2)
+for (iter in 1:length(MAfreq))
+  signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
+# Now make sure we invest $1 every day (so the sum of the absolute values of the weights is 1 every day)
+signal_used = t(apply(signal_used,1,function(r) {
+  res = r  
+  if ( sum(abs(r)) !=0 )
+    res = r/sum(abs(r))
+  res
+}))
+colnames(signal_used) <- colnames(futures_data)
+# Now create the returns of the strategy for each futures time series
+strategy_by_future <- scrub(shift(signal_used,2)*futures_data) # use the signal from 2 days ago
+# finally, this is our futures trend following strategy
+trading_strategy = apply(strategy_by_future,1,sum)
+names(trading_strategy) <- rownames(futures_data)
+```
 <br>
-
-
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig.height=5,fig.width= 8, fig=TRUE}
+pnl_plot(trading_strategy)
+```
+<br>
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+show_data = data.frame(cbind(rownames(pnl_matrix(trading_strategy)), round(pnl_matrix(trading_strategy),2)))
+m1<-gvisTable(show_data,options=list(width=1220, height=min(400,27*(nrow(show_data)+1)),allowHTML=TRUE))
+print(m1,'chart')
+```
+<br>
 <hr>
 
 ### A class competition
