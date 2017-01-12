@@ -1,0 +1,1209 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css"> body {padding: 10px 30px 10px 30px;} table,th, td {text-align: center;}</style>
+<style>
+td.tableRow
+{
+text-align:center;
+}
+</style>
+<script src='//api.tiles.mapbox.com/mapbox.js/v1.6.0/mapbox.js'></script>
+
+
+Boats Segmentation: Cluster Analysis
+
+========================================================
+
+**Team names**
+
+
+Business Decisions
+---------------------------------------------------------
+
+your text...
+
+
+
+The Data
+--------------------------------------------
+
+
+Your text...
+
+With the aid of a market research firm, the boating company gathered various data about the boating market in the US through interviews with almost 3,000 boat owners and intenders. The data consisted, among others, of 29 attitudes towards boating, which respondents indicated on a 5-point scale. They are listed below. Other types of information had been collected, such as demographics as well as information about the boats, such as the length of the boat they owned, how they used their boats, and the price of the boats. 
+
+After analyzing the survey data (using for example factor and cluster analysis), the company managers decided to only focus on a few purchase drivers which they thought were the most important ones. They decided to perform the classification and purchase drivers analysis using only the responses to the following questions:
+
+1 "Q16_1_Is a brand that has been around for a long time"                       
+2 "Q16_2_Has best in class customer service"                                    
+3 "Q16_3_Has a strong dealer network"                                           
+4 "Q16_4_Is a leader in cutting edge technology"                                
+5 "Q16_5_Is a leader in safety"                                                 
+6 "Q16_6_Is known for its innovative products"                                  
+7 "Q16_7_Is a brand for people who are serious about boating"                   
+8 "Q16_8_Is a good brand for people that are new to boating"                    
+9 "Q16_9_Is a brand I see in the water all the time"                            
+10 "Q16_10_Offers boats that provide a fast and powerful boating experience"     
+11 "Q16_11_Offers the best boats for socializing"                                
+12 "Q16_12_Offers the best boats for water sports  e g   tubing  ski  wakeboard "
+13 "Q16_13_Offers boats with superior interior style"                            
+14 "Q16_14_Offers boats with superior exterior style"                            
+15 "Q16_15_Offers boats that stand out from the crowd"                           
+16 "Q16_16_Offers boats that look cool"                                          
+17 "Q16_17_Offers boats that can handle rough weather or choppy water"           
+18 "Q16_18_Offers boats that can handle frequent and heavy usage"                
+19 "Q16_19_Offers a wide breadth of product offerings and accessories"           
+20 "Q16_20_Offers boats that I can move around safely"                           
+21 "Q16_21_Offers boats that are easy to maintain and or repair"                 
+22 "Q16_22_Offers boats that are easy to use"                                    
+23 "Q16_23_Offers boats that are easy to clean up"                               
+24 "Q16_24_Has low prices"                                                       
+25 "Q16_25_Is a brand that gives me peace of mind"                               
+26 "Q16_26_Makes me feel I made a smart decision"                                
+27 "Q16_27_Is a brand that impresses others"    
+
+Let's get the data and see it for a few customers. This is how the first `r min(max_data_report, nrow(ProjectData))` out of the total of `r nrow(ProjectData)` rows look:
+<br>
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# let's make the data into data.matrix classes so that we can easier visualize them
+ProjectData = data.matrix(ProjectData)
+```
+
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+show_data = data.frame(round(ProjectData,2))
+show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+<br> <br>
+
+Our Approach
+---------------------------------------------------------------
+
+There is *not a single best* process for classification. However, we have to start somewhere, so we will use the following process:
+
+#### Classification in 6 steps
+
+1. Create an estimation sample and two validation samples by splitting the data into three groups. Steps 2-5 below will then be performed only on the estimation and the first validation data. You should only do step 6 once on the second validation data, also called **test data**, and report/use the performance on that (second validation) data only to make final business decisions. 
+
+2.  Set up the dependent variable (as a categorical 0-1 variable; multi-class classification is also feasible, and similar, but we do not explore it in this note). 
+
+3. Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics. 
+
+4.  Estimate the classification model using the estimation data, and interpret the results.
+
+5. Assess the accuracy of classification in the first validation sample, possibly repeating steps 2-5 a few times in different ways to increase performance.
+
+6. Finally, assess the accuracy of classification in the second validation sample.  You should eventually use/report all relevant performance measures/plots on this second validation sample only.
+
+Let's follow these steps.
+
+## Step 1: Split the data 
+
+You text...
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='hide'}
+
+if (random_sampling){
+  estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
+  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+  validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
+  } else {
+    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    }
+
+test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
+
+estimation_data=ProjectData[estimation_data_ids,]
+validation_data=ProjectData[validation_data_ids,]
+test_data=ProjectData[test_data_ids,]
+```
+
+
+In our case we use for example `r nrow(estimation_data)` observations in the estimation data, 
+`r nrow(validation_data)` in the validation data, and `r nrow(test_data)` in the test data. 
+
+## Step 2: Choose dependent variable
+
+
+Your text...
+
+In our data the number of 0/1's in our estimation sample is as follows:
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+class_percentages=matrix(c(sum(estimation_data[,dependent_variable]==1),sum(estimation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
+rownames(class_percentages)<-"# of Observations"
+print(xtable(class_percentages ,caption="Number of Observations per class in the Estimation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+
+</div>
+</div>
+while in the validation sample they are:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+class_percentages=matrix(c(sum(validation_data[,dependent_variable]==1),sum(validation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
+rownames(class_percentages)<-"# of Observations"
+print(xtable(class_percentages ,caption="Number of Observations per class in the Validation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+</div>
+</div>
+
+
+## Step 3: Simple Analysis
+
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
+show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==1,]),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis'}  
+show_data = data.frame(round(my_summary(estimation_data[estimation_data[,dependent_variable]==0,]),2))
+#show_data = show_data[1:min(max_data_report,nrow(show_data)),]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Variables"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=400,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+```
+</div>
+</div>
+
+
+Your text
+
+<center style="width=1048px;">
+```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis',fig.height=10,fig.width=16}
+par(mfrow=c(2,1))
+DVvalues = unique(estimation_data[,dependent_variable])
+x0 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[1]),independent_variables]
+x1 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[2]),independent_variables]
+colnames(x0) <- 1:ncol(x0)
+colnames(x1) <- 1:ncol(x1)
+boxplot(x0)
+boxplot(x1)
+```
+</center>
+
+Can you see which variables appear to be the most discrimatory ones?
+Your text
+
+
+## Step 4: Classification and Interpretation
+
+Your text
+
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis'}
+
+# just name the variables numerically so that they look ok on the tree plots
+independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
+
+estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
+colnames(estimation_data_nolabel)<- c(colnames(estimation_data)[dependent_variable],independent_variables_nolabel)
+
+validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
+colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+test_data_nolabel = cbind(test_data[,dependent_variable], test_data[,independent_variables])
+colnames(test_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+estimation_data_nolabel = data.frame(estimation_data_nolabel)
+validation_data_nolabel = data.frame(validation_data_nolabel)
+test_data_nolabel = data.frame(test_data_nolabel)
+
+estimation_data = data.frame(estimation_data)
+validation_data = data.frame(validation_data)
+test_data = data.frame(test_data)
+
+```
+
+
+<center>
+```{r echo=FALSE, message=FALSE, warning=FALSE,prompt=FALSE, results='asis'}
+formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+
+fancyRpartPlot(CART_tree)
+```
+</center>
+
+
+<center style="width=900px; height=800px;">
+```{r echo=FALSE, message=FALSE,warning=FALSE, prompt=FALSE, results='asis',fig.width=14,fig.height=10}
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = 0.005))
+
+fancyRpartPlot(CART_tree_large)
+```
+</center>
+
+In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the first CART above, is:
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, results='asis'}
+# Let's first calculate all probabilites for the estimation, validation, and test data
+estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
+estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
+
+validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
+validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
+
+test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
+test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
+
+
+estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
+estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
+
+validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
+validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
+
+test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
+test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
+
+```
+<br>
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+Classification_Table_large=rbind(validation_data[,dependent_variable],validation_Probability_class1_tree)
+rownames(Classification_Table_large)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
+
+show_data = data.frame(round(Classification_Table,2))
+show_data = show_data[,1:min(max_data_report,ncol(show_data))]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Classification Table"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=140,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+
+```
+<br>
+
+In practice we need to select the **probability threshold** above which we consider an observation as "class 1": this is an important choice that we will discuss below. First we discuss another method widely used, namely logistic regression.
+
+<br>
+<br>
+
+**Logistic Regression** is a method similar to linear regression except that the dependent variable can be discrete (e.g. 0 or 1). **Linear** logistic regression estimates the coefficients of a linear model using the selected independent variables while optimizing a classification criterion. For example, this is the logistic regression parameters for our data:
+
+
+<br>
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~")
+
+logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
+
+log_coefficients = round(summary(logreg_solution)$coefficients,1)
+print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+
+In our case, the probability our validation data belong to class 1 (e.g. the customer is likely to purchase a boat) for the first few validation data observations, using the logistic regression above, is:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+# Let's get the probabilities for the 3 types of data again
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+
+estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
+validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
+test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+
+```
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_Probability_class1_log)
+rownames(Classification_Table)<-c("Actual Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+show_data = data.frame(round(Classification_Table,2))
+show_data = show_data[,1:min(max_data_report,ncol(show_data))]
+row<-rownames(show_data)
+dfnew<-cbind(row,show_data)
+change<-colnames(dfnew)
+change[1]<-"Classification Table"
+colnames (dfnew)<-change
+m1<-gvisTable(dfnew,options=list(showRowNumber=TRUE,width=1220, height=140,allowHTML=TRUE,page='disable'))
+print(m1,'chart')
+
+```
+<br>
+
+
+Your text
+
+From this table we can see the **key drivers** of the classification according to each of the methods we used here. 
+
+<br>
+<br>
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+log_importance = log_importance/max(abs(log_importance))
+
+tree_importance = CART_tree$variable.importance
+tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+tree_importance_final = rep(0,length(independent_variables))
+tree_importance_final[tree_ordered_drivers] <- tree_importance
+tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+tree_importance_final <- tree_importance_final*sign(log_importance)
+
+large_tree_importance = CART_tree_large$variable.importance
+large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
+large_tree_importance_final = rep(0,length(independent_variables))
+large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
+large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+large_tree_importance_final <- large_tree_importance_final*sign(log_importance)
+
+Importance_table <- cbind(tree_importance_final,large_tree_importance_final, log_importance)
+colnames(Importance_table) <- c("CART 1", "CART 2", "Logistic Regr.")
+rownames(Importance_table) <- rownames(log_importance)
+## printing the result in a clean-slate table
+cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
+```
+
+<br>
+<br>
+
+## Step 5: Validation accuracy 
+
+Your text
+
+### 1.  **Hit ratio** 
+
+These are as follows for the probability threshold  `r Probability_Threshold*100`% for the validation data:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE,warning=FALSE,comment=NA,prompt=FALSE, results='asis'}
+validation_actual=validation_data[,dependent_variable]
+validation_predictions = rbind(validation_prediction_class_tree,
+                               validation_prediction_class_tree_large,
+                               validation_prediction_class_log)
+validation_hit_rates = rbind(
+  100*sum(validation_prediction_class_tree==validation_actual)/length(validation_actual), 
+  100*sum(validation_prediction_class_tree_large==validation_actual)/length(validation_actual), 
+  100*sum(validation_prediction_class_log==validation_actual)/length(validation_actual)
+  )
+colnames(validation_hit_rates) <- "Hit Ratio"
+rownames(validation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
+
+print(xtable(validation_hit_rates ,caption="Validation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+</div>
+</div>
+
+
+while for the estimation data the hit rates are:
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+estimation_actual=estimation_data[,dependent_variable]
+estimation_predictions = rbind(estimation_prediction_class_tree,
+                               estimation_prediction_class_tree_large,
+                               estimation_prediction_class_log)
+estimation_hit_rates = rbind(
+  100*sum(estimation_prediction_class_tree==estimation_actual)/length(estimation_actual), 
+  100*sum(estimation_prediction_class_tree_large==estimation_actual)/length(estimation_actual), 
+  100*sum(estimation_prediction_class_log==estimation_actual)/length(estimation_actual)
+  )
+colnames(estimation_hit_rates) <- "Hit Ratio"
+rownames(estimation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
+
+print(xtable(estimation_hit_rates ,caption="Estimation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+</div>
+</div>
+
+**Why are the performances on the estimation and validation data different? How different can they possibly be? What does this diffference depend on?** Is the Validation Data Hit Rate satisfactory? Which classifier should we use? What should be the benchmark against which to compare the hit rate? 
+
+YOUR TEXT/INTERPRETATION
+
+### 2. **Confusion matrix**
+
+YOUR TEXT/INTERPRETATION
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+validation_prediction_best = validation_predictions[which.max(validation_hit_rates),]
+conf_matrix = matrix(rep(0,4),ncol=2)
+conf_matrix[1,1]<- 100*sum(validation_prediction_best*validation_data[,dependent_variable])/sum(validation_data[,dependent_variable])
+conf_matrix[1,2]<- 100*sum((!validation_prediction_best)*validation_data[,dependent_variable])/sum(validation_data[,dependent_variable])
+conf_matrix[2,1]<- 100*sum((!validation_prediction_best)*(!validation_data[,dependent_variable]))/sum((!validation_data[,dependent_variable]))
+conf_matrix[2,2]<- 100*sum((validation_prediction_best)*(!validation_data[,dependent_variable]))/sum((!validation_data[,dependent_variable]))
+conf_matrix = round(conf_matrix,2)
+
+colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
+rownames(conf_matrix) <- c("Actual 1", "Actual 0")
+
+print(xtable(conf_matrix ,caption="Confusion Matrix for Validation data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+```
+
+</div>
+</div>
+<br>
+
+Note that the percentages add up to 100% for each row: can you see why? Moreover, a "good" confusion matrix should have large diagonal values and small off-diagonal oens: you see why?
+
+YOUR TEXT/INTERPRETATION
+
+### 3.  **ROC curve** 
+
+
+The ROC curves for the validation data for both the CARTs above as well as the logistic regression are as follows:
+
+```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
+
+validation_actual_class <- as.numeric(validation_data[,dependent_variable])
+
+pred_tree <- prediction(validation_Probability_class1_tree, validation_actual_class)
+pred_tree_large <- prediction(validation_Probability_class1_tree_large, validation_actual_class)
+pred_log <- prediction(validation_Probability_class1_log, validation_actual_class)
+
+```
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+```{r echo=FALSE, warning=FALSE,comment=NA, results='asis',error=FALSE,message=FALSE}
+test<-performance(pred_tree, "tpr", "fpr")
+df<- cbind(as.data.frame(test@x.values),as.data.frame(test@y.values))
+colnames(df) <- c("False Positive rate CART 1", "True Positive CART 1")
+Line    <- gvisLineChart(as.data.frame(df), xvar="False Positive rate CART 1", yvar="True Positive CART 1", options=list(title='ROC Curve for CART 1', legend="right",  width=600, height=400, hAxis="{title:'False Positive rate CART 1', titleTextStyle:{color:'black'}}", vAxes="[{title:'True Positive CART 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+
+############################
+test1<-performance(pred_log, "tpr", "fpr")
+df1<- cbind(as.data.frame(test1@x.values),as.data.frame(test1@y.values))
+colnames(df1) <- c("False Positive rate log reg", "True Positive log reg")
+Line1    <- gvisLineChart(as.data.frame(df1), xvar="False Positive rate log reg", yvar="True Positive log reg", options=list(title='ROC Curve for logistic regression', legend="right", width=600, height=400, hAxis="{title:'False Positive rate log reg', titleTextStyle:{color:'black'}}", vAxes="[{title:'True Positive log reg'}]",  series="[{color:'blue',pointSize:3, targetAxisIndex: 0}]"))
+
+###############################
+test2<-performance(pred_tree_large, "tpr", "fpr")
+df2<- cbind(as.data.frame(test2@x.values),as.data.frame(test2@y.values))
+colnames(df2) <- c("False Positive rate CART 2", "True Positive CART 2")
+Line2    <- gvisLineChart(as.data.frame(df2), xvar="False Positive rate CART 2", yvar="True Positive CART 2", options=list(title='ROC Curve for CART 2', legend="right", width=600, height=400, hAxis="{title:'False Positive rate CART 2', titleTextStyle:{color:'black'}}", vAxes="[{title:'True Positive CART 2'}]",  series="[{color:'red',pointSize:3, targetAxisIndex: 0}]"))
+
+###############################
+print(Line, 'chart')
+print(Line2, 'chart')
+print(Line1, 'chart')
+```
+</div>
+</br>
+
+<br>
+<br>
+which, if we plot all in the same graph for comparison, are (black: CART 1; red: CART 2; blue: logistic regression): 
+<br>
+
+```{r echo=FALSE}
+plot(performance(pred_tree, "tpr", "fpr"),  lty=1, add=FALSE, main="ROC Curve")
+grid()
+par(new=TRUE)
+plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
+par(new=TRUE)
+plot(performance(pred_log, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
+par(new=FALSE)
+
+```
+<br>
+How should a good ROC curve look like? A rule of thumb in assessing ROC curves is that the "higher" the curve, hence the larger the area under the curve, the better. You may also select one point on the ROC curve (the "best one" for our purpose) and use that false positive/false negative performances (and corresponding threshold for P(0)) to assess your model. **Which point on the ROC should we select?**
+
+YOUR TEXT/INTERPRETATION
+
+
+### 4. **Lift curve**
+
+
+The Lift curves for the validation data for our three classifiers are the following:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+```{r lift,echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+validation_actual<- validation_data[,dependent_variable]
+all1s=sum(validation_actual); 
+
+probs = validation_Probability_class1_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= 1-prob)
+  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 1', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFrame,'chart')
+
+
+probs = validation_Probability_class1_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= 1-prob)
+  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFrame1,'chart')
+
+probs = validation_Probability_class1_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFrame2,'chart')
+
+```
+</div>
+</br>
+
+How should a good Lift Curve look like? Notice that if we were to randomly examine transactions, **the "random prediction" lift curve would be a 45 degrees straight diagonal line** (why?)! So the further **above** this 45 degrees line our Lift curve is, the better the "lift". Moreover, much like for the ROC curve, one can select the probability threshold appropriately so that any point of the lift curve is selected. **Which point on the lift curve should we select in practice?** 
+
+
+YOUR TEXT/INTERPRETATION
+
+### 5. **Profit Curve** 
+Here is the profit curve for our example if we consider the following business profit and loss for the correctly classified as well as the misclassified customers: 
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+
+print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+</div>
+</div>
+
+
+Based on these profit and cost estimates, the profit curves for the validation data for the three classifiers are:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+actual_class<- validation_data[,dependent_variable]
+
+probs = validation_Probability_class1_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = validation_Probability_class1_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = validation_Probability_class1_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for validation data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+
+```
+</div>
+
+We can then select the threshold that corresponds to the maximum expected profit (or minimum loss, if necessary). 
+
+
+YOUR TEXT/INTERPRETATION
+
+
+## Step 6: Test Accuracy
+
+
+Let's see in our case how the **Confusion Matrix, ROC Curve, Lift Curve, and Profit Curve** look like for our test data:
+
+
+**Will the performance in the test data be similar to the performance in the  validation data above? More important: should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?**
+
+YOUR TEXT/INTERPRETATION
+
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='hide'}
+######for train data#####
+test_actual=test_data[,dependent_variable]
+test_predictions = rbind(test_prediction_class_tree,
+                         test_prediction_class_tree_large,
+                         test_prediction_class_log)
+test_hit_rates = rbind(
+  100*sum(test_prediction_class_tree==test_actual)/length(test_actual), 
+  100*sum(test_prediction_class_tree_large==test_actual)/length(test_actual), 
+  100*sum(test_prediction_class_log==test_actual)/length(test_actual)
+  )
+colnames(test_hit_rates) <- "Hit Ratio"
+rownames(test_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
+
+print(xtable(test_hit_rates ,caption="Test Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+
+```
+
+</div>
+</div>
+
+The Confusion Matrix for the model with the best validation data hit ratio above:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+test_prediction_best = test_predictions[which.max(validation_hit_rates),]
+conf_matrix = matrix(rep(0,4),ncol=2)
+conf_matrix[1,1]<- 100*sum(test_prediction_best*test_data[,dependent_variable])/sum(test_data[,dependent_variable])
+conf_matrix[1,2]<- 100*sum((!test_prediction_best)*test_data[,dependent_variable])/sum(test_data[,dependent_variable])
+conf_matrix[2,1]<- 100*sum((!test_prediction_best)*(!test_data[,dependent_variable]))/sum((!test_data[,dependent_variable]))
+conf_matrix[2,2]<- 100*sum((test_prediction_best)*(!test_data[,dependent_variable]))/sum((!test_data[,dependent_variable]))
+conf_matrix = round(conf_matrix,2)
+
+colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
+rownames(conf_matrix) <- c("Actual 1", "Actual 0")
+
+print(xtable(conf_matrix ,caption="Confusion Matrix for test data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+```
+</div>
+</div>
+<br>
+
+ROC curves for the test data
+
+
+```{r echo=FALSE,results='hide',include=FALSE,warning=FALSE,error=FALSE}
+
+test_actual_class <- as.numeric(test_data[,dependent_variable])
+
+pred_tree1 <- prediction(test_Probability_class1_tree, test_actual_class)
+pred_tree_large1 <- prediction(test_Probability_class1_tree_large, test_actual_class)
+pred_log1 <- prediction(test_Probability_class1_log, test_actual_class)
+```
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+```{r echo=FALSE, warning=FALSE,comment=NA, results='asis',error=FALSE,message=FALSE}
+test<-performance(pred_tree, "tpr", "fpr")
+df<- cbind(as.data.frame(test@x.values),as.data.frame(test@y.values))
+colnames(df) <- c("False Positive rate CART 1", "True Positive CART 1")
+Line    <- gvisLineChart(as.data.frame(df), xvar=c("False Positive rate CART 1"), yvar="True Positive CART 1", options=list(title='ROC Curve for CART 1', legend="right", width=600, height=400, hAxis="{title:'False Positive rate CART 1', titleTextStyle:{color:'black'}}", vAxes="[{title:'True Positive CART'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+
+############################
+test2<-performance(pred_tree_large, "tpr", "fpr")
+df2<- cbind(as.data.frame(test2@x.values),as.data.frame(test2@y.values))
+colnames(df2) <- c("False Positive rate CART 2", "True Positive CART 2")
+Line2    <- gvisLineChart(as.data.frame(df2), xvar=c("False Positive rate CART 2"), yvar="True Positive CART 2", options=list(title='ROC Curve for CART 2', legend="right", width=600, height=400, hAxis="{title:'False Positive rate CART 2', titleTextStyle:{color:'black'}}", vAxes="[{title:'True Positive CART 2'}]",  series="[{color:'red',pointSize:3, targetAxisIndex: 0}]"))
+
+###############################
+test1<-performance(pred_log, "tpr", "fpr")
+df1<- cbind(as.data.frame(test1@x.values),as.data.frame(test1@y.values))
+colnames(df1) <- c("False Positive rate log reg", "True Positive log reg")
+Line1    <- gvisLineChart(as.data.frame(df1), xvar=c("False Positive rate log reg"), yvar="True Positive log reg", options=list(title='ROC Curve for logistic regression', legend="right", width=600, height=400, hAxis="{title:'False Positive rate log reg', titleTextStyle:{color:'black'}}", vAxes="[{title:'True Positive CART'}]",  series="[{color:'blue',pointSize:3, targetAxisIndex: 0}]"))
+###############################
+print(Line, 'chart')
+print(Line2, 'chart')
+print(Line1, 'chart')
+```
+</div>
+
+<br>
+<br>
+which, if we plot all in the same graph for comparison, are (black: CART 1; red: CART 2; blue: logistic regression): 
+<br>
+```{r echo=FALSE}
+plot(performance(pred_tree_large, "tpr", "fpr"), col="red", lty=1, add=FALSE)
+grid()
+par(new=TRUE)
+plot(performance(pred_log, "tpr", "fpr"), col="blue", lty=1, add=FALSE)
+par(new=TRUE)
+plot(performance(pred_tree, "tpr", "fpr"),  lty=1, add=FALSE, main="ROC Curve")
+par(new=FALSE)
+
+```
+<br>
+
+Lift Curves for the test data:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+```{r liftTest,echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+test_actual<- test_data[,dependent_variable]
+all1s = sum(test_actual)
+
+probs = test_Probability_class1_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= 1-prob)
+  c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFrame   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:' Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFrame,'chart')
+
+probs = test_Probability_class1_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= 1-prob)
+  c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFrame1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART large', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFrame1,'chart')
+
+probs = test_Probability_class1_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= 1-prob)
+  c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFrame2  <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Lift Curve for test data CART large', legend="right", width=600, height=400, hAxis="{title:'Percent of data', titleTextStyle:{color:'black'}}", vAxes="[{title:'Percent of Class 1'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFrame2,'chart')
+
+```
+</div>
+</br>
+
+Finally the profit curves for the test data, using the same profit/cost estimates as we did above:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = test_Probability_class1_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = test_Probability_class1_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = test_Probability_class1_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+YOUR TEXT/INTERPRETATION
+
+
+What if consider a segment-specific analysis?
+---------------------------------------------------------------------------
+
+YOUR TEXT
+
+In this case, let's assume we found some customer segments based on earlier analysis. Let's say we have these many observations in each segment:
+
+<div class="row">
+<div class="col-md-6">
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+cluster_ids <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(cluster_file_ini,"csv", sep="."), sep = "/"), sep=",", dec=".") # this contains only the matrix ProjectData
+cluster_ids <- data.matrix(cluster_ids)
+cluster_ids = cluster_ids[,2]
+
+cluster_size = NULL
+for (i in sort(unique(cluster_ids))){
+  cluster_size = c(cluster_size,sum(cluster_ids == i))
+  }
+cluster_size = matrix(cluster_size, nrow=1)
+colnames(cluster_size) <- paste("Segment", 1:length(cluster_size), sep=" ")
+rownames(cluster_size) <- "Number of Obs."
+print(xtable(cluster_size ,caption="Number of Observations per segment in the Dataset", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+```
+</div>
+</div>
+
+Using exactly the same analysis as above, let's see now the key drivers as well as the profit curve in the test data (only, for simplicity) when we perform the analysis for each segment separately (note: we only use segments with at least `r min_segment` datapoints). For simplicity we only show here the key drivers using only the logistic regression model for each segment.
+
+<br>
+<br>
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+actual_class<- test_data[,dependent_variable]
+probs_tree = 0*test_Probability_class1_tree
+probs_tree_large = 0*test_Probability_class1_tree_large
+probs_log = 0*test_Probability_class1_log
+Log_Drivers = NULL
+
+for (i in sort(unique(cluster_ids))){
+  useonly = which(cluster_ids==i)
+  if (length(useonly) >= min_segment){
+    
+    test_ids_used = intersect(test_data_ids,useonly)
+    probs_to_fill = which(sapply(test_data_ids, function(i) sum(test_ids_used==i)) !=0)
+    estimation_data_clus=ProjectData[intersect(estimation_data_ids,useonly) ,]
+    test_data_clus=ProjectData[intersect(test_data_ids,useonly),]
+    
+    ###
+    estimation_data_clus_nolabel = cbind(estimation_data_clus[,dependent_variable], estimation_data_clus[,independent_variables])
+    colnames(estimation_data_clus_nolabel)<- c(colnames(estimation_data_clus)[dependent_variable],independent_variables_nolabel)
+    
+    test_data_clus_nolabel = cbind(test_data_clus[,dependent_variable], test_data_clus[,independent_variables])
+    colnames(test_data_clus_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+    
+    estimation_data_clus = data.frame(estimation_data_clus)
+    test_data_clus = data.frame(test_data_clus)
+    estimation_data_clus_nolabel = data.frame(estimation_data_clus_nolabel)
+    test_data_clus_nolabel = data.frame(test_data_clus_nolabel)
+    ###
+    
+    CART_tree<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=CART_control)    
+    CART_tree_large<-rpart(formula, data= estimation_data_clus_nolabel,method="class", control=rpart.control(cp = 0.005))
+    logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data_clus)
+    
+    #####
+    
+    test_Probability_class1_tree<-predict(CART_tree, test_data_clus_nolabel)[,2]
+    test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_clus_nolabel)[,2]
+    test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data_clus[,independent_variables])
+    
+    #######
+    probs_tree[probs_to_fill] <- test_Probability_class1_tree
+    probs_tree_large[probs_to_fill] <- test_Probability_class1_tree
+    probs_log[probs_to_fill] <- test_Probability_class1_log
+    
+    
+    log_coefficients = round(summary(logreg_solution)$coefficients,1)
+    Log_Drivers_segment = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+    Log_Drivers_segment = Log_Drivers_segment/max(abs(Log_Drivers_segment))
+    
+    tree_importance = CART_tree$variable.importance
+    tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+    tree_importance_final = rep(0,length(independent_variables))
+    tree_importance_final[tree_ordered_drivers] <- tree_importance
+    tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+    tree_importance_final <- tree_importance_final*sign(Log_Drivers_segment)
+    
+    #Log_Drivers = cbind(Log_Drivers,tree_importance_final)
+    Log_Drivers = cbind(Log_Drivers,Log_Drivers_segment)
+
+    
+    }
+  }
+colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
+cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
+
+```
+<br>
+<br>
+
+while the profit curves are now:
+
+<style>
+.wrapper{
+
+
+width: 100%;
+
+overflow-x: scroll;
+
+}
+.wrapper1{
+
+height:450px;
+overflow-y: scroll;
+}
+</style>
+<div class="wrapper wrapper1">
+
+```{r echo=FALSE,results='asis',warning=FALSE,error=FALSE}
+
+actual_class<- test_data[,dependent_variable]
+
+probs = probs_tree
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev1   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 1', legend="right", width=600, height=600, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev1,'chart')
+
+probs = probs_tree_large
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev2   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data CART 2', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev2,'chart')
+
+probs = probs_log
+xaxis = sort(unique(c(0,1,probs)), decreasing = TRUE)
+res = Reduce(cbind,lapply(xaxis, function(prob){
+  useonly = which(probs >= prob)
+  predict_class = 1*(probs >= prob)
+  theprofit = Profit_Matrix[1,1]*sum(predict_class==1 & actual_class ==1)+
+    Profit_Matrix[1,2]*sum(predict_class==0 & actual_class ==1)+
+    Profit_Matrix[2,1]*sum(predict_class==1 & actual_class ==0)+
+    Profit_Matrix[2,2]*sum(predict_class==0 & actual_class ==0)
+  
+  c(100*length(useonly)/length(actual_class), theprofit) 
+  }))
+xaxis = res[1,]; yaxis = res[2,]
+names(xaxis)<- NULL; names(yaxis) <- NULL
+frame<-cbind(xaxis,yaxis)
+frame<-as.data.frame(frame)
+LineFramev3   <- gvisLineChart(frame, xvar=c("xaxis"), yvar="yaxis", options=list(title='Profit Curve for test data logistic regression', legend="right", width=600, height=400, hAxis="{title:'Percent Selected', titleTextStyle:{color:'black'}}", vAxes="[{title:'Estimated Profit'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
+print(LineFramev3,'chart')
+```
+</div>
+
+<br>
+<br>
+
+**Does segment specific analysis help for our business decisions?**
+
+<br>
+<br>
+
+YOUR TEXT/INTERPRETATION

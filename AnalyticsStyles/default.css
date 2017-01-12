@@ -1,0 +1,5 @@
+p, ol { text-align:justify; }
+
+.formattable_container { overflow:auto; max-height:425px; margin-bottom:23px; }
+.formattable_container table { margin-bottom:0; }
+.formattable_container td, .formattable_container th { white-space: nowrap; }

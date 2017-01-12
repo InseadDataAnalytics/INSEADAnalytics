@@ -1,0 +1,350 @@
+---
+title: "Derived Attributes and Dimensionality Reduction: Interactive Tool"
+author: "T. Evgeniou"
+runtime: shiny
+output: 
+  html_document:
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+
+---
+
+```{r echo=FALSE, message=FALSE}
+source("../../AnalyticsLibraries/library.R")
+
+opts_knit$set(progress=FALSE, verbose=FALSE)
+opts_chunk$set(echo=FALSE, fig.align="center")
+options(knitr.kable.NA = '')
+
+tags$style(type="text/css", "p { text-align:justify; }")
+tags$style(type="text/css", "label { display: none; }")
+tags$style(type="text/css", ".c3 svg { font-size:13px; font-family:\"Roboto\", \"Helvetica Neue\", Helvetica, Arial, sans-serif; }")
+tags$style(type="text/css", ".formattable_widget { overflow:auto; max-height:425px; margin-bottom:23px; }")
+tags$style(type="text/css", ".formattable_widget table { margin-bottom:0; }")
+tags$style(type="text/css", ".formattable_widget td, .formattable_widget th { white-space: nowrap; }")
+
+MAX_VARIABLES <- 30     # limits initial dataset filters
+SAMPLE_ROWS <- 10       # limits sample dataset presentations
+SAMPLE_XPOINTS <- 100   # limits sample dataset plots
+
+normalize.abs <- function(x, min=0, max=1, na.rm=FALSE) normalize(abs(x), min, max, na.rm)
+dformat <- function(df) {
+  if (class(df) != "data.frame")
+    df <- as.data.frame(df)
+  x <- lapply(colnames(df), function(col) {
+    if (is.numeric(df[, col]))
+      color_bar(rgb(238, 238, 238, max=255), normalize.abs, min=0.1, na.rm=TRUE)
+    else
+      formatter("span")
+  })
+  names(x) <- colnames(df)
+  formattable(df, x)
+}
+```
+
+
+## Factor Analysis in 6 steps
+
+This tool follows the 6 steps for factor analysis outlined in the [Derived Attributes and Dimensionality Reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/Report_s23.html) reading of the course. 
+
+First we load the data (`data/MBAadmin.csv` by default):
+
+```{r}
+# Please ENTER the name of the file with the data used. The file should contain a matrix with one row per observation (e.g. person) and one column per attribute.
+
+fileInput("dataFile", "",
+          accept = c(
+            "text/csv",
+            "text/comma-separated-values,text/plain",
+            ".csv"),
+          width = "100%"
+          )
+ProjectDataX <- eventReactive(input$dataFile, ignoreNULL=FALSE, {
+  datapath <- input$dataFile$datapath
+  if (is.null(datapath))
+    datapath <- "data/MBAadmin.csv"
+  df <- try(read.csv(datapath, stringsAsFactors=FALSE), silent=TRUE)
+  df.valid <- class(df) == "data.frame" && any(sapply(df, is.numeric))
+  if (!df.valid) {
+    showModal(modalDialog(title="Error", HTML("The data file contains no valid numeric variables.<br><br>Please ensure it can be processed with `read.csv` in the command line. Common problems include a column separator other than the comma (`,`) and a decimal point other than the period (`.`).")))
+    shiny::validate(need(df.valid, message=FALSE))
+  }
+  if (is.null(rownames(df)) || identical(rownames(df), as.character(1:nrow(df))))
+    rownames(df) <- paste0("observation ", sprintf("%02i", 1:nrow(df)))
+  df
+})
+```
+
+We also need to select which variables to consider for factor analysis (`r MAX_VARIABLES` at most): 
+
+```{r}
+# Please ENTER then original raw attributes to use. 
+
+selectizeInput("factorAttributes", "",
+               choices = NULL,
+               multiple = TRUE,
+               options = list(
+                 plugins = c("remove_button","drag_drop"),
+                 maxItems = MAX_VARIABLES,
+                 placeholder = "None"
+               ),
+               width="100%"
+               )
+observeEvent(ProjectDataX(), {
+  attributes <- colnames(ProjectDataX())
+  attributes <- attributes[sapply(ProjectDataX(), is.numeric)]
+  updateSelectizeInput(session, "factorAttributes", choices=attributes, selected=head(attributes, MAX_VARIABLES))
+})
+
+ProjectDataFactorX <- eventReactive(input$factorAttributes, {
+  ProjectDataX()[, input$factorAttributes, drop=F]
+})
+```
+
+Here is how the first `r SAMPLE_ROWS` rows look like:
+
+```{r}
+renderFormattable(dformat(head(ProjectDataFactorX(), SAMPLE_ROWS)))
+```
+
+
+### Step 1: Confirm data is metric
+
+The data we use here have the following descriptive statistics: 
+
+```{r}
+renderFormattable(dformat(round(my_summary(ProjectDataFactorX()), 2)))
+```
+
+
+### Step 2: Scale the  data
+
+Select variables to standardize:
+
+```{r}
+# Please enter the variables you would like to standardize: 
+
+selectizeInput("standardizedVariables", "",
+               choices = NULL,
+               multiple = TRUE,
+               options = list(
+                 plugins = c("remove_button","drag_drop"),
+                 placeholder = "None"
+               ),
+               width="100%"
+               )
+observeEvent(ProjectDataFactorX(), {
+  attributes <- colnames(ProjectDataFactorX())
+  updateSelectizeInput(session, "standardizedVariables", choices=attributes, selected=attributes)
+})
+
+ProjectDataFactorStandardized <- eventReactive(input$standardizedVariables, ignoreNULL=FALSE, {
+  df <- ProjectDataFactorX()
+  columns <- input$standardizedVariables
+  if (length(columns) == 0)
+    return(df)
+  df[, columns] <- apply(df[, columns, drop=F], 2, function(r) {
+    if (sd(r) != 0) 
+      (r - mean(r)) / sd(r)
+    else
+      0*r
+  })
+  df
+})
+```
+
+These are the summary statistics of the scaled dataset:
+
+```{r}
+renderFormattable(dformat(round(my_summary(ProjectDataFactorStandardized()), 2)))
+```
+
+
+### Step 3:  Check correlations 
+
+This is the correlation matrix of the original variables we use for factor analysis:
+
+```{r}
+renderFormattable(dformat(round(cor(ProjectDataFactorStandardized()), 2)))
+```
+
+
+### Step 4: Choose number of factors 
+
+This is the Variance Explained table, using all data selected for factor analysis:
+
+```{r}
+Variance_Explained_TableX <- eventReactive(ProjectDataFactorStandardized(), {
+  Variance_Explained_Table_results<-PCA(ProjectDataFactorStandardized(), graph=FALSE)
+  Variance_Explained_Table<-Variance_Explained_Table_results$eig
+  
+  rownames(Variance_Explained_Table) <- paste("Component", 1:nrow(Variance_Explained_Table))
+  colnames(Variance_Explained_Table) <- c("Eigenvalue", "Pct of explained variance", "Cumulative pct of explained variance")
+  Variance_Explained_Table
+})
+renderFormattable(dformat(round(Variance_Explained_TableX(), 2)))
+```
+
+Here is the **scree plot**:
+
+```{r}
+tags$div(style='height:480px', renderC3({
+  eigenvalues  <- Variance_Explained_TableX()[, "Eigenvalue"]
+  df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+  colnames(df) <- c("eigenvalues", "components", "abline")
+
+  c3(melt(df, id="components"), x="components", y="value", group="variable") %>% c3_line('spline')
+}))
+```
+
+We now select the criterion to use for deciding how many factors to use:
+
+```{r}
+# Please ENTER the selection criterions for the factors to use. 
+# Choices: "eigenvalue", "variance", "manual"
+selectizeInput("factor_selectionciterion", "",
+               choices = c("eigenvalue", "variance", "manual"))
+
+# Please ENTER the desired minumum variance explained 
+# (ONLY USED in case "variance" is the factor selection criterion used). 
+conditionalPanel("input.factor_selectionciterion == 'variance'",
+  tags$p("Since you selected the \"variance\" criterion, you need to specify the percentage of the variance you would like to explain with the final factors:"),
+  sliderInput("minimum_variance_explained", "", min=1, max=100, value=65)
+)
+
+# Please ENTER the number of factors to use 
+# (ONLY USED in case "manual" is the factor selection criterion used).
+conditionalPanel("input.factor_selectionciterion == 'manual'",
+  tags$p("Since you selected the number of factors manually, you need to specify how many you would like to use:"),
+  sliderInput("manual_numb_factors_used", "", min=1, max=10, value=2)
+)
+observeEvent(Variance_Explained_TableX(), {
+  updateSliderInput(session, "manual_numb_factors_used", max=nrow(Variance_Explained_TableX()))
+})
+
+factors_selectedX <- eventReactive({ 
+  input$factor_selectionciterion
+  input$minimum_variance_explained
+  input$manual_numb_factors_used
+  Variance_Explained_TableX()
+}, {
+  switch(input$factor_selectionciterion,
+    eigenvalue = {
+      sum(Variance_Explained_TableX()[, "Eigenvalue"] >= 1)
+    },
+    variance = {
+      1:head(which(Variance_Explained_TableX()[, "Cumulative pct of explained variance"] >= input$minimum_variance_explained), 1)
+    },
+    manual = {
+      input$manual_numb_factors_used
+    }
+  )
+})
+```
+
+
+### Step 5: Interpret the factors
+
+We can now use a rotation to get easier to interpret results:
+
+```{r}
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quartimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
+selectizeInput("rotation_used", "",
+               choices = c("none", "varimax", "quartimax", "bentlerT", "equamax",
+                           "varimin", "geominT", "bifactor", "promax", "oblimin",
+                           "simplimax", "bentlerQ", "geominQ", "biquartimin",
+                           "cluster"),
+               selected = "varimax")
+```
+
+For our data, the `r renderText(max(factors_selectedX()))` selected factors look as follows after the `r renderText(input$rotation_used)` rotation: 
+
+```{r}
+Rotated_FactorsX <- eventReactive({ 
+  input$rotation_used
+  factors_selectedX()
+  ProjectDataFactorStandardized()
+}, {
+  Rotated_Results<-principal(ProjectDataFactorStandardized(), nfactors=max(factors_selectedX()), rotate=input$rotation_used,score=TRUE)
+  Rotated_Factors<-round(Rotated_Results$loadings,2)
+  Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+  colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
+
+  sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+  Rotated_Factors <- Rotated_Factors[sorted_rows, , drop=F]
+  Rotated_Factors
+})
+
+renderFormattable(dformat(Rotated_FactorsX()))
+```
+
+We can also "supress" loadings with small values. Please select the minimum values to display:
+
+```{r}
+# Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
+sliderInput("MIN_VALUE", "", min=0, max=1, value=0.5)
+```
+
+Here are our rotated factors: 
+
+```{r}
+Rotated_Factors_thresX <- eventReactive({
+  input$MIN_VALUE
+  Rotated_FactorsX()
+}, {
+  Rotated_Factors_thres <- Rotated_FactorsX()
+  Rotated_Factors_thres[abs(Rotated_Factors_thres) < input$MIN_VALUE]<-NA
+  Rotated_Factors_thres
+})
+
+renderUI(tags$div(class="formattable_widget",HTML(gsub("NA", "", dformat(Rotated_Factors_thresX())))))
+```
+
+
+### Step 6: Save factor scores 
+
+For our data, using the rotated factors we selected, we can create a new dataset where our observations are as follows (for the first `r SAMPLE_ROWS` observations):
+
+```{r}
+NEW_ProjectDataX <- eventReactive({
+  input$rotation_used
+  factors_selectedX()
+  ProjectDataFactorStandardized()
+},{
+  Rotated_Results<-principal(ProjectDataFactorStandardized(), nfactors=max(factors_selectedX()), rotate=input$rotation_used,score=TRUE)
+  NEW_ProjectData <- round(Rotated_Results$scores[,1:max(factors_selectedX()),drop=F],2)
+  colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
+  NEW_ProjectData
+})
+
+renderFormattable(dformat(head(NEW_ProjectDataX(), SAMPLE_ROWS)))
+
+renderUI(downloadButton("downloadData", "Save Dataset"))
+output$downloadData <- downloadHandler( # TODO: use `outputArgs`
+ filename = "dataset.csv",
+ content = function(file) write.csv(NEW_ProjectDataX(), file)
+)
+```
+
+We now can replace our original data with the new ones and continue our analysis. For example, we can now visualize our original data using only the newly derived attributes:
+
+```{r}
+tags$div(style='height:480px', renderC3({
+  df <- as.data.frame(NEW_ProjectDataX())
+  # TODO: An error occurs when ncol(df) > 9. Should investigate.
+  df <- head(df[, head(colnames(df), 9), drop=F], SAMPLE_XPOINTS)
+  colnames(df) <- paste("Derived Variable", 1:ncol(df))
+  df <- cbind(
+    list(observations = 1:nrow(df)),
+    df
+  )
+  
+  c3(melt(df, id="observations"), x="observations", y="value", group="variable") %>% c3_scatter()
+}))
+```
+
+<div style="height: 450px;" class="tocify-extend-page" data-unique="tocify-extend-page">
+</div>

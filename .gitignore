@@ -1,5 +1,8 @@
 .Rproj.user
-*.html
+*.md
+*figure*
+*.pdf
+#*.html
 *.Rproj
 .Rhistory
 .gitignore
