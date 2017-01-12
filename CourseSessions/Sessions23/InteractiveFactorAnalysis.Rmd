@@ -1,6 +1,6 @@
 ---
 title: "Derived Attributes and Dimensionality Reduction: Interactive Tool"
-author: "T. Evgeniou"
+author: "T. Evgeniou 4"
 runtime: shiny
 output: 
   html_document:
