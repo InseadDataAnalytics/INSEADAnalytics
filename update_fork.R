@@ -16,7 +16,7 @@ if (is.null(conf$local$user.name) && is.null(conf$global$user.name)) {
   message("Your Github username is not yet configured for this repository.")
   config(repo, user.name=readline("Github username: "))
 }
-if (is.null(conf$local.user.email) && is.null(conf$global.user.email)) {
+if (is.null(conf$local$user.email) && is.null(conf$global$user.email)) {
   message("Your Github email is not yet configured for this repository.")
   config(repo, user.email=readline("Github email: "))
 }
