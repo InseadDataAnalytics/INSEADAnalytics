@@ -1,4 +1,8 @@
-
+---
+output: html_document
+runtime: shiny
+---
+runtime: shiny
 ---
 title: "Exercise Set 1"
 author: "T. Evgeniou"
@@ -85,10 +89,16 @@ pnl_plot(SPY)
 3. *(Extra points)* What if we want to also see the returns of another company, say Yahoo!, in the same period? Can you get that data and report the statistics for Yahoo!'s stock, too? 
 
 **Your Answers here:**
+<br> 1. The data of Apple returns are downloaded from Yahoo through the file "dataSet1.R", and are included in the variable "mytickers"
 <br>
-<br>
-<br>
-<br>
+<br> 2. - Cumulative daily returns: round(100*sum(StockReturns[,2]),1)% -> 597.2%
+- Average daily returns: round(100*mean(StockReturns[,2]),3) -> 0.148%
+- Standard deviation of daily returns: round(100*sd(StockReturns[,2]),3) -> 2.388%
+
+<br> 3. In the file "dataSet1.R" we have to add in the line mytickers "YHOO", save and run the file again. Statistics for Yahoo:
+- Cumulative daily returns: round(100*sum(StockReturns[,3]),1)% -> 290.7%
+- Average daily returns: round(100*mean(StockReturns[,3]),3) -> 0.072%
+- Standard deviation of daily returns: round(100*sd(StockReturns[,3]),3) -> 3.018%
 
 <hr>
 <hr>
@@ -126,8 +136,13 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
-<br>
-<br>
+<br> 1. nrow(transposedData) to have the number of rows
+ncol(transposedData) to have the number of columns
+dim(transposedData) to have both number of rows and number of columns
+<br> 2. transposedData = t(StockReturns)
+> portfolio = apply(transposedData,2,mean)
+> names(portfolio) <- row.names(StockReturns[,c(1,2)])
+> pnl_plot(portfolio)
 <br>
 <br>
 
@@ -144,7 +159,7 @@ This is an important step and will get you to think about the overall process on
 2. *(Extra Exercise)*  Can you get the returns of a few companies and plot the returns of an equal weighted portfolio with those companies during some period you select? 
 
 **Your Answers here:**
-<br>
+<br> 1.In file dataSet1.R write startDate = "2001-01-01" save settings and run the dataset agin.
 <br>
 <br>
 <br>
@@ -178,7 +193,7 @@ myData + StockReturns[1:40,])
 ```
 
 **Your Answers here:**
-<br>
+<br> 1. Writing the commands as they are the result given by R is 20. However, changing the separator from ";" to "," when reading the csv file, the result becomes 60.
 <br>
 <br>
 <br>
@@ -196,7 +211,7 @@ Can you now load another dataset from some CSV file and report some basic statis
 
 Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html).All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, make the markdown output to be "html_document", and then press "Run Document". 
 
-```{r, eval=FALSE, echo = TRUE}
+```{r, eval=TRUE, echo = TRUE}
 sliderInput("startdate", "Starting Date:", min = 1, max = length(portfolio), 
             value = 1)
 sliderInput("enddate", "End Date:", min = 1, max = length(portfolio), 
