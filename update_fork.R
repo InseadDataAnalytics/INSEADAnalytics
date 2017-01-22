@@ -1,7 +1,7 @@
 # Sync a forked copy of INSEADAnalytics with the master project. For details,
 # see https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/7
 
-if (!require(git2r)) {
+if (!suppressWarnings(require(git2r))) {
   install.packages("git2r", repos="http://cran.r-project.org/", quiet=TRUE)
   library(git2r)
 }
@@ -9,6 +9,16 @@ if (!require(git2r)) {
 repo <- repository(".")
 if (!("upstream" %in% remotes(repo))) {
   remote_add(repo, "upstream", "https://github.com/InseadDataAnalytics/INSEADAnalytics")
+}
+
+conf <- config(repo)
+if (is.null(conf$local$user.name) && is.null(conf$global$user.name)) {
+  message("Your Github username is not yet configured for this repository.")
+  config(repo, user.name=readline("Github username: "))
+}
+if (is.null(conf$local$user.email) && is.null(conf$global$user.email)) {
+  message("Your Github email is not yet configured for this repository.")
+  config(repo, user.email=readline("Github email: "))
 }
 
 fetch(repo, "upstream")
