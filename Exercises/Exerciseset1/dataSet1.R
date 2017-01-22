@@ -1,12 +1,12 @@
 
-# rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
-# source("helpersSet1.R")
+#get(list=ls()) # Clean up the memory, if we want to rerun from scratch
+#source("helpersSet1.R")
 
 getdata.fromscratch = 1
 
 website_used = "yahoo" # can be "yahoo" or other ( see help(getSymbols) ). Depending on the website we may need to change the stock tickers' representation
-mytickers = c("SPY", "AAPL")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", 
-startDate = "2001-01-01"
+mytickers = c("SPY", "AAPL","YHOO")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", 
+startDate = "1996-01-01"
 
 if (getdata.fromscratch){
   # Get SPY first, to get all trading days
