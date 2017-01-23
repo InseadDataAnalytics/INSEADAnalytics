@@ -1,0 +1,340 @@
+---
+title: 'Exercise Set 2: A $300 Billion Strategy'
+author: "T. Evgeniou"
+output:  
+  html_document:
+    css: ../../AnalyticsStyles/default.css
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+> **IMPORTANT**: Please make sure you create a copy of this file with a customized name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
+
+```{r setuplibraries, echo=FALSE, message=FALSE}
+suppressWarnings(source("../../AnalyticsLibraries/library.R"))
+# Package options
+suppressWarnings(ggthemr('fresh'))  # ggplot theme
+opts_knit$set(progress=FALSE, verbose=FALSE)
+opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
+options(knitr.kable.NA = '')
+
+iplot.pnl <- function(x) {
+  df <- data.frame(Date=as.Date(names(x)), value=cumsum(x)*100)
+  p <- iplot.df(df, x="Date", y="value", v=NULL, ylab="Cumulative Return")
+  if (getDocumentOutputFormat() == "html")
+    p <- p %>% xAxis(type="timeseries", tick=list(format="%d/%m/%Y", count=10), label="Date") %>% legend()
+  p
+}
+```
+
+The purpose of this exercise is to become familiar with:
+
+1. Some time series analysis tools;
+2. Correlation matrices and principal component analysis (PCA) (see [readings of sessions 3-4](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html));
+3. More data manipulation and reporting tools (including Google Charts).
+
+As always, while doing this exercise we will also see how to generate replicable and customizable reports. For this purpose the exercise uses the R Markdown capabilities (see [Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) or a [basic introduction to R Markdown](http://rmarkdown.rstudio.com/authoring_basics.html)).  These capabilities allow us to create dynamic reports. For example today's date is `r Sys.Date()` (you need to see the .Rmd to understand that this is *not* a static typed-in date but it changes every time you compile the .Rmd - if the date changed of course).
+
+Before starting, make sure you have pulled the [exercise set 2 souce code files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/Exercises/Exerciseset2)  on your github repository (if you pull the course github repository you also get the exercise set files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "Data Analytics R version/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+getwd()
+setwd("Exercises/Exerciseset2/")
+list.files()
+```
+
+**Note:** as always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Let's now see the exercise. 
+
+**IMPORTANT:** You should answer all questions by simply adding your code/answers in this document through editing the file ExerciseSet2.Rmd and then clicking on the "Knit HTML" button in RStudio.  Once done, please post your .Rmd and html files in your github repository. 
+
+# The Exercise: Introduction
+
+For this exercise we will use the Futures' daily returns  to develop what is considered to be a *"classic" hedge fund trading strategy*, a **futures trend following strategy**. There is a lot written about this, so it is worth doing some online search about "futures trend following", or "Managed Futures", or "Commodity Trading Advisors (CTA)". There is about **[$300 billion](http://www.barclayhedge.com/research/indices/cta/Money_Under_Management.html)** invested on this strategy today, and is considered to be one of the **oldest hedge fund strategies**. Some example links are:
+
+* [A fascinating report on 2 centuries of trend following from the CFM hedge - a $6 billion fund](https://www.trendfollowing.com/whitepaper/Two_Centuries_Trend_Following.pdf)
+* [Another fascinating report on 1 century of trend following investing from AQR - a $130 billion fund](https://www.aqr.com/library/aqr-publications/a-century-of-evidence-on-trend-following-investing)
+* [Wikipedia on CTAs](https://en.wikipedia.org/wiki/Commodity_trading_advisor)
+* [Morningstar on CTAs](http://www.morningstar.co.uk/uk/news/69379/commodity-trading-advisors-(cta)-explained.aspx)
+* [A report](http://perspectives.pictet.com/wp-content/uploads/2011/01/Trading-Strategies-Final.pdf)
+* [Man AHL (a leading hedge fund on CTAs - among others) - an $80 billion fund](https://www.ahl.com)
+
+Of course there are also many starting points for developing such a strategy (for example [this R bloggers one](http://www.r-bloggers.com/system-from-trend-following-factors/) (also on [github](https://gist.github.com/timelyportfolio/2855303)), or the [turtle traders website](http://turtletrader.com) which has many resources. 
+
+In this exercise we will develop our own strategy from scratch.  
+
+*Note (given today's market conditions):* **Prices of commodities, like oil or gold, can be excellent indicators of the health of the economy and of various industries, as we will also see below**.
+
+# Getting the Futures Data
+
+There are many ways to get futures data. For example, one can use  the [Quandl package,](https://www.quandl.com/browse) or the [turtle traders resources,](http://turtletrader.com/hpd/) or (for INSEAD only) get data from  the [INSEAD library finance data resources](http://sites.insead.edu/library/E_resources/ER_subject.cfm#Stockmarket) website. One has to pay attention on how to create continuous time series from underlying contracts with varying deliveries (e.g. see [here](https://www.quantstart.com/articles/Continuous-Futures-Contracts-for-Backtesting-Purposes) ). Using a combination of the resources above, we will use data for a number of commodities. 
+
+
+# Data description
+
+Let's load the data and see what we have. 
+
+```{r echo=TRUE}
+suppressPackageStartupMessages(source("helpersSet2.R"))
+load("data/FuturesTrendFollowingData.Rdata")
+```
+
+We have data from `r head(rownames(futures_data),1)` to `r tail(rownames(futures_data),1)` of daily returns for the following `r ncol(futures_data)` futures: 
+
+```{r echo=TRUE, results='markup'}
+print(colnames(futures_data))
+```
+
+# Basic data analysis
+
+Let's see how these are correlated. The correlation matrix is as follows:
+
+```{r}
+show_data = round(cor(futures_data),2)
+iprint.df(show_data, scale=TRUE)
+```
+
+We see quite high correlations among some of the futures. Does it make sense? Why? Do you see some negative correlations? Do those make sense? 
+
+Given such high correlations, we can try to see whether there are some "principal components" (see [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html)). This analysis can also indicate whether all futures (the global economy!) are driven by some common "factors" (let's call them **"risk factors"**). 
+
+```{r echo=TRUE}
+Variance_Explained_Table_results<-PCA(futures_data, graph=FALSE)
+Variance_Explained_Table<-Variance_Explained_Table_results$eig
+colnames(Variance_Explained_Table)<-c("Eigenvalue", 
+  "Pct of explained variance", "Cumulative pct of explained variance")
+```
+
+```{r}
+show_data = round(Variance_Explained_Table, 2)
+iprint.df(show_data)
+```
+
+Here is the scree plot (see Sessions 3-4 readings):
+
+```{r echo=TRUE}
+eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
+```
+
+```{r}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+iplot.df(melt(df, id="components"))
+```
+
+Let's now see how the 20 first (**rotated**) principal components look like. Let's also use the *rotated* factors (note that these are not really the "principal component", as explained in the [reading on dimensionality reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html)) and not show any numbers less than 0.3 in absolute value, to avoid cluttering. 
+
+```{r echo=TRUE, tidy=TRUE}
+corused = cor(futures_data[,apply(futures_data!=0,2,sum) > 10, drop=F])
+Rotated_Results<-principal(corused, nfactors=20, rotate="varimax",score=TRUE)
+Rotated_Factors<-round(Rotated_Results$loadings,2)
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+colnames(Rotated_Factors)<-paste("comp",1:ncol(Rotated_Factors),sep=" ")
+
+sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
+Rotated_Factors <- Rotated_Factors[sorted_rows,]
+Rotated_Factors[abs(Rotated_Factors) < 0.3]<-NA
+```
+
+```{r}
+show_data <- Rotated_Factors 
+iprint.df(show_data, scale=TRUE)
+```
+
+**Questions**
+
+1. How many principal components ("factors") do we need to explain at least 50% of the variance in this data?
+2. What are the highest weights (in absolute value) of the first principal component portfolio above on the `r ncol(futures_data)` futures? 
+3. Can we interpret the first 10 components? How would you call these factors?
+4. Can you now generate the principal components and scree plot using only: a) the pre-crisis bull market years (e.g. only using the data between November 1, 2002, and October 1, 2007)?  b) the financial crisis years (e.g. only using the data between October 1, 2007 and  March 1, 2009), (Hint: you can select subsets of the data using for example the command `crisis_data` `=` `futures_data[` `as.Date(rownames(futures_data))` `>` `"2007-10-01"` `&` `as.Date(rownames(futures_data))` `<` `"2009-03-01"` `,` `]`)
+5. Based on your analysis in question 3, please discuss any differences you observe about the futures returns during  bull and bear markets.  What implications may these results have? What do the results imply about how assets are correlated during bear years compared to bull years? 
+
+**Answers**
+
+* 6 factors are required to explain about 53% of the variance.
+* 5-yr and 10-yr Treasury notes, which both have a weight of 93%
+* The first 10 components derive sets of factors with common characteristics that can predict or explain the health of the economy. For example, Component 1 uses government bonds, Component 2 uses currency prices, Components 3&4 use stock indices, Component 8 uses commodities.
+* a) For the bull market years
+```{r}
+crisis_data = futures_data[ as.Date(rownames(futures_data)) > "2002-11-01" & as.Date(rownames(futures_data)) < "2007-10-01" , ]
+Variance_Explained_Table_results<-PCA(crisis_data, graph=FALSE)
+Variance_Explained_Table<-Variance_Explained_Table_results$eig
+colnames(Variance_Explained_Table)<-c("Eigenvalue", "Pct of explained variance", "Cumulative pct of explained variance")
+```
+
+```{r}
+show_data = round(Variance_Explained_Table, 2)
+iprint.df(show_data)
+```
+
+this generates a scree plot as follows
+```{r echo=TRUE}
+eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
+```
+
+```{r}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+iplot.df(melt(df, id="components"))
+```
+
+b) for the bear years, 
+```{r}
+crisis_data = futures_data[ as.Date(rownames(futures_data)) > "2007-10-01" & as.Date(rownames(futures_data)) < "2009-03-01" , ]
+Variance_Explained_Table_results<-PCA(crisis_data, graph=FALSE)
+Variance_Explained_Table<-Variance_Explained_Table_results$eig
+colnames(Variance_Explained_Table)<-c("Eigenvalue", "Pct of explained variance", "Cumulative pct of explained variance")
+```
+
+```{r}
+show_data = round(Variance_Explained_Table, 2)
+iprint.df(show_data)
+```
+
+this generates a scree plot as follows
+```{r echo=TRUE}
+eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
+```
+
+```{r}
+df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
+colnames(df) <- c("eigenvalues", "components", "abline")
+iplot.df(melt(df, id="components"))
+```
+
+* Based on the analysis above, it would appear that bear markets feature fewer futures that trade succesfully, whereas in bull markets, more futures/industries flourish. This is inferred from the number of components required to explain at least 50% of variance. In bear markets, 4 components explain at least 50% of variance, whilst in bull markets, 6 components are required. This suggests that in bull markets, certain sectors lose their significant correlation with the results, since they are not doing well. 
+*
+*
+*
+*
+*
+
+# A Simple Futures Trend Following Strategy
+
+We can now develop a simple futures trend following trading strategy, as outlined in the papers in the Exercise Introduction above. There are about $300 billion invested in such strategies! Of course we cannot develop here a sophisticated product, but with some more work... 
+
+We will do the following: 
+
+1. Calculate a number of moving averages of different "window lengths" for each of the `r ncol(futures_data)` futures - there are [many](http://www.r-bloggers.com/stock-analysis-using-r/) so called [technical indicators](http://www.investopedia.com/active-trading/technical-indicators/) one can use. We will use  the  "moving average" function `ma` for this (try for example to see what this returns `ma(1:10,2)` ). 
+2. Add the signs (can also use the actual moving average values of course - try it!) of these moving averages (as if they "vote"), and then scale this sum across all futures so that the sum of their (of the sum across all futures!) absolute value across all futures is 1 (hence we invest $1 every day - you see why?).
+3. Then invest every day in each of the `r ncol(futures_data)` an amount that is defined by the weights calculated in step 2, using however the weights calculated using data until 2 days ago (why 2 days and not 1 day?) - see the use of the helper function `shift` for this. 
+4. Finally see the performance of this strategy. 
+
+Here is the code:
+
+```{r echo=TRUE, tidy=TRUE}
+signal_used = 0*futures_data # just initialize the trading signal to be 0
+# Take many moving Average (MA) Signals and let them "vote" with their sign (+-1, e.g. long or short vote, for each signal)
+MAfreq<-seq(10,250,by=20)
+for (iter in 1:length(MAfreq))
+  signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
+# Now make sure we invest $1 every day (so the sum of the absolute values of the weights is 1 every day)
+signal_used = t(apply(signal_used,1,function(r) {
+  res = r  
+  if ( sum(abs(r)) !=0 )
+    res = r/sum(abs(r))
+  res
+}))
+colnames(signal_used) <- colnames(futures_data)
+# Now create the returns of the strategy for each futures time series
+strategy_by_future <- scrub(shift(signal_used,2)*futures_data) # signal 2 days ago
+# finally, this is our futures trend following strategy
+trading_strategy = apply(strategy_by_future,1,sum)
+names(trading_strategy) <- rownames(futures_data)
+```
+
+# Reporting the performance results
+
+Let's see how this strategy does:
+
+```{r}
+iplot.pnl(trading_strategy)
+```
+
+Here is how this strategy has performed during this period:
+
+```{r}
+show_data = round(pnl_matrix(trading_strategy),2)
+iprint.df(show_data)
+```
+
+How does this compare with **existing CTA products** such as [this one from Societe Generale?](https://cib.societegenerale.com/fileadmin/indices_feeds/SG_CTA_Monthly_Report.pdf) (Note: one can easily achieve a correlation of more than 0.8 with this specific product - as well as with many other ones)
+
+![Compare our strategy with this product](societegenerale.png) 
+
+**Questions**
+
+1. Can you describe in more detail what the code above does?
+2. What happens if you use different moving average technical indicators in the code above? Please explore and report below the returns of a trading strategy you build. (Hint: check that the command line `MAfreq<-seq(10,250,by=20)` above does for example - but not only of course, the possibilities are endless)
+
+**Answers**
+
+*1. the code looks at futures returns over the specified window, and determines whether and how much of a future to short or long, based on the moving average return it has generated (positive or negative) over the window. It's output is the trading strategy for each month, and results in the return plot that we see above. Compared to the SG strategy, it appears quite similar. 
+*2. For example, if the moving average is done by 30s, and not 20s, the results become
+```{r}
+signal_used = 0*futures_data # just initialize the trading signal to be 0
+# Take many moving Average (MA) Signals and let them "vote" with their sign (+-1, e.g. long or short vote, for each signal)
+MAfreq<-seq(10,250,by=30)
+for (iter in 1:length(MAfreq))
+  signal_used = signal_used + sign(apply(futures_data,2, function(r) ma(r,MAfreq[iter])))
+# Now make sure we invest $1 every day (so the sum of the absolute values of the weights is 1 every day)
+signal_used = t(apply(signal_used,1,function(r) {
+  res = r  
+  if ( sum(abs(r)) !=0 )
+    res = r/sum(abs(r))
+  res
+}))
+colnames(signal_used) <- colnames(futures_data)
+# Now create the returns of the strategy for each futures time series
+strategy_by_future <- scrub(shift(signal_used,2)*futures_data) # signal 2 days ago
+# finally, this is our futures trend following strategy
+trading_strategy = apply(strategy_by_future,1,sum)
+names(trading_strategy) <- rownames(futures_data)
+```
+
+```{r}
+iplot.pnl(trading_strategy)
+```
+
+```{r}
+show_data = round(pnl_matrix(trading_strategy),2)
+iprint.df(show_data)
+```
+
+The results appear quite similar to the previous strategy, but with different magnitudes of return
+
+*
+*
+*
+*
+*
+*
+
+# A class competition
+
+Now you have seen how to develop some trading strategies that hedge funds have been using for centuries. Clearly this is only the very first step - as many of the online resources on technical indicators also suggest. Can you now explore more such strategies? How good a **futures trend following hedge fund strategy** can you develop? Let's call this.... a **class competition**! Explore as much as you can and report your best strategy as we move along the course... 
+
+Here is for example something that can be achieved relatively easily...
+
+```{r}
+load("data/sample_strategy.Rdata")
+iplot.pnl(sample_strategy)
+```
+
+Here is how this strategy has performed during this period:
+
+```{r}
+show_data = round(pnl_matrix(sample_strategy),2)
+iprint.df(show_data)
+```
+
+As always, **have fun** 
+
+
+
+
+
