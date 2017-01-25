@@ -5,7 +5,9 @@ title : Data Analytics for Business
 
 
 ```{r include=FALSE}
-local_directory <- paste("/Users/theos/Documents/Theos/Teaching/MBA_COURSES/Data Analytics R version/CourseWebsite","CourseSessions/Sessions67", sep="/")
+local_directory <- "."
+source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
+source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
 datafile_name="Boats" # do not add .csv at the end! make sure the data are numeric!!!! check your file!
 cluster_file_ini = "Boats_cluster" # make sure this file exists in the "data" directory
 dependent_variable= 82
@@ -24,7 +26,7 @@ max_data_report = 50 # can also chance in server.R
 
 
 Probability_Threshold = Probability_Threshold/100 # make it between 0 and 1
-ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/"), sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData <- read.csv(paste(paste(local_directory, "data", sep="/"), paste(datafile_name,"csv", sep="."), sep = "/")) # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData)
 
 if (datafile_name == "Boats")
