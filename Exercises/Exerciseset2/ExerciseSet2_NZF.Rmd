@@ -178,7 +178,16 @@ Treasury bonds: 0.86
 <br>
 Canadian Bond: 0.79
 <br>
-3. 
+3. Component 1: Bonds
+Component 2: Currencies
+Component 3: Stockmarkets representing a fraction of futures contract, group a
+Component 4: Stockmarkets representing a fraction of futures contract, group b
+Component 5: Daily reference rate
+Component 6: Oil
+Component 7: Metals
+Component 8: Agricultural commodities
+Component 9: Precious metals
+Component 10: Asian markets
 <br>
 4.
 ```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
@@ -237,6 +246,8 @@ print(Line_bear, 'chart')
 ```
 <hr>
 
+
+5. The components have changed both in composition as well as assigned weights. Therefore, the results imply that assets are correlated differently during bear years as compared to bull years.
 ### A Simple Futures Trend Following Strategy
 
 We can now develop a simple futures trend following trading strategy, as outlined in the papers in the Exercise Introduction above. There are about $300 billion invested in such strategies! Of course we cannot develop here a sophisticated product, but with some more work... 
@@ -314,8 +325,11 @@ How does this compare with **existing CTA products** such as [this one from Soci
 
 **Your Answers here:**
 <br>
-The code uses the moving average for 20 days to determine on the sign of the returns.
+1. The code uses the moving average for 20 days to determine on the sign of the returns.
+
+
 <br>
+2. By changing the code to segment more or less, it changes the returns and the volume that is traded. Depending on the strategy chosen, it will change the returns of the investing strategy. By using 2 day segment data comapred to 20 days, it gave slightly higher volume traded although the returns were similar.
 <br>
 ```{r echo=TRUE, eval=TRUE, comment=NA, warning=FALSE,error=FALSE, message=FALSE, prompt=FALSE, tidy=TRUE}
 signal_used = 0*futures_data # just initialize the trading signal to be 0
