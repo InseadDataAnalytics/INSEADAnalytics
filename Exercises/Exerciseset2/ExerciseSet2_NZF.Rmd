@@ -178,7 +178,76 @@ Treasury bonds: 0.86
 <br>
 Canadian Bond: 0.79
 <br>
-3. Component 1: Bonds
+3. 
+
+````THURSDAY`````
+``[21:22, 1/26/2017] +65 9297 4153: ```i will be there
+````21:22`````
+``[21:22, 1/26/2017] Kate Tsunoda: ```Yaayyy
+````21:22`````
+``[21:48, 1/26/2017] +65 9297 4153: ```Thanks for the invite :)
+````21:48`````
+````FRIDAY`````
+``[19:00, 1/27/2017] Kate Tsunoda: ```Hi Zhenfu! I'm sorry, but I won't be able to join for dinner this evening. Very sorry to have to miss it!
+````19:00`````
+``[19:08, 1/27/2017] +65 9297 4153: ```Come for some food at least ? 😀
+````19:08`````
+````SUNDAY`````
+``[01:02, 1/29/2017] +65 9297 4153: ```I will reach ard 730!
+````01:02`````
+``[01:08, 1/29/2017] Kate Tsunoda: ```Can you please bring baguettes ?
+````01:08`````
+``[01:08, 1/29/2017] +65 9297 4153: ```How many
+````01:08`````
+``[01:10, 1/29/2017] Kate Tsunoda: ```2-3?
+````01:10`````
+``[01:10, 1/29/2017] Kate Tsunoda: ```Maybe some cheese ?
+````01:10`````
+``[01:11, 1/29/2017] +65 9297 4153: ```Ok
+````01:11`````
+``[01:11, 1/29/2017] +65 9297 4153: ```Whst cheese
+````01:11`````
+``[01:14, 1/29/2017] Kate Tsunoda: ```Thank you!
+````01:14`````
+``[01:14, 1/29/2017] Kate Tsunoda: ```Wouldn't have asked, but I am bicycling to Fonty and won't have time before Leo arrives
+````01:14`````
+``[06:29, 1/29/2017] +65 9297 4153: ```Where is the placr again
+````06:29`````
+ ````116 kB`````
+
+````06:31`````
+``[23:36, 1/29/2017] Kate Tsunoda: ```Hi Zhenfu, hope you're Sunday is good! :) is there further work needed on the big data group project?
+````23:36`````
+``[23:39, 1/29/2017] +65 9297 4153: ```Nope i dun think so
+````23:39`````
+``[23:39, 1/29/2017] +65 9297 4153: ```Its pretty much it
+````23:39`````
+``[23:39, 1/29/2017] Kate Tsunoda: ```Ok cool! :)
+````23:39`````
+````YESTERDAY`````
+``[00:02, 1/30/2017] +65 9297 4153: ```How ru feeling
+````00:02`````
+``[00:13, 1/30/2017] Kate Tsunoda: ```Woke up with a very sore, inflamed throat
+````00:13`````
+``[00:13, 1/30/2017] Kate Tsunoda: ```otherwise, great 🙂
+````00:13`````
+``[00:15, 1/30/2017] +65 9297 4153: ```Oh man
+````00:15`````
+``[06:42, 1/30/2017] +65 9297 4153: ```Hey kate my classes end at 7 and there is a microsoft talk till 815. R u alright to meet after ?
+````06:42`````
+``[06:43, 1/30/2017] Kate Tsunoda: ```Yes! Let me move it.
+````06:43`````
+``[06:43, 1/30/2017] +65 9297 4153: ```Ok cool
+````06:43`````
+``[06:45, 1/30/2017] Kate Tsunoda: ```Thank you!!
+````06:45`````
+``[03:18, 1/31/2017] Kate Tsunoda: ```Hey! How long do you want to stay in the talk?
+````03:18`````
+``[03:23, 1/31/2017] +65 9297 4153: ```Lets go if u want
+````03:23`````
+``[03:23, 1/31/2017] Kate Tsunoda: ```Ok! Let's head out
+````03:23`````
+``[03:51, 1/31/2017] Kate Tsunoda: ```Component 1: Bonds
 Component 2: Currencies
 Component 3: Stockmarkets representing a fraction of futures contract, group a
 Component 4: Stockmarkets representing a fraction of futures contract, group b
@@ -188,6 +257,31 @@ Component 7: Metals
 Component 8: Agricultural commodities
 Component 9: Precious metals
 Component 10: Asian markets
+````03:51`````
+``[03:56, 1/31/2017] Kate Tsunoda: ```5.The components have changed both in composition as well as assigned weights. Therefore, the results imply that assets are correlated differently during bear years as compared to bull years.
+````03:56`````
+````1 UNREAD MESSAGE`````
+``[04:07, 1/31/2017] Kate Tsunoda: ```<br>
+Component 1: Bonds
+<br>
+Component 2: Currencies
+<br>
+Component 3: Stockmarkets representing a fraction of futures contract, group a
+<br>
+Component 4: Stockmarkets representing a fraction of futures contract, group b
+<br>
+Component 5: Daily reference rate
+<br>
+Component 6: Oil
+<br>
+Component 7: Metals
+<br>
+Component 8: Agricultural commodities
+<br>
+Component 9: Precious metals
+<br>
+Component 10: Asian markets
+<br>
 <br>
 4.
 ```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
