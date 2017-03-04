@@ -1,8 +1,8 @@
 
 # A number of useful functions for manipulating matrices
 
-ma<-function(x,n,f=identity){res<-as.numeric(filter(f(x),rep(1/n,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
-ms<-function(x,n,f=identity){res<-as.numeric(filter(f(x),rep(1,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
+ma<-function(x,n,f=identity){res<-as.numeric(stats::filter(f(x),rep(1/n,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
+ms<-function(x,n,f=identity){res<-as.numeric(stats::filter(f(x),rep(1,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
 moving_average<-function(n)function(x)ma(x,n)
 moving_sum<-function(n)function(x)ms(x,n)
 
