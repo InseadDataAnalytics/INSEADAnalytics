@@ -87,7 +87,7 @@ non_zero_mean<-function(x,n=1)ifelse(sum(x!=0)<n,0,mean(x[x!=0]))
 # moving average of previous n elements : 0 for first n-1 elements
 ma<-function(x,n,f=identity){res<-as.numeric(stats::filter(f(x),rep(1/n,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
 # moving sum of previous n elements : 0 for first n-1 elements
-ms<-function(x,n,f=identity){res<-as.numeric(filter(f(x),rep(1,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
+ms<-function(x,n,f=identity){res<-as.numeric(stats::filter(f(x),rep(1,n),method="convolution",sides=1,circular=FALSE)); ifelse(is.na(res),0,res)}
 # shift forward if n +ve , backward if n -ve.
 moving_average<-function(n)function(x)ma(x,n)
 moving_sum<-function(n)function(x)ms(x,n)
