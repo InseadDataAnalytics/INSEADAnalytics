@@ -1,6 +1,6 @@
 ---
 title: "Session 1"
-author: "T. Evgeniou"
+author: "T. Evgeniou really??"
 output: html_document
 ---
 
@@ -142,9 +142,9 @@ The correlation matrix does not look pretty for now, but we will see example way
 
 #### Questions
 
-1. Can you find which column asks about the name of the brand rated? 
-2. Can you find the average rating responded gave to question "`r gsub("_", " ", gsub("\\.", " ", "Q1_3_The.brand.of.boat.I.buy.says.a.lot.about.who.I.am"))`" (note the use of the R command `gsub` in the code to manipulate character strings).
-3. *(Extra points)* What is the percentage of male in this population? How many of them responded that they plan to purchase a boat in the future? 
+1. Can you find which column asks about the name of the brand rated? QN 1_3 & 1_4
+2. Can you find the average rating responded gave to question "`r gsub("_", " ", gsub("\\.", " ", "Q1_3_The.brand.of.boat.I.buy.says.a.lot.about.who.I.am"))`" (note the use of the R command `gsub` in the code to manipulate character strings). 3.1135
+3. *(Extra points)* What is the percentage of male in this population? How many of them responded that they plan to purchase a boat in the future? 55%, 784 of them 
 4. *(Extra points)* Explore the R command `table` and use it to present in this report some of the data.
 5. Explore the R packages or github repositories you found interesting and prepare to discuss one of them in class, and if possible show some demo. 
 
