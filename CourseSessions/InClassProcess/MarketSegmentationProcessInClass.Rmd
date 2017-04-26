@@ -20,6 +20,8 @@ This is a **template process for market segmentation based on survey data**, usi
 
 All material and code is available at the [INSEAD Data Analytics for Business](http://inseaddataanalytics.github.io/INSEADAnalytics/) website and github. Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository.  As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
+**Note:** you can create an html file by running in your console the command 
+rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd")
 
 <hr>\clearpage
 
@@ -622,7 +624,7 @@ CART_control = rpart.control(cp = CART_cp)
 **Questions**
 
 1. How do you select the profit/cost values for the analysis? Does the variable `r Profit_Matrix` above relate to the final business decisions? How?
-2. What does the variable `r Probability_Threshold` affect? Does it relate to the final business decisions? How?
+2. What does the variable "Probability_Threshold" affect? Does it relate to the final business decisions? How?
 
 **Answers**
 

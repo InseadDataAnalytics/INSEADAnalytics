@@ -6,6 +6,10 @@ output: html_document
 
 <br>
 
+**Note:** you can create an html file by running in your console the command: 
+
+rmarkdown::render("CourseSessions/Session1/Session1inclass.Rmd")
+
 The purpose of this session is to become familiar with:
 
 1. Basic functionality of R;
@@ -16,8 +20,6 @@ The purpose of this session is to become familiar with:
 
 
 Before starting, make sure you have pulled the [session 1 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Session1)  on your github repository (if you pull the course github repository you also get the session files automatically). To confirm, you can also "source" the file "update_fork.R" which you can find in your main course directory. 
-
-**Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
 Note also that directory paths may sometimes be a frustrating source of problems, so it is recommended that you learn these R commands to find out your current working directory and, if needed, set it where you need to (e.g. where you have the main files for the class). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
@@ -32,13 +34,63 @@ setwd("CourseSessions/Session1")
 
 Let's start.
 
+**Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
 
 <hr>
+
+### Setting up
+
+First, notice the structure of this file when you open it in your RStudio (the "raw file"). This is a so called [Markdown file](http://rmarkdown.rstudio.com/) file (ending with .Rmd).  Markdown files are excellent ways to create reproducible, reusable, and easy to modify reports. Effectively one combines text with code within the same file. The code can be inserted either using *code chunks* which, as you can note below, are effectively blocks of code that start for example as:
+
+"```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='markup'}"
+
+or by adding simple code commands in the text like the inline "r colnames(ProjectData)[2]" that you can find further below. When one compiles the file (e.g. using the "rmarkdown::render" command as shown at the beginning of this document) then all code is executed and the output is seamlessly merged within the document. 
+
+ You can create a new .Rmd by creating a new "R Markdown" file as shown in this image:
+
+![""](newRmd.png)
+
+In general once you create any new file, you will be asked to give it a name when you try to save it for the first time: 
+
+![""](savefile.png)
+
+
+Markdown (ending at .Rmd) files are not like the usual *R Script* (which end with .R) files. The latter only contain code, such as custom functions we may want to build. Here is an [example .R file](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Session1/library.R). One can incorporate such .R files in the .Rmd document by simply "sourcing" these files, like in this example:
+
+```{r eval = FALSE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+source("library.R")
+```
+(note that the directory path is defined relative to where the current .Rmd file is located - in this case they are both in the same directory).
+
+Notice also the [structure of the Session 1 directory](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Session1). All it has (other than a few image files) is one .Rmd file, one .R file and one directory where we keep the data (which you can create using the "New Folder" button).
+
+![""](newfolder.png)
+
+
+#### Questions
+
+1. Please create a new directory within the "CourseSessions/Session1/" directory (e.g. call this directory "MyProject"), and populate it with a new .Rmd file (e.g. save it as "MyProject.Rmd"), a new .R file (e.g. save it as "library.r"), and a sub-directory (name it "data") where you add a .csv file (for example copy the Boads.csv file from the data directory in Session1).
+2. Please add this code chunk in your .Rmd file
+
+```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='markup'}
+ProjectData <- read.csv(file = "data/Boats.csv", header = TRUE, sep=";")
+ncol(ProjectData)
+```
+
+3. What happens when you create an html file (e.g. using the "rmarkdown::render" command but with your new .Rmd filename as argument)? 
+
+**Your Answer here:**
+
+<br>
+<br>
+
 <hr>
+
+### Adding libraries
 
 One of the major benefits of using open source software is the impressive availability of many functions as well as code people develop and share. There is a very fast growing body of (free) tools you can use (also in your jobs) - so avoid reinventing the wheel and ride the wave.
 
-### Adding libraries
 
 There are many ways to get new tools. First, "mature/tested" tools are available as "packages" that you can install through your RStudio. Take a look at this [list of R packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) and see which ones you like. 
 
@@ -46,7 +98,7 @@ To install a package in R click on the "Packages" menu and then on "Install" and
 
 !["How to install a package"](installpackage.png)
 
-This will download the package - hence you need to be online. You can then "load" the library by either slecting it in the list of packages you have or using the `library` command in R, for example `library("Rfacebook")`. 
+This will download the package - hence you need to be online. You can then "load" the library by either selecting it in the list of packages you have or using the `library` command in R, for example `library("Rfacebook")`. 
 
 !["How to load an installed package (select version)"](loadpackageclick.png)
 
@@ -145,6 +197,7 @@ The correlation matrix does not look pretty for now, but we will see example way
 2. Can you find the average rating to question " `r gsub("_", " ", gsub("\\.", " ", "Q1_3_The.brand.of.boat.I.buy.says.a.lot.about.who.I.am"))` ".
 3. Which of the R packages or github repositories you explored did you find interesting?
 4. *(Extra)* What is the percentage of male in this population? How many of them responded that they plan to purchase a boat in the future? 
+5. Finally, once you answer all questions, please commit-then-push to your github (as shown in steps 3-5 of the [Getting Started Instructions](https://github.com/InseadDataAnalytics/INSEADAnalytics/wiki/Getting-Started) document) your file as well as all other files in the new directory you created.
 
 **Your Answers here:**
 <br>
@@ -155,7 +208,7 @@ The correlation matrix does not look pretty for now, but we will see example way
 <hr>
 <hr>
 
-Once done with this, we can now move to the [main document we will use in class](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess) and make sure you can create an html file from it (see also this [issue](https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/69) if needed).  
+Once done with this, we can now move to the [main project/document we will use in class](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess) and make sure you can create an html file from it (see also this [issue](https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/69) if needed).  
 
 <br>
 <br>
