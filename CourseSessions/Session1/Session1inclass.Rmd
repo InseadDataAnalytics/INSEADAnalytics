@@ -15,19 +15,20 @@ The purpose of this session is to become familiar with:
 4. The idea of functions
 
 
-Before starting, make sure you have pulled the [session 1 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Session1)  on your github repository (if you pull the course github repository you also get the session files automatically). Moreover, make sure you are in the directory of this exercise. Directory paths may be complicated, and sometimes a frustrating source of problems, so it is recommended that you use these R commands to find out your current working directory and, if needed, set it where you have the main files for the specific exercise/project (there are other ways, but for now just be aware of this path issue). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
-
-```{r echo=TRUE, eval=FALSE, tidy=TRUE}
-#getwd()
-
-#setwd("CourseSessions/Session1")
-
-#list.files()
-
-#rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
-```
+Before starting, make sure you have pulled the [session 1 files](https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/Session1)  on your github repository (if you pull the course github repository you also get the session files automatically). 
 
 **Note:** you can always use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+
+Note also that directory paths may sometimes be a frustrating source of problems, so it is recommended that you learn these R commands to find out your current working directory and, if needed, set it where you need to (e.g. where you have the main files for the class). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
+
+```{r echo=TRUE, eval=FALSE, tidy=TRUE}
+# This command shows the directory we are at:
+getwd()
+
+#This command can change the directory if we need to:
+setwd("CourseSessions/Session1") 
+```
+
 
 Let's start.
 
@@ -74,10 +75,8 @@ An alternative way to get code (and see sample code - best way to learn) is to s
 
 #### Questions
 
-1. Can you install these packages: `datasets`, `FactoMineR`,`png` and `stringr`?
-2. Which packages would you like to explore further? 
-3. Can you find some github repositories that you would like to explore further? Can you fork them in your github account?
-4. Do you find some Facebook related use of R and code you can further explore? How about for [Twitter](https://cran.r-project.org/web/packages/twitteR/twitteR.pdf)? 
+1. Do you have, and if not, can you install these packages? `datasets`, `FactoMineR`,`png` and `stringr`
+2. Please find a github repository that you would like to explore and fork it in your github account. Which one did you select?
 
 <hr>
 <hr>
@@ -143,10 +142,9 @@ The correlation matrix does not look pretty for now, but we will see example way
 #### Questions
 
 1. Can you find which column asks about the name of the brand rated? 
-2. Can you find the average rating responded gave to question "`r gsub("_", " ", gsub("\\.", " ", "Q1_3_The.brand.of.boat.I.buy.says.a.lot.about.who.I.am"))`" (note the use of the R command `gsub` in the code to manipulate character strings).
-3. *(Extra points)* What is the percentage of male in this population? How many of them responded that they plan to purchase a boat in the future? 
-4. *(Extra points)* Explore the R command `table` and use it to present in this report some of the data.
-5. Explore the R packages or github repositories you found interesting and prepare to discuss one of them in class, and if possible show some demo. 
+2. Can you find the average rating to question " `r gsub("_", " ", gsub("\\.", " ", "Q1_3_The.brand.of.boat.I.buy.says.a.lot.about.who.I.am"))` ".
+3. Which of the R packages or github repositories you explored did you find interesting?
+4. *(Extra)* What is the percentage of male in this population? How many of them responded that they plan to purchase a boat in the future? 
 
 **Your Answers here:**
 <br>
@@ -157,7 +155,7 @@ The correlation matrix does not look pretty for now, but we will see example way
 <hr>
 <hr>
 
-Once done with this, we can now move to the [S&P 500 finance data exercise set](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/Exercises/Exerciseset1/ExerciseSet1.Rmd) and explore some ways to earn some money using what we learned... 
+Once done with this, we can now move to the [main document we will use in class](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess) and make sure you can create an html file from it (see also this [issue](https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/69) if needed).  
 
 <br>
 <br>

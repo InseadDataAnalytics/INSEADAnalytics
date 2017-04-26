@@ -1,5 +1,5 @@
 ---
-title: 'Exercise Set 2: A $300 Billion Strategy'
+title: 'Exercise Set 2: A $300 Billion Product'
 author: "T. Evgeniou"
 output:
   html_document:
@@ -225,8 +225,8 @@ How does this compare with **existing CTA products** such as [this one from Soci
 
 **Questions**
 
-1. Can you describe in more detail what the code above does?
-2. What happens if you use different moving average technical indicators in the code above? Please explore and report below the returns of a trading strategy you build. (Hint: check that the command line `MAfreq<-seq(10,250,by=20)` above does for example - but not only of course, the possibilities are endless)
+1. What does the command "MAfreq<-seq(10,250,by=20)" in the code above do? How is MAfreq used later?
+2. What happens if you use different parameters for this command? Please explore and report below the returns (monthly and yearly returns, as in the example above) of a trading strategy you build by modifying the parameters. 
 
 **Answers**
 
@@ -241,9 +241,9 @@ How does this compare with **existing CTA products** such as [this one from Soci
 *
 *
 
-# A class competition
+# Further explorations (Optional)
 
-Now you have seen how to develop some trading strategies that hedge funds have been using for centuries. Clearly this is only the very first step - as many of the online resources on technical indicators also suggest. Can you now explore more such strategies? How good a **futures trend following hedge fund strategy** can you develop? Let's call this.... a **class competition**! Explore as much as you can and report your best strategy as we move along the course... 
+Now you have seen how to develop some trading strategies that hedge funds have been using for centuries. Clearly this is only the very first step - as many of the online resources on technical indicators also suggest. Can you now explore more such strategies? How good a **futures trend following hedge fund strategy** can you develop? 
 
 Here is for example something that can be achieved relatively easily...
 
@@ -259,7 +259,6 @@ show_data = round(pnl_matrix(sample_strategy),2)
 iprint.df(show_data)
 ```
 
-As always, **have fun** 
 
 
 
