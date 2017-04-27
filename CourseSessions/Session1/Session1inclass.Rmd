@@ -24,11 +24,14 @@ Before starting, make sure you have pulled the [session 1 files](https://github.
 Note also that directory paths may sometimes be a frustrating source of problems, so it is recommended that you learn these R commands to find out your current working directory and, if needed, set it where you need to (e.g. where you have the main files for the class). For example, assuming we are now in the "MYDIRECTORY/INSEADAnalytics" directory, we can do these: 
 
 ```{r echo=TRUE, eval=FALSE, tidy=TRUE}
-# This command shows the directory we are at:
-getwd()
+# This command shows the directory we are at (Note: the "#" sign at the begining of a line of code indicates that the line should not be executed - it is a commented out line, so you need to remove the "#" character and then run the line):
 
-#This command can change the directory if we need to:
-setwd("CourseSessions/Session1") 
+# getwd()
+
+
+# This command can change the directory if we need to:
+
+# setwd("CourseSessions/Session1") 
 ```
 
 
