@@ -21,12 +21,12 @@ rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
 The focus in this example is on the hierarchical clustering segmentation part *only* (this is an example anyway), so we assume we selected the factors already (of course one can also change the number of factors used, all automatically). 
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
-source(paste(local_directory,"../../AnalyticsLibraries/library.R", sep="/"))
-source(paste(local_directory,"../../AnalyticsLibraries/heatmapOutput.R", sep = "/"))
+source("../../AnalyticsLibraries/library.R")
+source("../../AnalyticsLibraries/heatmapOutput.R")
 ```
 
 ```{r echo=TRUE, eval=TRUE, tidy=TRUE}
-ProjectData <- read.csv("data/Boats.csv", sep=";", dec=",") # this contains only the matrix ProjectData
+ProjectData <- read.csv("data/Boats.csv", sep=",", dec=",") # this contains only the matrix ProjectData
 ProjectData=data.matrix(ProjectData) 
 colnames(ProjectData)<-gsub("\\."," ",colnames(ProjectData))
 ProjectDataFactor=ProjectData[,c(2:30)]
