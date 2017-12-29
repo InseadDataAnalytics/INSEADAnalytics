@@ -8,7 +8,7 @@ website_used = "yahoo" # can be "yahoo" or other ( see help(getSymbols) ). Depen
 mytickers = c("SPY", "AAPL")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", 
 startDate = "2001-01-01"
 
-if (getdata.fromscratch){#test
+if (getdata.fromscratch){
   # Get SPY first, to get all trading days
   tmp<-as.matrix(try(getSymbols(Symbols="SPY",from = startDate,src = website_used, auto.assign=FALSE)))
   StockPrices=matrix(rep(0,nrow(tmp)*length(mytickers)), ncol=length(mytickers))
