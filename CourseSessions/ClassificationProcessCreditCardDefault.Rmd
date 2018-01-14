@@ -68,7 +68,7 @@ test_data_percent = 100-estimation_data_percent-validation_data_percent
 random_sampling = 1
 
 # Tree parameter
-# Please ENTER the tree (CART) complexity control cp (e.g. 0.001 to 0.02, depending on the data)
+# Please ENTER the tree (CART) complexity control cp (e.g. 0.0001 to 0.02, depending on the data)
 CART_cp = 0.002
 CART_control = rpart.control(cp = CART_cp)
 
@@ -274,7 +274,15 @@ set_swatch(swatch.default)
 
 
 ## Step 4: Classification and Interpretation
-**Logistic Regression**: For example, this is the logistic regression parameters for our data:
+Once we decide which  dependent and independent variables to use (which can be revisited in later iterations), one can use a number of classification methods to develop a model that discriminates the different classes. 
+
+> Some of the widely used classification methods are:  classification and regression trees (CART), boosted trees, support vector machines, neural networks, nearest neighbors, logistic regression, lasso, random forests, deep learning methods, etc.
+
+In this note we will consider for simplicity only two classification methods: **logistic regression** and **classification and regression trees (CART)**. However, replacing them with other methods is relatively simple (although some knowledge of how these methods work is often necessary - see the R help command for the methods if needed). Understanding how these methods work is beyond the scope of this note - there are many references available online for all these classification methods. 
+
+**Logistic Regression**: Logistic Regression is a method similar to linear regression except that the dependent variable is discrete (e.g., 0 or 1). **Linear** logistic regression estimates the coefficients of a linear model using the selected independent variables while optimizing a classification criterion. For example, this is the logistic regression parameters for our data:
+
+
 ```{r echo=FALSE}
 # We first turn the data into data.frame's
 estimation_data = data.frame(estimation_data)
@@ -289,7 +297,7 @@ log_coefficients <- round(summary(logreg_solution)$coefficients,1)
 knitr::kable(round(log_coefficients,2))
 ```
 
-The estimated probability a validation observation belongs to class 1 (e.g., the estimated probability that the customer defaults) for the first few validation observations, using the logistic regression above, is:
+Given a set of independent variables, the output of the estimated logistic regression (the sum of the products of the independent variables with the corresponding regression coefficients) can be used to assess the probability an observation belongs to one of the classes. Specifically, the regression output can be transformed into a probability of belonging to, say, class 1 for each observation. The estimated probability that a validation observation belongs to class 1 (e.g., the estimated probability that the customer defaults) for the first few validation observations, using the logistic regression above, is:
 
 ```{r echo=FALSE}
 # Let's get the probabilities for the 3 types of data from the logistic regression
@@ -309,10 +317,16 @@ colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=
 knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
 ```
 
+The default decision is to classify each observation in the group with the highest probability - but one can change this choice, as we discuss below.
+
 Selecting the best subset of independent variables for logistic regression, a special case of the general problem of **feature selection**, is an iterative process where both the significance of the regression coefficients as well as the performance of the estimated logistic regression model on the first validation data are used as guidance. A number of variations are tested in practice, each leading to different performance. 
 
 
-**CART**: Running a basic CART model with complexity control cp=`r CART_cp`,  leads to the following tree (**NOTE**: for better readability of the tree figures below,  we will rename the independent variables as IV1 to `r paste("IV", length(independent_variables), sep="")` when using CART):
+**CART**: CART is a widely used classification method largely because the estimated classification models are easy to interpret. This classification tool iteratively "splits" the data using the most discriminatory independent variable at each step, building a "tree" - as shown below - on the way. The CART methods **limit the size of the tree** using various statistical techniques in order to avoid **overfitting the data**. For example, using the rpart and rpart.control functions in R, we can limit the size of the tree by selecting the functions' **complexity control** parameter **cp**. (What this parameter does exactly is beyond the scope of this note. For the rpart and rpart.control functions in R, smaller values, e.g. cp=0.0001, lead to larger trees, as we will see next.)
+
+> One of the biggest risks when developing classification models is overfitting: while it is always trivial to develop a model (e.g., a tree) that classifies any (estimation) dataset with no misclassification error at all, there is no guarantee that the quality of a classifier in out-of-sample data (e.g., in the validation data) will be close to that in the estimation data. Striking the right balance between "overfitting" and "underfitting" is one of the most important aspects in data analytics. While there are a number of statistical techniques to help us strike this balance - including the use of validation data - it is largely a combination of good statistical analysis and qualitative criteria (such as the interpretability and simplicity of the estimated models) that leads to classification models that work well in practice. 
+
+Running a basic CART model with complexity control cp=`r CART_cp`,  leads to the following tree (**NOTE**: for better readability of the tree figures below,  we will rename the independent variables as IV1 to `r paste("IV", length(independent_variables), sep="")` when using CART):
 
 ```{r echo=FALSE}
 # Name the variables numerically so that they look ok on the tree plots
@@ -337,7 +351,7 @@ CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=
 rpart.plot(CART_tree, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 ```
 
-The leaves of the tree indicate the number of estimation data observations that belong to each class which "reach that leaf" as well as the pecentage of all data points that reach the leaf. A perfect classification would only have data from one class in each of the tree leaves. However, such a perfect classification of the estimation data would most likely not be able to classify well out-of-sample data due to over-fitting of the estimation data.
+The leaves of the tree indicate the number of estimation data observations that "reach that leaf" that belong to each class. A perfect classification would only have data from one class in each of the tree leaves. However, such a perfect classification of the estimation data would most likely not be able to classify well out-of-sample data due to overfitting of the estimation data.
 
 ```{r echo=FALSE}
 # Tree parameter
@@ -352,7 +366,7 @@ CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", co
 rpart.plot(CART_tree_large, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 ```
 
-One can also use the percentage of data in each leaf of the tree to get an estimate of the probability that an observation (i.e., customer) belongs to a given class.  The **purity of the leaf** can indicate the probability an observation which "reaches that leaf" belongs to a class. In our case, the probability our validation data belong to class 1 (i.e., the customer is likely to default) for the first few validation observations, using the first CART above, is:
+One can also use the percentage of data in each leaf of the tree to get an estimate of the probability that an observation (e.g., customer) belongs to a given class. The **purity of the leaf** can indicate the probability that an observation that "reaches that leaf" belongs to a class. In our case, the probability our validation data belong to class 1 (i.e., a customer's likelihood of default) for the first few validation observations, using the first CART above, is:
 
 ```{r echo=FALSE}
 # Let's first calculate all probabilites for the estimation, validation, and test data
@@ -385,7 +399,18 @@ colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_
 knitr::kable(head(t(round(Classification_Table,2)), max_data_report))
 ```
 
-We can see the relative importance of the independent variables using the `variable.importance` of the CART trees (see `help(rpart.object)` in R) or the z-scores from the output of logistic regression. For easier visualization, we scale all values between -1 and 1 (the scaling is done for each method separately - note that CART does not provide the sign of the "coefficients"). From this table we can see the **key drivers** of the classification according to each of the methods we used here. 
+The table above assumes that the **probability threshold** for considering an observations as "class 1" is `r Probability_Threshold`. In practice we need to select the probability threshold: this is an important choice that we will discuss below.
+
+**Question:**
+
+Run CART for complexity parameter cp=0.0001 or smaller. Is it practical to run? Is it practical to interpret? Do you trust the classifier?
+
+**Answer:**
+
+*
+
+
+We have already discussed feature selection and complexity control for classification methods. In our case, we can see the relative importance of the independent variables using the `variable.importance` of the CART trees (see `help(rpart.object)` in R) or the z-scores from the output of logistic regression. For easier visualization, we scale all values between -1 and 1 (the scaling is done for each method separately - note that CART does not provide the sign of the "coefficients"). From this table we can see the **key drivers** of the classification according to each of the methods we used here. 
 
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
 log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
