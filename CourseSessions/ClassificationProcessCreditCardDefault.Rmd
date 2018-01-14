@@ -69,7 +69,7 @@ random_sampling = 1
 
 # Tree parameter
 # Please ENTER the tree (CART) complexity control cp (e.g. 0.0001 to 0.02, depending on the data)
-CART_cp = 0.002
+CART_cp = 0.0025
 CART_control = rpart.control(cp = CART_cp)
 
 # Please ENTER the words for the business interpretation of class 1 and class 0:
@@ -78,9 +78,9 @@ class_0_interpretation = "no default"
 
 # Please ENTER the profit/cost values for correctly classified and misclassified data:
 actual_1_predict_1 = 0
-actual_1_predict_0 = -1000
+actual_1_predict_0 = -100000
 actual_0_predict_1 = 0
-actual_0_predict_0 = 200
+actual_0_predict_0 = 20000
 
 Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predict_0, actual_0_predict_0), ncol=2)
 colnames(Profit_Matrix) <- c(paste("Predict 1 (", class_1_interpretation, ")", sep = ""), paste("Predict 0 (", class_0_interpretation, ")", sep = ""))
@@ -188,13 +188,16 @@ validation_data=ProjectData[validation_data_ids,]
 test_data=ProjectData[test_data_ids,]
 ```
 
-We typically refer to the three data samples as **estimation_data** (`r estimation_data_percent`% of the data in our case), **validation_data**  (`r validation_data_percent`% of the data) and **test_data** (the remaining `r 100 - estimation_data_percent  -  validation_data_percent`% of the data).
+We typically refer to the three data samples as **estimation data** (`r estimation_data_percent`% of the data in our case), **validation data**  (`r validation_data_percent`% of the data) and **test data** (the remaining `r 100 - estimation_data_percent  -  validation_data_percent`% of the data).
 
 In our case we use `r nrow(estimation_data)` observations in the estimation data, `r nrow(validation_data)` in the validation data, and `r nrow(test_data)` in the test data. 
 
 
 
 ## Step 2: Set up the dependent variable
+First, make sure the dependent variable is set up as a categorical 0-1 variable. In our illustrative example, we use the payment default (or no default) as the dependent variable. 
+
+The data however may not be always readily available with a categorical dependent variable. Suppose a retailer wants to understand what discriminates consumers who are  loyal versus those who are not. If they have data on the amount that customers spend in their store or the frequency of their purchases, they can create a categorical variable ("loyal vs. not loyal") by using a definition such as: "A loyal customer is one who spends more than X amount at the store and makes at least Y purchases a year". They can then code these loyal customers as "1" and the others as "0". They can choose the thresholds X and Y as they wish: a definition/decision that may have a big impact in the overall analysis. This decision can be the most crucial one of the whole data analysis: a wrong choice at this step may lead both to poor performance later as well as to no valuable insights. One should revisit the choice made at this step several times, iterating steps 2-3 and 2-5.
 
 > Carefully deciding what the dependent 0/1 variable is can be the most critical choice of a classification analysis. This decision typically depends on contextual knowledge and needs to be revisited multiple times throughout a data analytics project. 
 
@@ -356,7 +359,7 @@ The leaves of the tree indicate the number of estimation data observations that 
 ```{r echo=FALSE}
 # Tree parameter
 # Please ENTER the new tree (CART) complexity control cp 
-CART_cp = 0.0009
+CART_cp = 0.00068
 ```
 
 One can estimate larger trees through changing the tree's **complexity control** parameter (in this case the rpart.control argument cp). For example, this is how the tree would look like if we set cp=`r toString(CART_cp)`:
@@ -442,6 +445,20 @@ In general it is not necessary for all methods to agree on the most important dr
 
 
 ## Step 5: Validation accuracy
+Using the predicted class probabilities of the validation data, as outlined above, we can  generate some measures of classification performance. Before discussing them, note that given the probability an observation belongs to a class, **a reasonable class prediction choice is to predict the class that has the highest probability**. However, this does not need to be the only choice in practice.
+
+> Selecting the probability threshold based on which we predict the class of an observation is a decision the user needs to make. While in some cases a reasonable probability threshold is 50%, in other cases it may be 99.9% or 0.1%.
+
+**Question:**
+
+Can you think of such a scenario?
+
+**Answer:**
+
+*
+
+For different choices of the probability threshold, one can measure a number of classification performance metrics, which are outlined next.
+
 ### 1.  Hit ratio
 This is the percentage of the observations that have been correctly classified (i.e., the predicted class and the actual class are the same). We can just count the number of the validation data correctly classified and divide this number with the total number of the validation data, using the two CART and the logistic regression above. These are as follows for probability threshold `r Probability_Threshold*100`%:
 
@@ -476,10 +493,10 @@ rownames(estimation_hit_rates) <- c("Logistic Regression","First CART", "Second 
 knitr::kable(estimation_hit_rates)
 ```
 
-A simple benchmark to compare the performance of a classification model against is the **Maximum Chance Criterion**. This measures the proportion of the class with the largest size. For our validation data the largest group is customers who do not default: `r sum(!validation_actual)` out of `r length(validation_actual)` customers). Clearly, if we classified all individuals into the largest group, we could get a hit ratio of `r round(100*sum(!validation_actual)/length(validation_actual), 2)`% without doing any work. One should have a hit rate of at least as much as the Maximum Chance Criterion rate, although as we discuss next there are more performance criteria to consider. 
+A simple benchmark to compare the hit ratio performance of a classification model against is the **Maximum Chance Criterion**. This measures the proportion of the class with the largest size. For our validation data the largest group is customers who do not default: `r sum(!validation_actual)` out of `r length(validation_actual)` customers). Clearly, if we classified all individuals into the largest group, we could get a hit ratio of `r round(100*sum(!validation_actual)/length(validation_actual), 2)`% without doing any work. One should have a hit rate of at least as much as the Maximum Chance Criterion rate, although as we discuss next there are more performance criteria to consider. 
 
 ### 2. Confusion matrix
-The confusion matrix shows for each class the number (or percentage) of the  data that are correctly classified for that class. For example, for the method above with the highest hit rate in the validation data (among logistic regression and the 2 CART models), the confusion matrix for the validation data is:
+The confusion matrix shows for each class the number (or percentage) of the  data that are correctly classified for that class. For example, for the method above with the highest hit rate in the validation data (among logistic regression and the 2 CART models), and for probability threshold `r Probability_Threshold*100`%, the confusion matrix for the validation data is:
 
 ```{r echo=FALSE}
 validation_prediction_best = validation_predictions[which.max(validation_hit_rates),]
@@ -508,16 +525,7 @@ knitr::kable(conf_matrix)
 
 
 ### 3. ROC curve
-
 Remember that each observation is classified by our model according to the probabilities Pr(0) and Pr(1) and a chosen probability threshold. Typically we set the probability threshold to 0.5 - so that observations for which Pr(1) > 0.5 are classified as 1's. However, we can vary this threshold, for example if we are interested in correctly predicting all 1's but do not mind missing some 0's (and vice-versa).
-
-**Question:**
-
-Can you think of such a scenario?
-
-**Answer:**
-
-*
 
 When we change the probability threshold we get different values of hit rate, false positive and false negative rates, or any other performance metric. We can plot for example how the false positive versus true positive rates change as we alter the probability threshold, and generate the so called ROC curve. 
 
@@ -569,7 +577,6 @@ How should a good ROC curve look like? A rule of thumb in assessing ROC curves i
 *
 
 ### 4. Lift curve
-
 The lift curve is a popular technique in certain applications, such as direct marketing or credit risk. 
 
 For a concrete example, consider the case of a direct marketing mailing campaign. Say we have a classifier that attempts to identify the likely responders by assigning each case a probability of response. We may want to select as few cases as possible and still capture the maximum number of responders possible. 
@@ -655,7 +662,6 @@ Which point on the lift curve should we select in practice?
 *
 
 ### 5. Profit curve
-
 Finally, we can generate the so called profit curve, which we often use to make our final decisions. The intuition is as follows. Consider a direct marketing campaign, and suppose it costs $1 to send an advertisement, and the expected profit from a person who responds positively is $45. Suppose you have a database of 1 million people to whom you could potentially send the promotion. Typical response rates are 0.05%. What fraction of the 1 million people should you send the promotion to? 
 
 To answer this type of questions, we need to create the **profit curve**. We can measure some measure of profit if we only select the top cases in terms of the probability of response assigned by our classifier. We can plot the profit curve by changing, as we did for the lift curve, the percentage of cases we select, and calculating the corresponding total **estimated profit** (or loss) we would generate. This is simply equal to:
@@ -761,7 +767,7 @@ Notice that to maximize estimated profit, we need to have the cost/profit for ea
 ## Step 6. Test Accuracy
 Having iterated steps 2-5 until we are satisfied with the performance of our selected model on the validation data, in this step the performance analysis outlined in step 5 needs to be done with the test sample. This is the performance that best mimics what one should expect in practice upon deployment of the classification solution, **assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed.** 
 
-Let's see in our case how the **Hit Ratio, Confusion Matrix, ROC Curve, Lift Curve, and Profit Curve** look like for our test data. 
+Let's see in our case how the **hit ratio, confusion matrix, ROC curve, lift curve, and profit curve** look like for our test data. For the hit ratio and the confusion matrix we use `r Probability_Threshold*100`% as the probability threshold for classification.
 
 ```{r echo=FALSE}
 ######for train data#####
@@ -781,7 +787,7 @@ rownames(test_hit_rates) <- c("Logistic Regression","First CART", "Second CART")
 knitr::kable(test_hit_rates)
 ```
 
-The Confusion Matrix for the model with the best test data hit ratio above:
+The confusion matrix for the model with the best test data hit ratio above:
 
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 test_prediction_best = test_predictions[which.max(test_hit_rates),]
@@ -943,11 +949,15 @@ ggplot(df.all, aes(x=`% of test data selected`, y=value, colour=variable)) + geo
 
 **Questions:**
 
-1. Is the performance in the test data similar to the performance in the validation data above? 
-2. Should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?
+1. Is the performance in the test data similar to the performance in the validation data above? Should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?
+2. Make a final assessment about what classifier you would use (out of the ones considered here) for this credit card default classification business problem, with what percentage of cases/probability threshold, and why. What is the business profit the company can achieve (as measured with the test data) based on your solution?
+3. How does your assessment depend on the values and costs of correct classifications and misclassifications (`r actual_1_predict_1`, `r actual_1_predict_0`, `r actual_0_predict_1`, `r actual_0_predict_0`)?
+4. What business decisions can the credit card issuer make based on this analysis?
 
 
 **Answers:**
 
+*
+*
 *
 *
