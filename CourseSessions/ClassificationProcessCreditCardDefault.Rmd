@@ -35,7 +35,7 @@ options(knitr.kable.NA = '')
 datafile_name = "../Data/UCI_Credit_Card.csv"
 ProjectData <- read.csv(datafile_name)
 # We turn the data into data.matrix class so that we can easier manipulate it
-ProjectData <- data.matrix(ProjectData) 
+ProjectData <- data.matrix(ProjectData)
 
 # Please ENTER the dependent variable (class).
 # Please use numbers, not column names. E.g., 82 uses the 82nd column as the dependent variable.
