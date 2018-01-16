@@ -25,11 +25,9 @@ libraries_used=c("devtools","knitr","graphics","grDevices","xtable","pryr",
                  "Hmisc","vegan","fpc","GPArotation","FactoMineR","cluster",
                  "psych","stringr","googleVis", "png","ggplot2","googleVis", 
                  "gridExtra", "reshape2", "DT", "ramnathv/slidifyLibraries",
-                 "ramnathv/slidify", "cttobin/ggthemr", "dplyr", "mrjoh3/c3",
-                 "rpart.plot","vkapartzianis/formattable", "ggdendro","ROCR",
-                 "networkD3")
+                 "ramnathv/slidify", "cttobin/ggthemr", "dplyr","vkapartzianis/formattable", "ggdendro","ROCR",
+                 "networkD3","rpart.plot","mrjoh3/c3","glmnet","hong-revo/glmnetUtils")
 get_libraries(libraries_used)
-
 #############
 
 my_summary <- function(thedata){
@@ -59,7 +57,7 @@ iprint.df <- function(df, scale=FALSE) {
         formatter("span")
     })
     names(x) <- colnames(df)
-    tags$div(class="formattable_container", HTML(gsub("NA", "", format_table(df, x))))
+    tags$div(class="formattable_container", HTML(gsub("NA", "", format_table(df, x)))) 
   } else if (opts_knit$get('rmarkdown.pandoc.to') == "latex") {
     cat(ifelse(scale, "\\setkeys{Gin}{height=\\textheight}\\adjustbox{width=\\linewidth}{", "\\begin{center}"))
     cat(kable(df, format="latex", booktabs=TRUE, longtable=!scale))
