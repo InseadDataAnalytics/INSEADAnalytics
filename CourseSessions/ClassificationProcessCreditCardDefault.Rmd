@@ -451,10 +451,12 @@ Using the predicted class probabilities of the validation data, as outlined abov
 
 **Question:**
 
-Can you think of such a scenario?
+1. Can you think of such a scenario?
+2. What probability threshold do you think would make sense in this case of credit card default classification?
 
 **Answer:**
 
+*
 *
 
 For different choices of the probability threshold, one can measure a number of classification performance metrics, which are outlined next.
@@ -576,14 +578,14 @@ How should a good ROC curve look like? A rule of thumb in assessing ROC curves i
 *
 *
 
-### 4. Lift curve
-The lift curve is a popular technique in certain applications, such as direct marketing or credit risk. 
+### 4. Gains chart
+The gains chart is a popular technique in certain applications, such as direct marketing or credit risk. 
 
 For a concrete example, consider the case of a direct marketing mailing campaign. Say we have a classifier that attempts to identify the likely responders by assigning each case a probability of response. We may want to select as few cases as possible and still capture the maximum number of responders possible. 
 
-We can measure the percentage of all responses the classifier captures if we only select, say, x% of cases: the top x% in terms of the probability of response assigned by our classifier. For each percentage of cases we select (x), we can plot the following point: the x-coordinate will be the percentage of all cases that were selected, while the y-coordinate will be the percentage of all class 1 cases that were captured within the selected cases (i.e., the ratio true positives/positives of the classifier, assuming the classifier predicts class 1 for all the selected cases, and predicts class 0 for all the remaining cases). If we plot these points while we change the percentage of cases we select (x) (i.e., while we change the probability threshold of the classifier), we get a curve that is called the **lift curve**. 
+We can measure the percentage of all responses the classifier captures if we only select, say, x% of cases: the top x% in terms of the probability of response assigned by our classifier. For each percentage of cases we select (x), we can plot the following point: the x-coordinate will be the percentage of all cases that were selected, while the y-coordinate will be the percentage of all class 1 cases that were captured within the selected cases (i.e., the ratio true positives/positives of the classifier, assuming the classifier predicts class 1 for all the selected cases, and predicts class 0 for all the remaining cases). If we plot these points while we change the percentage of cases we select (x) (i.e., while we change the probability threshold of the classifier), we get a chart that is called the **gains chart**. 
 
-In the credit card default case we are studying, the lift curves for the validation data for our three classifiers are the following:
+In the credit card default case we are studying, the gains charts for the validation data for our three classifiers are the following:
 
 ```{r echo=FALSE}
 validation_actual <- validation_data[,dependent_variable]
@@ -641,7 +643,7 @@ df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
 ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour=variable)) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
 ```
 
-Notice that if we were to examine cases selecting them at random, instead of selecting the "best" ones using an informed classifier, the "random prediction" lift curve would be a straight 45-degree line.
+Notice that if we were to examine cases selecting them at random, instead of selecting the "best" ones using an informed classifier, the "random prediction" gains chart would be a straight 45-degree line.
 
 **Question:**
 
@@ -651,11 +653,11 @@ Why?
 
 *
 
-So how should a good lift curve look like? The further above this 45-degree reference line our lift curve is, the better the "lift". Moreover, much like for the ROC curve, one can select the percentage of all cases examined appropriately so that any point of the lift curve is selected. 
+So how should a good gains chart look like? The further above this 45-degree reference line our gains curve is, the better the "gains". Moreover, much like for the ROC curve, one can select the percentage of all cases examined appropriately so that any point of the gains curve is selected. 
 
 **Question:**
 
-Which point on the lift curve should we select in practice?
+Which point on the gains curve should we select in practice?
 
 **Answer:**
 
@@ -664,13 +666,13 @@ Which point on the lift curve should we select in practice?
 ### 5. Profit curve
 Finally, we can generate the so called profit curve, which we often use to make our final decisions. The intuition is as follows. Consider a direct marketing campaign, and suppose it costs $1 to send an advertisement, and the expected profit from a person who responds positively is $45. Suppose you have a database of 1 million people to whom you could potentially send the promotion. Typical response rates are 0.05%. What fraction of the 1 million people should you send the promotion to? 
 
-To answer this type of questions, we need to create the **profit curve**. We can measure some measure of profit if we only select the top cases in terms of the probability of response assigned by our classifier. We can plot the profit curve by changing, as we did for the lift curve, the percentage of cases we select, and calculating the corresponding total **estimated profit** (or loss) we would generate. This is simply equal to:
+To answer this type of questions, we need to create the **profit curve**. We can measure some measure of profit if we only select the top cases in terms of the probability of response assigned by our classifier. We can plot the profit curve by changing, as we did for the gains chart, the percentage of cases we select, and calculating the corresponding total **estimated profit** (or loss) we would generate. This is simply equal to:
 
 > Total Estimated Profit = (% of 1's correctly predicted)x(value of capturing a 1) + (% of 0's correctly predicted)x(value of capturing a 0) + (% of 1's incorrectly predicted as 0)x(cost of missing a 1) + (% of 0's incorrectly predicted as 1)x(cost of missing a 0)
 > 
 > Calculating the expected profit requires we have an estimate of the four costs/values: the value of capturing a 1 or a 0, and the cost of misclassifying a 1 into a 0 or vice versa. 
 
-Given the values and costs of correct classifications and misclassifications, we can plot the total estimated profit (or loss) as we change the percentage of cases we select, i.e., the probability threshold of the classifier, like we did for the ROC and the lift curves. 
+Given the values and costs of correct classifications and misclassifications, we can plot the total estimated profit (or loss) as we change the percentage of cases we select, i.e., the probability threshold of the classifier, like we did for the ROC and the gains chart. 
 
 In our credit card default case, we consider the following business profit and loss to the credit card issuer for the correctly classified and misclassified customers: 
 
@@ -767,7 +769,7 @@ Notice that to maximize estimated profit, we need to have the cost/profit for ea
 ## Step 6. Test Accuracy
 Having iterated steps 2-5 until we are satisfied with the performance of our selected model on the validation data, in this step the performance analysis outlined in step 5 needs to be done with the test sample. This is the performance that best mimics what one should expect in practice upon deployment of the classification solution, **assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed.** 
 
-Let's see in our case how the **hit ratio, confusion matrix, ROC curve, lift curve, and profit curve** look like for our test data. For the hit ratio and the confusion matrix we use `r Probability_Threshold*100`% as the probability threshold for classification.
+Let's see in our case how the **hit ratio, confusion matrix, ROC curve, gains chart, and profit curve** look like for our test data. For the hit ratio and the confusion matrix we use `r Probability_Threshold*100`% as the probability threshold for classification.
 
 ```{r echo=FALSE}
 ######for train data#####
@@ -819,7 +821,7 @@ test2<-performance(pred_tree_large_test, "tpr", "fpr")
 df2<- cbind(as.data.frame(test2@x.values),as.data.frame(test2@y.values))
 colnames(df2) <- c("False Positive rate CART 2", "True Positive CART 2")
 test3<-performance(pred_log_test, "tpr", "fpr")
-df3<- cbind(as.data.frame(test1@x.values),as.data.frame(test1@y.values))
+df3<- cbind(as.data.frame(test3@x.values),as.data.frame(test3@y.values))
 colnames(df3) <- c("False Positive rate log reg", "True Positive log reg")
 
 df.all <- do.call(rbind, lapply(list(df1, df2, df3), function(df) {
@@ -831,7 +833,7 @@ df.all <- do.call(rbind, lapply(list(df1, df2, df3), function(df) {
 ggplot(df.all, aes(x=`False Positive rate`, y=value, colour=variable)) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
 ```
 
-Lift curves for the test data:
+Gains chart for the test data:
 
 ```{r echo=FALSE}
 test_actual <- test_data[,dependent_variable]
@@ -840,7 +842,7 @@ all1s <- sum(test_actual)
 probs <- test_Probability_class1_tree
 xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
 res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
-  useonly <- which(probs >= 1-prob)
+  useonly <- which(probs >= prob)
   c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
 }))
 frame1 <- data.frame(
@@ -852,7 +854,7 @@ frame1 <- data.frame(
 probs <- test_Probability_class1_tree_large
 xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
 res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
-  useonly <- which(probs >= 1-prob)
+  useonly <- which(probs >= prob)
   c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
 }))
 frame2 <- data.frame(
@@ -864,7 +866,7 @@ frame2 <- data.frame(
 probs <- test_Probability_class1_log
 xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
 res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
-  useonly <- which(probs >= 1-prob)
+  useonly <- which(probs >= prob)
   c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
   }))
 frame3 <- data.frame(
