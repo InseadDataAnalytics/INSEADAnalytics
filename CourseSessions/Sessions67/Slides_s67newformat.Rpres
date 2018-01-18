@@ -1,6 +1,6 @@
 Session 7-8, Discriminant Analysis and Classification (Technical Slides)
 ========================================================
-author : T. Evgeniou, INSEAD
+author : T. Evgeniou, A. Ovchinnikov, INSEAD
 title : Data Analytics for Business
 
 
@@ -60,7 +60,7 @@ Example Applications
 - Who are the most likely clients/companies/countries to default on their debt?
 - Who are most likely to click on an ad? 
 - To whom should we offer a particular promotion?
-- How are satisfied customers different from dissatisfied customers in terms of their demographics and attitudes towards your products’ characteristics?
+- How are satisfied customers different from dissatisfied customers in terms of their demographics and attitudes towards your products??? characteristics?
 - Which transaction is most likely a fraud?
 - Which applicants are most likely to fit in our organization and succeed?
 - Which investments are most likely to succeed?

@@ -1,7 +1,7 @@
-Session 3-4, Dimensionality Reduction and Derived Attributes (Technical Slides)
+Session 7-8, Dimensionality Reduction and Derived Attributes (Technical Slides)
 ========================================================
 title : Data Analytics for Business
-author : T. Evgeniou, INSEAD
+author : T. Evgeniou, A. Ovchinnikov, INSEAD
 
 
 
@@ -515,35 +515,5 @@ if(ncol(NEW_ProjectData) >= 2) {
 2. How can we name and interpret the factors? 
 
 3. What are some issues to consider? 
-
- Next Class: Cluster Analysis for Segmentation
-========================================================
-
-```{r include=FALSE}
-## using dummy data to recreate cluster segmentation graphics
-library(vegan)
-require(vegan)
-data(dune)
-# kmeans
-kclus <- kmeans(dune,centers= 4, iter.max=1000)
-# distance matrix
-dune_dist <- dist(dune,method="euclidian")
-# Multidimensional scaling
-cmd <- cmdscale(dune_dist)
-```
-
-```{r fig.width=12, fig.height=6, message=FALSE, echo=FALSE, fig.align='center', warning=FALSE, fig=TRUE}
-# plot MDS, with colors by groups from kmeans
-groups <- levels(factor(kclus$cluster))
-ordiplot(cmd, type = "n")
-cols <- c("steelblue", "darkred", "darkgreen", "pink")
-for(i in seq_along(groups)){
-  points(cmd[factor(kclus$cluster) == groups[i], ], col = cols[i], pch = 16)
-  }
-
-# add spider and hull
-ordispider(cmd, factor(kclus$cluster), label = TRUE)
-ordihull(cmd, factor(kclus$cluster), lty = "dotted")
-```
 
 
