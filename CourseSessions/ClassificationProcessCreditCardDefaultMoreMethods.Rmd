@@ -72,10 +72,10 @@ logreg = 1
 # Regularized logistic regression
 reg_logreg = 1
 # CART 
-cart = 1
+cart = 0
 cart_large = cart
 # XGBoost
-XGBoost = 1
+XGBoost = 0
 
 methods = c(logreg, cart, cart_large, reg_logreg, XGBoost)
 names_of_methods <- c("Logistic Regression", "First CART", "Second CART", "Regularized Logistic Regression", "XGBoost")
