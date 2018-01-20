@@ -1,4 +1,6 @@
 .Rproj.user
+*.html
+*.model
 *.md
 *figure*
 *.Rproj
