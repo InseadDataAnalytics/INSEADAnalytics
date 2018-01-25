@@ -155,7 +155,7 @@ Let's now see **a** process for using factor analysis in order to create derived
 
 There is *not one* process for factor analysis. However, we have to start somewhere, so we will use the following process:
 
-1. Confirm the data in metric 
+1. Confirm the data is metric 
 2. Decide whether to scale or standardize the data
 3. Check the correlation matrix to see if Factor Analysis makes sense
 4. Develop a scree plot and decide on the number of factors to be derived
@@ -219,7 +219,7 @@ Let's now see what factor analysis suggests as factors.
 
 ## Step 4: Choose number of factors 
 
-There are many statistical methods to generate derived variables from raw data. One of the most standard ones is **Principal Component Analysis**. This method finds factors, called **Principal Components**, which are **linear combinations of the original raw attributes** so that most of the information in the data, measured using  **variance explained** (roughly "how much of the variability in the data is captured by the selected components") is captured by only a few factors. The components are developed typically so that they are **uncorrelated**, leading to *at most as many factors as the number of the original raw attributes, but* so that only a few are needed (the *principal compontents*) to keep most of the information (variance/variability) in the raw data. For example, for our data we have `r ncol(ProjectData)` raw attributes hence we can only have a total of `r ncol(ProjectData)` factors/compontents, each of them being a linear combination of the `r ncol(ProjectData)` original raw data. 
+There are many statistical methods to generate derived variables from raw data. One of the most standard ones is **Principal Component Analysis**. This method finds factors, called **Principal Components**, which are **linear combinations of the original raw attributes** so that most of the information in the data, measured using  **variance explained** (roughly "how much of the variability in the data is captured by the selected components") is captured by only a few factors. The components are developed typically so that they are **uncorrelated**, leading to *at most as many factors as the number of the original raw attributes, but* so that only a few are needed (the *principal components*) to keep most of the information (variance/variability) in the raw data. For example, for our data we have `r ncol(ProjectData)` raw attributes hence we can only have a total of `r ncol(ProjectData)` factors/components, each of them being a linear combination of the `r ncol(ProjectData)` original raw data. 
 
 ```{r}
 UnRotated_Results<-principal(ProjectDataFactor, nfactors=ncol(ProjectDataFactor), rotate="none",score=TRUE)
@@ -233,7 +233,7 @@ While there are as many (and for other methods, more) factors as the number of t
 When using PCA, we have two measures of "how much of the information (variance in this case) in the original raw data is captured by any of the factors": 
 
 a) the *percentage of variance explained*, 
-b) the *eigenvalue coresponding to the compontent*.
+b) the *eigenvalue coresponding to the component*.
 
 Each factor has an eigenvalue as well as the percentage of the variance explained. The sum of the eigenvalues of the components is equal to the number of original raw attributes used for factor analysis, while the sum of the percentages of the variance explained across all components is 100%. For example, for our data these are:
 
@@ -283,7 +283,7 @@ Based on the three criteria (eigenvalue > 1, cumulative percentage of variance e
 ## Step 5: Interpret the factors
 
 
-In practice one would like to have derived variables that use only a few of the original raw attributes - while each new derived variable using different subsets of the original raw attributes. Unfortunately this is not necessarily always the case. However, there are mathematical methods, called "factor **rotations**", which transform the estimated factors into new ones which capture exactly the same information from the raw data but use only few non-overlaping raw attributes. One such rotation often used in practice is called the `r rotation_used` rotation - but others are also available. 
+In practice one would like to have derived variables that use only a few of the original raw attributes - while each new derived variable using different subsets of the original raw attributes. Unfortunately this is not necessarily always the case. However, there are mathematical methods, called "factor **rotations**", which transform the estimated factors into new ones which capture exactly the same information from the raw data but use only few non-overlapping raw attributes. One such rotation often used in practice is called the `r rotation_used` rotation - but others are also available. 
 
 For our data, the `r factors_selected` selected factors look as follows after the `r rotation_used` rotation: 
 
@@ -325,9 +325,9 @@ What Factor Loads "Look Good"? We often use three **Factor Technical Quality Cri
 
 ## Step 6: Save factor scores 
 
-Once we decided the factors to use (for now), we typically replace the original data with a new dataset where each observation (row) is now described not using the original raw attributes but using instead the selected factors/derived attributes. Afterall this was the goal of this analysis. 
+Once we decided the factors to use (for now), we typically replace the original data with a new dataset where each observation (row) is now described not using the original raw attributes but using instead the selected factors/derived attributes. After all this was the goal of this analysis. 
 
-The way to represent our observations using the found derived attributes (factors/components) is to estimate for each observation (row) how it "scores" for each of the selected factor. These numbers are called **factor scores**. Effectively they are the "scores" the observation would take on the factor had we measured that factor directly instead of measuring the original raw attributes. 
+The way to represent our observations using the found derived attributes (factors/components) is to estimate for each observation (row) how it "scores" for each of the selected factors. These numbers are called **factor scores**. Effectively they are the "scores" the observation would take on the factor had we measured that factor directly instead of measuring the original raw attributes. 
 
 (**Note:** Sometimes for simplicity we represent each selected factor using one of the original raw attributes, typically the one on which the factor has the highest loading on. Although this is not statistically as accurate, it may help with the interpretation of subsequent analyses.)
 
