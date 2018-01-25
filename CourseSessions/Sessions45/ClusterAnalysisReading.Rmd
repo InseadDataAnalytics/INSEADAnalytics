@@ -45,7 +45,7 @@ profile_attributes_used = c(2:9) # for boats use c(2:82), for Mall_Visits use c(
 # Please ENTER the number of clusters to eventually use for this report
 numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
 
-# Please enter the method to use for the segmentation:
+# Please enter the method to use for profiling:
 profile_with = "hclust" #  "hclust" or "kmeans"
 
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
@@ -68,7 +68,7 @@ MIN_VALUE=0.5
 
 # Please enter the maximum number of observations to show in the report and slides 
 # (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
-max_data_report = 10 # can also chance in server.R
+max_data_report = 10 # can also change in server.R
 
 
 # this loads the selected data: DO NOT EDIT THIS LINE
@@ -102,7 +102,7 @@ Cluster analysis is used in a variety of applications. For example it can be use
 
 In this note we discuss a process for clustering and segmentation using a simple dataset that describes attitudes of people to shopping in a shopping mall. As this is a small dataset, one could also "manually" explore the data to find "visually" customer segments - which may be feasible for this small dataset, although clustering is in general a very difficult problem even when the data is very small.  
 
-Before reading further, do try to think what segments one could define using this example data. As always, you will see that even in this relatively simple case it is not as obvious what the segments should be, and you will most likely disagree with your colleagues about them: the goal afternall is to let the numbers and statistics help us be more *objective and statistically correct*.
+Before reading further, do try to think what segments one could define using this example data. As always, you will see that even in this relatively simple case it is not as obvious what the segments should be, and you will most likely disagree with your colleagues about them: the goal after all is to let the numbers and statistics help us be more *objective and statistically correct*.
 
 ## The "Business Decision"
 
@@ -180,7 +180,7 @@ knitr::kable(round(my_summary(ProjectData),2))
 
 This is an optional step. Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the Income variable. 
 
-Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so that we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. `scaledIncome` `=` `(Income-mean(Income))` `/` `sd(Income)`), or scaling them between 0 and 1 (e.g. `scaledIncome` `=` `(Income-min(Income))` `/` `(max(Income)-min(Income))`). Here is for example the R code for the first approach, if we want to standardize all attributes:
+Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so than we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. `scaledIncome` `=` `(Income-mean(Income))` `/` `sd(Income)`), or scaling them between 0 and 1 (e.g. `scaledIncome` `=` `(Income-min(Income))` `/` `(max(Income)-min(Income))`). Here is for example the R code for the first approach, if we want to standardize all attributes:
 
 ```{r, echo=TRUE, tidy=TRUE}
 ProjectData_scaled=apply(ProjectData,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
@@ -216,7 +216,7 @@ Most statistical methods for clustering and segmentation use common mathematical
 
 In our case we explore two distance metrics: the commonly used **Euclidean distance** as well as a simple one we define manually. 
 
-The Euclidean distance between two observations (in our case, customers) is simply the square root of the average of the square difference between the attributes of the two observations (in our case, customers). For example, the distance of the first customer in our data from customers 2-`r max_data_report` (summarized above), using their responses to the 6 attitudinal questions is:
+The Euclidean distance between two observations (in our case, customers) is simply the square root of the average of the square difference between the attributes of the two observations (in our case, customers). For example, the distances between the first `r max_data_report` customers in our data, using their responses to the 6 attitudinal questions, are:
 
 ```{r}
 euclidean_pairwise <- as.matrix(dist(head(ProjectData_segment, max_data_report), method="euclidean"))
@@ -252,11 +252,11 @@ Manual_Pairwise[Manual_Pairwise == 10e10] <- NA
 knitr::kable(Manual_Pairwise, col.names= 1:ncol(Manual_Pairwise))
 ```
 
-In general a lot of creative thinking and exploration should be spent in this step, and as always one may need to come back to this step even after finishing the complete segmentation process - multiple times. 
+In general a lot of creative thinking and exploration should be devoted to this step, and as always one may need to come back to this step even after finishing the complete segmentation process - multiple times. 
 
 ## Step 5: Visualize Pair-wise Distances 
 
-Having defined what we mean "two observations are similar", the next step is to get a first understanding of the data through visualizing for example individual attributes as well the pairwise distances (using various distance metrics) between the observations. If there are indeed multiple segments in our data, some of these plots should show "mountains and valleys", with the mountains being potential segments. 
+Having defined what we mean "two observations are similar", the next step is to get a first understanding of the data through visualizing for example individual attributes as well as the pairwise distances (using various distance metrics) between the observations. If there are indeed multiple segments in our data, some of these plots should show "mountains and valleys", with the mountains being potential segments. 
 
 For example, in our case we can see the histogram of, say, the first 2 variables:
 
@@ -270,7 +270,7 @@ or the histogram of all pairwise distances for the `r distance_used` distance:
 
 ```{r}
 Pairwise_Distances <- dist(ProjectData_segment, method = distance_used) 
-qplot(as.vector(Pairwise_Distances), xlab="Histogram of all pairwise Distances between observtions", ylab="Frequency", binwidth=1)
+qplot(as.vector(Pairwise_Distances), xlab="Histogram of all pairwise Distances between observations", ylab="Frequency", binwidth=1)
 ```
 
 > Visualization is very important for data analytics, as it can provide a first understanding of the data.
@@ -281,7 +281,7 @@ There are many statistical methods for clustering and segmentation. In practice 
 
 In this note we will use two widely used methods: the **Kmeans Clustering Method**, and the **Hierarchical Clustering Method**. Like all clustering methods, these two also require that we have decided how to measure the distance/similarity between our observations.  Explaining how these methods work is beyond our scope. The only difference to highlight is that Kmeans requires the user to define how many segments to create, while Hierarchical Clustering does not. 
 
-Let's fist use the **Hierarchial Clustering** method, as we do not know for now how many segments there are in our data. Hierarchical clustering is a  method that also helps us visualise how the data may be clustering together. It generates a plot called the **Dendrogram** which is often helpful for visualization - but should be used with care. For example, in this case the dendrogram, using the `r distance_used` distance metric from the earlier steps and the `r hclust_method` hierarchical clustering option (see below as well as `help(hclust)` in R for more information), is as follows:
+Let's fist use the **Hierarchial Clustering** method, as we do not know for now how many segments there are in our data. Hierarchical clustering is a  method that also helps us visualise how the data may be clustered together. It generates a plot called the **Dendrogram** which is often helpful for visualization - but should be used with care. For example, in this case the dendrogram, using the `r distance_used` distance metric from the earlier steps and the `r hclust_method` hierarchical clustering option (see below as well as `help(hclust)` in R for more information), is as follows:
 
 ```{r}
 Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
@@ -292,9 +292,9 @@ ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE) + xlab("Our Observations"
 # rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
 ```
 
-Note that we can draw as many clusters are we choose (e.g. in this case we chose `r numb_clusters_used` clusters) around the branches of the Dendrogram.
+<!-- Note that we can draw as many clusters as we choose (e.g. in this case we chose `r numb_clusters_used` clusters) around the branches of the Dendrogram. -->
 
-The Dendrogram indicates how this clustering method works: observations are "grouped together",starting from pairs of individual observations which are the closest to each other, and merging smaller groups into larger ones depending on which groups are closest to each other. Eventually all our data are merged into one segment. The heigths of the branches of the tree indicate how different the clusters merged at that level of the tree are. Longer lines indicate that the clusters below are very different. As expected, the heights of the tree branches increase as we traverse the tree from the end leaves to the tree root: the method merges data points/groups from the closest ones to the furthest ones. 
+The Dendrogram indicates how this clustering method works: observations are "grouped together",starting from pairs of individual observations which are the closest to each other, and merging smaller groups into larger ones depending on which groups are closest to each other. Eventually all our data are merged into one segment. The heights of the branches of the tree indicate how different the clusters merged at that level of the tree are. Longer lines indicate that the clusters below are very different. As expected, the heights of the tree branches increase as we traverse the tree from the end leaves to the tree root: the method merges data points/groups from the closest ones to the furthest ones. 
 
 Dendrograms are a helpful visualization tool for segmentation, even if the number of observations is very large - the tree typically grows logarithmically with the number of data. However, they can be very misleading. Notice that once two data points are merged into the same segment they remain in the same segment throughout the tree. This "rigidity" of the Hierarchical Clustering method may lead to segmentations which are suboptimal in many ways. However, the dendrograms are useful in practice to help us get some understanding of the data, including the potential number of segments we have in the data. Moreover, there are various ways to construct the dendrograms, not only depending on the distance metric we defined in the earlier steps above, but also depending on how the data are aggregated into clusters (see `help(hclust)` in R, for example, which provides the following options for the way the tree is constructed: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
 
@@ -420,7 +420,7 @@ The segmentation process outlined so far can be followed with many different app
 - using different segmentation methods
 - using different numbers of clusters
 
-> Much like any data analysis, segmentation is an iterative process with many variations of data, methods, number of clusters, and profiles generated until a satysfying solution is reached. 
+> Much like any data analysis, segmentation is an iterative process with many variations of data, methods, number of clusters, and profiles generated until a satisfying solution is reached. 
 
 Clearly exploring all variations is beyond the scope of this note. We discuss, however, an example of how to test the **statistical robustness** and **stability of interpretation** of the clusters found using two different approaches: Kmeans and Hierarchical Clustering, as outlined above. 
 
@@ -455,19 +455,23 @@ for (i in 1:length(cluster_ids_kmeans))
 # Now calculate the overlaps
 # First, the total overlap
 total_observations_overlapping <- 100*sum(cluster_memberships_kmeans_aligned==cluster_memberships_hclust) / length(cluster_memberships_hclust)
+total_observations_overlapping <- as.matrix(total_observations_overlapping)
+colnames(total_observations_overlapping) <- "Total"
 # Then, per cluster
 per_cluster_observations_overlapping <- sapply(1:length(cluster_ids_kmeans), function(i) 100*length(intersect(which(cluster_memberships_kmeans_aligned==i),which(cluster_memberships_hclust==i)))/sum(cluster_memberships_kmeans_aligned==i))
 per_cluster_observations_overlapping <- matrix(per_cluster_observations_overlapping, nrow=1)
 colnames(per_cluster_observations_overlapping) <- paste("Segment",1:length(per_cluster_observations_overlapping),sep=" ")
 
-knitr::kable(per_cluster_observations_overlapping)
+observations_overlapping <- cbind(total_observations_overlapping,per_cluster_observations_overlapping)
+
+knitr::kable(observations_overlapping)
 ```
 
 Clearly using different numbers of clusters may lead to different percentages of overlap (try  for example using 2 clusters): the robustness of our solution may also indicate how many clusters there are in our data - **if any**. However, in general there is no "correct percentage of overlap", as this depends on how difficult clustering may be (e.g. consider the case where one clusters time series of asset prices): the robustness of our solution is often "relative to other solutions". Moreover:
 
 > Sound segmentation requires eventually robustness of our decisions across many "good" clustering approaches used. 
 
-Only after a number of such robustness checks, profilings, and interpretations, we can end with our final segmentation. During the segmentation analysis we may need to repeat multiple times the process outlined in this note,  with many variations of the choices we make at each step of the process, before reaching a final solution (if there are indeed segments in our data) - which of course can be revisited at any point in the future. 
+Only after a number of such robustness checks, profilings, and interpretations, we can end with our final segmentation. During the segmentation analysis we may need to repeat multiple times the process outlined in this note, with many variations of the choices we make at each step of the process, before reaching a final solution (if there are indeed segments in our data) - which of course can be revisited at any point in the future. 
 
 > Data Analytics is an iterative process, therefore we may need to return to our original raw data at any point and select new raw attibutes as well as new clusters.
 
