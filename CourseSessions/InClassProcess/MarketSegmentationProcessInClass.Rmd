@@ -20,7 +20,7 @@ always_allow_html: yes
 > **IMPORTANT**: Please make sure you create a copy of this file with a customized name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf).
 
-All material and code is available at the [INSEAD Data Analytics for Business](http://inseaddataanalytics.github.io/INSEADAnalytics/) website and github. Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your github repository.  As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
+All material and code is available at the INSEAD Data Science for Business website and GitHub. Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your GitHub repository. As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
 
 **Note:** you can create an html file by running in your console the command 
 rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd") 
@@ -44,16 +44,15 @@ See for example some of the analysis of this case in  these slides: <a href="htt
 
 # The Process
 
-The "high level" process template is split in 3 parts, corresponding to the course sessions 3-4, 5-6, and an optional last part: 
+The "high level" process template is split in 3 parts, corresponding to the course sessions 7-8, 9-10, and an optional last part: 
 
-1. *Part 1*: We use some of the survey questions (e.g. in this case the first 29 "attitude" questions) to find **key customer descriptors** ("factors") using *dimensionality reduction* techniques described in the [Dimensionality Reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading of Sessions 3-4.
+1. *Part 1*: We use some of the survey questions (e.g. in this case the first 29 "attitude" questions) to find **key customer descriptors** ("factors") using *dimensionality reduction* techniques described in the [Dimensionality Reduction](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading of Sessions 7-8.
 
-2. *Part 2*: We use the selected customer descriptors to **segment the market** using *cluster analysis* techniques described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading of Sessions 5-6.
+2. *Part 2*: We use the selected customer descriptors to **segment the market** using *cluster analysis* techniques described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading of Sessions 9-10.
 
-3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For this part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.html) techniques.
+3. *Part 3*: For the market segments we create, we will use *classification analysis* to classify people based on whether or not they have purchased a product and find what are the **key purchase drivers per segment**. For this part we will use [classification analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/ClassificationProcessCreditCardDefault.html) techniques.
 
-Finally, we will use the results of this analysis to make business decisions e.g. about brand positioning, product development, etc depending on our market segments and key purchase drivers we find at the end of this process.
-
+Finally, we will use the results of this analysis to make business decisions, e.g. about brand positioning, product development, etc., depending on our market segments and key purchase drivers we find at the end of this process.
 
 ```{r setuplibraries, echo=FALSE, message=FALSE}
 suppressWarnings(source("../../AnalyticsLibraries/library.R"))
@@ -62,6 +61,11 @@ suppressWarnings(ggthemr('fresh'))  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
 options(knitr.kable.NA = '')
+
+# New versions of the networkD3 package may not work properly, so install the following version
+packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
+install.packages(packageurl, repos=NULL, type="source")
+#require("https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz")
 ```
 
 <hr>\clearpage
@@ -93,22 +97,22 @@ ProjectData_INITIAL <- ProjectData
 
 # Part 1: Key Customer Characteristics
 
-The code used here is along the lines of the code in the session 3-4 reading  [FactorAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/FactorAnalysisReading.Rmd). We follow the process described in the [Dimensionality Reduction ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading. 
+The code used here is along the lines of the code in the reading  [FactorAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/FactorAnalysisReading.Rmd). We follow the process described in the [Dimensionality Reduction ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html) reading. 
 
 In this part we also become familiar with:
 
 1. Some visualization tools;
 2. Principal Component Analysis and Factor Analysis;
-3. Introduction to machine learning methods;
+3. Introduction to machine learning methods.
 
 (All user inputs for this part should be selected in the code chunk in the raw .Rmd file) 
 
 ```{r setupfactor, echo=TRUE, tidy=TRUE}
-# Please ENTER then original raw attributes to use. 
+# Please ENTER the original raw attributes to use. 
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
 factor_attributes_used = c(2:30)
 
-# Please ENTER the selection criterions for the factors to use. 
+# Please ENTER the selection criteria for the factors to use. 
 # Choices: "eigenvalue", "variance", "manual"
 factor_selectionciterion = "eigenvalue"
 
@@ -242,7 +246,7 @@ if (factor_selectionciterion == "manual")
   factors_selected = manual_numb_factors_used
 ```
 
-To better visualize them, we will use what is called a "rotation". There are many rotations methods. In this case we selected the `r rotation_used` rotation. For our data, the `r factors_selected` selected factors look as follows after this rotation: 
+To better visualize them, we will use what is called a "rotation". There are many rotation methods. In this case we selected the `r rotation_used` rotation. For our data, the `r factors_selected` selected factors look as follows after this rotation: 
 
 ```{r}
 Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
@@ -289,7 +293,7 @@ iprint.df(Rotated_Factors_thres, scale=TRUE)
 
 ## Step 6:  Save factor scores 
 
-We can now either replace all initial variables used in this part with the factors scores or just select one of the initial variables for each of the selected factors in order to represent that factor. Here is how the factor scores  are for the first few respondents:
+We can now either replace all initial variables used in this part with the factor scores, or just select one of the initial variables for each of the selected factors in order to represent that factor. Here is how the factor scores  are for the first few respondents:
 
 ```{r}
 NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
@@ -320,7 +324,7 @@ iprint.df(t(head(NEW_ProjectData, 10)), scale=TRUE)
 
 # Part 2: Customer Segmentation 
 
-The code used here is along the lines of the code in the session 5-6 reading  [ClusterAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/ClusterAnalysisReading.Rmd). We follow the process described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading. 
+The code used here is along the lines of the code in the reading  [ClusterAnalysisReading.Rmd](https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/ClusterAnalysisReading.Rmd). We follow the process described in the [Cluster Analysis ](http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html) reading. 
 
 In this part we also become familiar with:
 
