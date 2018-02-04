@@ -14,6 +14,8 @@ output:
       in_header: ../../AnalyticsStyles/default.sty
 ---
 
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command rmarkdown::render("CourseSessions/Sessions23/FactorAnalysisReading.Rmd") -->
+
 ```{r setuplibraries, echo=FALSE, message=FALSE}
 
 source("../../AnalyticsLibraries/library.R")
@@ -67,14 +69,14 @@ rotation_used="varimax"
 
 factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
 ProjectDataFactor=ProjectData[,factor_attributes_used]
-ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
+ProjectDataFactor <- data.matrix(ProjectDataFactor)
 ```
 
 
 # What is this for?
 
 
-One of the key steps in Data Analytics is to generate meaningful attributes starting from possibly a large number of **raw attributes**. Consider for example the case of customer data, where for each customer we have a very large number of raw attributes (which could be, for example, *independent variables* in the case of a regression used to predict acquisition, purchases, or churn) ranging from demographic information, to what products they bought in the past, who their friends on various social media sites are, what websites they visit more often, how they rated a number of movies or products in general, whether they use their mobile phone mostly the weekends or in the mornings, how they responded to various surveys, etc. One can easily end up with tens if not thousands of such raw attributes, for thousands or millions of customers. In such cases it is virtually impossible to use some of the "advanced" methodologies developed for data analytics, or even simple ones such as linear regression. This is not only because of compuational reasons but, more important, because of statistical/mathematical reasons as, doing so entails a high risk that the estimated models (e.g. consumer behavior models) may be of very low quality in a statistical hence also practical sense. Moreover, the insights developed may not be practical or actionable as they may correspond to complicated statements involving a very large number of raw customer attributes.  
+One of the key steps in Data Analytics is to generate meaningful attributes starting from possibly a large number of **raw attributes**. Consider for example the case of customer data, where for each customer we have a very large number of raw attributes (which could be, for example, *independent variables* in the case of a regression used to predict acquisition, purchases, or churn) ranging from demographic information, to what products they bought in the past, who their friends on various social media sites are, what websites they visit more often, how they rated a number of movies or products in general, whether they use their mobile phone mostly the weekends or in the mornings, how they responded to various surveys, etc. One can easily end up with tens if not thousands of such raw attributes, for thousands or millions of customers. In such cases it is virtually impossible to use some of the "advanced" methodologies developed for data analytics, or even simple ones such as linear regression. This is not only because of computational reasons but, more important, because of statistical/mathematical reasons as, doing so entails a high risk that the estimated models (e.g. consumer behavior models) may be of very low quality in a statistical hence also practical sense. Moreover, the insights developed may not be practical or actionable as they may correspond to complicated statements involving a very large number of raw customer attributes.  
 
 In such situations, which arise almost always in practice, one needs to spend a lot of creative effort and time - based on a deep contextual knowledge - to generate new  attributes (e.g. "this customer is price sensitive", or "this customer likes comfort", or "this customer is status conscious", etc) from the original raw ones, which we call here **derived attributes**. These attributes can be generated manually, or using what we call **data or dimensionality reduction statistical techniques**. 
 
@@ -136,7 +138,7 @@ The school may be interested for example in picking students who score high on t
 1. "How intelligent are you?" 
 2. "How strong are your team and leadership skills?" 
 
-As you can imagine, asking these questions would not only make the admissions interviewers look naive, but would also lead to very noisy and misleading answers: of course everyone will just answer both questions with the highest mark. So instead of asking these "naive" questions, the school is using *raw attributes/data* like the ones above, which can also be gathered easier. The idea then is to see how this data can be "translated" in meaningful derived attributes that, for example, could capture the "equivalent answers" one could get if one were to ask directly the two naive questions above - or possibly other such "complex"" questions. 
+As you can imagine, asking these questions would not only make the admissions interviewers look naive, but would also lead to very noisy and misleading answers: of course everyone will just answer both questions with the highest mark. So instead of asking these "naive" questions, the school is using *raw attributes/data* like the ones above, which can also be gathered easier. The idea then is to see how this data can be "translated" in meaningful derived attributes that, for example, could capture the "equivalent answers" one could get if one were to ask directly the two naive questions above - or possibly other such "complex" questions. 
 
 > Factor analysis is a statistical approach for finding  a few "hidden" derived attributes in data by combining together groups of the original raw attributes in such a way that the least information in the original data is lost - in a statistical sense. It is part of a general class of statistical methodologies used to do what is often called "dimensionality reduction". </p> </blockquote>
 
@@ -144,7 +146,7 @@ Back to our example, if there is some way in which we could reduce the `r ncol(P
 
 > Data reduction is a very useful step in helping us interpret the data and make decisions.
 
-Like for our example, theory may suggest that there are really one or two basic factors (like intelligence and leadership skills) that lead to success in a management career. The various attributes are really different manifestations of these basic factors. But maybe there are other hidden derived variables (factors) in the data we have: instead of us manually combining raw attributes into meaningful derived ones, which not only is diffucult with many data but also dangerous as we impose our biases, let's get *factor analysis* to do the job for us - and use our intuition and judgment in the process. 
+Like for our example, theory may suggest that there are really one or two basic factors (like intelligence and leadership skills) that lead to success in a management career. The various attributes are really different manifestations of these basic factors. But maybe there are other hidden derived variables (factors) in the data we have: instead of us manually combining raw attributes into meaningful derived ones, which not only is difficult with many data but also dangerous as we impose our biases, let's get *factor analysis* to do the job for us - and use our intuition and judgment in the process. 
 
 Let's now see **a** process for using factor analysis in order to create derived attributes, the goal of this report. 
 
@@ -180,7 +182,7 @@ knitr::kable(round(my_summary(ProjectDataFactor), 2))
 
 This step is optional (many methods standardize the data automatically anyway). 
 
-Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the GMAT variable. Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so that we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. `scaledGMAT = (GMAT-mean(GMAT)) / sd(GMAT)`), or scaling them between 0 and 1 (e.g. `scaledGMAT = (GMAT-min(GMAT)) / (max(GMAT)-min(GMAT))`). Here is for example the R code for the first approach, if we want to standardize all attributes:
+Note that for this data, while 6 of the "survey" data are on a similar scale, namely 1-7, there is one variable that is about 2 orders of magnitude larger: the GMAT variable. Having some variables with a very different range/scale can often create problems: **most of the "results" may be driven by a few large values**, more so than we would like. To avoid such issues, one has to consider whether or not to **standardize the data** by making some of the initial raw attributes have, for example,  mean  0 and standard deviation 1 (e.g. `scaledGMAT = (GMAT-mean(GMAT)) / sd(GMAT)`), or scaling them between 0 and 1 (e.g. `scaledGMAT = (GMAT-min(GMAT)) / (max(GMAT)-min(GMAT))`). Here is for example the R code for the first approach, if we want to standardize all attributes:
 
 ```{r, echo=TRUE, tidy=TRUE}
 ProjectDatafactor_scaled=apply(ProjectDataFactor,2, function(r) {if (sd(r)!=0) res=(r-mean(r))/sd(r) else res=0*r; res})
@@ -200,9 +202,9 @@ While this is typically a necessary step, one has to always do it with care: som
 
 ## Step 3:  Check correlations 
 
-The type of dimensionality reduction methods we will use here "groups together raw attributes that are highly correlated". Other methods (there are many!) use different criteria to create derived variables.  For this to be feasible, it is necessary that the original raw attributes do have large enough correlations (e.g. more than 0.5 in absolute value, or simply statistically significant). It is therefore useful to see the correlation matrix of the original attributes - something that one should anyway always do in order to develop a better understanding of the data. 
+The type of dimensionality reduction methods we will use here "group together raw attributes that are highly correlated". Other methods (there are many!) use different criteria to create derived variables.  For this to be feasible, it is necessary that the original raw attributes do have large enough correlations (e.g. more than 0.5 in absolute value, or simply statistically significant). It is therefore useful to see the correlation matrix of the original attributes - something that one should anyway always do in order to develop a better understanding of the data. 
 
-This is the correlation matrix of the `r length(factor_attributes_used)` original variable we use for factor analysis (Note: this would be the same for the standardized ones if the standardization is done as above; there is a mathematical reason for this that we will not explore - you could confirm it yourself):
+This is the correlation matrix of the `r length(factor_attributes_used)` original variables we use for factor analysis (Note: this would be the same for the standardized ones if the standardization is done as above; there is a mathematical reason for this that we will not explore - you could confirm it yourself):
 
 ```{r}
 thecor = round(cor(ProjectDataFactor),2)
