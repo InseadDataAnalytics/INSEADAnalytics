@@ -62,10 +62,10 @@ opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
 options(knitr.kable.NA = '')
 
+# Run below only once, then comment out
 # New versions of the networkD3 package may not work properly, so install the following version
 packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
 install.packages(packageurl, repos=NULL, type="source")
-#require("https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz")
 ```
 
 <hr>\clearpage
@@ -132,7 +132,7 @@ rotation_used = "varimax"
 ```{r}
 factor_attributes_used <- intersect(factor_attributes_used, 1:ncol(ProjectData))
 ProjectDataFactor <- ProjectData[,factor_attributes_used]
-ProjectDataFactor <- ProjectData <- data.matrix(ProjectDataFactor)
+ProjectDataFactor <- data.matrix(ProjectDataFactor)
 ```
 
 ## Steps 1-2: Check the Data 
@@ -176,6 +176,7 @@ iprint.df(round(thecor,2), scale=TRUE)
 *
 *
 *
+
 
 ## Step 4: Choose number of factors
 
@@ -387,6 +388,7 @@ ProjectData_scaled <- apply(ProjectData, 2, function(r) if (sd(r)!=0) (r-mean(r)
 ## Step 3. Select Segmentation Variables
 
 For simplicity will use one representative question for each of the factor we found in Part 1 (we can also use the "factor scores" for each respondent) to represent our survey respondents. These are the `segmentation_attributes_used` selected below. We can choose the question with the highest absolute factor loading for each factor. For example, when we use 5 factors with the varimax rotation we can select questions Q.1.9 (I see my boat as a status symbol), Q1.18 (Boating gives me a feeling of adventure), Q1.4 (I only consider buying a boat from a reputable brand), Q1.11 (I tend to perform minor boat repairs and maintenance on my own) and Q1.2 (When buying a boat  getting the lowest price is more important than the boat brand) - try it. These are columns 10, 19, 5, 12, and 3, respectively of the data matrix `Projectdata`. 
+
 ## Step 4: Define similarity measure
 
 We need to define a distance metric that measures how different people (observations in general) are from each other. This can be an important choice. Here are the differences between the observations using the distance metric we selected:
