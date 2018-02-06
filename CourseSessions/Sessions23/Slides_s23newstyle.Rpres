@@ -481,9 +481,9 @@ if(ncol(NEW_ProjectData) >= 2) {
   df1  <- cbind(NEW_ProjectData[, 1], NEW_ProjectData[, 2])
   df1  <- as.data.frame(df1)
   sca1 <- gvisScatterChart(df1, options=list(legend="none",
-                                             lineWidth=0, pointSize=8, hAxis.title="Derived Variable (Factor) 2",
-                                             title="Data Visualization Using the top 2 Derived Attributes (Factors)", vAxis="{title:'Derived Variable (Factor) 1'}",
-                                             hAxis="{title:'Derived Variable (Factor) 2'}", width=900, height=500))
+                                             lineWidth=0, pointSize=8, hAxis.title="Derived Variable (Factor) 1",
+                                             title="Data Visualization Using the top 2 Derived Attributes (Factors)", vAxis="{title:'Derived Variable (Factor) 2'}",
+                                             hAxis="{title:'Derived Variable (Factor) 1'}", width=900, height=500))
   print(sca1,'chart')
   } else {
     df2  <- cbind(NEW_ProjectData[, 1], ProjectData[, 1])
