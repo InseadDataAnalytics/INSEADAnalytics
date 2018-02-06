@@ -407,8 +407,15 @@ We learn a new way/"process" for doing and communicating analytics with reproduc
   
 
   <p style="text-align: justify;">Prepare <strong> before class</strong>:  </p>
-
-  <p style="text-align: justify; padding-left: 60px;">  Make sure you can "knit" the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd"  target="_blank"> market segmentation process  document  </a> and generate an html report  (check out this <a  href="https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/69"  target="_blank"> issue </a> if needed). </p>
+  
+        <p style="text-align: justify; padding-left: 60px;">	Set yourself up for the market segmentation notebook by following the steps below. If you are having issues, reach out to the TA.</a> </p>
+      <ol>
+      <li> Follow the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/wiki/Getting-Started-with-GitHub" target="_blank"> "Getting Started with GitHub" instructions</a>. When done, you now have cloned the course's Git repository on a local directory on your computer.</li>
+      <li> In RStudio, change the working directory to "/MYDIRECTORY/INSEADAnalytics", where you have cloned the course's Git repository. How to do this? You can see the current working directory by running getwd() in the RStudio console and you can change the working directory by running setwd("/MYDIRECTORY/INSEADAnalytics") in the RStudio console, where MYDIRECTORY is the local directory where you chose to clone the INSEADAnalytics Git repository on your computer.</li>
+      <li> You are now set up to "knit" the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/InClassProcess/MarketSegmentationProcessInClass.html"  target="_blank">Market Segmentation Process</a>. To "knit" means to generate a document that includes both content as well as the output of any embedded R code chunks within the document. Knit the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd" target="_blank"> MarketSegmentationProcessInClass.Rmd file</a> (you may find convenient to customize the name of this file in your local directory) to generate a html report, which you can then open with a browser. </li>
+      <li> When knitting, you may run into <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/69" target="_blank"> this issue</a>. You can resolve it by running in your RStudio console the command rmarkdown::render("CourseSessions/InClassProcess/customized_filename_of_MarketSegmentationProcessInClass.Rmd"), which will create the customized_filename_of_MarketSegmentationProcessInClass.html file in your local directory CourseSessions/InClassProcess. </li>
+      <li> Optional. Please refer to this  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/reusability_example.html" target="_blank">example of a scalable reusable work</a>: explore this example of how to use the tools to generate reusable (long) reports efficiently. How many lines do you need to edit in order to generate this long report? Here is the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/reusability_example.Rmd" target="_blank">source code </a>  that generated this report. </li>
+    </ol>
   
    <p style="text-align: justify; padding-left: 60px;">Explore some <a href="http://rstudio.github.io/shinydashboard/" target="_blank">Shiny Dashboard </a> visualization tools  </p>
 
@@ -426,7 +433,7 @@ We learn a new way/"process" for doing and communicating analytics with reproduc
 
 <p style="text-align: justify;">Homework for next time </p>
 
-<p style="text-align: justify; padding-left: 60px;">	Case: Boats (A): A Segmentation Case. Complete the segmentation process and your answers to the questions. Submit a .Rmd file and a .html file on the <a href="https://mbacourse.insead.edu/courses/DSC/SGP_P3_Data_Science_for_Business_OvchinnikovZoumpoulis_1830_July/pages/default.aspx" target="_blank">INSEAD course portal </a>  by 8.25am the day of Sessions #11-12. </p>
+<p style="text-align: justify; padding-left: 60px;">	Case: Boats (A): A Segmentation Case. Complete the segmentation process and your answers to the questions of Parts 1 and 2 of the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/InClassProcess/MarketSegmentationProcessInClass.html"  target="_blank">Market Segmentation Process</a>. Submit a .Rmd file and a .html file on the <a href="https://mbacourse.insead.edu/courses/DSC/SGP_P3_Data_Science_for_Business_OvchinnikovZoumpoulis_1830_July/pages/default.aspx" target="_blank">INSEAD course portal </a>  by 8.25am the day of Sessions #11-12. </p>
 
 <br>
 <h4>Sessions 11-12: Catch-up and wrap-up; Guest speaker  </h4>
