@@ -26,7 +26,7 @@ libraries_used=c("devtools","knitr","graphics","grDevices","xtable","pryr",
                  "psych","stringr","googleVis", "png","ggplot2","googleVis", 
                  "gridExtra", "reshape2", "DT", "ramnathv/slidifyLibraries",
                  "ramnathv/slidify", "cttobin/ggthemr", "dplyr","vkapartzianis/formattable", "ggdendro","ROCR",
-                 "networkD3","rpart.plot","mrjoh3/c3","glmnet","hong-revo/glmnetUtils")
+                 "networkD3","rpart.plot","mrjoh3/c3","glmnet","hong-revo/glmnetUtils","randomForest","xgboost")
 get_libraries(libraries_used)
 #############
 
