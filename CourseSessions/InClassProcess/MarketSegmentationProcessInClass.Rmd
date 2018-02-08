@@ -64,8 +64,8 @@ options(knitr.kable.NA = '')
 
 # Run below only once, then comment out
 # New versions of the networkD3 package may not work properly, so install the following version
-packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
-install.packages(packageurl, repos=NULL, type="source")
+#packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
+#install.packages(packageurl, repos=NULL, type="source")
 ```
 
 <hr>\clearpage
@@ -409,7 +409,7 @@ We can see the histogram of, say, the first 2 variables (can you change the code
 ```{r}
 variables_to_plot = 1:2
 do.call(iplot.grid, lapply(variables_to_plot, function(n){
-  iplot.hist(ProjectData_segment[, n], breaks=5, xlab = paste("Variable", n))
+  iplot.hist(ProjectData_segment[, n], breaks=10, xlab = paste("Variable", n))
 }))
 ```
 
@@ -430,7 +430,7 @@ Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_met
 # Display dendogram
 iplot.dendrogram(Hierarchical_Cluster)
 # TODO: Draw dendogram with red borders around the 3 clusters
-# rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
+#rect.hclust(Hierarchical_Cluster, k=numb_clusters_used, border="red") 
 ```
 
 We can also plot the "distances" traveled before we need to merge any of the lower and smaller in size clusters into larger ones - the heights of the tree branches that link the clusters as we traverse the tree from its leaves to its root. If we have n observations, this plot has n-1 numbers, we see the first 20 here. 
@@ -444,7 +444,7 @@ iplot.df(melt(head(df1, 20), id="index"), xlab="Number of Components")
 Here is the segment membership of the first `r max_data_report` respondents if we use hierarchical clustering:
 
 ```{r}
-cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into as many clusters as numb_clusters_used
 cluster_ids_hclust=unique(cluster_memberships_hclust)
 
 ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
