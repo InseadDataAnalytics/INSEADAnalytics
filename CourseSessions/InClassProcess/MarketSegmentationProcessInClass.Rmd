@@ -64,8 +64,8 @@ options(knitr.kable.NA = '')
 
 # Run below only once, then comment out
 # New versions of the networkD3 package may not work properly, so install the following version
-#packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
-#install.packages(packageurl, repos=NULL, type="source")
+packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
+install.packages(packageurl, repos=NULL, type="source")
 ```
 
 <hr>\clearpage
