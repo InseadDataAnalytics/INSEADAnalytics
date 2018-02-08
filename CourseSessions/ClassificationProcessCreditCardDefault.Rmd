@@ -1,0 +1,965 @@
+---
+title: "Classification for Credit Card Default"
+author: "Theos Evgeniou, Spyros Zoumpoulis"
+output:
+  html_document:
+    css: ../AnalyticsStyles/default.css
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    includes:
+      in_header: ../AnalyticsStyles/default.sty
+always_allow_html: yes
+---
+
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command rmarkdown::render("CourseSessions/ClassificationProcessCreditCardDefault.Rmd") -->
+
+```{r echo=FALSE, message=FALSE}
+make_pdf_file = 0 # SET THIS TO 1 IF WE COMPILE PDF FILE, 0 OTHERWISE (FOR HTML)
+
+source("../AnalyticsLibraries/library.R")
+source("../AnalyticsLibraries/heatmapOutput.R")
+
+# Package options
+ggthemr('fresh')  # ggplot theme
+opts_knit$set(progress=FALSE, verbose=FALSE)
+opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.2)
+options(knitr.kable.NA = '')
+```
+
+```{r echo=FALSE, message=FALSE}
+# Please ENTER the filename
+datafile_name = "../Data/UCI_Credit_Card.csv"
+ProjectData <- read.csv(datafile_name)
+# We turn the data into data.matrix class so that we can easier manipulate it
+ProjectData <- data.matrix(ProjectData)
+
+# Please ENTER the dependent variable (class).
+# Please use numbers, not column names. E.g., 82 uses the 82nd column as the dependent variable.
+# You need to make sure that dependent variable takes only two values: 0 and 1.
+dependent_variable = 25
+
+# Please ENTER the attributes to use as independent variables. 
+# Please use numbers, not column names. E.g., c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8.
+independent_variables = c(1:24) # use all the available attributes
+
+dependent_variable = unique(sapply(dependent_variable,function(i) min(ncol(ProjectData), max(i,1))))
+independent_variables = unique(sapply(independent_variables,function(i) min(ncol(ProjectData), max(i,1))))
+
+if (length(unique(ProjectData[,dependent_variable])) !=2){
+  cat("\n*****\n BE CAREFUL, THE DEPENDENT VARIABLE TAKES MORE THAN 2 VALUES")
+  cat("\nSplitting it around its median...\n*****\n ")
+  new_dependent = ProjectData[,dependent_variable] >= median(ProjectData[,dependent_variable])
+  ProjectData[,dependent_variable] <- 1*new_dependent
+}
+
+# Please ENTER the probability threshold above which an observation is predicted as class 1:
+Probability_Threshold = 0.5 # between 0 and 1
+
+# Please ENTER the percentage of data used for estimation
+estimation_data_percent = 80
+validation_data_percent = 10
+test_data_percent = 100-estimation_data_percent-validation_data_percent
+
+# Please ENTER 1 if you want to randomly split the data in estimation and validation/test
+random_sampling = 1
+
+# Tree parameter
+# Please ENTER the tree (CART) complexity control cp (e.g. 0.0001 to 0.02, depending on the data)
+CART_cp = 0.0025
+CART_control = rpart.control(cp = CART_cp)
+
+# Please ENTER the words for the business interpretation of class 1 and class 0:
+class_1_interpretation = "default"
+class_0_interpretation = "no default"
+
+# Please ENTER the profit/cost values for correctly classified and misclassified data:
+actual_1_predict_1 = 0
+actual_1_predict_0 = -100000
+actual_0_predict_1 = 0
+actual_0_predict_0 = 20000
+
+Profit_Matrix = matrix(c(actual_1_predict_1, actual_0_predict_1, actual_1_predict_0, actual_0_predict_0), ncol=2)
+colnames(Profit_Matrix) <- c(paste("Predict 1 (", class_1_interpretation, ")", sep = ""), paste("Predict 0 (", class_0_interpretation, ")", sep = ""))
+rownames(Profit_Matrix) <- c(paste("Actual 1 (", class_1_interpretation, ")", sep = ""), paste("Actual 0 (", class_0_interpretation, ")", sep = ""))
+
+# Please ENTER the maximum number of observations to show in the report and slides 
+# (DEFAULT is 50. If the number is large the report and slides may not be generated - very slow or will crash!!)
+max_data_report = 10 
+```
+
+# The Business Context
+A Taiwan-based credit card issuer wants to better predict the likelihood of default for its customers, as well as identify the key drivers that determine this likelihood. This would inform the issuer's decisions on who to give a credit card to and what credit limit to provide. It would also help the issuer have a better understanding of their current and potential customers, which would inform their future strategy, including their planning of offering targeted credit products to their customers. 
+
+
+
+<hr>\clearpage
+
+# The Data
+(Data source: https://www.kaggle.com/uciml/default-of-credit-card-clients-dataset. We acknowledge the following:
+Lichman, M. (2013). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.)
+
+The credit card issuer has gathered information on `r nrow(ProjectData)` customers. The dataset contains information on `r length(independent_variables)` variables, including demographic factors, credit data, history of payment, and bill statements of credit card customers from April 2005 to September 2005, as well as information on the outcome: did the customer default or not?
+
+Name                       | Description
+:--------------------------|:--------------------------------------------------------------------
+ID                         | ID of each client
+LIMIT_BAL                  | Amount of given credit in NT dollars (includes individual and family/supplementary credit)
+SEX                        | Gender (1=male, 2=female)
+EDUCATION                  | (1=graduate school, 2=university, 3=high school, 4=others, 5=unknown, 6=unknown)
+MARRIAGE                   | Marital status (1=married, 2=single, 3=others)
+AGE                        | Age in years
+PAY_0                      | Repayment status in September, 2005 (-2=no consumption, -1=pay duly, 0=the use of revolving credit, 1=payment delay for one month, 2=payment delay for two months, ... 8=payment delay for eight months, 9=payment delay for nine months and above)
+PAY_2                      | Repayment status in August, 2005 (scale same as above)
+PAY_3                      | Repayment status in July, 2005 (scale same as above)
+PAY_4                      | Repayment status in June, 2005 (scale same as above)
+PAY_5                      | Repayment status in May, 2005 (scale same as above)
+PAY_6                      | Repayment status in April, 2005 (scale same as above)
+BILL_AMT1                  | Amount of bill statement in September, 2005 (NT dollar)
+BILL_AMT2                  | Amount of bill statement in August, 2005 (NT dollar)
+BILL_AMT3                  | Amount of bill statement in July, 2005 (NT dollar)
+BILL_AMT4                  | Amount of bill statement in June, 2005 (NT dollar)
+BILL_AMT5                  | Amount of bill statement in May, 2005 (NT dollar)
+BILL_AMT6                  | Amount of bill statement in April, 2005 (NT dollar)
+PAY_AMT1                   | Amount of previous payment in September, 2005 (NT dollar)
+PAY_AMT2                   | Amount of previous payment in August, 2005 (NT dollar)
+PAY_AMT3                   | Amount of previous payment in July, 2005 (NT dollar)
+PAY_AMT4                   | Amount of previous payment in June, 2005 (NT dollar)
+PAY_AMT5                   | Amount of previous payment in May, 2005 (NT dollar)
+PAY_AMT6                   | Amount of previous payment in April, 2005 (NT dollar)
+default.payment.next.month | Default payment (1=yes, 0=no)
+
+Let's look into the data for a few customers. This is how the first `r min(max_data_report, nrow(ProjectData))` out of the total of `r nrow(ProjectData)` rows look like (transposed, for convenience):
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+knitr::kable({
+  df <- t(head(round(ProjectData[,independent_variables],2), max_data_report))
+  colnames(df) <- sprintf("%02d", 1:ncol(df))
+  df
+})
+```
+
+<hr>\clearpage
+
+
+# A Process for Classification
+
+> It is important to remember that data analytics projects require a delicate balance between experimentation, intuition, and following a process. The value of following a process is so as to avoid getting fooled by randomness in data and finding "results and patterns" that are mainly driven by our own biases and not by the facts/data themselves.
+
+*There is no single best process* for classification. However, we have to start somewhere, so we will use the following process:
+
+1. Create an estimation sample and two validation samples by splitting the data into three groups. Steps 2-5 below will then be performed only on the estimation and the first validation data. You should only do step 6 once on the second validation data, also called **test data**, and only report/use the performance on that (second validation) data to make final business decisions. 
+2. Set up the dependent variable (as a categorical 0-1 variable; multi-class classification is also feasible, and similar, but we do not explore it in this note). 
+3. Make a preliminary assessment of the relative importance of the explanatory variables using visualization tools and simple descriptive statistics. 
+4. Estimate the classification model using the estimation data, and interpret the results.
+5. Assess the accuracy of classification in the first validation sample, possibly repeating steps 2-5 a few times changing the classifier in different ways to increase performance.
+6. Finally, assess the accuracy of classification in the second validation sample. You should eventually use and report all relevant performance measures and plots on this second validation sample only.
+
+Let's follow these steps.
+
+
+## Step 1: Split the data 
+It is very important that you (or the data scientists working on the project) finally measure and report the performance of the models on **data that have not been used at all during the analysis, called "out-of-sample" or test data** (steps 2-5 above). The idea is that in practice we want our models to be used for predicting the class of observations/data we have not seen yet (i.e., "the future data"): although the performance of a classification method may be high in the data used to estimate the model parameters, it may be significantly poorer on data not used for parameter estimation, such as the **out-of-sample** (future) data. 
+
+This is why we split the data into an estimation sample and two validation samples  - using some kind of randomized splitting technique. The second validation data mimic out-of-sample data, and the performance on this validation set is a better approximation of the performance one should expect in practice from the selected classification method. The estimation data and the first validation data are used during steps 2-5 (with a few iterations of these steps), while the second validation data is only used once at the very end before making final business decisions based on the analysis. The split can be, for example, 80% estimation, 10% validation, and 10% test data, depending on the number of observations - for example, when there is a lot of data, you may only keep a few hundreds of them for the validation and test sets, and use the rest for estimation. 
+
+While setting up the estimation and validation samples, you should also check that the same proportion of data from each class (i.e., customers who default versus not) are maintained in each sample. That is, you should maintain the same balance of the dependent variable categories as in the overall dataset. 
+
+For simplicity, in this note we will not iterate steps 2-5. In practice, however, we should usually iterate steps 2-5 a number of times using the first validation sample each time, and at the end make our final assessment of the classification model using the test sample only once. 
+
+```{r echo=FALSE}
+if (random_sampling){
+  estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
+  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids) #setdiff(x,y) returns the elements of x that are not in y
+  validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
+  } else {
+    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    }
+
+test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
+
+estimation_data=ProjectData[estimation_data_ids,]
+validation_data=ProjectData[validation_data_ids,]
+test_data=ProjectData[test_data_ids,]
+```
+
+We typically refer to the three data samples as **estimation data** (`r estimation_data_percent`% of the data in our case), **validation data**  (`r validation_data_percent`% of the data) and **test data** (the remaining `r 100 - estimation_data_percent  -  validation_data_percent`% of the data).
+
+In our case we use `r nrow(estimation_data)` observations in the estimation data, `r nrow(validation_data)` in the validation data, and `r nrow(test_data)` in the test data. 
+
+
+
+## Step 2: Set up the dependent variable
+First, make sure the dependent variable is set up as a categorical 0-1 variable. In our illustrative example, we use the payment default (or no default) as the dependent variable. 
+
+The data however may not be always readily available with a categorical dependent variable. Suppose a retailer wants to understand what discriminates consumers who are  loyal versus those who are not. If they have data on the amount that customers spend in their store or the frequency of their purchases, they can create a categorical variable ("loyal vs. not loyal") by using a definition such as: "A loyal customer is one who spends more than X amount at the store and makes at least Y purchases a year". They can then code these loyal customers as "1" and the others as "0". They can choose the thresholds X and Y as they wish: a definition/decision that may have a big impact in the overall analysis. This decision can be the most crucial one of the whole data analysis: a wrong choice at this step may lead both to poor performance later as well as to no valuable insights. One should revisit the choice made at this step several times, iterating steps 2-3 and 2-5.
+
+> Carefully deciding what the dependent 0/1 variable is can be the most critical choice of a classification analysis. This decision typically depends on contextual knowledge and needs to be revisited multiple times throughout a data analytics project. 
+
+In our data the number of 0/1's in our estimation sample is as follows:
+
+```{r echo=FALSE}
+class_percentages=matrix(c(sum(estimation_data[,dependent_variable]==1),sum(estimation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
+rownames(class_percentages)<-"# of Observations"
+knitr::kable(class_percentages)
+```
+
+while in the validation sample they are:
+
+```{r echo=FALSE}
+class_percentages=matrix(c(sum(validation_data[,dependent_variable]==1),sum(validation_data[,dependent_variable]==0)), nrow=1); colnames(class_percentages)<-c("Class 1", "Class 0")
+rownames(class_percentages)<-"# of Observations"
+knitr::kable(class_percentages)
+```
+
+
+## Step 3: Simple Analysis
+Good data analytics start with good contextual knowledge as well as a simple statistical and visual exploration of the data. In the case of classification, one can explore "simple classifications" by assessing how the classes differ along any of the independent variables. For example, these are the statistics of our independent variables across the two classes in the estimation data, class 1 ("default"):
+
+```{r echo=FALSE}
+knitr::kable(round(my_summary(estimation_data[estimation_data[,dependent_variable]==1,independent_variables]),2))
+```
+
+and class 0 ("no default"):
+
+```{r echo=FALSE}
+knitr::kable(round(my_summary(estimation_data[estimation_data[,dependent_variable]==0,independent_variables]),2))
+```
+
+The purpose of such an analysis by class is to get an initial idea about whether the classes are indeed separable as well as to understand which of the independent variables have most discriminatory power. 
+
+Notice however that
+
+> Even though each independent variable may not differ across classes, classification may still be feasible: a (linear or nonlinear) combination of independent variables may still be discriminatory. 
+
+A simple visualization tool to assess the discriminatory power of the independent variables are the **box plots**. A box plot visually indicates simple summary statistics of an independent variable (e.g. mean, median, top and bottom quantiles, min, max, etc.). For example consider the box plots for our estimation data for the repayment status variables, for class 1
+
+```{r echo=FALSE, fig.height=4.5}
+# Please ENTER the selected independent variables for which to draw box plots. 
+# Please use numbers, not column names. E.g., c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8.
+boxplots_independent_variables = c(7:12) # use only the PAY_ variables
+
+DVvalues = unique(estimation_data[,dependent_variable])
+x0 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[1]),boxplots_independent_variables]
+x1 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[2]),boxplots_independent_variables]
+colnames(x0) <- 1:ncol(x0)
+colnames(x1) <- 1:ncol(x1)
+
+swatch.default <- as.character(swatch())
+set_swatch(c(swatch.default[1], colorRampPalette(RColorBrewer::brewer.pal(12, "Paired"))(ncol(x1))))
+ggplot(melt(cbind.data.frame(n=1:nrow(x1), x1), id="n"), aes(x=n, y=value, colour=variable)) + geom_boxplot(fill="#FFFFFF", size=0.66, position=position_dodge(1.1*nrow(x1)))
+set_swatch(swatch.default)
+```
+
+and class 0:
+
+```{r echo=FALSE, fig.height=4.5}
+swatch.default <- as.character(swatch())
+set_swatch(c(swatch.default[1], colorRampPalette(RColorBrewer::brewer.pal(12, "Paired"))(ncol(x0))))
+ggplot(melt(cbind.data.frame(n=1:nrow(x0), x0), id="n"), aes(x=n, y=value, colour=variable)) + geom_boxplot(fill="#FFFFFF", size=0.66, position=position_dodge(1.1*nrow(x0)))
+set_swatch(swatch.default)
+```
+
+**Questions:**
+
+1. Draw the box plots for class 1 and class 0 for another set of independent variables of your choice.
+2. Which independent variables appear to have the most discriminatory power?
+
+**Answers:**
+
+*
+*
+
+
+## Step 4: Classification and Interpretation
+Once we decide which  dependent and independent variables to use (which can be revisited in later iterations), one can use a number of classification methods to develop a model that discriminates the different classes. 
+
+> Some of the widely used classification methods are:  classification and regression trees (CART), boosted trees, support vector machines, neural networks, nearest neighbors, logistic regression, lasso, random forests, deep learning methods, etc.
+
+In this note we will consider for simplicity only two classification methods: **logistic regression** and **classification and regression trees (CART)**. However, replacing them with other methods is relatively simple (although some knowledge of how these methods work is often necessary - see the R help command for the methods if needed). Understanding how these methods work is beyond the scope of this note - there are many references available online for all these classification methods. 
+
+**Logistic Regression**: Logistic Regression is a method similar to linear regression except that the dependent variable is discrete (e.g., 0 or 1). **Linear** logistic regression estimates the coefficients of a linear model using the selected independent variables while optimizing a classification criterion. For example, this is the logistic regression parameters for our data:
+
+
+```{r echo=FALSE}
+# We first turn the data into data.frame's
+estimation_data = data.frame(estimation_data)
+validation_data = data.frame(validation_data)
+test_data = data.frame(test_data)
+
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~") # When drop is FALSE, the dimensions of the object are kept. head(x,-1) returns all but the last element of x.
+
+logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
+log_coefficients <- round(summary(logreg_solution)$coefficients,1)
+
+knitr::kable(round(log_coefficients,2))
+```
+
+Given a set of independent variables, the output of the estimated logistic regression (the sum of the products of the independent variables with the corresponding regression coefficients) can be used to assess the probability an observation belongs to one of the classes. Specifically, the regression output can be transformed into a probability of belonging to, say, class 1 for each observation. The estimated probability that a validation observation belongs to class 1 (e.g., the estimated probability that the customer defaults) for the first few validation observations, using the logistic regression above, is:
+
+```{r echo=FALSE}
+# Let's get the probabilities for the 3 types of data from the logistic regression
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+
+# Let's get the decision of the logistic regression for the 3 types of data 
+estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
+validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
+test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_log,validation_Probability_class1_log)
+rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
+```
+
+The default decision is to classify each observation in the group with the highest probability - but one can change this choice, as we discuss below.
+
+Selecting the best subset of independent variables for logistic regression, a special case of the general problem of **feature selection**, is an iterative process where both the significance of the regression coefficients as well as the performance of the estimated logistic regression model on the first validation data are used as guidance. A number of variations are tested in practice, each leading to different performance. 
+
+
+**CART**: CART is a widely used classification method largely because the estimated classification models are easy to interpret. This classification tool iteratively "splits" the data using the most discriminatory independent variable at each step, building a "tree" - as shown below - on the way. The CART methods **limit the size of the tree** using various statistical techniques in order to avoid **overfitting the data**. For example, using the rpart and rpart.control functions in R, we can limit the size of the tree by selecting the functions' **complexity control** parameter **cp**. (What this parameter does exactly is beyond the scope of this note. For the rpart and rpart.control functions in R, smaller values, e.g. cp=0.0001, lead to larger trees, as we will see next.)
+
+> One of the biggest risks when developing classification models is overfitting: while it is always trivial to develop a model (e.g., a tree) that classifies any (estimation) dataset with no misclassification error at all, there is no guarantee that the quality of a classifier in out-of-sample data (e.g., in the validation data) will be close to that in the estimation data. Striking the right balance between "overfitting" and "underfitting" is one of the most important aspects in data analytics. While there are a number of statistical techniques to help us strike this balance - including the use of validation data - it is largely a combination of good statistical analysis and qualitative criteria (such as the interpretability and simplicity of the estimated models) that leads to classification models that work well in practice. 
+
+Running a basic CART model with complexity control cp=`r CART_cp`,  leads to the following tree (**NOTE**: for better readability of the tree figures below,  we will rename the independent variables as IV1 to `r paste("IV", length(independent_variables), sep="")` when using CART):
+
+```{r echo=FALSE}
+# Name the variables numerically so that they look ok on the tree plots
+independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
+
+estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
+colnames(estimation_data_nolabel)<- c(colnames(estimation_data)[dependent_variable],independent_variables_nolabel)
+
+validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
+colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+test_data_nolabel = cbind(test_data[,dependent_variable], test_data[,independent_variables])
+colnames(test_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+estimation_data_nolabel = data.frame(estimation_data_nolabel)
+validation_data_nolabel = data.frame(validation_data_nolabel)
+test_data_nolabel = data.frame(test_data_nolabel)
+
+formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+
+rpart.plot(CART_tree, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
+```
+
+The leaves of the tree indicate the number of estimation data observations that "reach that leaf" that belong to each class. A perfect classification would only have data from one class in each of the tree leaves. However, such a perfect classification of the estimation data would most likely not be able to classify well out-of-sample data due to overfitting of the estimation data.
+
+```{r echo=FALSE}
+# Tree parameter
+# Please ENTER the new tree (CART) complexity control cp 
+CART_cp = 0.00068
+```
+
+One can estimate larger trees through changing the tree's **complexity control** parameter (in this case the rpart.control argument cp). For example, this is how the tree would look like if we set cp=`r toString(CART_cp)`:
+
+```{r echo=FALSE}
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = CART_cp))
+rpart.plot(CART_tree_large, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
+```
+
+One can also use the percentage of data in each leaf of the tree to get an estimate of the probability that an observation (e.g., customer) belongs to a given class. The **purity of the leaf** can indicate the probability that an observation that "reaches that leaf" belongs to a class. In our case, the probability our validation data belong to class 1 (i.e., a customer's likelihood of default) for the first few validation observations, using the first CART above, is:
+
+```{r echo=FALSE}
+# Let's first calculate all probabilites for the estimation, validation, and test data
+estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
+estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
+
+validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
+validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
+
+test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
+test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
+
+estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
+estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
+
+validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
+validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
+
+test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
+test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_tree,validation_Probability_class1_tree)
+rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+Classification_Table_large=rbind(validation_data[,dependent_variable],validation_prediction_class_tree_large,validation_Probability_class1_tree_large)
+rownames(Classification_Table_large)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
+
+knitr::kable(head(t(round(Classification_Table,2)), max_data_report))
+```
+
+The table above assumes that the **probability threshold** for considering an observations as "class 1" is `r Probability_Threshold`. In practice we need to select the probability threshold: this is an important choice that we will discuss below.
+
+**Question:**
+
+Run CART for complexity parameter cp=0.0001 or smaller. Is it practical to run? Is it practical to interpret? Do you trust the classifier?
+
+**Answer:**
+
+*
+
+
+We have already discussed feature selection and complexity control for classification methods. In our case, we can see the relative importance of the independent variables using the `variable.importance` of the CART trees (see `help(rpart.object)` in R) or the z-scores from the output of logistic regression. For easier visualization, we scale all values between -1 and 1 (the scaling is done for each method separately - note that CART does not provide the sign of the "coefficients"). From this table we can see the **key drivers** of the classification according to each of the methods we used here. 
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, results='asis'}
+log_importance = tail(log_coefficients[,"z value", drop=F],-1) # remove the intercept
+log_importance = log_importance/max(abs(log_importance))
+
+tree_importance = CART_tree$variable.importance
+tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree$variable.importance)))
+tree_importance_final = rep(0,length(independent_variables))
+tree_importance_final[tree_ordered_drivers] <- tree_importance
+tree_importance_final <- tree_importance_final/max(abs(tree_importance_final))
+tree_importance_final <- tree_importance_final*sign(log_importance)
+
+large_tree_importance = CART_tree_large$variable.importance
+large_tree_ordered_drivers = as.numeric(gsub("\\IV"," ",names(CART_tree_large$variable.importance)))
+large_tree_importance_final = rep(0,length(independent_variables))
+large_tree_importance_final[large_tree_ordered_drivers] <- large_tree_importance
+large_tree_importance_final <- large_tree_importance_final/max(abs(large_tree_importance_final))
+large_tree_importance_final <- large_tree_importance_final*sign(log_importance)
+
+Importance_table <- cbind(log_importance,tree_importance_final,large_tree_importance_final)
+colnames(Importance_table) <- c("Logistic Regression", "CART 1", "CART 2")
+rownames(Importance_table) <- rownames(log_importance)
+## printing the result in a clean-slate table
+knitr::kable(round(Importance_table,2))
+```
+
+In general it is not necessary for all methods to agree on the most important drivers: when there is "major" disagreement, particularly among models that have satisfactory performance as discussed next, we may need to reconsider the overall analysis, including the objective of the analysis as well as the data used, as the results may not be robust. **As always, interpreting and using the results of data analytics requires a balance between quantitative and qualitative analysis.** 
+
+
+
+## Step 5: Validation accuracy
+Using the predicted class probabilities of the validation data, as outlined above, we can  generate some measures of classification performance. Before discussing them, note that given the probability an observation belongs to a class, **a reasonable class prediction choice is to predict the class that has the highest probability**. However, this does not need to be the only choice in practice.
+
+> Selecting the probability threshold based on which we predict the class of an observation is a decision the user needs to make. While in some cases a reasonable probability threshold is 50%, in other cases it may be 99.9% or 0.1%.
+
+**Question:**
+
+1. Can you think of such a scenario?
+2. What probability threshold do you think would make sense in this case of credit card default classification?
+
+**Answer:**
+
+*
+*
+
+For different choices of the probability threshold, one can measure a number of classification performance metrics, which are outlined next.
+
+### 1.  Hit ratio
+This is the percentage of the observations that have been correctly classified (i.e., the predicted class and the actual class are the same). We can just count the number of the validation data correctly classified and divide this number with the total number of the validation data, using the two CART and the logistic regression above. These are as follows for probability threshold `r Probability_Threshold*100`%:
+
+```{r echo=FALSE}
+validation_actual=validation_data[,dependent_variable]
+validation_predictions = rbind(validation_prediction_class_log,
+                               validation_prediction_class_tree,
+                               validation_prediction_class_tree_large)
+validation_hit_rates = rbind(
+  100*sum(validation_prediction_class_log==validation_actual)/length(validation_actual),
+  100*sum(validation_prediction_class_tree==validation_actual)/length(validation_actual), 
+  100*sum(validation_prediction_class_tree_large==validation_actual)/length(validation_actual)
+  )
+colnames(validation_hit_rates) <- "Hit Ratio"
+rownames(validation_hit_rates) <- c("Logistic Regression", "First CART", "Second CART")
+knitr::kable(validation_hit_rates)
+```
+
+For the estimation data, the hit rates are:
+```{r echo=FALSE}
+estimation_actual=estimation_data[,dependent_variable]
+estimation_predictions = rbind(estimation_prediction_class_log,
+                               estimation_prediction_class_tree,
+                               estimation_prediction_class_tree_large)
+estimation_hit_rates = rbind(
+  100*sum(estimation_prediction_class_log==estimation_actual)/length(estimation_actual),
+  100*sum(estimation_prediction_class_tree==estimation_actual)/length(estimation_actual), 
+  100*sum(estimation_prediction_class_tree_large==estimation_actual)/length(estimation_actual)
+  )
+colnames(estimation_hit_rates) <- "Hit Ratio"
+rownames(estimation_hit_rates) <- c("Logistic Regression","First CART", "Second CART")
+knitr::kable(estimation_hit_rates)
+```
+
+A simple benchmark to compare the hit ratio performance of a classification model against is the **Maximum Chance Criterion**. This measures the proportion of the class with the largest size. For our validation data the largest group is customers who do not default: `r sum(!validation_actual)` out of `r length(validation_actual)` customers). Clearly, if we classified all individuals into the largest group, we could get a hit ratio of `r round(100*sum(!validation_actual)/length(validation_actual), 2)`% without doing any work. One should have a hit rate of at least as much as the Maximum Chance Criterion rate, although as we discuss next there are more performance criteria to consider. 
+
+### 2. Confusion matrix
+The confusion matrix shows for each class the number (or percentage) of the  data that are correctly classified for that class. For example, for the method above with the highest hit rate in the validation data (among logistic regression and the 2 CART models), and for probability threshold `r Probability_Threshold*100`%, the confusion matrix for the validation data is:
+
+```{r echo=FALSE}
+validation_prediction_best = validation_predictions[which.max(validation_hit_rates),]
+conf_matrix = matrix(rep(0,4),ncol=2)
+conf_matrix[1,1]<- 100*sum(validation_prediction_best*validation_data[,dependent_variable])/sum(validation_data[,dependent_variable])
+conf_matrix[1,2]<- 100*sum((!validation_prediction_best)*validation_data[,dependent_variable])/sum(validation_data[,dependent_variable])
+conf_matrix[2,1]<- 100*sum((validation_prediction_best)*(!validation_data[,dependent_variable]))/sum((!validation_data[,dependent_variable]))
+conf_matrix[2,2]<- 100*sum((!validation_prediction_best)*(!validation_data[,dependent_variable]))/sum((!validation_data[,dependent_variable]))
+conf_matrix = round(conf_matrix,2)
+
+colnames(conf_matrix) <- c(paste("Predicted 1 (", class_1_interpretation, ")", sep = ""), paste("Predicted 0 (", class_0_interpretation, ")", sep = ""))
+rownames(conf_matrix) <- c(paste("Actual 1 (", class_1_interpretation, ")", sep = ""), paste("Actual 0 (", class_0_interpretation, ")", sep = ""))
+knitr::kable(conf_matrix)
+```
+
+**Questions:**
+
+1. Note that the percentages add up to 100% for each row. Why?
+2. Moreover, a "good" confusion matrix should have large diagonal values and small off-diagonal ones. Why?
+
+**Answers:**
+
+*
+*
+
+
+
+### 3. ROC curve
+Remember that each observation is classified by our model according to the probabilities Pr(0) and Pr(1) and a chosen probability threshold. Typically we set the probability threshold to 0.5 - so that observations for which Pr(1) > 0.5 are classified as 1's. However, we can vary this threshold, for example if we are interested in correctly predicting all 1's but do not mind missing some 0's (and vice-versa).
+
+When we change the probability threshold we get different values of hit rate, false positive and false negative rates, or any other performance metric. We can plot for example how the false positive versus true positive rates change as we alter the probability threshold, and generate the so called ROC curve. 
+
+The ROC curves for the validation data for the logistic regression as well as both the CARTs above are as follows:
+
+```{r echo=FALSE}
+validation_actual_class <- as.numeric(validation_data[,dependent_variable])
+
+pred_tree <- prediction(validation_Probability_class1_tree, validation_actual_class)
+pred_tree_large <- prediction(validation_Probability_class1_tree_large, validation_actual_class)
+pred_log <- prediction(validation_Probability_class1_log, validation_actual_class)
+
+test1<-performance(pred_tree, "tpr", "fpr")
+df1<- cbind(as.data.frame(test1@x.values),as.data.frame(test1@y.values))
+colnames(df1) <- c("False Positive rate CART 1", "True Positive rate CART 1")
+plot1 <- ggplot(df1, aes(x=`False Positive rate CART 1`, y=`True Positive rate CART 1`)) + geom_line()
+test2<-performance(pred_log, "tpr", "fpr")
+df2<- cbind(as.data.frame(test2@x.values),as.data.frame(test2@y.values))
+colnames(df2) <- c("False Positive rate log reg", "True Positive rate log reg")
+plot2 <- ggplot(df2, aes(x=`False Positive rate log reg`, y=`True Positive rate log reg`)) + geom_line()
+test3<-performance(pred_tree_large, "tpr", "fpr")
+df3<- cbind(as.data.frame(test3@x.values),as.data.frame(test3@y.values))
+colnames(df3) <- c("False Positive rate CART 2", "True Positive rate CART 2")
+plot3 <- ggplot(df3, aes(x=`False Positive rate CART 2`, y=`True Positive rate CART 2`)) + geom_line()
+
+# We can plot the curves individually 
+# grid.arrange(plot1, plot2, plot3)   # use `fig.height=7.5` for the grid plot
+
+# But we are going to combine them instead
+df.all <- do.call(rbind, lapply(list(df1, df2, df3), function(df) {
+  df <- melt(df, id=1)
+  df$variable <- sub("True Positive rate ", "", df$variable)
+  colnames(df)[1] <- "False Positive rate"
+  df
+}))
+ggplot(df.all, aes(x=`False Positive rate`, y=value, colour=variable)) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+```
+
+How should a good ROC curve look like? A rule of thumb in assessing ROC curves is that the "higher" the curve (i.e., the closer it gets to the point with coordinates (0,1)), hence the larger the area under the curve, the better. You may also select one point on the ROC curve (the "best one" for our purpose) and use that false positive/false negative performances (and corresponding threshold for P(1)) to assess your model. 
+
+**Questions:**
+
+1. Which point on the ROC would you select?
+2. What classifier does the dotted 45-degree line correspond to? How does the ROC plot above showcase that the logistic regression and CART classifiers are superior to such classifier?
+
+**Answers:**
+
+*
+*
+
+### 4. Gains chart
+The gains chart is a popular technique in certain applications, such as direct marketing or credit risk. 
+
+For a concrete example, consider the case of a direct marketing mailing campaign. Say we have a classifier that attempts to identify the likely responders by assigning each case a probability of response. We may want to select as few cases as possible and still capture the maximum number of responders possible. 
+
+We can measure the percentage of all responses the classifier captures if we only select, say, x% of cases: the top x% in terms of the probability of response assigned by our classifier. For each percentage of cases we select (x), we can plot the following point: the x-coordinate will be the percentage of all cases that were selected, while the y-coordinate will be the percentage of all class 1 cases that were captured within the selected cases (i.e., the ratio true positives/positives of the classifier, assuming the classifier predicts class 1 for all the selected cases, and predicts class 0 for all the remaining cases). If we plot these points while we change the percentage of cases we select (x) (i.e., while we change the probability threshold of the classifier), we get a chart that is called the **gains chart**. 
+
+In the credit card default case we are studying, the gains charts for the validation data for our three classifiers are the following:
+
+```{r echo=FALSE}
+validation_actual <- validation_data[,dependent_variable]
+all1s <- sum(validation_actual); 
+
+probs <- validation_Probability_class1_tree
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
+}))
+frame1 <- data.frame(
+  `CART 1 % of validation data` = res[1,],
+  `CART 1 % of class 1` = res[2,],
+  check.names = FALSE
+)
+plot1 <- ggplot(frame1, aes(x=`CART 1 % of validation data`, y=`CART 1 % of class 1`)) + geom_line()
+
+probs <- validation_Probability_class1_tree_large
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
+}))
+frame2 <- data.frame(
+  `CART 2 % of validation data` = res[1,],
+  `CART 2 % of class 1` = res[2,],
+  check.names = FALSE
+)
+plot2 <- ggplot(frame2, aes(x=`CART 2 % of validation data`, y=`CART 2 % of class 1`)) + geom_line()
+
+probs <- validation_Probability_class1_log
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  c(length(useonly)/length(validation_actual), sum(validation_actual[useonly])/all1s) 
+}))
+frame3 <- data.frame(
+  `log reg % of validation data` = res[1,],
+  `log reg % of class 1` = res[2,],
+  check.names = FALSE
+)
+plot3 <- ggplot(frame3, aes(x=`log reg % of validation data`, y=`log reg % of class 1`)) + geom_line()
+
+# We can plot the curves individually
+# grid.arrange(plot1, plot2, plot3)   # use `fig.height=7.5` for the grid plot
+
+# But we are going to combine them instead
+df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
+  df <- melt(df, id=1)
+  df$variable <- sub(" % of class 1", "", df$variable)
+  colnames(df)[1] <- "% of validation data selected"
+  df
+}))
+ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour=variable)) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+```
+
+Notice that if we were to examine cases selecting them at random, instead of selecting the "best" ones using an informed classifier, the "random prediction" gains chart would be a straight 45-degree line.
+
+**Question:**
+
+Why?
+
+**Answer:**
+
+*
+
+So how should a good gains chart look like? The further above this 45-degree reference line our gains curve is, the better the "gains". Moreover, much like for the ROC curve, one can select the percentage of all cases examined appropriately so that any point of the gains curve is selected. 
+
+**Question:**
+
+Which point on the gains curve should we select in practice?
+
+**Answer:**
+
+*
+
+### 5. Profit curve
+Finally, we can generate the so called profit curve, which we often use to make our final decisions. The intuition is as follows. Consider a direct marketing campaign, and suppose it costs $1 to send an advertisement, and the expected profit from a person who responds positively is $45. Suppose you have a database of 1 million people to whom you could potentially send the promotion. Typical response rates are 0.05%. What fraction of the 1 million people should you send the promotion to? 
+
+To answer this type of questions, we need to create the **profit curve**. We can measure some measure of profit if we only select the top cases in terms of the probability of response assigned by our classifier. We can plot the profit curve by changing, as we did for the gains chart, the percentage of cases we select, and calculating the corresponding total **estimated profit** (or loss) we would generate. This is simply equal to:
+
+> Total Estimated Profit = (% of 1's correctly predicted)x(value of capturing a 1) + (% of 0's correctly predicted)x(value of capturing a 0) + (% of 1's incorrectly predicted as 0)x(cost of missing a 1) + (% of 0's incorrectly predicted as 1)x(cost of missing a 0)
+> 
+> Calculating the expected profit requires we have an estimate of the four costs/values: the value of capturing a 1 or a 0, and the cost of misclassifying a 1 into a 0 or vice versa. 
+
+Given the values and costs of correct classifications and misclassifications, we can plot the total estimated profit (or loss) as we change the percentage of cases we select, i.e., the probability threshold of the classifier, like we did for the ROC and the gains chart. 
+
+In our credit card default case, we consider the following business profit and loss to the credit card issuer for the correctly classified and misclassified customers: 
+
+```{r echo=FALSE}
+knitr::kable(Profit_Matrix)
+```
+
+Based on these profit and cost estimates, the profit curves for the validation data for the three classifiers are:
+
+```{r echo=FALSE}
+actual_class <- validation_data[,dependent_variable]
+
+probs <- validation_Probability_class1_tree
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  predict_class <- 1*(probs >= prob)
+  theprofit <- Profit_Matrix[1,1]*sum(actual_class==1 & predict_class==1)+
+    Profit_Matrix[1,2]*sum(actual_class==1 & predict_class==0)+
+    Profit_Matrix[2,1]*sum(actual_class==0 & predict_class==1)+
+    Profit_Matrix[2,2]*sum(actual_class==0 & predict_class==0)
+  c(100*length(useonly)/length(actual_class), theprofit) 
+}))
+frame1 <- data.frame(
+  `CART 1 % selected` = res[1,],
+  `CART 1 est. profit` = res[2,],
+  check.names = FALSE
+)
+plot1 <- ggplot(frame1, aes(x=`CART 1 % selected`, y=`CART 1 est. profit`)) + geom_line()
+
+probs <- validation_Probability_class1_tree_large
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  predict_class <- 1*(probs >= prob)
+  theprofit <- Profit_Matrix[1,1]*sum(actual_class==1 & predict_class==1)+
+    Profit_Matrix[1,2]*sum(actual_class==1 & predict_class==0)+
+    Profit_Matrix[2,1]*sum(actual_class==0 & predict_class==1)+
+    Profit_Matrix[2,2]*sum(actual_class==0 & predict_class==0)
+  c(100*length(useonly)/length(actual_class), theprofit) 
+}))
+frame2 <- data.frame(
+  `CART 2 % selected` = res[1,],
+  `CART 2 est. profit` = res[2,],
+  check.names = FALSE
+)
+plot2 <- ggplot(frame2, aes(x=`CART 2 % selected`, y=`CART 2 est. profit`)) + geom_line()
+
+probs <- validation_Probability_class1_log
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  predict_class <- 1*(probs >= prob)
+  theprofit <- Profit_Matrix[1,1]*sum(actual_class==1 & predict_class==1)+
+    Profit_Matrix[1,2]*sum(actual_class==1 & predict_class==0)+
+    Profit_Matrix[2,1]*sum(actual_class==0 & predict_class==1)+
+    Profit_Matrix[2,2]*sum(actual_class==0 & predict_class==0)
+  c(100*length(useonly)/length(actual_class), theprofit) 
+}))
+frame3 <- data.frame(
+  `log reg % selected` = res[1,],
+  `log reg est. profit` = res[2,],
+  check.names = FALSE
+)
+plot3 <- ggplot(frame3, aes(x=`log reg % selected`, y=`log reg est. profit`)) + geom_line()
+
+# we can plot the curves individually 
+# grid.arrange(plot1, plot2, plot3)   # use `fig.height=7.5` for the grid plot
+
+# But we're going to combine them instead
+df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
+  df <- melt(df, id=1)
+  df$variable <- sub(" est. profit", "", df$variable)
+  colnames(df)[1] <- "% of validation data selected"
+  df
+}))
+ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour=variable)) + geom_line() + ylab("Estimated profit")
+```
+
+We can then select the percentage of selected cases that corresponds to the maximum estimated profit (or minimum loss, if necessary). 
+
+**Question:**
+
+Which point on the profit curve would you select in practice?
+
+**Answer:**
+
+*
+
+Notice that to maximize estimated profit, we need to have the cost/profit for each of the four cases! This can be difficult to assess, hence typically we want to do a sensitivity analysis to our assumptions about the cost/profit. For example, we can generate different profit curves (i.e., worst case, best case, average case scenarios) and see how much the best profit we get varies, and most importantly **how our selection of the classification model and of the probability threshold corresponding to the best profit vary**, as the classifier and the percentage of cases are what we need to decide on eventually. 
+
+
+
+## Step 6. Test Accuracy
+Having iterated steps 2-5 until we are satisfied with the performance of our selected model on the validation data, in this step the performance analysis outlined in step 5 needs to be done with the test sample. This is the performance that best mimics what one should expect in practice upon deployment of the classification solution, **assuming (as always) that the data used for this performance analysis are representative of the situation in which the solution will be deployed.** 
+
+Let's see in our case how the **hit ratio, confusion matrix, ROC curve, gains chart, and profit curve** look like for our test data. For the hit ratio and the confusion matrix we use `r Probability_Threshold*100`% as the probability threshold for classification.
+
+```{r echo=FALSE}
+######for train data#####
+test_actual=test_data[,dependent_variable]
+test_predictions = rbind(test_prediction_class_log,
+                         test_prediction_class_tree,
+                         test_prediction_class_tree_large
+                         )
+test_hit_rates = rbind(
+  100*sum(test_prediction_class_log==test_actual)/length(test_actual),
+  100*sum(test_prediction_class_tree==test_actual)/length(test_actual), 
+  100*sum(test_prediction_class_tree_large==test_actual)/length(test_actual)
+  )
+colnames(test_hit_rates) <- "Hit Ratio"
+rownames(test_hit_rates) <- c("Logistic Regression","First CART", "Second CART")
+
+knitr::kable(test_hit_rates)
+```
+
+The confusion matrix for the model with the best test data hit ratio above:
+
+```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
+test_prediction_best = test_predictions[which.max(test_hit_rates),]
+conf_matrix = matrix(rep(0,4),ncol=2)
+conf_matrix[1,1]<- 100*sum(test_prediction_best*test_data[,dependent_variable])/sum(test_data[,dependent_variable])
+conf_matrix[1,2]<- 100*sum((!test_prediction_best)*test_data[,dependent_variable])/sum(test_data[,dependent_variable])
+conf_matrix[2,1]<- 100*sum((test_prediction_best)*(!test_data[,dependent_variable]))/sum((!test_data[,dependent_variable]))
+conf_matrix[2,2]<- 100*sum((!test_prediction_best)*(!test_data[,dependent_variable]))/sum((!test_data[,dependent_variable]))
+conf_matrix = round(conf_matrix,2)
+
+colnames(conf_matrix) <- c(paste("Predicted 1 (", class_1_interpretation, ")", sep = ""), paste("Predicted 0 (", class_0_interpretation, ")", sep = ""))
+rownames(conf_matrix) <- c(paste("Actual 1 (", class_1_interpretation, ")", sep = ""), paste("Actual 0 (", class_0_interpretation, ")", sep = ""))
+knitr::kable(conf_matrix)
+```
+
+ROC curves for the test data:
+
+```{r echo=FALSE}
+test_actual_class <- as.numeric(test_data[,dependent_variable])
+
+pred_tree_test <- prediction(test_Probability_class1_tree, test_actual_class)
+pred_tree_large_test <- prediction(test_Probability_class1_tree_large, test_actual_class)
+pred_log_test <- prediction(test_Probability_class1_log, test_actual_class)
+
+test<-performance(pred_tree_test, "tpr", "fpr")
+df1<- cbind(as.data.frame(test@x.values),as.data.frame(test@y.values))
+colnames(df1) <- c("False Positive rate CART 1", "True Positive CART 1")
+test2<-performance(pred_tree_large_test, "tpr", "fpr")
+df2<- cbind(as.data.frame(test2@x.values),as.data.frame(test2@y.values))
+colnames(df2) <- c("False Positive rate CART 2", "True Positive CART 2")
+test3<-performance(pred_log_test, "tpr", "fpr")
+df3<- cbind(as.data.frame(test3@x.values),as.data.frame(test3@y.values))
+colnames(df3) <- c("False Positive rate log reg", "True Positive log reg")
+
+df.all <- do.call(rbind, lapply(list(df1, df2, df3), function(df) {
+  df <- melt(df, id=1)
+  df$variable <- sub("True Positive ", "", df$variable)
+  colnames(df)[1] <- "False Positive rate"
+  df
+}))
+ggplot(df.all, aes(x=`False Positive rate`, y=value, colour=variable)) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+```
+
+Gains chart for the test data:
+
+```{r echo=FALSE}
+test_actual <- test_data[,dependent_variable]
+all1s <- sum(test_actual)
+
+probs <- test_Probability_class1_tree
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
+}))
+frame1 <- data.frame(
+  `CART 1 % of validation data` = res[1,],
+  `CART 1 % of class 1` = res[2,],
+  check.names = FALSE
+)
+
+probs <- test_Probability_class1_tree_large
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
+}))
+frame2 <- data.frame(
+  `CART 2 % of validation data` = res[1,],
+  `CART 2 % of class 1` = res[2,],
+  check.names = FALSE
+)
+
+probs <- test_Probability_class1_log
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
+  }))
+frame3 <- data.frame(
+  `log reg % of validation data` = res[1,],
+  `log reg % of class 1` = res[2,],
+  check.names = FALSE
+)
+
+df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
+  df <- melt(df, id=1)
+  df$variable <- sub(" % of class 1", "", df$variable)
+  colnames(df)[1] <- "% of test data selected"
+  df
+}))
+ggplot(df.all, aes(x=`% of test data selected`, y=value, colour=variable)) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+```
+
+Finally the profit curves for the test data, using the same profit/cost estimates as we did above:
+
+```{r echo=FALSE}
+actual_class<- test_data[,dependent_variable]
+
+probs <- test_Probability_class1_tree
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  predict_class <- 1*(probs >= prob)
+  theprofit <- Profit_Matrix[1,1]*sum(actual_class==1 & predict_class==1)+
+    Profit_Matrix[1,2]*sum(actual_class==1 & predict_class==0)+
+    Profit_Matrix[2,1]*sum(actual_class==0 & predict_class==1)+
+    Profit_Matrix[2,2]*sum(actual_class==0 & predict_class==0)
+  c(100*length(useonly)/length(actual_class), theprofit) 
+}))
+frame1 <- data.frame(
+  `CART 1 % selected` = res[1,],
+  `CART 1 est. profit` = res[2,],
+  check.names = FALSE
+)
+
+probs <- test_Probability_class1_tree_large
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  predict_class <- 1*(probs >= prob)
+  theprofit <- Profit_Matrix[1,1]*sum(actual_class==1 & predict_class==1)+
+    Profit_Matrix[1,2]*sum(actual_class==1 & predict_class==0)+
+    Profit_Matrix[2,1]*sum(actual_class==0 & predict_class==1)+
+    Profit_Matrix[2,2]*sum(actual_class==0 & predict_class==0)
+  c(100*length(useonly)/length(actual_class), theprofit) 
+}))
+frame2 <- data.frame(
+  `CART 2 % selected` = res[1,],
+  `CART 2 est. profit` = res[2,],
+  check.names = FALSE
+)
+
+probs <- test_Probability_class1_log
+xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
+res <- Reduce(cbind,lapply(xaxis, function(prob){
+  useonly <- which(probs >= prob)
+  predict_class <- 1*(probs >= prob)
+  theprofit <- Profit_Matrix[1,1]*sum(actual_class==1 & predict_class==1)+
+    Profit_Matrix[1,2]*sum(actual_class==1 & predict_class==0)+
+    Profit_Matrix[2,1]*sum(actual_class==0 & predict_class==1)+
+    Profit_Matrix[2,2]*sum(actual_class==0 & predict_class==0)
+  c(100*length(useonly)/length(actual_class), theprofit) 
+}))
+frame3 <- data.frame(
+  `log reg % selected` = res[1,],
+  `log reg est. profit` = res[2,],
+  check.names = FALSE
+)
+
+df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
+  df <- melt(df, id=1)
+  df$variable <- sub(" est. profit", "", df$variable)
+  colnames(df)[1] <- "% of test data selected"
+  df
+}))
+ggplot(df.all, aes(x=`% of test data selected`, y=value, colour=variable)) + geom_line() + ylab("Estimated profit")
+```
+
+**Questions:**
+
+1. Is the performance in the test data similar to the performance in the validation data above? Should we expect the performance of our classification model to be close to that in our test data when we deploy the model in practice? Why or why not? What should we do if they are different?
+2. Make a final assessment about what classifier you would use (out of the ones considered here) for this credit card default classification business problem, with what percentage of cases/probability threshold, and why. What is the business profit the company can achieve (as measured with the test data) based on your solution?
+3. How does your assessment depend on the values and costs of correct classifications and misclassifications (`r actual_1_predict_1`, `r actual_1_predict_0`, `r actual_0_predict_1`, `r actual_0_predict_0`)?
+4. What business decisions can the credit card issuer make based on this analysis?
+
+
+**Answers:**
+
+*
+*
+*
+*

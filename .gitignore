@@ -1,4 +1,6 @@
 .Rproj.user
+*.html
+*.model
 *.md
 *figure*
 *.Rproj
@@ -19,4 +21,3 @@ CourseSessions/tmp
 Exercises/*/*.md
 Exercises/*/*.pdf
 Exercises/*/figure
-*.csv
