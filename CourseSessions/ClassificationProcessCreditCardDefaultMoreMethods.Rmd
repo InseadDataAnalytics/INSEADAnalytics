@@ -46,8 +46,8 @@ dependent_variable = 25
 # Please use numbers, not column names. E.g., c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8.
 independent_variables = c(1:24) # use all the available attributes
 
-if (0){
-  #tmpx = t(apply(ProjectData[,7:12], 1, function(r) matrix(c(sum(r > 0), sum(r==0), sum(r==-2), sum(r==-1)), nrow=1)))
+# Some feature engineering
+if (1){
   tmpx = t(apply(ProjectData[,7:12], 1, function(r) matrix(c(sum(r==-2), sum(r==-1), sum(r==0),sum(r > 0)), nrow=1)))
   
   ProjectData = cbind(ProjectData[,2:5],tmpx, apply(ProjectData[,13:18], 1, function(r) median(r[!is.na(r)])), apply(ProjectData[,19:24]/ProjectData[,13:18], 1, function(r) ifelse(sum(!is.na(r) & !is.infinite(r)), mean(r[!is.na(r) & !is.infinite(r)]),0)),ProjectData[,25])
@@ -72,10 +72,10 @@ logreg = 1
 # Regularized logistic regression
 reg_logreg = 1
 # CART 
-cart = 0
+cart = 1
 cart_large = cart
 # XGBoost
-XGBoost = 0
+XGBoost = 1
 
 methods = c(logreg, cart, cart_large, reg_logreg, XGBoost)
 names_of_methods <- c("Logistic Regression", "First CART", "Second CART", "Regularized Logistic Regression", "XGBoost")
@@ -203,11 +203,11 @@ if (random_sampling){
   estimation_data_ids=sample.int(nrow(ProjectData),floor(estimation_data_percent*nrow(ProjectData)/100))
   non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids) #setdiff(x,y) returns the elements of x that are not in y
   validation_data_ids=non_estimation_data[sample.int(length(non_estimation_data), floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))]
-} else {
-  estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
-  non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
-  validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
-}
+  } else {
+    estimation_data_ids=1:floor(estimation_data_percent*nrow(ProjectData)/100)
+    non_estimation_data = setdiff(1:nrow(ProjectData),estimation_data_ids)
+    validation_data_ids = (tail(estimation_data_ids,1)+1):(tail(estimation_data_ids,1) + floor(validation_data_percent/(validation_data_percent+test_data_percent)*length(non_estimation_data)))
+    }
 
 test_data_ids = setdiff(1:nrow(ProjectData), union(estimation_data_ids,validation_data_ids))
 
@@ -271,7 +271,7 @@ A simple visualization tool to assess the discriminatory power of the independen
 # Please ENTER the selected independent variables for which to draw box plots. 
 # Please use numbers, not column names. E.g., c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8.
 boxplots_independent_variables = c(7:12) # use only the PAY_ variables
-boxplots_independent_variables = c(1:7) # use only the PAY_ variables
+boxplots_independent_variables = c(5:8) # adjust for feature engineering changes
 
 DVvalues = unique(estimation_data[,dependent_variable])
 x0 = estimation_data[which(estimation_data[,dependent_variable]==DVvalues[1]),boxplots_independent_variables]
@@ -329,12 +329,12 @@ These are the estimated parameters for logistic regression on our data:")
 
 ```{r echo=FALSE, warning=FALSE}
 if (logreg){
-  formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~") # When drop is FALSE, the dimensions of the object are kept. head(x,-1) returns all but the last element of x.
-  
-  logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
-  log_coefficients <- summary(logreg_solution)$coefficients
-  
-  knitr::kable(log_coefficients)
+formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Reduce(paste,sapply(head(independent_variables,-1), function(i) paste(colnames(estimation_data)[i],"+",sep=""))),colnames(estimation_data)[tail(independent_variables,1)],sep=""),sep="~") # When drop is FALSE, the dimensions of the object are kept. head(x,-1) returns all but the last element of x.
+
+logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
+log_coefficients <- summary(logreg_solution)$coefficients
+
+knitr::kable(log_coefficients)
 }
 ```
 
@@ -344,21 +344,21 @@ cat("The estimated probability that a validation observation belongs to class 1 
 
 ```{r echo=FALSE}
 if (logreg){
-  # Let's get the probabilities for the 3 types of data from the logistic regression
-  estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
-  validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
-  test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
-  
-  # Let's get the decision of the logistic regression for the 3 types of data 
-  estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
-  validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
-  test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
-  
-  Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_log,validation_Probability_class1_log)
-  rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
-  colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
-  
-  knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
+# Let's get the probabilities for the 3 types of data from the logistic regression
+estimation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=estimation_data[,independent_variables])
+validation_Probability_class1_log<-predict(logreg_solution, type="response", newdata=validation_data[,independent_variables])
+test_Probability_class1_log<-predict(logreg_solution, type="response", newdata=test_data[,independent_variables])
+
+# Let's get the decision of the logistic regression for the 3 types of data 
+estimation_prediction_class_log=1*as.vector(estimation_Probability_class1_log > Probability_Threshold)
+validation_prediction_class_log=1*as.vector(validation_Probability_class1_log > Probability_Threshold)
+test_prediction_class_log=1*as.vector(test_Probability_class1_log > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_log,validation_Probability_class1_log)
+rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
 }
 ```
 
@@ -376,47 +376,50 @@ These are the estimated parameters for regularized logistic regression on our da
 
 ```{r echo=FALSE}
 if (reg_logreg){
-  # Convert the data to matrix format for glmnet functions
-  est_data <- as.matrix(estimation_data)
-  cv.out <- cv.glmnet(est_data[,independent_variables],estimation_data[,dependent_variable],alpha=1,family="binomial",type.measure = "mse",intercept=FALSE) 
-  #family= binomial => logistic regression
-  #type.measure is the loss to use for cross-validation. Check https://www.rdocumentation.org/packages/glmnet/versions/2.0-10/topics/cv.glmnet to explore other type.measure options
-  # alpha controls the kind of regularization: alpha = 1 will penalize the sum of the absolute values of the coefficients - this is known as lasso regression. alpha = 0 will penalize the sum of squares of the coefficients - this is known as ridge regression. Values of alpha between 0 and 1 will do a combination of the above.
-  # Alternatively, we can do cross-validation on both the lambda (i.e., how much to penalize complex models) and on alpha (i.e., how to capture complexity in model): let the data decide what alpha to use.
-  # cv.out <- cva.glmnet(est_data[,independent_variables],est_data[,dependent_variable],family="binomial",type.measure = "mse")
-  
-  # Which lambda to use? A natural choice is the lambda that minimizes the mean cross-validated error.
-  lambda <- cv.out$lambda.min
-  # Another choice is to emphasize (more) simplicity, while of course still ensuring good accuracy: choose the largest lambda such that the cross-validated error is within 1 standard error of the minumum error.
-  # lambda <- cv.out$lambda.1se
-  
-  log_reg_coefficients <- as.matrix(coef(cv.out,s=lambda))
-  colnames(log_reg_coefficients) <- c("Estimate")
-  knitr::kable(log_reg_coefficients)
+# Convert the data to matrix format for glmnet functions
+est_data <- as.matrix(estimation_data)
+cv.out <- cv.glmnet(est_data[,independent_variables],estimation_data[,dependent_variable],alpha=1,family="binomial",type.measure = "deviance") 
+#family= binomial(link="logit") => logistic regression
+#type.measure is the loss to use for cross-validation. Check https://www.rdocumentation.org/packages/glmnet/versions/2.0-10/topics/cv.glmnet to explore other type.measure options
+# alpha controls the kind of regularization: alpha = 1 will penalize the sum of the absolute values of the coefficients - this is known as lasso regression. alpha = 0 will penalize the sum of squares of the coefficients - this is known as ridge regression. Values of alpha between 0 and 1 will do a combination of the above.
+# Alternatively, we can do cross-validation on both the lambda (i.e., how much to penalize complex models) and on alpha (i.e., how to capture complexity in model): let the data decide what alpha to use.
+# cv.out <- cva.glmnet(est_data[,independent_variables],est_data[,dependent_variable],family="binomial",type.measure = "mse")
+
+#plot result
+plot(cv.out)
+
+# Which lambda to use? A natural choice is the lambda that minimizes the mean cross-validated error.
+# lambda <- cv.out$lambda.min
+# Another choice is to emphasize (more) simplicity, while of course still ensuring good accuracy: choose the largest lambda such that the cross-validated error is within 1 standard error of the minumum error.
+lambda <- cv.out$lambda.1se
+
+log_reg_coefficients <- as.matrix(coef(cv.out,s=lambda))
+colnames(log_reg_coefficients) <- c("Estimate")
+knitr::kable(log_reg_coefficients)
 }
 ```
 
 ```{r echo=FALSE, eval=reg_logreg, results='asis'}
 cat("The estimated probability that a validation observation belongs to class 1 (e.g., the estimated probability that the customer defaults) for the first few validation observations, using regularized logistic regression above, is:")
 ```
-
+  
 ```{r echo=FALSE}
 if (reg_logreg){
-  # Let's get the probabilities for the 3 types of data from the regularized logistic regression
-  estimation_Probability_class1_reg_log<-as.vector(predict(cv.out, newx=as.matrix(estimation_data[,independent_variables]), s=lambda, type="response"))
-  validation_Probability_class1_reg_log<-as.vector(predict(cv.out, newx=as.matrix(validation_data[,independent_variables]), s=lambda, type="response"))
-  test_Probability_class1_reg_log<-as.vector(predict(cv.out, newx=as.matrix(test_data[,independent_variables]), s=lambda, type="response"))
-  
-  # Let's get the decision of the regularized logistic regression for the 3 types of data 
-  estimation_prediction_class_reg_log=1*as.vector(estimation_Probability_class1_reg_log > Probability_Threshold)
-  validation_prediction_class_reg_log=1*as.vector(validation_Probability_class1_reg_log > Probability_Threshold)
-  test_prediction_class_reg_log=1*as.vector(test_Probability_class1_reg_log > Probability_Threshold)
-  
-  Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_reg_log,validation_Probability_class1_reg_log)
-  rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
-  colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
-  
-  knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
+# Let's get the probabilities for the 3 types of data from the regularized logistic regression
+estimation_Probability_class1_reg_log<-as.vector(predict(cv.out, newx=as.matrix(estimation_data[,independent_variables]), s=lambda, type="response"))
+validation_Probability_class1_reg_log<-as.vector(predict(cv.out, newx=as.matrix(validation_data[,independent_variables]), s=lambda, type="response"))
+test_Probability_class1_reg_log<-as.vector(predict(cv.out, newx=as.matrix(test_data[,independent_variables]), s=lambda, type="response"))
+
+# Let's get the decision of the regularized logistic regression for the 3 types of data 
+estimation_prediction_class_reg_log=1*as.vector(estimation_Probability_class1_reg_log > Probability_Threshold)
+validation_prediction_class_reg_log=1*as.vector(validation_Probability_class1_reg_log > Probability_Threshold)
+test_prediction_class_reg_log=1*as.vector(test_Probability_class1_reg_log > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_reg_log,validation_Probability_class1_reg_log)
+rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
 }
 ```
 
@@ -434,26 +437,26 @@ Running a basic CART model with complexity control ",CART_cp, " leads to the fol
 
 ```{r echo=FALSE}
 if (cart){
-  # Name the variables numerically so that they look ok on the tree plots
-  independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
-  
-  estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
-  colnames(estimation_data_nolabel)<- c(colnames(estimation_data)[dependent_variable],independent_variables_nolabel)
-  
-  validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
-  colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
-  
-  test_data_nolabel = cbind(test_data[,dependent_variable], test_data[,independent_variables])
-  colnames(test_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
-  
-  estimation_data_nolabel = data.frame(estimation_data_nolabel)
-  validation_data_nolabel = data.frame(validation_data_nolabel)
-  test_data_nolabel = data.frame(test_data_nolabel)
-  
-  formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
-  CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
-  
-  rpart.plot(CART_tree, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
+# Name the variables numerically so that they look ok on the tree plots
+independent_variables_nolabel = paste("IV", 1:length(independent_variables), sep="")
+
+estimation_data_nolabel = cbind(estimation_data[,dependent_variable], estimation_data[,independent_variables])
+colnames(estimation_data_nolabel)<- c(colnames(estimation_data)[dependent_variable],independent_variables_nolabel)
+
+validation_data_nolabel = cbind(validation_data[,dependent_variable], validation_data[,independent_variables])
+colnames(validation_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+test_data_nolabel = cbind(test_data[,dependent_variable], test_data[,independent_variables])
+colnames(test_data_nolabel)<- c(dependent_variable,independent_variables_nolabel)
+
+estimation_data_nolabel = data.frame(estimation_data_nolabel)
+validation_data_nolabel = data.frame(validation_data_nolabel)
+test_data_nolabel = data.frame(test_data_nolabel)
+
+formula=paste(colnames(estimation_data)[dependent_variable],paste(Reduce(paste,sapply(head(independent_variables_nolabel,-1), function(i) paste(i,"+",sep=""))),tail(independent_variables_nolabel,1),sep=""),sep="~")
+CART_tree<-rpart(formula, data= estimation_data_nolabel,method="class", control=CART_control)
+
+rpart.plot(CART_tree, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 }
 ```
 
@@ -473,8 +476,8 @@ cat("One can estimate larger trees through changing the tree's **complexity cont
 
 ```{r echo=FALSE, warning=FALSE}
 if (cart){
-  CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = CART_cp))
-  rpart.plot(CART_tree_large, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
+CART_tree_large<-rpart(formula, data= estimation_data_nolabel,method="class", control=rpart.control(cp = CART_cp))
+rpart.plot(CART_tree_large, box.palette="OrBu", type=3, extra=1, fallen.leaves=F, branch.lty=3)
 }
 ```
 
@@ -484,34 +487,34 @@ cat("In our case, the probability our validation data belong to class 1 (i.e., a
 
 ```{r echo=FALSE}
 if (cart) {
-  # Let's first calculate all probabilites for the estimation, validation, and test data
-  estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
-  estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
-  
-  validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
-  validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
-  
-  test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
-  test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
-  
-  estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
-  estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
-  
-  validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
-  validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
-  
-  test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
-  test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
-  
-  Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_tree,validation_Probability_class1_tree)
-  rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
-  colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
-  
-  Classification_Table_large=rbind(validation_data[,dependent_variable],validation_prediction_class_tree_large,validation_Probability_class1_tree_large)
-  rownames(Classification_Table_large)<-c("Actual Class","Predicted Class","Probability of Class 1")
-  colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
-  
-  knitr::kable(head(t(round(Classification_Table,2)), max_data_report))
+# Let's first calculate all probabilites for the estimation, validation, and test data
+estimation_Probability_class1_tree<-predict(CART_tree, estimation_data_nolabel)[,2]
+estimation_Probability_class1_tree_large<-predict(CART_tree_large, estimation_data_nolabel)[,2]
+
+validation_Probability_class1_tree<-predict(CART_tree, validation_data_nolabel)[,2]
+validation_Probability_class1_tree_large<-predict(CART_tree_large, validation_data_nolabel)[,2]
+
+test_Probability_class1_tree<-predict(CART_tree, test_data_nolabel)[,2]
+test_Probability_class1_tree_large<-predict(CART_tree_large, test_data_nolabel)[,2]
+
+estimation_prediction_class_tree=1*as.vector(estimation_Probability_class1_tree > Probability_Threshold)
+estimation_prediction_class_tree_large=1*as.vector(estimation_Probability_class1_tree_large > Probability_Threshold)
+
+validation_prediction_class_tree=1*as.vector(validation_Probability_class1_tree > Probability_Threshold)
+validation_prediction_class_tree_large=1*as.vector(validation_Probability_class1_tree_large > Probability_Threshold)
+
+test_prediction_class_tree=1*as.vector(test_Probability_class1_tree > Probability_Threshold)
+test_prediction_class_tree_large=1*as.vector(test_Probability_class1_tree_large > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_tree,validation_Probability_class1_tree)
+rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+Classification_Table_large=rbind(validation_data[,dependent_variable],validation_prediction_class_tree_large,validation_Probability_class1_tree_large)
+rownames(Classification_Table_large)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table_large)<- paste("Obs", 1:ncol(Classification_Table_large), sep=" ")
+
+knitr::kable(head(t(round(Classification_Table,2)), max_data_report))
 }
 ```
 
@@ -552,24 +555,35 @@ The estimated probability that a validation observation belongs to class 1 (e.g.
 
 ```{r echo=FALSE}
 if (XGBoost){
-  model_xgboost <- xgboost(data = as.matrix(estimation_data[,independent_variables]), label = estimation_data[,dependent_variable], eta = 0.3, max_depth = 10, nrounds=10, objective = "binary:logistic", verbose = 0)
-  # eta: step size of each boosting step. max.depth: maximum depth of the tree. nrounds: the max number of iterations. We use the logistic regression as the objective. verbose=1 prints information about performance. Check https://www.rdocumentation.org/packages/xgboost/versions/0.4-4/topics/xgboost
-  
-  # Let's get the probabilities for the 3 types of data from xgboost
-  estimation_Probability_class1_xgboost<-predict(model_xgboost, newdata=as.matrix(estimation_data[,independent_variables]), type="response")
-  validation_Probability_class1_xgboost<-predict(model_xgboost, newdata=as.matrix(validation_data[,independent_variables]), type="response")
-  test_Probability_class1_xgboost<-predict(model_xgboost, newdata=as.matrix(test_data[,independent_variables]), type="response")
-  
-  # Let's get the decision of xgboost for the 3 types of data 
-  estimation_prediction_class_xgboost=1*as.vector(estimation_Probability_class1_xgboost > Probability_Threshold)
-  validation_prediction_class_xgboost=1*as.vector(validation_Probability_class1_xgboost > Probability_Threshold)
-  test_prediction_class_xgboost=1*as.vector(validation_Probability_class1_xgboost > Probability_Threshold)
-  
-  Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_xgboost,validation_Probability_class1_xgboost)
-  rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
-  colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
-  
-  knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
+model_xgboost <- xgboost(data = as.matrix(estimation_data[,independent_variables]), label = estimation_data[,dependent_variable], eta = 0.3, max_depth = 10, nrounds=10, objective = "binary:logistic", verbose = 0)
+# eta: step size of each boosting step. max.depth: maximum depth of the tree. nrounds: the max number of iterations. We use the logistic regression as the objective. verbose=1 prints information about performance. Check https://www.rdocumentation.org/packages/xgboost/versions/0.4-4/topics/xgboost
+
+# # Alternative way of building the model, recommended when there are factors among the variables (xgboost does not accept factors as inputs, so need to use a design matrix):
+# formula_allvariables=paste(colnames(estimation_data[,dependent_variable,drop=F]),".",sep="~")
+# training.x <-model.matrix(as.formula(formula_allvariables), data = estimation_data)
+# testing.x <-model.matrix(as.formula(formula_allvariables), data = validation_data)
+# 
+# model_xgboost<-xgboost(data = data.matrix(training.x[,-1]), label = estimation_data[,dependent_variable], eta = 0.3, max_depth = 10, nround=10, objective = "binary:logistic", verbose = 1)
+# 
+# xgboost_prediction<-predict(model_xgboost,newdata=testing.x[,-1], type="response")
+# #confusionMatrix(ifelse(XGboost_prediction>0.5,1,0),validation_data$default.payment.next.month) #Display confusion matrix (needs caret package)
+
+# Let's get the probabilities for the 3 types of data from xgboost
+estimation_Probability_class1_xgboost<-predict(model_xgboost, newdata=as.matrix(estimation_data[,independent_variables]), type="response")
+validation_Probability_class1_xgboost<-predict(model_xgboost, newdata=as.matrix(validation_data[,independent_variables]), type="response")
+#confusionMatrix(ifelse(validation_Probability_class1_xgboost>0.5,1,0),validation_data[,dependent_variable]) #Display confusion matrix (needs caret package)
+test_Probability_class1_xgboost<-predict(model_xgboost, newdata=as.matrix(test_data[,independent_variables]), type="response")
+
+# Let's get the decision of xgboost for the 3 types of data 
+estimation_prediction_class_xgboost=1*as.vector(estimation_Probability_class1_xgboost > Probability_Threshold)
+validation_prediction_class_xgboost=1*as.vector(validation_Probability_class1_xgboost > Probability_Threshold)
+test_prediction_class_xgboost=1*as.vector(validation_Probability_class1_xgboost > Probability_Threshold)
+
+Classification_Table=rbind(validation_data[,dependent_variable],validation_prediction_class_xgboost,validation_Probability_class1_xgboost)
+rownames(Classification_Table)<-c("Actual Class","Predicted Class","Probability of Class 1")
+colnames(Classification_Table)<- paste("Obs", 1:ncol(Classification_Table), sep=" ")
+
+knitr::kable(head(t(round(Classification_Table,2)), max_data_report)) #t(x) returns the transpose of x
 }
 ```
 
@@ -606,7 +620,7 @@ validation_hit_rates = rbind(
   100*sum(validation_prediction_class_tree_large==validation_actual)/length(validation_actual),
   100*sum(validation_prediction_class_reg_log==validation_actual)/length(validation_actual),
   100*sum(validation_prediction_class_xgboost==validation_actual)/length(validation_actual)
-)
+  )
 validation_hit_rates = as.matrix(validation_hit_rates[which(methods==1)])
 
 colnames(validation_hit_rates) <- "Hit Ratio"
@@ -622,14 +636,14 @@ estimation_predictions = rbind(estimation_prediction_class_log,
                                estimation_prediction_class_tree_large,
                                estimation_prediction_class_reg_log,
                                estimation_prediction_class_xgboost
-)
+                               )
 estimation_hit_rates = rbind(
   100*sum(estimation_prediction_class_log==estimation_actual)/length(estimation_actual),
   100*sum(estimation_prediction_class_tree==estimation_actual)/length(estimation_actual), 
   100*sum(estimation_prediction_class_tree_large==estimation_actual)/length(estimation_actual),
   100*sum(estimation_prediction_class_reg_log==estimation_actual)/length(estimation_actual),
   100*sum(estimation_prediction_class_xgboost==estimation_actual)/length(estimation_actual)
-)
+  )
 estimation_hit_rates = as.matrix(estimation_hit_rates[which(methods==1)])
 
 colnames(estimation_hit_rates) <- "Hit Ratio"
@@ -996,14 +1010,14 @@ test_predictions = rbind(test_prediction_class_log,
                          test_prediction_class_tree_large,
                          test_prediction_class_reg_log,
                          test_prediction_class_xgboost
-)
+                         )
 test_hit_rates = rbind(
   100*sum(test_prediction_class_log==test_actual)/length(test_actual),
   100*sum(test_prediction_class_tree==test_actual)/length(test_actual), 
   100*sum(test_prediction_class_tree_large==test_actual)/length(test_actual),
   100*sum(test_prediction_class_reg_log==test_actual)/length(test_actual),
   100*sum(test_prediction_class_xgboost==test_actual)/length(test_actual)
-)
+  )
 test_hit_rates = as.matrix(test_hit_rates[which(methods==1)])
 
 colnames(test_hit_rates) <- "Hit Ratio"
@@ -1099,7 +1113,7 @@ xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
 res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
   useonly <- which(probs >= prob)
   c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
-}))
+  }))
 frame3 <- data.frame(
   `log reg % of validation data` = res[1,],
   `log reg % of class 1` = res[2,],
@@ -1111,7 +1125,7 @@ xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
 res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
   useonly <- which(probs >= prob)
   c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
-}))
+  }))
 frame4 <- data.frame(
   `regularized log reg % of validation data` = res[1,],
   `regularized log reg % of class 1` = res[2,],
@@ -1123,7 +1137,7 @@ xaxis <- sort(unique(c(0,1,probs)), decreasing = TRUE)
 res <- 100*Reduce(cbind,lapply(xaxis, function(prob){
   useonly <- which(probs >= prob)
   c(length(useonly)/length(test_actual), sum(test_actual[useonly])/all1s) 
-}))
+  }))
 frame5 <- data.frame(
   `XGBoost % of validation data` = res[1,],
   `XGBoost % of class 1` = res[2,],
