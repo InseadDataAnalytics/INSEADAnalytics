@@ -1,0 +1,47 @@
+#Introduction
+Human capital continues to rank as the most important asset for a huge range of businesses. As the global war for talent heats up, employee retention is increasingly being recognised as one of the largest strategic challenges facing businesses today. The costs of employee churn go way beyond the direct (and substantial) costs of new recruitment: businesses that cannot retain their most talented staff lose valuable knowledge, damage customer relationships and ultimately fail.
+
+**Key business question: which employees will leave?**
+
+Our hypothesis is that there are certain key drivers predicting employee retention and we aim to analyze a deep trove of data from the IBM HR dataset to try and identify them. We plan to apply key concepts learned in class to build a model to predict which employees are most at risk of leaving the firm and which pain points can be managed to increase retention rates within the company on an organizational basis as well as on an individual basis.
+
+
+##Hypothesis
+We plan to use the IBM HR dataset. Our initial working hypothesis, based on our existing business knowledge, is that the following metrics are significant to the retention decision, for the following reasons:
+
+* `Distance from Home` - we hypothesize that the further away an employee lives, the more likely they are to leave
+* `Environment Satisfaction` - the higher EvironmentSatisfaction is, the lower the likelihood they will leave
+* `Job Satisfaction` - the higher JobSatisfaction is, the lower the likelihood they will leave
+* `NumCompaniesWorked` - the higher NumCompaniesWorks is, the higher the likelihood they will leave
+* `PercentSalaryHike` - the higher PercentSalaryHike is, adjusted for seniority, the lower the likelihood they will leave
+* `PerformanceRating` - the higher PercentSalaryHike is, the lower the likelihood they will leave
+* `RelationshipSatisfaction` - the higher RelationshipSatisfaction is, the lower the likelihood they will leave
+* `StandardHours` - the higher StandardHours is, the higher the likelihood they will leave
+* `Marital Status` - We predict that Married people are less likely to leave than unmarried people
+* `YearsAtCompany` - we predict that YearsAtCompany will have different effects on how likely an employee is likely to leave. We might bucket this into to different levels to try and isolate the effect
+* `YearsInCurrentRole` - we predict that YearsInCurrentRole will have different effects on how likely an employee is likely to leave. We might bucket this into to different levels to try and isolate the effect
+* `YearsWithCurrManager` - the higher YearsWithCurrManager is, the lower the likelihood they will leave
+
+ ```{r,echo=FALSE,results="hide"}
+pacman::p_load("corrplot") #Check, and if needed install the necessary packages
+datafile_name = "../Project/ibmdata.csv"
+ProjectData <- read.csv(datafile_name)
+```
+
+##Descriptive Statistics
+```{r, echo=FALSE}
+summary(ProjectData)
+```
+
+##Business solution process
+This data set has 35 columns, with some that are inevitably redundant and correlated to one another. We are going to first employ dimensionality reduction, followed by clustering based on some key factors, which we will combine with our business intuition. Finally we will generate prediction models using logistic regression, r carts and ctrees.
+
+##Correlation Matrix
+
+ ```{r,echo=FALSE,warning=FALSE}
+ProjectDataTemp <- ProjectData[, sapply(ProjectData, is.numeric)]
+M <- cor(ProjectDataTemp)
+corrplot(M, method = "circle")
+```
+
+We can see from the data correlation plot that two variables have 0 standard deviation, i.e. they have the same value for all employees: EmployeeCount and StandardHours. From the correlation matrix, it is clear that we can combine variables to generate factors and hence perform dimensionality reduction.
