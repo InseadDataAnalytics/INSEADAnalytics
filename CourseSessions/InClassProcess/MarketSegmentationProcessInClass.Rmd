@@ -15,7 +15,7 @@ output:
 always_allow_html: yes
 ---
 
-<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd") -->
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command (pay attention to the directory you are in, check it using getwd()) rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd") -->
 
 > **IMPORTANT**: Please make sure you create a copy of this file with a customized name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf).
@@ -157,6 +157,7 @@ This is the correlation matrix of the customer responses to the `r ncol(ProjectD
 ```{r}
 thecor = round(cor(ProjectDataFactor),2)
 iprint.df(round(thecor,2), scale=TRUE)
+write.csv(round(thecor,2), file = "thecor.csv")
 ```
 
 **Questions**
@@ -206,6 +207,8 @@ Let's look at the **variance explained** as well as the **eigenvalues** (see ses
 
 ```{r}
 iprint.df(round(Variance_Explained_Table, 2))
+write.csv(round(Variance_Explained_Table,2), file = "Variance_Explained_Table.csv")
+
 ```
 
 ```{r}
@@ -259,6 +262,8 @@ sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)
 Rotated_Factors <- Rotated_Factors[sorted_rows,]
 
 iprint.df(Rotated_Factors, scale=TRUE)
+write.csv(Rotated_Factors, file = "Rotated_Factors.csv")
+
 ```
 
 To better visualize and interpret the factors we often "suppress" loadings with small values, e.g. with absolute values smaller than 0.5. In this case our factors look as follows after suppressing the small numbers:
@@ -270,6 +275,8 @@ colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
 rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
 
 iprint.df(Rotated_Factors_thres, scale=TRUE)
+write.csv(Rotated_Factors_thres, file = "Rotated_Factors_thres.csv")
+
 ```
 
 **Questions**
@@ -301,6 +308,8 @@ NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
 colnames(NEW_ProjectData)<-paste("DV (Factor)",1:ncol(NEW_ProjectData),sep=" ")
 
 iprint.df(t(head(NEW_ProjectData, 10)), scale=TRUE)
+write.csv(NEW_ProjectData, file = "FactorScores.csv")
+
 ```
 
 **Questions**
@@ -451,6 +460,8 @@ ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust)
 colnames(ProjectData_with_hclust_membership)<-c("Observation Number","Cluster_Membership")
 
 iprint.df(round(head(ProjectData_with_hclust_membership, max_data_report), 2))
+write.csv(round(ProjectData_with_hclust_membership, 2), file = "ProjectData_with_hclust_membership.csv")
+
 ```
 
 while this is the segment membership if we use k-means:
@@ -462,6 +473,8 @@ ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),km
 colnames(ProjectData_with_kmeans_membership)<-c("Observation Number","Cluster_Membership")
 
 iprint.df(round(head(ProjectData_with_kmeans_membership, max_data_report), 2))
+write.csv(round(ProjectData_with_kmeans_membership, 2), file = "ProjectData_with_kmeans_membership.csv")
+
 ```
 
 ## Step 7: Profile and interpret the segments 
@@ -497,6 +510,8 @@ colnames(Cluster_Profile_mean) <- paste("Seg.", 1:length(cluster_ids), sep="")
 cluster.profile <- cbind (population_average,Cluster_Profile_mean)
 
 iprint.df(round(cluster.profile, 2))
+write.csv(round(cluster.profile, 2), file = "cluster.profile.csv")
+
 ```
 
 We can also "visualize" the segments using **snake plots** for each cluster. For example, we can plot the means of the profiling variables for each of our clusters to better visualize differences between segments. For better visualization we plot the standardized profiling variables.
@@ -510,6 +525,9 @@ if (ncol(ProjectData_scaled_profile) < 2)
 colnames(Cluster_Profile_standar_mean) <- paste("Seg ", 1:length(cluster_ids), sep="")
 
 iplot.df(melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), Cluster_Profile_standar_mean), id="idx"), xlab="Profiling variables (standardized)",  ylab="Mean of cluster")
+
+write.csv(round(Cluster_Profile_standar_mean, 2), file = "Cluster_Profile_standar_mean.csv")
+
 ```
 
 We can also compare the averages of the profiling variables of each segment relative to the average of the variables across the whole population. This can also help us better understand whether  there are indeed clusters in our data (e.g. if all segments are much like the overall population, there may be no segments). For example, we can measure the ratios of the average for each cluster to the average of the population, minus 1, (e.g. `avg(cluster)` `/` `avg(population)` `-1`) for each segment and variable:
@@ -521,6 +539,7 @@ colnames(cluster_profile_ratios) <- paste("Seg.", 1:ncol(cluster_profile_ratios)
 rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
 ## printing the result in a clean-slate table
 iprint.df(round(cluster_profile_ratios-1, 2))
+
 ```
 
 **Questions**
