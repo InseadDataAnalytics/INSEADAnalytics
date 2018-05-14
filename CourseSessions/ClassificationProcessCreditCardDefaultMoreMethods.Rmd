@@ -49,9 +49,10 @@ independent_variables = c(1:24) # use all the available attributes
 # Some feature engineering
 if (1){
   tmpx = t(apply(ProjectData[,7:12], 1, function(r) matrix(c(sum(r==-2), sum(r==-1), sum(r==0),sum(r > 0)), nrow=1)))
-  
-  ProjectData = cbind(ProjectData[,2:5],tmpx, apply(ProjectData[,13:18], 1, function(r) median(r[!is.na(r)])), apply(ProjectData[,19:24]/ProjectData[,13:18], 1, function(r) ifelse(sum(!is.na(r) & !is.infinite(r)), mean(r[!is.na(r) & !is.infinite(r)]),0)),ProjectData[,25])
-  
+  colnames(tmpx) <- c("NoConsum","PayDuly", "Delay1Month","DelayMoreMonths")
+  ProjectData_tmp = cbind(ProjectData[,2:5],tmpx, apply(ProjectData[,13:18], 1, function(r) median(r[!is.na(r)])), apply(ProjectData[,19:24]/ProjectData[,13:18], 1, function(r) ifelse(sum(!is.na(r) & !is.infinite(r)), mean(r[!is.na(r) & !is.infinite(r)]),0)),ProjectData[,25])
+  colnames(ProjectData_tmp) <- c(colnames(ProjectData)[2:5], colnames(tmpx),"MedianBill", "MedianPercentPay", colnames(ProjectData)[25])
+  ProjectData = ProjectData_tmp
   dependent_variable = 11
   independent_variables = c(1:10) # use all the available attributes
 }
@@ -93,7 +94,7 @@ validation_data_percent = 10
 test_data_percent = 100-estimation_data_percent-validation_data_percent
 
 # Please ENTER 1 if you want to randomly split the data in estimation and validation/test
-random_sampling = 1
+random_sampling = 0
 
 # Tree parameter
 # Please ENTER the tree (CART) complexity control cp (e.g. 0.0001 to 0.02, depending on the data)

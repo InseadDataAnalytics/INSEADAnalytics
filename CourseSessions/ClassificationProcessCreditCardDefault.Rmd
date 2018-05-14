@@ -65,7 +65,7 @@ validation_data_percent = 10
 test_data_percent = 100-estimation_data_percent-validation_data_percent
 
 # Please ENTER 1 if you want to randomly split the data in estimation and validation/test
-random_sampling = 1
+random_sampling = 0
 
 # Tree parameter
 # Please ENTER the tree (CART) complexity control cp (e.g. 0.0001 to 0.02, depending on the data)
