@@ -7,9 +7,9 @@ RUN_PART_2 = 1
 
 # Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
 # CHOOSE FILE TO ANALYSE
-datafile_name = "../Sessions23/data/Boats.csv" # FOR BOATS DATA
-#datafile_name = "../Sessions23/data/MBAadmin.csv" # FOR MBA DATA
-#datafile_name = "../Sessions45/data/Mall_Visits.csv" # FOR SHOPPING MALL DATA
+datafile_name = "CourseSessions/Sessions23/data/Boats.csv" # FOR BOATS DATA
+#datafile_name = "CourseSessions/Sessions23/data/MBAadmin.csv" # FOR MBA DATA
+#datafile_name = "CourseSessions/Sessions45/data/Mall_Visits.csv" # FOR SHOPPING MALL DATA
 
 
 # Please ENTER the original raw attributes to use. 
