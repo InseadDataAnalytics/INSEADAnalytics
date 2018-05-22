@@ -33,6 +33,7 @@ manual_numb_factors_used = 10
 
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
 rotation_used = "varimax"
+MIN_VALUE = 0.5
 
 ############################################################################################################
 ############################################################################################################
@@ -288,6 +289,13 @@ if (RUN_PART_2){
   
   iplot.df(melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), Cluster_Profile_standar_mean), id="idx"), xlab="Profiling variables (standardized)",  ylab="Mean of cluster")
   
+  df_toplot = melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), 
+                                    Cluster_Profile_standar_mean), 
+                   id="idx")
+  ggplot(df_toplot,
+         aes_string(x=colnames(df_toplot)[1], y="value", colour="variable")) + 
+    geom_line()
+
   write.csv(round(Cluster_Profile_standar_mean, 2), file = "Cluster_Profile_standar_mean.csv")
 
   ####
