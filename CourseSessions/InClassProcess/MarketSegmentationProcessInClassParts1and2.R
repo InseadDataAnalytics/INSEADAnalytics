@@ -33,6 +33,7 @@ manual_numb_factors_used = 10
 
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
 rotation_used = "varimax"
+MIN_VALUE = 0.5
 
 ############################################################################################################
 ############################################################################################################
