@@ -15,7 +15,11 @@ output:
 always_allow_html: yes
 ---
 
-<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command (pay attention to the directory you are in, check it using getwd()) rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd") -->
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command (pay attention to the directory you are in, check it using getwd())
+
+rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd") 
+
+-->
 
 > **IMPORTANT**: Please make sure you create a copy of this file with a customized name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf).
