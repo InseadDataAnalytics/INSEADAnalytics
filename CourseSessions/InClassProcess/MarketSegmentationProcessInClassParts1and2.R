@@ -287,8 +287,6 @@ if (RUN_PART_2){
     Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
   colnames(Cluster_Profile_standar_mean) <- paste("Seg ", 1:length(cluster_ids), sep="")
   
-  iplot.df(melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), Cluster_Profile_standar_mean), id="idx"), xlab="Profiling variables (standardized)",  ylab="Mean of cluster")
-  
   df_toplot = melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), 
                                     Cluster_Profile_standar_mean), 
                    id="idx")
