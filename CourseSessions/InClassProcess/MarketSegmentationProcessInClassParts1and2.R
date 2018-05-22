@@ -41,19 +41,19 @@ MIN_VALUE = 0.5
 # PART 2 PARAMETERS
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-#segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) # FOR BOATS DATA
-segmentation_attributes_used = c(1:5) # FOR MBA DATA
+segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) # FOR BOATS DATA
+#segmentation_attributes_used = c(1:5) # FOR MBA DATA
 #segmentation_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-#profile_attributes_used = c(2:82)  # FOR BOATS DATA
-profile_attributes_used = c(1:7)  # FOR MBA DATA
+profile_attributes_used = c(2:82)  # FOR BOATS DATA
+#profile_attributes_used = c(1:7)  # FOR MBA DATA
 #profile_attributes_used = c(2:9)  # FOR SHOPPING MALL DATA
 
 # Please ENTER the number of clusters to eventually use for this report
-#numb_clusters_used = 7 # for boats possibly use 5, for Mall_Visits use 3
-numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
+numb_clusters_used = 5 # for boats possibly use 5, for Mall_Visits use 3
+#numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
 
 # Please enter the method to use for the segmentation:
 profile_with = "kmeans" #  "hclust" or "kmeans"
@@ -221,7 +221,9 @@ if (RUN_PART_2){
   ProjectData_profile <- ProjectData[,profile_attributes_used]
   
   ProjectData_scaled <- apply(ProjectData, 2, function(r) if (sd(r)!=0) (r-mean(r))/sd(r) else 0*r)
-  
+
+  ########################################################################################################################  
+  ## GET THE HIERARCHICAL CLUSTERING
   Hierarchical_Cluster_distances <- dist(ProjectData_segment, method=distance_used)
   Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
   # Display dendogram
@@ -234,6 +236,7 @@ if (RUN_PART_2){
   DENDROGRAM_DISTANCES = head(Hierarchical_Cluster$height[length(Hierarchical_Cluster$height):1],20)
   plot(DENDROGRAM_DISTANCES, type="l")
   
+  ########################################################################################################################  
   ####
   # Save the clusters
   
@@ -245,6 +248,7 @@ if (RUN_PART_2){
   
   write.csv(round(ProjectData_with_hclust_membership, 2), file = "ProjectData_with_hclust_membership.csv")
   
+  ########################################################################################################################  
   ### K-MEANS 
   kmeans_clusters <- kmeans(ProjectData_segment,centers= numb_clusters_used, iter.max=2000, algorithm=kmeans_method)
   ProjectData_with_kmeans_membership <- cbind(1:length(kmeans_clusters$cluster),kmeans_clusters$cluster)
@@ -263,6 +267,7 @@ if (RUN_PART_2){
     cluster_ids <-  cluster_ids_kmeans
   }
   
+  ########################################################################################################################  
   ### PROFILE THE SEGMENTS
   NewData = matrix(cluster_memberships,ncol=1)
   
@@ -278,7 +283,8 @@ if (RUN_PART_2){
   View(SEGMENT_PROFILES)
   write.csv(SEGMENT_PROFILES, file = "cluster.profile.csv")
   
-  ######
+  ########################################################################################################################  
+  # PROFILE SEGMENTS WITH SNAKE PLOT
   
   ProjectData_scaled_profile = ProjectData_scaled[, profile_attributes_used,drop=F]
   
@@ -296,7 +302,9 @@ if (RUN_PART_2){
 
   write.csv(round(Cluster_Profile_standar_mean, 2), file = "Cluster_Profile_standar_mean.csv")
 
-  ####
+
+  ########################################################################################################################  
+  # PROFILE RELATIVE TO POPULATION AVERAGE
   
   population_average_matrix <- population_average[,"Population",drop=F] %*% matrix(rep(1,ncol(Cluster_Profile_mean)),nrow=1)
   cluster_profile_ratios <- (ifelse(population_average_matrix==0, 0,Cluster_Profile_mean/population_average_matrix))
