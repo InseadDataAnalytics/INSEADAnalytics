@@ -1,5 +1,6 @@
 
-RUN_PART_2 = TRUE
+##Choose TRUE or FALSE to activate the second part of this file. 
+RUN_PART_2 = FALSE
 
 ############################################################################################################
 ############################################################################################################
@@ -297,9 +298,10 @@ if (RUN_PART_2){
   df_toplot = melt(cbind.data.frame(idx=as.numeric(1:nrow(Cluster_Profile_standar_mean)), 
                                     Cluster_Profile_standar_mean), 
                    id="idx")
-  ggplot(df_toplot,
-         aes_string(x=colnames(df_toplot)[1], y="value", colour="variable")) + 
+  snake_plot = ggplot(df_toplot,
+                      aes_string(x=colnames(df_toplot)[1], y="value", colour="variable")) + 
     geom_line()
+  print(snake_plot)
 
   write.csv(round(Cluster_Profile_standar_mean, 2), file = "Cluster_Profile_standar_mean.csv")
 
