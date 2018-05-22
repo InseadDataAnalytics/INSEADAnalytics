@@ -1,5 +1,5 @@
 
-RUN_PART_2 = 1
+RUN_PART_2 = TRUE
 
 ############################################################################################################
 ############################################################################################################
@@ -226,8 +226,9 @@ if (RUN_PART_2){
   Hierarchical_Cluster <- hclust(Hierarchical_Cluster_distances, method=hclust_method)
   # Display dendogram
   labels <- (length(Hierarchical_Cluster$labels) > 40)
-  ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE, labels=labels) +
+  dendroplot = ggdendrogram(Hierarchical_Cluster, theme_dendro=FALSE, labels=labels) +
     xlab("Observations") + ylab("Height")
+  plot(dendroplot)
   
   
   num <- nrow(ProjectData) - 1
