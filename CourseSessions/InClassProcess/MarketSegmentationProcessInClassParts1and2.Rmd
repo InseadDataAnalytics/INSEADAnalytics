@@ -22,6 +22,97 @@ rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClas
 -->
 
 > **IMPORTANT**: Please make sure you create a copy of this file with a customized name, so that your work (e.g. answers to the questions) is not over-written when you pull the latest content from the course github. 
+
+```{r setupdata1E, echo=TRUE, tidy=TRUE}
+# All parameters of the report are in this code chunk
+
+##########################################################################################
+# CHOOSE FILE TO ANALYSE
+##########################################################################################
+# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
+#datafile_name = "../Sessions23/data/Boats.csv" # FOR BOATS DATA
+datafile_name = "../Sessions23/data/MBAadmin.csv" # FOR MBA DATA
+#datafile_name = "../Sessions45/data/Mall_Visits.csv" # FOR SHOPPING MALL DATA
+
+
+##########################################################################################
+# PART 1: FACTOR ANALYSIS
+##########################################################################################
+
+# Please ENTER the original raw attributes to use. 
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+#factor_attributes_used = c(2:30) # FOR BOATS DATA
+factor_attributes_used = c(1:7) # FOR MBA DATA
+#factor_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
+
+# Please ENTER the selection criteria for the factors to use. 
+# Choices: "eigenvalue", "variance", "manual"
+factor_selectionciterion = "manual"
+
+# Please ENTER the desired minumum variance explained 
+# (Only used in case "variance" is the factor selection criterion used). 
+minimum_variance_explained = 65  # between 1 and 100
+
+# Please ENTER the number of factors to use 
+# (Only used in case "manual" is the factor selection criterion used).
+#manual_numb_factors_used = 12
+manual_numb_factors_used = 2
+
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
+rotation_used = "varimax"
+
+##########################################################################################
+# PART 2: SEGMENTATION
+##########################################################################################
+
+# Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+#segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) # FOR BOATS DATA
+segmentation_attributes_used = c(1:5) # FOR MBA DATA
+#segmentation_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
+
+# Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
+# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
+#profile_attributes_used = c(2:82)  # FOR BOATS DATA
+profile_attributes_used = c(1:7)  # FOR MBA DATA
+#profile_attributes_used = c(2:9)  # FOR SHOPPING MALL DATA
+
+# Please ENTER the number of clusters to eventually use for this report
+#numb_clusters_used = 7 # for boats possibly use 5, for Mall_Visits use 3
+numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
+
+# Please enter the method to use for the segmentation:
+profile_with = "kmeans" #  "hclust" or "kmeans"
+
+# Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
+# (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
+# DEFAULT is "euclidean"
+distance_used = "euclidean"
+
+# Please ENTER the hierarchical clustering method to use (options are:
+# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
+# DEFAULT is "ward"
+hclust_method = "ward"
+
+# Please ENTER the kmeans clustering method to use (options are:
+# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen").
+# DEFAULT is "Lloyd"
+kmeans_method = "Lloyd"
+
+```
+
+
+```{r setupdata2E, echo=TRUE, tidy=TRUE}
+# Some other parameters regarding the printout of the report
+
+# Minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
+MIN_VALUE = 0.5
+
+# Maximum number of observations to show in the report and slides. 
+# DEFAULT is 10. If the number is large the report may be slow.
+max_data_report = 10
+```
+
 This is a **template process for market segmentation based on survey data**, using the  [Boats cases A](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf) and  [B](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-B-prerelease.pdf).
 
 All material and code is available at the INSEAD Data Science for Business website and GitHub. Before starting, make sure you have pulled the [course files](https://github.com/InseadDataAnalytics/INSEADAnalytics) on your GitHub repository. As always, you can use the `help` command in Rstudio to find out about any R function (e.g. type `help(list.files)` to learn what the R function `list.files` does).
@@ -78,21 +169,6 @@ install.packages(packageurl, repos=NULL, type="source")
 
 First we load the data to use (see the raw .Rmd file to change the data file as needed):
 
-```{r setupdata1E, echo=TRUE, tidy=TRUE}
-# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
-
-# CHOOSE FILE TO ANALYSE
-#datafile_name = "../Sessions23/data/Boats.csv" # FOR BOATS DATA
-datafile_name = "../Sessions23/data/MBAadmin.csv" # FOR MBA DATA
-#datafile_name = "../Sessions45/data/Mall_Visits.csv" # FOR SHOPPING MALL DATA
-
-# Please enter the minimum number below which you would like not to print - this makes the readability of the tables easier. Default values are either 10e6 (to print everything) or 0.5. Try both to see the difference.
-MIN_VALUE = 0.5
-
-# Please enter the maximum number of observations to show in the report and slides. 
-# DEFAULT is 10. If the number is large the report may be slow.
-max_data_report = 10
-```
 
 ```{r}
 ProjectData <- read.csv(datafile_name)
@@ -115,30 +191,6 @@ In this part we also become familiar with:
 
 (All user inputs for this part should be selected in the code chunk in the raw .Rmd file) 
 
-```{r setupfactor, echo=TRUE, tidy=TRUE}
-# Please ENTER the original raw attributes to use. 
-# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-#factor_attributes_used = c(2:30) # FOR BOATS DATA
-factor_attributes_used = c(1:7) # FOR MBA DATA
-#factor_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
-
-# Please ENTER the selection criteria for the factors to use. 
-# Choices: "eigenvalue", "variance", "manual"
-factor_selectionciterion = "eigenvalue"
-
-# Please ENTER the desired minumum variance explained 
-# (Only used in case "variance" is the factor selection criterion used). 
-minimum_variance_explained = 65  # between 1 and 100
-
-# Please ENTER the number of factors to use 
-# (Only used in case "manual" is the factor selection criterion used).
-#manual_numb_factors_used = 12
-manual_numb_factors_used = 2
-
-# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
-rotation_used = "varimax"
-
-```
 
 ```{r}
 factor_attributes_used <- intersect(factor_attributes_used, 1:ncol(ProjectData))
@@ -174,7 +226,7 @@ write.csv(round(thecor,2), file = "thecor.csv")
 **Questions**
 
 1. Do you see any high correlations between the responses? Do they make sense? 
-2. What do these correlations imply?
+2. What do these correlations imply about the possibility of performing factor analysis?
 
 **Answers:**
 
@@ -232,8 +284,7 @@ iplot.df(melt(df, id="components"))
 **Questions:**
 
 1. Can you explain what this table and the plot are? What do they indicate? What can we learn from these?
-2. Why does the plot have this specific shape? Could the plotted line be increasing? 
-3. What characteristics of these results would we prefer to see? Why?
+2. What characteristic (e.g. about the shape) of the plot above would we prefer to see? Why?
 
 **Answers**
 
@@ -294,8 +345,7 @@ write.csv(Rotated_Factors_thres, file = "Rotated_Factors_thres.csv")
 
 1. What do the first couple of factors mean? Do they make business sense? 
 2. How many factors should we choose for this data/customer base? Please try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
-3. How would you interpret the factors you selected?
-4. What lessons about data science do you learn when doing this analysis? Please comment. 
+3. What lessons about data science do you learn when doing this analysis? Please comment. 
 
 **Answers**
 
@@ -325,8 +375,7 @@ write.csv(NEW_ProjectData, file = "FactorScores.csv")
 
 **Questions**
 
-1. Can you describe some of the people using the new derived variables (factor scores)? 
-2. Which of the 29 initial variables would you select to represent each of the factors you selected?  
+1. Which of the 29 initial variables would you select to represent each of the factors you selected?  
 
 **Answers**
 
@@ -356,42 +405,6 @@ A key family of methods used for segmentation is what is called **clustering met
 
 (All user inputs for this part should be selected in the code chunk in the raw .Rmd file) 
 
-```{r setupcluster, echo=TRUE, tidy=TRUE}
-# Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
-# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-#segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) # FOR BOATS DATA
-segmentation_attributes_used = c(1:5) # FOR MBA DATA
-#segmentation_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
-
-# Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
-# Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-#profile_attributes_used = c(2:82)  # FOR BOATS DATA
-profile_attributes_used = c(1:7)  # FOR MBA DATA
-#profile_attributes_used = c(2:9)  # FOR SHOPPING MALL DATA
-
-# Please ENTER the number of clusters to eventually use for this report
-#numb_clusters_used = 7 # for boats possibly use 5, for Mall_Visits use 3
-numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
-
-# Please enter the method to use for the segmentation:
-profile_with = "kmeans" #  "hclust" or "kmeans"
-
-# Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
-# (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
-# DEFAULT is "euclidean"
-distance_used = "euclidean"
-
-# Please ENTER the hierarchical clustering method to use (options are:
-# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
-# DEFAULT is "ward"
-hclust_method = "ward"
-
-# Please ENTER the kmeans clustering method to use (options are:
-# "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen").
-# DEFAULT is "Lloyd"
-kmeans_method = "Lloyd"
-
-```
 
 ```{r}
 # Same as the initial data
@@ -561,7 +574,7 @@ iprint.df(round(cluster_profile_ratios-1, 2))
 **Questions**
 
 1. What do the numbers in the last table indicate? What numbers are the more informative?
-2. Based on the tables and snake plot above, what are some key features of each of the segments of this solution?
+2. Based on the tables above, what are some key features of each of the segments of this solution? In other words, for some of the segments, what are some features of these segments that are very different from all/most other segments or from the average of the population?
 
 **Answers**
 
@@ -583,9 +596,8 @@ We should also consider the robustness of our analysis as we change the clusteri
 **Questions**
 
 1. How many segments are there in our market? How many do you select and why? Try a few and explain your final choice based on a) statistical arguments, b) on interpretation arguments, c) on business arguments (**you need to consider all three types of arguments**)
-2. Can you describe the segments you found based on the profiles?
-3. What if you change the number of factors and in general you *iterate the whole analysis*? **Iterations** are key in data science.
-4. Can you now answer the [Boats case questions](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf)? What business decisions do you recommend to this company based on your analysis?
+2. Can you describe some of the segments you found based on their profiles?
+3. Can you now answer the [Boats case questions](http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf)? What business decisions do you recommend to this company based on your analysis?
 
 **Answers**
 
@@ -600,6 +612,4 @@ We should also consider the robustness of our analysis as we change the clusteri
 *
 *
 
-**You have now completed your first market segmentation project.** Do you have data from another survey you can use with this report now? 
-
-**Extra question**: explore and report a new segmentation analysis... 
+**You have now completed your first market segmentation project.** You can also use this report template for other data now...

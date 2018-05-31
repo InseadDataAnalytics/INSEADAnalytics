@@ -1,22 +1,30 @@
+rm(list=ls()) # Clean up the memory, if we want to rerun from scratch
 
 ##Choose TRUE or FALSE to activate the second part of this file. 
-RUN_PART_2 = FALSE
+RUN_PART_2 = TRUE
 
 ############################################################################################################
 ############################################################################################################
-# PART 1 PARAMETERS
 
-# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
 # CHOOSE FILE TO ANALYSE
-datafile_name = "CourseSessions/Sessions23/data/Boats.csv" # FOR BOATS DATA
-#datafile_name = "CourseSessions/Sessions23/data/MBAadmin.csv" # FOR MBA DATA
+# Please ENTER the name of the file with the data used. The file should be a .csv with one row per observation (e.g. person) and one column per attribute. Do not add .csv at the end, make sure the data are numeric.
+#datafile_name = "CourseSessions/Sessions23/data/Boats.csv" # FOR BOATS DATA
+datafile_name = "CourseSessions/Sessions23/data/MBAadmin.csv" # FOR MBA DATA
 #datafile_name = "CourseSessions/Sessions45/data/Mall_Visits.csv" # FOR SHOPPING MALL DATA
 
+# Read the data
+ProjectData <- read.csv(datafile_name)
+ProjectData <- data.matrix(ProjectData) 
+#View(ProjectData)
+
+##########################################################################################
+# PART 1: FACTOR ANALYSIS
+##########################################################################################
 
 # Please ENTER the original raw attributes to use. 
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-factor_attributes_used = c(2:30) # FOR BOATS DATA
-#factor_attributes_used = c(1:7) # FOR MBA DATA
+#factor_attributes_used = c(2:30) # FOR BOATS DATA
+factor_attributes_used = c(1:7) # FOR MBA DATA
 #factor_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
 
 # Please ENTER the selection criteria for the factors to use. 
@@ -30,31 +38,30 @@ minimum_variance_explained = 65  # between 1 and 100
 # Please ENTER the number of factors to use 
 # (Only used in case "manual" is the factor selection criterion used).
 #manual_numb_factors_used = 12
-manual_numb_factors_used = 10
+manual_numb_factors_used = 2
 
 # Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
 rotation_used = "varimax"
-MIN_VALUE = 0.5
 
-############################################################################################################
-############################################################################################################
+##########################################################################################
+# PART 2: SEGMENTATION
+##########################################################################################
 
-# PART 2 PARAMETERS
 # Please ENTER then original raw attributes to use for the segmentation (the "segmentation attributes")
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) # FOR BOATS DATA
-#segmentation_attributes_used = c(1:5) # FOR MBA DATA
+#segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) # FOR BOATS DATA
+segmentation_attributes_used = c(1:5) # FOR MBA DATA
 #segmentation_attributes_used = c(2:7) # FOR SHOPPING MALL DATA
 
 # Please ENTER then original raw attributes to use for the profiling of the segments (the "profiling attributes")
 # Please use numbers, not column names, e.g. c(1:5, 7, 8) uses columns 1,2,3,4,5,7,8
-profile_attributes_used = c(2:82)  # FOR BOATS DATA
-#profile_attributes_used = c(1:7)  # FOR MBA DATA
+#profile_attributes_used = c(2:82)  # FOR BOATS DATA
+profile_attributes_used = c(1:7)  # FOR MBA DATA
 #profile_attributes_used = c(2:9)  # FOR SHOPPING MALL DATA
 
 # Please ENTER the number of clusters to eventually use for this report
-numb_clusters_used = 5 # for boats possibly use 5, for Mall_Visits use 3
-#numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
+#numb_clusters_used = 7 # for boats possibly use 5, for Mall_Visits use 3
+numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
 
 # Please enter the method to use for the segmentation:
 profile_with = "kmeans" #  "hclust" or "kmeans"
@@ -67,7 +74,7 @@ distance_used = "euclidean"
 # Please ENTER the hierarchical clustering method to use (options are:
 # "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
 # DEFAULT is "ward"
-hclust_method = "ward.D2"
+hclust_method = "ward"
 
 # Please ENTER the kmeans clustering method to use (options are:
 # "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen").
@@ -78,6 +85,7 @@ kmeans_method = "Lloyd"
 ############################################################################################################
 ############################################################################################################
 
+MIN_VALUE = 0.5
 
 ######################################################
 # installs all necessary libraries from CRAN or Github
@@ -119,8 +127,6 @@ my_summary <- function(thedata){
 }
 
 ################################################################################
-ProjectData <- read.csv(datafile_name)
-ProjectData <- data.matrix(ProjectData) 
 ProjectData_INITIAL <- ProjectData
 
 factor_attributes_used <- intersect(factor_attributes_used, 1:ncol(ProjectData))
@@ -130,13 +136,13 @@ ProjectDataFactor <- data.matrix(ProjectDataFactor)
 # STEP 2: SUMMARY OF THE DATA
 #"Summary of the data used:"
 SUMMARY_STATISTICS = round(my_summary(ProjectDataFactor), 2)
-View(SUMMARY_STATISTICS)
+#View(SUMMARY_STATISTICS)
 
 # STEP 3: CHECK THE CORRELATION MATRIX
 thecor = round(cor(ProjectDataFactor),2)
 #"Correlation Matrix:"
 CORRELATION_MATRIX = round(thecor, 2)
-View(CORRELATION_MATRIX)
+#View(CORRELATION_MATRIX)
 write.csv(round(thecor,2), file = "thecor.csv")
 
 ############################################################################################################
@@ -157,7 +163,7 @@ colnames(Variance_Explained_Table) <- c("Eigenvalue", "Pct of explained variance
 
 #"Variance Explained and Eigenvalues:"
 VARIANCE_EXPLAINED= round(Variance_Explained_Table,2)
-View(VARIANCE_EXPLAINED)
+#View(VARIANCE_EXPLAINED)
 write.csv(round(Variance_Explained_Table,2), file = "Variance_Explained_Table.csv")
 
 # Scree plot
@@ -191,9 +197,12 @@ Rotated_Factors_thres[abs(Rotated_Factors_thres) < MIN_VALUE]<-NA
 colnames(Rotated_Factors_thres)<- colnames(Rotated_Factors)
 rownames(Rotated_Factors_thres)<- rownames(Rotated_Factors)
 
+ROTATED_FACTORS_ALL = round(Rotated_Factors,2)
+#View(ROTATED_FACTORS_ALL)
+write.csv(Rotated_Factors, file = "Rotated_Factors_nothresholded.csv")
 ROTATED_FACTORS = round(Rotated_Factors_thres,2)
-View(ROTATED_FACTORS)
-write.csv(Rotated_Factors_thres, file = "Rotated_Factors_thres.csv")
+#View(ROTATED_FACTORS)
+write.csv(Rotated_Factors_thres, file = "Rotated_Factors_thresholded.csv")
 
 ############################################################################################################
 # STEP 6: SAVE FACTOR DATA
@@ -201,7 +210,7 @@ NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
 colnames(NEW_ProjectData)<-paste("DV (Factor)",1:ncol(NEW_ProjectData),sep=" ")
 
 FACTOR_SCORES_SAMPLE = round((head(NEW_ProjectData, 10)),2)
-View(FACTOR_SCORES_SAMPLE)
+#View(FACTOR_SCORES_SAMPLE)
 write.csv(NEW_ProjectData, file = "FactorScores.csv")
 
 ############################################################################################################
@@ -282,7 +291,7 @@ if (RUN_PART_2){
   cluster.profile <- cbind (population_average,Cluster_Profile_mean)
   
   SEGMENT_PROFILES= round(cluster.profile, 2)
-  View(SEGMENT_PROFILES)
+  #View(SEGMENT_PROFILES)
   write.csv(SEGMENT_PROFILES, file = "cluster.profile.csv")
   
   ########################################################################################################################  
@@ -315,7 +324,7 @@ if (RUN_PART_2){
   rownames(cluster_profile_ratios) <- colnames(ProjectData)[profile_attributes_used]
   ## printing the result in a clean-slate table
   SEGMENT_PROFILES_RELATIVE = round(cluster_profile_ratios-1, 2)
-  View(SEGMENT_PROFILES_RELATIVE)
+  #View(SEGMENT_PROFILES_RELATIVE)
   write.csv(SEGMENT_PROFILES_RELATIVE, file = "cluster.profile.relative.csv")
   
 }
