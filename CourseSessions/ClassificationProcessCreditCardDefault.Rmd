@@ -884,7 +884,7 @@ df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
 ggplot(df.all, aes(x=`% of test data selected`, y=value, colour=variable)) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
 ```
 
-Finally the profit curves for the test data, using the same profit/cost estimates as we did above:
+Finally the profit curves for the test data, using the same profit/cost estimates as above:
 
 ```{r echo=FALSE}
 actual_class<- test_data[,dependent_variable]
