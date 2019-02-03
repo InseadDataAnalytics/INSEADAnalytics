@@ -323,7 +323,7 @@ print(m,'chart')
 
 ```{r Fig1, echo=FALSE, comment=NA, results='asis', message=FALSE, fig.align='center', fig=TRUE}
 
-eigenvalues  <- Variance_Explained_Table[,2]
+eigenvalues  <- as.numeric(as.character(Variance_Explained_Table[,2]))
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
 Line         <- gvisLineChart(as.data.frame(df), xvar="components", yvar=c("eigenvalues","abline"), options=list(title='Scree plot', legend="right", width=900, height=500, hAxis="{title:'Number of Components', titleTextStyle:{color:'black'}}", vAxes="[{title:'Eigenvalues'}]",  series="[{color:'green',pointSize:3, targetAxisIndex: 0}]"))
