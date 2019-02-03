@@ -311,7 +311,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(euclidean_pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable::xtable(euclidean_pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -339,7 +339,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(manhattan_pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable::xtable(manhattan_pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -379,7 +379,7 @@ overflow: auto;
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(Manual_Pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable::xtable(Manual_Pairwise, caption="", digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
@@ -744,7 +744,7 @@ The percentage of observations belonging to the same segment is
 <div class="row">
 <div class="col-md-3">
 ```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE, fig.align='center', results='asis'}
-print(xtable(per_cluster_observations_overlapping, caption = paste(paste("", total_observations_overlapping, sep=" "), "%."), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
+print(xtable::xtable(per_cluster_observations_overlapping, caption = paste(paste("", total_observations_overlapping, sep=" "), "%."), digits=1), type="html", html.table.attributes = "class='table table-striped table-hover table-bordered'", caption.placement="top", comment = FALSE, include.rownames = FALSE)
 ```
 </div>
 </div>
