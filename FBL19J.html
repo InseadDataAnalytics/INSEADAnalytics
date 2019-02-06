@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+  <html>
+  
+  <head>
+  <meta charset='utf-8' />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <meta name="description" content="" />
+  
+  <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  
+  <title>Insead_Analytics</title>
+  </head>
+  
+  <body>
+  
+  <!-- HEADER -->
+  <div id="header_wrap" class="outer">
+  <header class="inner">
+  <a id="forkme_banner" href="https://github.com/InseadDataAnalytics/INSEADAnalytics">View on GitHub</a>
+  
+  <h1 id="project_title">INSEAD Course: 
+  <br>
+  Data Science for Business </h1>
+  <h2 id="project_tagline"> </h2>
+  
+<h4 id="project_tagline"> 
+<a href="http://faculty.insead.edu/theodoros-evgeniou/" target="_blank">T. Evgeniou</a> 
+<br>
+Professor of Decision Sciences and Technology Management, 
+<br>
+INSEAD 
+</h4>
+
+<h4 id="project_tagline"> 
+<a href="https://smith.queensu.ca/faculty_and_research/faculty_list/ovinchinnikov-anton.php" target="_blank">A. Ovchinnikov</a> 
+<br>
+Professor of Management Science & Operations Management, 
+<br>
+Smith School of Business 
+</h4>
+
+  <section id="downloads">
+  <a class="zip_download_link" href="https://github.com/InseadDataAnalytics/INSEADAnalytics/zipball/master">Download this project as a .zip file</a>
+  <a class="tar_download_link" href="https://github.com/InseadDataAnalytics/INSEADAnalytics/tarball/master">Download this project as a tar.gz file</a>
+  </section>
+  </header>
+  </div>
+  
+  <!-- MAIN CONTENT -->
+  <div id="main_content_wrap" class="outer">
+  <section id="main_content" class="inner">
+  <h3>
+  <a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a></h3>
+  
+  
+  <p style="text-align: justify;"></p>
+
+
+<h3><strong>Course Description</strong></h3>
+  
+<p style="text-align: justify;"> The abundance of data revolutionizes many industries, and creates new, data-intensive business models. To take advantage of this trend, today's MBAs need to be more comfortable with "data science" - an emerging discipline that combines data analytics and business. The goal of this course is to build your capability in data science so that you can better add value through the effective management and use of data in your organizations. 
+
+<p style="text-align: justify;"> The course will combine three key elements: analytics techniques, business applications, and basic coding/programming (in R, one of the leading open-source tools for analyzing data that you will be able to use in your jobs). The emphasis will be on applications to various business cases in finance, marketing, and operations, among other disciplines.
+
+<p style="text-align: justify;"> A pre-requisite for the course is the material covered in the INSEAD core course Uncertainty, Data & Judgment. This course is a follow-up to UDJ. No prior coding experience is required: for most classes you will receive a starter code that you will modify and run. Because of that, much of the course will be in a form of a "hands-on" workshop; you will be expected to bring your laptop to class (with all the necessary software tools installed) and actively participate in the learning process.
+
+<p style="text-align: justify;"> What you will take away from this course:
+<ul>
+
+<li>	Understand key principles and processes for analyzing data and managing analytics projects;
+
+<li>	Learn to better identify new business opportunities for data analytics, and the specific strategies for extracting business value from data;
+
+<li>	Learn several advanced analytics/machine learning techniques: generalized linear models (logistic regression), CART, random forests, SVM, methods for segmentation and clustering, and neural networks;
+
+<li>	Get an introductory exposure to coding (in R) on which you will be able to build in your jobs;
+
+<li>	Get an introductory understanding of data science, "data scientists", and how to work with them.
+</ul>
+
+<p style="text-align: justify;"> The course is built around specific business cases that we will solve in a step-by-step approach, while getting introduced to the topics above.
+
+<p style="text-align: justify;"> This is not a course to become "data scientists" or even to become "experts in analytics". The goal is to familiarize participants with what is available and possible for analytics. It is meant to be a starting point. 
+
+  <!-- This is a comment   
+
+  <p style="text-align: justify;">Earlier versions of the course can be found at the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/" target="_blank"> Data Analytics for Business   </a> course. 
+  -->
+<br>
+<h3><strong>Course Tools</strong></h3>
+
+<p style="text-align: justify;"> The course is using the <a href="https://www.r-project.org/"  target="_blank">R programming language</a> and the main tool is <a href="https://www.rstudio.com/"  target="_blank">Rstudio</a>. All participants are required to install Rstudio <strong> before the first session.</strong>
+<br>
+
+<p style="text-align: justify;"> Since coding is likely new to many of you, if you experience any issues using the class tools, please post them <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/issues" target="_blank">"issues"</a> on the course website's GitHub page, after exploring any related past issues there. While answers will be provided by the course TAs, participation points will be awareded to participants for responding to peers' issues. <a href="https://www.crunchbase.com/organization/github#/entity"  target="_blank">What is Github?</a> - it is an open-source platform for coding collaboration, and as the course progresses we hope you will find it useful to register there and use it to share your work.
+
+<!--
+<p style="text-align: justify;"> <strong>Important note:</strong> If you experience any issues using the class technologies, please post them at the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/issues" target="_blank">"Issues"  </a> of the course main github page, after exploring any related past issues there. While answers will be provided by the course TAs, participation points will be awareded to participants for responding to peers' issues. -->
+
+<br>
+
+<p style="text-align: justify;"> A key lesson of the course is that an important success factor for data analytics projects is to have a good balance between creative customization and <strong> codified, reproducible and reusable end-to-end analytics processes ("solutions")</strong>. We will develop codified end-to-end processes ("solutions") during the course. Examples of reproducible and reusable analytics solutions can also be found in the <a href="https://gallery.cortanaintelligence.com/"  target="_blank"> Microsoft Azure Machine Learning Studio platform.</a>  This space is growing and changing fast, with various cloud-based platforms being developed such as <a href="https://cloud.google.com/ml/"  target="_blank"> Google Cloud Machine Learning Engine </a> and <a href="https://aws.amazon.com/machine-learning/"  target="_blank"> Amazon's Artificial Intelligence on AWS</a>, among others. 
+<br>
+
+    <!-- This is a comment   
+
+ <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/RBasedVersion.html target="_blank">  based on R. </a>   The course has also run before using <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CloudBasedVersion.html" target="_blank"> individual Amazon servers with cloud-based tools.</a></p>
+-->
+
+<br>
+<h3><strong>Cases and Final Project</strong></h3>
+
+<p style="text-align: justify;"> Three cases will be assigned and they will be due in groups. Each case will be on a business application (relating to finance, marketing, and operations, among others). The cases will focus on implementing analytics techniques or models taught in class, and deriving relevant managerial insights,  through a step-by-step solution approach.
+
+<p style="text-align: justify;"> A central part of the course is the group final project. For the final project, every group is required to develop a data analytics solution to a business problem, and share the relevant data. The project should include three parts: A clear process for how to solve the business problem with steps codified using R code; an application of the process using a specific dataset; and specification for others to use the process, e.g. with different data. The professors will be meeting with all groups to discuss final project ideas and progress; the TA would be available to help with specific implementation issues.
+
+<br>
+<h3><strong>Tutorials</strong></h3>
+
+<p style="text-align: justify;"><a href="mailto:christos.oikonomou@insead.edu">Christos Oikonomou</a> will be the teaching assistant for the course, who will run 3 tutorial sessions throughout the course to assist you with getting comfortable with R, understanding and using the R implementation of the machine learning techniques presented in class, as well as implementing the final projects.
+
+
+
+<br>
+<h3><strong>Books</strong></h3>
+
+  <p style="text-align: justify;"> There is no required textbook, but these books are recommended as optional background readings:
+<br>
+<a href="http://www.amazon.com/Data-Science-Business-data-analytic-thinking-ebook/dp/B00E6EQ3X4/ref=sr_1_1_title_1_kin?s=books&ie=UTF8&qid=1390211255&sr=1-1" target="_blank"> Data Science for Business: Fundamental Principles of Data Mining and Data-Analytic Thinking </a> (DSB book)
+<br> 
+by F. Provost and T.Fawcett (2013)
+<br>
+<br>
+ An open-source (free) online textbook covering much of the material in the early part of the course is <a href="https://www.otexts.org/book/fpp"  target="_blank">Forecasting Principles and Practice</a> (FPP). It also uses R for examples. Browse through the book and don't hesitate to use it as an extended help file. </p>
+
+<h3><strong>Grading</strong></h3>
+  <p style="text-align: justify;"> 3 Group Assignments (cases):	45% (15% each) </p>
+  <p style="text-align: justify;"> Group Final Project:	30 % </p>
+  <p style="text-align: justify;"> Individual Class Participation:	15% for in-class participation. 
+  <br>
+  10% for participating in the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/issues" target="_blank">"Issues"</a> discussions, for both posting your own issues, and for responding to the issues posted by others
+
+  <br>
+  Note: 3% participation points will be deducted for each (1.5 hr) session missed</p>
+  <p style="text-align: justify;"></p>
+
+<br>
+<hr>
+<h3><strong>Course Sessions </strong></h3>
+  
+ <br>
+
+
+  <h4>Sessions 1-2:  Introduction to predictive modeling, linear regression review and transition from Excel to R. </h4>
+  
+  The session will start with an overview of the course and will then transition to predictive modeling using linear regressions. For that we will recall the linear regression modeling from UDJ and "take it to the next level" with R. We will also lightly touch on visualizations (in R and in Tableau). A Tableau demo will be done live, and the R code will be provided to run/follow in class.  
+  
+  <p style="text-align: justify;"> Read before class:  </p>
+  
+  <p style="text-align: justify; padding-left: 60px;">  Case: <a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Sarah%20Gets%20a%20Diamond.pdf"  target="_blank">"Sarah Gets a Diamond"</a> </p>
+  
+  <p style="text-align: justify; padding-left: 60px;">  The file <a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Sarah%20Gets%20a%20Diamond%20Data.xls" target="_blank">"0102 Sarah Gets a Diamond data.xls"</a>  contains data about various attributes for 9000 diamonds. For the first 6000 you also have the price. The goal is to predict the prices of the remaining diamonds (i.e., those with IDs 6000 and above). You will build a (regression) model to do that in class and we will have a little competition.  </p>
+
+
+  <p style="text-align: justify;">Prepare <strong> before class</strong>:  </p>
+  
+   <p style="text-align: justify; padding-left: 60px;"> Install <a href="https://www.rstudio.com/"  target="_blank">Rstudio</a> (also see the <a href="https://www.r-project.org/"  target="_blank">R project</a>) </p>
+
+   <p style="text-align: justify; padding-left: 60px;"> Install <a href="https://www.tableau.com/academic/students"  target="_blank">Tableau</a> </p>
+   
+  <p style="text-align: justify; padding-left: 60px;">	Think about your groups (4-5 people per group). Groups to be finalized in the break between Session 1 and 2 </p>
+
+
+  <p style="text-align: justify; padding-left: 60px;"> (Optional) Explore these   <a href="https://www.rstudio.com/products/shiny/shiny-user-showcase/"  target="_blank">applications </a> developed using some of the tools we use in class </p>
+  
+
+  <p style="text-align: justify;">In class material:  </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Handouts/DSB%20Slides%20Sessions%201-2%20FBL18D%20EA.pdf"  target="_blank">Slides Sessions 1-2 [UPDATED]</a> </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	<a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0102%20Sarah%20Gets%20a%20Diamond%20--%20Linear%20Regression.R"  target="_blank">R code we used in Sessions 1-2</a> </p>
+    
+        <p style="text-align: justify; padding-left: 60px;">	<a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0102%20Sarah%20Gets%20a%20Diamond%20data.csv"  target="_blank">Datafile 0102 Sarah Gets a Diamond data.csv</a> </p>
+
+  <!-- This is a comment   
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/Exercises/Exerciseset1/ExerciseSet1Solutions.Rmd"  target="_blank">Exercise Set 1 Solutions.</a> 
+
+  -->
+
+    <p style="text-align: justify;">Homework for next time </p>
+    
+    <p style="text-align: justify; padding-left: 60px;">   Read the <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Time%20Series.pdf"    target="_blank"> Time Series </a> note for Sessions #3-4 and browse through the <a href="https://www.otexts.org/book/fpp"  target="_blank">FPP</a>  book.  </p>
+
+  <p style="text-align: justify;">Optional Readings:  </p>
+
+<!--  <p style="text-align: justify; padding-left: 60px;">   <a href="https://www.crunchbase.com/organization/github#/entity"  target="_blank">What is Github?</a> </p> -->
+  <p style="text-align: justify; padding-left: 60px;"> What is R? <a href="http://cran.r-project.org/doc/contrib/Short-refcard.pdf"  target="_blank">R Reference Card.</a></p>
+
+  <p style="text-align: justify; padding-left: 60px;"> Chapters 1 and 2  from the DSB book</p>
+
+  <p style="text-align: justify; padding-left: 60px;"> Chapters 4 and 5  from the FPP book</p>
+
+
+  <p style="text-align: justify;">Other Resources:  </p>
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href="https://www.datacamp.com/"  target="_blank">Datacamp</a> </p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href="https://www.coursera.org/learn/r-programming"  target="_blank">A Coursera R programming course</a> </p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href="https://www.udemy.com/datascience/"  target="_blank">An Udemy data science course</a> </p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href="https://www.lynda.com/learning-paths/IT/become-a-data-scientist"  target="_blank">A Lynda data science page</a> </p>
+  <p style="text-align: justify; padding-left: 60px;"> <a href="https://www.tableau.com/learn"  target="_blank">Tableau Training</a> </p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href="https://www.lynda.com/Tableau-training-tutorials/2048-0.html"  target="_blank">A Lynda Tableau page</a> </p>
+
+
+<br>
+<h4>Tutorial 1: Getting comfortable with R (and coding in general) </h4>
+  
+  Coding is likely new to many of you, hence the goal of the first tutorial is to help you become comfortable with "writing" simple code by modifying the templates given in class. In particular, you will work on the following problem:
+  
+  <p> Context: you are selling stuffed toy animals for holiday season.  
+Each animal first is sold in a test market, and the "test" data is recorded.
+Then the selected toys are sold in all markets, and the total "sales" data is recorded. In addition, the kind of the toy ("SKU") is recorded. </p>
+   
+   <p> The goal: predict the sales of a "Bear" for which the test sales were 10 items. First, consider a single-variable regression, and then consider the multi-variable case. </p>
+
+  <p> The related files <a href= "https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank"> T1 Sales Data </a> </p>
+
+<p> Data wrangling <a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/data-wrangling-cheatsheet.pdf" target="_blank"> cheat-sheet </a> for dplyr.</p>
+  
+  
+ <!-- This is a comment   
+
+<p>(Optional) Explore  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Session1/Session1inclass.html"  target="_blank"> this document  </a> (you can edit the  <a href="https://raw.githubusercontent.com/InseadDataAnalytics/INSEADAnalytics/master/CourseSessions/Session1/Session1inclass.Rmd"  target="_blank"> corresponding raw file</a>) </p>
+
+  -->
+
+<br>
+<h4>Sessions 3-4: Time series modeling (with R) </h4>
+  
+  We will continue exploring data science with R, by considering predicting a time series - a common type of data indexed in chronological order. A variety of analytical techniques will be discussed: moving average, exponential smoothing, noise-trend-seasonality decompositions, trigonometric decompositions, ARIMA models and "dynamic regressions" (ARIMA models with covariates; equivalently, regression models with ARIMA errors). As always, R code will be provided to be followed in class. 
+   
+  <p style="text-align: justify;">Read before class:</p>
+  
+    <p style="text-align: justify; padding-left: 60px;">	<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Time%20Series.pdf"  target="_blank"> Time Series </a> </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	Separate data file for time series analyses <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0304%20electric%20rates%20data.csv"  target="_blank">  Electric Rates.csv </a></p>
+  
+
+  <p style="text-align: justify;">Prepare <strong> before class</strong>:  </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	Nothing to prepare </p>
+
+  <p style="text-align: justify;">In class material:  </p>
+
+      <p style="text-align: justify; padding-left: 60px;">	<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Handouts/DSB%20Slides%20Sessions%203-4%20FBL18D.pdf"  target="_blank">Slides Sessions 3-4 </a> </p>
+      
+      <p style="text-align: justify; padding-left: 60px;">	<a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0304%20time%20series%20I%20-%20decompositions%20ets%20and%20tbats.R"  target="_blank">R code we used in Sessions 3-4, part 1</a> </p>
+      
+      <p style="text-align: justify; padding-left: 60px;">	<a href= "https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0304%20time%20series%20II%20-%20ARIMAs%20and%20dynamic%20regressions.R"  target="_blank">R code we used in Sessions 3-4, part 2</a> </p>
+      
+
+    <p style="text-align: justify;">Homework for Sessions 7-8 </p>
+
+     <p style="text-align: justify; padding-left: 60px;"> <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Yahoos%20Acquisition%20of%20Tumblr.pdf"  target="_blank">Yahoo's Acquisition of Tumblr</a>  +  <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Yahoos%20Acquisition%20of%20Tumblr%20Data.xlsx"  target="_blank"> valuation spreadsheet and data</a> </p>
+ 
+        <p style="text-align: justify; padding-left: 60px;"> The ultimate question: If you were advising the Yahoo's board, would you recommend approving the acquisition of Tumblr for $1.1 billion? Please prepare a slide-deck explaining your recommendation, illustrating it with any necessary graphs/charts/tables, etc. To help you in doing so please consider the following sub-questions: </p>
+        
+        <p style="text-align: justify; padding-left: 80px;">	What was the average monthly growth rate in the number of people worldwide accessing Tumblr site since its inception (over the last 37 months)? How does it compare to the average monthly growth rate over the past 12 months? What are the valuations of Tumblr given these two growth rates? </p>
+ <p style="text-align: justify; padding-left: 80px;">Use the data provided to forecast the number of people worldwide accessing Tumblr's site for the next 115 months (June 2013 - Dec 2022). </p>
+ <p style="text-align: justify; padding-left: 80px;">Given your forecast, revise the valuation of Tumblr (case Exhibit 5, valuation spreadsheet). </p>
+ <p style="text-align: justify; padding-left: 80px;">Submit PPT, R code, valuation model on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx"  target="_blank">INSEAD course portal</a>   </p>
+
+<p style="text-align: justify;">Optional Readings:  </p>
+
+  <p style="text-align: justify; padding-left: 60px;"> Chapters 6,7,8, 9.1 from the FPP book</p>
+
+<br>
+
+
+<h4>Sessions 5-6: Introduction to classification. Logistic regression and CART   </h4>
+  
+In Sessions 1-4 we focused on predicting continuous quantities (e.g., price of an item). But it is equally important and common to predict events; for example, will a customer purchase again, will a borrower default, etc - a task referred to as "classification". In this session we will consider the main metrics for understanding classification, as well as will discuss two popular techniques. First is logistic regression - a generalization of the linear regression. Second is CART (classification and regression tree).  
+
+  <p style="text-align: justify;">Read before class:</p>
+  
+  <p style="text-align: justify; padding-left: 60px;"> Case: <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Retention%20modelling%20at%20Scholastic%20Travel%20Company%20A%20UVA_QA_0864.pdf" target="_blank">"Retention Modeling at Scholastic Travel Company (A)." UVA-QA-0864</a>  + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Retention%20modelling%20at%20Scholastic%20Travel%20Company%20A%20UVA_QA_0864X.xlsx" target="_blank">Excel data</a> + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20STC(A)%20data_numerical%20dates.csv" target="_blank">CSV data</a></p>
+
+  <p style="text-align: justify; padding-left: 60px;"> Case: <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Retention%20modelling%20at%20Scholastic%20Travel%20Company%20B%20UVA_QA_0865.pdf" target="_blank">"Retention Modeling at Scholastic Travel Company (B)." UVA-QA-0865</a>  + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Retention%20Modeling%20B%20Data.XLSX" target="_blank"> Excel data</a> + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20STC(B)%20data_numerical%20dates.csv" target="_blank"> CSV data</a>. The (B) case will be discussed during Tutorial 2 </p>
+
+<!-- This is a comment   
+
+<p style="text-align: justify; padding-left: 60px;"> <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.html" target="_blank">Classification </a>  (pdf version <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions67/ClassificationAnalysisReading.pdf" target="_blank"> available here</a>, and a shiny-based interactive version can be run using <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/InteractiveClassificationAnalysis.Rmd" target="_blank"> this code</a>) </p>
+
+-->
+  
+<p style="text-align: justify; padding-left: 60px;"> <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Modeling%20Discrete%20Choice%20UVA_QA_0779.pdf" target="_blank">Modeling Discrete Choice: Categorical Dependent Variables, Logistic Regression, and Maximum Likelihood Estimation</a>  + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20Data%20and%20model%20from%20the%20Modeling%20Discrete%20Choice%20reading.xlsx" target="_blank">Excel data and model</a> + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Modeling%20Discrete%20Choice%20Data.xlsx" target="_blank">data</a> + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20Logistic%20regression%20(glm)%20code%20for%20the%20Modeling%20Discrete%20Choice%20reading.R" target="_blank">R code</a> </p>
+
+  <p style="text-align: justify; padding-left: 60px;"> Skim through Chapter 4 (focus more on Section 4.3), and Sections 7.1 and 8.2-8.5 of the DSB book</p>
+
+
+  <p style="text-align: justify;">In class material:  </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Handouts/DSB%20Slides%20Sessions%205-6%20FBL18D.pdf"  target="_blank">Slides Sessions 5-6</a> </p>
+    
+    <p style="text-align: justify; padding-left: 60px;">	<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20STC%20(A)%20Logistic.R"  target="_blank">Logistic regression R code</a> </p>
+        
+    <p style="text-align: justify; padding-left: 60px;">	<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20STC%20(A)%20CART.R"  target="_blank">CART R code</a> </p>
+
+ 
+
+    <p style="text-align: justify;">Homework for Sessions 9-10 </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	Assignment 2  (<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1930_July/Session%20Documents/DSB%20Assignment%202%20Credit%20Card%20Default.pdf"  target="_blank">Credit Card Default</a>, <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1930_July/Session%20Documents/DSB%20A2%20-%20new%20applications.xlsx">New application data</a>, <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1930_July/Session%20Documents/DSB%20A2%20--%20credit%20data.xlsx">Data File</a>) is due by 8am the day of Sessions #9-10. Submit your report (if possible in .Rmd and .html format, otherwise in a ppt format) on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a>, and be ready to present your work in class.</p>
+
+    <p style="text-align: justify; padding-left: 60px;">	<strong>Note</strong>: starting from Sessions #9-10 we will also learn a new way/"process" for doing and communicating analytics - an approach that we will refer to as "notebooks". These are codified "solutions" that feed off live data and present the analyses and their explanation in one self-contained document. Please refer to this  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/reusability_example.html" target="_blank">example of a scalable reusable work</a>: explore this example of how to use the tools to generate reusable (long) reports efficiently. How many lines do you need to edit in order to generate this long report? Here is the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/reusability_example.Rmd" target="_blank">source code </a>  that generated this report.  We will see another example in Session #9-10 and will discuss it in detail.  </p>
+
+
+<br>
+<h4>Tutorial 2: Mid-course help with R. Classification. *.Rmd files </h4>
+  
+  The goal of the second tutorial is threefold. First, to serve as a mid-course Q&A on any of the material thus far. Second, to strengthen your understanding of the classification material. For that, you will work (with the TA, of course) on the STC(B) case - an extension of the work we have done in sessions 5-6 based on the additional data about the Net Promoter Scores (NPS). Third, the tutorial will offer additional exposure to *.rmd files as a way to combine "doing"" and "communicating"" analytics. This should be particularly handy as your assignment 2 is in the form of an rmd file. 
+
+  <p style="text-align: justify; padding-left: 60px;"> Case: <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Retention%20modelling%20at%20Scholastic%20Travel%20Company%20B%20UVA_QA_0865.pdf" target="_blank">"Retention Modeling at Scholastic Travel Company (B)." UVA-QA-0865</a>  + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/Retention%20Modeling%20B%20Data.XLSX" target="_blank"> Excel data</a> + <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/0506%20STC(B)%20data_numerical%20dates.csv" target="_blank"> CSV data</a>. </p>
+  
+  <p style="text-align: justify; padding-left: 60px;"> R script that we generated during the tutorial can be found <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/T2_inClass_FBL_18D.R"  target="_blank">here</a></p>
+    <p style="text-align: justify; padding-left: 60px;"> RMD example that we saw in the tutorial can be found <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1850_Dec/Session%20Documents/T2.RMD.example.Rmd"  target="_blank">here</a></p>
+
+
+
+<br>
+
+
+
+<h4>Sessions 7-8: Guest Speaker, Data Science Processes </h4>
+
+In this session, we discuss with the guest speaker how to plan and manage data science processes, and discuss principles such as reusability, replicability, scalability, and shareability. Many examples of data science in business will be presented.
+   
+  <p style="text-align: justify;">Read before class (Optional) </p>
+  
+  <p style="text-align: justify; padding-left: 60px;">
+  Skim through Chapters 1 and 2 of DSB. Focus on Sections 1.4, 1.7, 1.8, 2.1 and 2.4</p>
+
+  <p style="text-align: justify; padding-left: 60px;">
+  Skim through the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CRISP_DM.pdf"  target="_blank">CRSP-DM documentation</a></p>
+
+  <p style="text-align: justify; padding-left: 60px;"> <a href="http://faculty.insead.edu/theodoros-evgeniou/documents/barriers_to_information_management.pdf" target="_blank">Information Management Issues </a></p>
+
+  <p style="text-align: justify; padding-left: 60px;"> <a href="https://hbr.org/2014/09/how-to-tell-if-you-should-trust-your-statistical-models" target="_blank">How to Tell If You Should Trust Your Statistical Models </a></p>
+
+  <p style="text-align: justify; padding-left: 60px;"> <a href="https://hbr.org/2013/10/does-bigger-data-lead-to-better-decisions" target="_blank">Does bigger data lead to better decisions? </a></p>
+
+  <p style="text-align: justify; padding-left: 60px;"> <a href="https://hbr.org/2015/11/run-field-experiments-to-make-sense-of-your-big-data" target="_blank">Run Field Experiments to Make Sense of Your Big Data </a></p>
+
+  
+    <p style="text-align: justify;">Submit <strong> before class</strong>:  </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	Assignment 1 (Yahoo/Tumblr case) is due by 8am the day of Sessions #7-8. Submit a .ppt file, your R code, and the valuation model on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a> </p>
+
+
+      <p style="text-align: justify;">Homework for next time </p>
+
+<p style="text-align: justify; padding-left: 60px;">	Proposal for final project, due at <strong>8am on May 21, before Sessions #9-10</strong>. Submit on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a>  a short (1-2 pages) description of the business problem, your business solution process, and some preliminary description of the data you plan to use.  </p>
+
+      <p style="text-align: justify; padding-left: 60px;">	Assignment 2  (<a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1930_July/Session%20Documents/DSB%20Assignment%202%20Credit%20Card%20Default.pdf" target="_blank">Credit Card Default</a>, <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1930_July/Session%20Documents/DSB%20A2%20-%20new%20applications.xlsx">New application data</a>, <a href="https://mbacourse.insead.edu/courses/DSC/FBL_P3_Data_Science_for_Business_EvgeniouOvchinnikov_1930_July/Session%20Documents/DSB%20A2%20--%20credit%20data.xlsx">Data File</a>) is due by 8am the day of Sessions #9-10. Submit your report (if possible in .Rmd and .html format, otherwise in a ppt format) on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a>, and be ready to present your work in class.</p>
+</p>
+
+    
+
+<br>
+
+<h4>Sessions 9-10: Advanced Classification Methods and Dimensionality Reduction </h4>
+  
+We wrap up the discussion on classification using logistic regression and CART with presentations of the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/ClassificationProcessCreditCardDefaultMoreMethods.html"  target="_blank">Credit Card Default</a> case. We then switch gears and discuss dimensionality reduction: how to generate a few meaningful derived attributes starting from a large number of raw attributes. We present Principal Component Analysis, a popular technique for dimensionality reduction, in detail. Throughout this session, we will be working on notebooks - a reusable, replicable, and easy-to-share way of doing and communicating analytics with publication-quality output in the form of a single self-contained report.
+
+  <p style="text-align: justify;">Read before class:</p>
+  
+    <p style="text-align: justify; padding-left: 60px;"> 
+  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.html" target="_blank">Dimensionality Reduction and Derived Attributes </a> (pdf version <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions23/FactorAnalysisReading.pdf" target="_blank"> available here)</a> </p>
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf" target="_blank">Boats: Segmentation Case Boats A (Part I&II) </a> (Note: official case is Insead case 09/2012-5849). </p>
+
+  <p style="text-align: justify;">Prepare <strong> before class</strong>:  </p>
+      <p style="text-align: justify; padding-left: 60px;">	Assignment 2  (<a href="https://www.dropbox.com/s/0g2wwj58d3jz4sz/A2%20FBL18D.pdf?dl=0"  target="_blank">Credit Card Default</a>, <a href="https://www.dropbox.com/s/9sd47h29ved9al5/A2_new_customers.csv?dl=0"  target="_blank">A2_new_customers.csv</a>) is due by 8am the day of Sessions #9-10. Submit your report (if possible in .Rmd and .html format, otherwise in a ppt format) on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a>, and be ready to present your work in class.
+      
+      <p style="text-align: justify; padding-left: 60px;"> Before next class, please make sure you have downloaded all the course code from github and that you can open in Rstudio the .Rmd  files in the directory <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/tree/master/CourseSessions/InClassProcess" target="_blank"> CourseSessions/InClassProcess</a>. You can download and unzip all code directly from the github of the course - see these screenshots (<a href="http://inseaddataanalytics.github.io/INSEADAnalytics/DownloadCourseCodePage.png" target="_blank">1</a>) and (<a href="http://inseaddataanalytics.github.io/INSEADAnalytics/HowToDownload.png" target="_blank">2</a>).  We will be working in class on  <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd" target="_blank"> this file.  </a>  
+      
+    </p>
+
+  <p style="text-align: justify;">In class material:  </p>
+
+  <p style="text-align: justify; padding-left: 60px;">  We will work on Part 1 of the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/InClassProcess/MarketSegmentationProcessInClass.html"  target="_blank"> segmentation template document  </a> (we will be editing this  <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd"  target="_blank">  raw file</a>) </p>
+
+    <p style="text-align: justify; padding-left: 60px;">	<a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Session910.pdf"  target="_blank">Slides Sessions 9-10</a> </p>
+
+<p style="text-align: justify;">Homework for next time </p>
+
+<p style="text-align: justify; padding-left: 60px;">	No Homework </p>
+
+<p style="text-align: justify;">Optional Readings:  </p>
+
+  <p style="text-align: justify; padding-left: 60px;">  Chapter 6.4 of the DSB book, skim through all of Chapter 6.</p>
+
+
+<br>
+<h4>Sessions 11-12: Clustering for Segmentation  </h4>
+
+ In data analytics we oftentimes want to organize large data into clusters with similar observations within each cluster. In order to identify segments in the data we use clustering techniques, which group the data into a few segments so that data within a segment are similar, while data across segments are different. We will propose and run in class a complete process for clustering and segmentation, and we will discuss in detail two widely used clustering techniques: k-means clustering and hierarchical clustering. 
+ 
+  <p style="text-align: justify;">Read before class:</p>
+
+  
+    <p style="text-align: justify; padding-left: 60px;"> 
+  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.html" target="_blank">Clustering and Segmentation</a>  (pdf version <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/Sessions45/ClusterAnalysisReading.pdf" target="_blank"> available here</a>)</p>
+
+
+  <p style="text-align: justify; padding-left: 60px;"> Skim through Chapter 6, read Section 6.4 of the DSB book </p>
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Boats-A-prerelease.pdf" target="_blank">Boats: Segmentation Case Boats A (Part I&II) </a> (Note: official case is Insead case 09/2012-5849). </p>
+  
+
+  <p style="text-align: justify;">Prepare <strong> before class</strong>:  </p>
+
+  <p style="text-align: justify; padding-left: 60px;">  Make sure you can "knit" the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd"  target="_blank"> market segmentation process  document  </a> and generate an html report  (check out this <a  href="https://github.com/InseadDataAnalytics/INSEADAnalytics/issues/69"  target="_blank"> issue </a> if needed). </p>
+  
+   <p style="text-align: justify; padding-left: 60px;">Explore some <a href="http://rstudio.github.io/shinydashboard/" target="_blank">Shiny Dashboard </a> visualization tools  </p>
+
+  <p style="text-align: justify;">In class material:  </p>
+  
+  <p style="text-align: justify; padding-left: 60px;">  We will continue work on Part 2 of the <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/CourseSessions/InClassProcess/MarketSegmentationProcessInClass.html"  target="_blank"> segmentation template document  </a> (we will be editing this  <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd"  target="_blank"> raw file</a>) </p>
+  
+      <p style="text-align: justify; padding-left: 60px;">	<a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Session1112.pdf"  target="_blank">Slides Sessions 11-12</a> </p>
+
+     <p style="text-align: justify; padding-left: 60px;">  (Optional)  Some slides on the Boats case <a href="http://inseaddataanalytics.github.io/INSEADAnalytics/Sessions2_3 Handouts.pdf"  target="_blank">(Part I) </a>.   </p>
+
+   <p style="text-align: justify; padding-left: 60px;">  (Optional) These interactive document tools may also be used during class (running on RStudio): the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions23/InteractiveFactorAnalysis.Rmd"  target="_blank"> Interactive Factors Analysis Tool  </a> as well as the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/Sessions45/InteractiveClusterAnalysis.Rmd"  target="_blank"> Interactive Cluster Analysis Tool</a></p>
+   
+
+  <p style="text-align: justify; padding-left: 60px;">
+Assignment 3 (Boats (A): A Segmentation Case) is due by 8am the day of Sessions #13-14. You should work only on Parts 1 and 2 of the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd"  target="_blank"> segmentation template document  </a> we  use in class, and submit a .Rmd file and a .html file of your work on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a>.
+
+<p style="text-align: justify; padding-left: 60px;">	Final project, due at the begining of Sessions #13-14. Submit a presentation (ppt and code or .Rmd and .html files), and data on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a></p>
+
+<p style="text-align: justify; padding-left: 60px;">	Prepare to present your project in class.</p>
+
+<br>
+<h4>Sessions 13-14: Project presentations </h4>
+  
+Groups present their final projects. 
+  
+  <p style="text-align: justify;">Submit <strong> before class</strong>:  </p>
+
+  <p style="text-align: justify; padding-left: 60px;">
+Assignment 3 (Boats (A): A Segmentation Case) (Parts 1 and 2 of the <a href="https://github.com/InseadDataAnalytics/INSEADAnalytics/blob/master/CourseSessions/InClassProcess/MarketSegmentationProcessInClassParts1and2.Rmd"  target="_blank"> segmentation template document  </a> we use in class) is due by 8am the day of Sessions #13-14. Submit a .Rmd file and a .html file on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a>.
+
+<p style="text-align: justify; padding-left: 60px;">	Final project, due at the begining of Sessions #13-14. Submit a presentation (ppt and code or .Rmd and .html files), and data on the <a href="https://mbacourse.insead.edu/courses/dsc/fbl_p3_data_science_for_business_evgeniouovchinnikov_1850_dec/Pages/default.aspx" target="_blank">INSEAD course portal </a></p>
+
+<p style="text-align: justify; padding-left: 60px;">	Prepare to present your project in class.</p>
+
+<br>
+<hr>
+    <p style="text-align: justify;">Group Projects, January-February 2016 <strong>(INSEAD 2016J)</strong> (note: only info/data with non-confidential/NDA constraints): </p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/group_energy.html target="_blank">  Energy  Consumption </a> (github <a href=https://github.com/brrav0/RTEAnalytics target="_blank">  source here</a>)</p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/TwitterProjectReport.pdf target="_blank">  Twitter and Elections </a> (github <a href=https://github.com/kristinakostopoulos/Predictive-Power-of-Twitter-on-Elections target="_blank">  source here</a>)</p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/TravelWebsite.html target="_blank">  Travel Website Analytics </a> (github <a href=https://github.com/varungp/TravelWebsite target="_blank">  source here</a>)</p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/BDAgroupretailscreenshot.png target="_blank"> Google Analytics Dashboard (tool screenshot) </a> (github <a href=https://github.com/jamieluINSEAD/FinalGroupProject target="_blank">  source here</a>)</p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/sportsProject2016Jan.html target="_blank"> Sports Club Analytics </a> (github <a href=https://github.com/pedcarreira/sportsClubAnalytics target="_blank">  source here</a>)</p>
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/AirbnbReport2016Jan.html target="_blank"> AirbnBb </a> (github <a href=https://github.com/LiLinYonekura/AirbnbProject target="_blank">  source here</a>)</p>
+
+   <br>
+    <hr>
+    <p style="text-align: justify;">Group Projects, May-June 2016 <strong>(INSEAD 2016D)</strong> (note: only info/data with non-confidential/NDA constraints): </p>
+    
+      <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/Sonsory.html target="_blank">  Wine Analytics</a> (github <a href=https://github.com/josgavito/DataWine target="_blank">  source here</a>)</p>
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/FinancialDataFactorAnalysis.html target="_blank"> Firm Fundamentals Analysis </a> (github <a href=https://github.com/ target="_blank">  source here</a>)</p>
+
+      <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/AirlineCluster_final.html target="_blank">  Airline  Customer Segmentation </a> (github <a href=https://github.com/mmael/BDAGroupProject target="_blank">  source here</a>)</p>
+
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/SpeedDating.html target="_blank">  Speed Dating Intelligence </a> (github <a href=https://github.com/Judyfinegold/Group_project target="_blank">  source here</a>)</p>
+
+  <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/AirBnBAmsterdam.html target="_blank">  Airbnb Pricing in Amsterdam </a> (github <a href=https://github.com/Ribbie/Final-project target="_blank">  source here</a>)</p>
+
+   <br>
+    <hr>
+    <p style="text-align: justify;">Group Projects, Jan-Feb 2017 <strong>(INSEAD 2017J)</strong> (note: only info/data with non-confidential/NDA constraints): </p>
+    
+      <p style="text-align: justify; padding-left: 60px;"> HR Analytics <a href=http://htmlpreview.github.io/?https://github.com/egor-gazarov/PredictingEmployeesLeave-INSEAD17J-GP/blob/master/Predicting_Leave_of_Employees.html target="_blank">  Project 1 </a> (github <a href=https://github.com/egor-gazarov/PredictingEmployeesLeave-INSEAD17J-GP target="_blank">  source here</a>), <a href=http://htmlpreview.github.io/?https://github.com/NZF85/INSEAD_GroupProj/blob/master/grptest.html target="_blank">  Project 2 </a> (github <a href=https://github.com/NZF85/INSEAD_GroupProj target="_blank">  source here</a>),  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/AnalysisofHR[1].html target="_blank"> Project 3 </a> (github <a href=https://github.com/elenagiusti/GroupProject- target="_blank">  source here</a>), <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/GOLDHR_Final.html target="_blank">  Project 4 </a> (github <a href=https://github.com/Tommicus/GOLDHR/ target="_blank">  source here</a>), <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/MYHRANALYTICS.html target="_blank">  Project 5 </a> (github <a href=https://github.com/jennyphung/HRANALYTICS/ target="_blank">  source here</a>),  <a href=http://htmlpreview.github.io/?https://github.com/colin-rodrigues/HR_Analytics/blob/master/HR_markdown.html target="_blank">  Project 6 </a> (github <a href=https://github.com/colin-rodrigues/HR_Analytics target="_blank">  source here</a>)  </p>
+      
+      
+   <p style="text-align: justify; padding-left: 60px;">  <a href=http://htmlpreview.github.io/?https://github.com/INSEADBDA/WineProject/blob/master/Main_new.html target="_blank">  Wine Analytics</a> (github <a href=https://github.com/INSEADBDA/WineProject/ target="_blank">  source here</a>)</p>
+
+      <p style="text-align: justify; padding-left: 60px;">  <a href=http://htmlpreview.github.io/?https://github.com/pedrobfranco/NYC_risk/blob/master/NYC_risk_estimating.html target="_blank">  Risk in NYC </a> (github <a href=https://github.com/pedrobfranco/NYC_risk target="_blank">  source here</a>)</p>
+
+    <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/Healthcare.html target="_blank"> Healthcare  </a> (github <a href=https://github.com/sophiedherbomez/BDA_group_healthcare target="_blank">  source here</a>)</p>
+
+   <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/The_next_blockbuster_hit.html target="_blank"> Movie Sales </a> (github <a href=https://github.com/scalabretta/GroupProject--IMDB/ target="_blank">  source here</a>)</p>
+   
+   <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/MobileTelcoSegmentation.html target="_blank"> Mobile Telco Segmentation </a> (github <a href=https://github.com/franciscoroque/GroupProject target="_blank">  source here</a>)</p>
+   
+         <p style="text-align: justify; padding-left: 60px;">  Lending Club Defaults <a href=http://htmlpreview.github.io/?https://github.com/sjisaacs/lending-club-analysis/blob/master/LendingClubAnalysis.html target="_blank">  Project 1 </a> (github <a href=https://github.com/sjisaacs/lending-club-analysis target="_blank">  source here</a>) and <a href=http://htmlpreview.github.io/?https://github.com/stanostoja/bdagroupproject/blob/master/LendingClub_v0_5_Cluster1.html target="_blank">  Project 2 </a> (github <a href=https://github.com/stanostoja/bdagroupproject target="_blank">  source here</a>)</p>
+
+   <p style="text-align: justify; padding-left: 60px;">  Speed Dating, Project 1, Parts <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/SpeedDatingIndex1.html target="_blank">  1 </a>, <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/SpeedDatingInsights2.html target="_blank">  2 </a>, <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/SpeedDatingMarketSegmentation3.html target="_blank">  3 </a>, <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/SpeedDatingClassification4.html target="_blank">  4 </a> (github <a href=https://github.com/mwozniak86/SpeedDating target="_blank">  source here</a>), and <a href=https://github.com/Wang-Alex/GroupProject target="_blank">  Project 2 </a></p>
+
+
+       <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/TravelProject.html target="_blank"> Travel Website Analytics  </a> (github <a href=https://github.com/marcelosantiso/TravelWebsite target="_blank">  source here</a>)</p>
+
+    <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/MashableNews.html target="_blank"> Mashable News  </a> (github <a href=https://github.com/saini-insead/Mashable_Online_News target="_blank">  source here</a>)</p>
+
+
+      <p style="text-align: justify; padding-left: 60px;">  <a href=http://htmlpreview.github.io/?https://github.com/fazrilm/FlightDelays/blob/master/PredictFlightDelayed_Jaime.html target="_blank">  Flight Delays </a> (github <a href=https://github.com/fazrilm/FlightDelays target="_blank">  source here</a>)</p>
+
+
+      <p style="text-align: justify; padding-left: 60px;">  <a href=http://htmlpreview.github.io/?https://github.com/shirastites/Group-Project/blob/master/CreditCardDefaultReport.html target="_blank">  Credit Card Default </a> (github <a href=https://github.com/shirastites/Group-Project target="_blank">  source here</a>)</p>
+
+   <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/eCommerce_Analysis.html target="_blank"> e-commerce Analytics </a> (github <a href=https://github.com/AlexandreLC/GroupProject/ target="_blank">  source here</a>)</p>
+   
+      <p style="text-align: justify; padding-left: 60px;">  <a href=http://htmlpreview.github.io/?https://github.com/atul-shukla-INSEAD/GroupProjectBDA/blob/master/GroupProject.html target="_blank">  Airline Fleet Segmentation </a> (github <a href=https://github.com/atul-shukla-INSEAD/GroupProjectBDA target="_blank">  source here</a>)</p>
+
+   <p style="text-align: justify; padding-left: 60px;">  <a href=http://inseaddataanalytics.github.io/INSEADAnalytics/groupprojects/January2017/Restaurant_Ratings_Group_Project_Final.html target="_blank"> Restaurant Ratings </a> (github <a href=https://github.com/mattjm100/GroupProjectFinal target="_blank">  source here</a>)</p>
+   
+
+ 
+    <br>
+
+  <br>
+  <br>
+  
+  <!-- FOOTER  -->
+  <div id="footer_wrap" class="outer">
+  <footer class="inner">
+  <p class="copyright">This course website is maintained by <a href="https://github.com/InseadDataAnalytics">InseadDataAnalytics</a> and published with <a href="http://pages.github.com">GitHub Pages</a></p>
+  </footer>
+  </div>
+  
+  
+  
+  </body>
+  </html>
+  
