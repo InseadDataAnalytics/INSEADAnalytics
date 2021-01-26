@@ -64,7 +64,7 @@ minimum_variance_explained = 65  # between 1 and 100
 # (ONLY USED in case "manual" is the factor selection criterion used).
 manual_numb_factors_used = 2
 
-# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Defauls is "varimax"
+# Please ENTER the rotation eventually used (e.g. "none", "varimax", "quatimax", "promax", "oblimin", "simplimax", and "cluster" - see help(principal)). Default is "varimax"
 rotation_used="varimax"
 
 factor_attributes_used = unique(sapply(factor_attributes_used,function(i) min(ncol(ProjectData), max(i,1))))
@@ -235,7 +235,7 @@ While there are as many (and for other methods, more) factors as the number of t
 When using PCA, we have two measures of "how much of the information (variance in this case) in the original raw data is captured by any of the factors": 
 
 a) the *percentage of variance explained*, 
-b) the *eigenvalue coresponding to the component*.
+b) the *eigenvalue corresponding to the component*.
 
 Each factor has an eigenvalue as well as the percentage of the variance explained. The sum of the eigenvalues of the components is equal to the number of original raw attributes used for factor analysis, while the sum of the percentages of the variance explained across all components is 100%. For example, for our data these are:
 
@@ -253,7 +253,7 @@ knitr::kable(round(Variance_Explained_Table, 2))
 
 Note that the "first principal component" has the highest eigenvalue and captures most of the information (variance in this case) of the original raw data. As a rule of thumb, every component with eigenvalue more than 1 "has more information that the average original raw attribute". Typically one uses only these factors, although what is also important to consider is "what total percentage of the variance in the original data is kept when one replaces the original data/attributes with the selected factors/components".
 
-> Two Statistical criteria to select the number of factors/derived variables when using PCA are: a) select components with corresponding eigenvalue larger than 1; b) Select the components with the highest eigenvalues "up to the component" for which the cumulative total variance explained is relatively large (e.g. more than 50%).
+> Two statistical criteria to select the number of factors/derived variables when using PCA are: a) select components with corresponding eigenvalue larger than 1; b) Select the components with the highest eigenvalues "up to the component" for which the cumulative total variance explained is relatively large (e.g. more than 50%).
 
 One can also plot the eigenvalues of the generated factors in decreasing order: this plot is called the **scree plot**. For our data this plot looks as follows:
 
@@ -262,7 +262,8 @@ One can also plot the eigenvalues of the generated factors in decreasing order: 
 eigenvalues  <- Variance_Explained_Table[, "Eigenvalue"]
 df           <- cbind(as.data.frame(eigenvalues), c(1:length(eigenvalues)), rep(1, length(eigenvalues)))
 colnames(df) <- c("eigenvalues", "components", "abline")
-ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line()
+#ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line()
+ggplot(melt(df, id="components"), aes(x=components, y=value, colour=variable)) + geom_line() + scale_colour_manual(values = c("cyan", "blue"))
 ```
 
 
@@ -293,7 +294,7 @@ For our data, the `r factors_selected` selected factors look as follows after th
 
 Rotated_Results<-principal(ProjectDataFactor, nfactors=max(factors_selected), rotate=rotation_used,score=TRUE)
 Rotated_Factors<-round(Rotated_Results$loadings,2)
-Rotated_Factors<-as.data.frame(unclass(Rotated_Factors))
+Rotated_Factors<-as.data.frame(unclass(Rotated_Factors)) #unclass returns a copy of its argument with its class information removed
 colnames(Rotated_Factors)<-paste("Component",1:ncol(Rotated_Factors),sep=" ")
 
 sorted_rows <- sort(Rotated_Factors[,1], decreasing = TRUE, index.return = TRUE)$ix
@@ -356,7 +357,8 @@ df <- cbind(
   df
 )
 
-ggplot(melt(df, id="observations"), aes(x=observations, y=value, colour=variable)) + geom_point()
+#ggplot(melt(df, id="observations"), aes(x=observations, y=value, colour=variable)) + geom_point()
+ggplot(melt(df, id="observations"), aes(x=observations, y=value, colour=variable)) + geom_point() + scale_colour_manual(values = c("cyan", "blue"))
 ```
 
 Remember that we still see a lot of the information in the original data (the total variance explained using 2 factors) using only this 2-dimensional plot! This is of course only the begining of the analysis using the new attributes. Later on one may need to come back to these tools to generate new derived variables. As always remember that 
