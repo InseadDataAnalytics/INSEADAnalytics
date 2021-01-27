@@ -54,7 +54,7 @@ profile_with = "hclust" #  "hclust" or "kmeans"
 distance_used="euclidean"
 
 # Please ENTER the hierarchical clustering method to use (options are:
-# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid")
+# "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median" or "centroid")
 # DEFAULT is "ward"
 hclust_method = "ward.D"
 
@@ -314,7 +314,7 @@ As a rule of thumb, one can select the number of clusters as the "elbow" of this
 For now let's consider the `r numb_clusters_used`-segments solution found by the Hierarchical Clustering method (using the `r distance_used` distance and the hclust option `r hclust_method`). We can also see the segment each observation (respondent in this case) belongs to for the first `r min(max_data_report,nrow(ProjectData))` people:
 
 ```{r}
-cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into 3 clusters
+cluster_memberships_hclust <- as.vector(cutree(Hierarchical_Cluster, k=numb_clusters_used)) # cut tree into numb_clusters_used clusters
 cluster_ids_hclust=unique(cluster_memberships_hclust)
 
 ProjectData_with_hclust_membership <- cbind(1:length(cluster_memberships_hclust),cluster_memberships_hclust)
@@ -390,7 +390,7 @@ if (ncol(ProjectData_scaled_profile) < 2)
   Cluster_Profile_standar_mean = t(Cluster_Profile_standar_mean)
 colnames(Cluster_Profile_standar_mean) <- paste("Segment", 1:length(cluster_ids), sep=" ")
 
-ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster_Profile_standar_mean)), id="id"), aes(x=id, y=value, colour=variable)) + geom_line() + xlab("Profiling variables (standardized)") + ylab("Mean of cluster")
+ggplot(melt(as.data.frame(cbind(id=1:nrow(Cluster_Profile_standar_mean), Cluster_Profile_standar_mean)), id="id"), aes(x=id, y=value, colour=variable)) + geom_line() + scale_colour_manual(values = c("cyan", "blue","red")) + xlab("Profiling variables (standardized)") + ylab("Mean of cluster")
 ```
 
 Can we see differences between the segments? Do the segments differ in terms of their average household income and in terms of how often they visit the mall? What else can we say about these segments?

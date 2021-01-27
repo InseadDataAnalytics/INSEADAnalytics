@@ -338,7 +338,7 @@ For our data, using the rotated factors we selected, we can create a new dataset
 
 
 ```{r}
-NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2)
+NEW_ProjectData <- round(Rotated_Results$scores[,1:factors_selected,drop=F],2) # drop = FALSE makes sure the dimensions of the object are kept intact
 colnames(NEW_ProjectData)<-paste("Derived Variable (Factor)",1:ncol(NEW_ProjectData),sep=" ")
 
 knitr::kable(NEW_ProjectData[1:min(max_data_report,nrow(NEW_ProjectData)), , drop=F])

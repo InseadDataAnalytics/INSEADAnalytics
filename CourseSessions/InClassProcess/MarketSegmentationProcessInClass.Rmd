@@ -57,15 +57,15 @@ Finally, we will use the results of this analysis to make business decisions, e.
 ```{r setuplibraries, echo=FALSE, message=FALSE}
 suppressWarnings(source("../../AnalyticsLibraries/library.R"))
 # Package options
-suppressWarnings(ggthemr('fresh'))  # ggplot theme
+#suppressWarnings(ggthemr('fresh'))  # ggplot theme
 opts_knit$set(progress=FALSE, verbose=FALSE)
 opts_chunk$set(echo=FALSE, fig.align="center", fig.width=10, fig.height=6.35, results="asis")
 options(knitr.kable.NA = '')
 
 # Run below only once, then comment out
 # New versions of the networkD3 package may not work properly, so install the following version
-packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
-install.packages(packageurl, repos=NULL, type="source")
+#packageurl <- "https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz"
+#install.packages(packageurl, repos=NULL, type="source")
 ```
 
 <hr>\clearpage
@@ -366,7 +366,7 @@ profile_with = "hclust" #  "hclust" or "kmeans"
 distance_used = "euclidean"
 
 # Please ENTER the hierarchical clustering method to use (options are:
-# "ward", "single", "complete", "average", "mcquitty", "median" or "centroid").
+# "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median" or "centroid").
 # DEFAULT is "ward"
 hclust_method = "ward.D"
 
