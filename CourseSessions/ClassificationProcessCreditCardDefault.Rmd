@@ -563,7 +563,7 @@ df.all <- do.call(rbind, lapply(list(df1, df2, df3), function(df) {
   colnames(df)[1] <- "False Positive rate"
   df
 }))
-ggplot(df.all, aes(x=`False Positive rate`, y=value, colour=variable)) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+ggplot(df.all, aes(x=`False Positive rate`, y=value, colour="red")) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
 ```
 
 How should a good ROC curve look like? A rule of thumb in assessing ROC curves is that the "higher" the curve (i.e., the closer it gets to the point with coordinates (0,1)), hence the larger the area under the curve, the better. You may also select one point on the ROC curve (the "best one" for our purpose) and use that false positive/false negative performances (and corresponding threshold for P(1)) to assess your model. 
@@ -640,7 +640,7 @@ df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
   colnames(df)[1] <- "% of validation data selected"
   df
 }))
-ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour=variable)) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour="red")) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted", colour="green")
 ```
 
 Notice that if we were to examine cases selecting them at random, instead of selecting the "best" ones using an informed classifier, the "random prediction" gains chart would be a straight 45-degree line.
@@ -749,7 +749,7 @@ df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
   colnames(df)[1] <- "% of validation data selected"
   df
 }))
-ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour=variable)) + geom_line() + ylab("Estimated profit")
+ggplot(df.all, aes(x=`% of validation data selected`, y=value, colour="red")) + geom_line() + ylab("Estimated profit")
 ```
 
 We can then select the percentage of selected cases that corresponds to the maximum estimated profit (or minimum loss, if necessary). 
@@ -830,7 +830,7 @@ df.all <- do.call(rbind, lapply(list(df1, df2, df3), function(df) {
   colnames(df)[1] <- "False Positive rate"
   df
 }))
-ggplot(df.all, aes(x=`False Positive rate`, y=value, colour=variable)) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+ggplot(df.all, aes(x=`False Positive rate`, y=value, colour="red")) + geom_line() + ylab("True Positive rate") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
 ```
 
 Gains chart for the test data:
@@ -881,7 +881,7 @@ df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
   colnames(df)[1] <- "% of test data selected"
   df
 }))
-ggplot(df.all, aes(x=`% of test data selected`, y=value, colour=variable)) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
+ggplot(df.all, aes(x=`% of test data selected`, y=value, colour="red")) + geom_line() + ylab("% of class 1 captured") + geom_abline(intercept = 0, slope = 1,linetype="dotted",colour="green")
 ```
 
 Finally the profit curves for the test data, using the same profit/cost estimates as above:
@@ -946,7 +946,7 @@ df.all <- do.call(rbind, lapply(list(frame1, frame2, frame3), function(df) {
   colnames(df)[1] <- "% of test data selected"
   df
 }))
-ggplot(df.all, aes(x=`% of test data selected`, y=value, colour=variable)) + geom_line() + ylab("Estimated profit")
+ggplot(df.all, aes(x=`% of test data selected`, y=value, colour="red")) + geom_line() + ylab("Estimated profit")
 ```
 
 **Questions:**
