@@ -335,10 +335,10 @@ segmentation_attributes_used = c(28,25,27,14,20,8,3,12,13,5,9,11,2,30,24) #c(10,
 profile_attributes_used = c(2:82) 
 
 # Please ENTER the number of clusters to eventually use for this report
-numb_clusters_used = 7 # for boats possibly use 5, for Mall_Visits use 3
+numb_clusters_used = 3 # for boats possibly use 5, for Mall_Visits use 3
 
 # Please enter the method to use for the segmentation:
-profile_with = "hclust" #  "hclust" or "kmeans"
+profile_with = "kmeans" #  "hclust" or "kmeans"
 
 # Please ENTER the distance metric eventually used for the clustering in case of hierarchical clustering 
 # (e.g. "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski" - see help(dist)). 
@@ -529,14 +529,9 @@ iprint.df(round(cluster_profile_ratios-1, 2))
 
 **Answers**
 
-1. ???
-2. Segment 2 is very similar to the population mean across all features.
-*
-*
-*
-*
-*
-*
+1. The numbers represent the weighted contribution of the question to that segment. Therefore, the higher the absolute value of the number, the more informative it is.
+2. Segment 2 is very similar to the population mean across all features. Segment 4 scores highly on all variables from 13 to 17, typically an expert buyer who knows boats quite well.
+
 
 ## Step 8: Robustness Analysis
 
@@ -551,16 +546,20 @@ We should also consider the robustness of our analysis as we change the clusteri
 
 **Answers**
 
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
+1. We believe there are 3 distinct segments in the market. We selected this number because 
+a) From looking at the dendrogram heights reasonable numbers would be between 3 and 5 segments, without increasing the height significantly more.
+b) from interpreting the snake plot when running with 5 segments we see that segments 2,3,4 are more similar to each other, than to segments 1 and 5, this could merit selecting only 3 segments . 
+c) Overall, 3 is a small enough number to have distinct business usage but not so small that it is not offering any granularity.
+It will not always be the case that statistical/interpretation/business arguments all point to an identical number, as is the case here. On balance we choose 3 segments.
+
+2. 
+Segment 1: Scores above average in most areas, meaning that he wants a powerful status boat and is willing to spend more to get it.
+Segment 2: Fairly representative of the population of boaters overall. If we split these into sub-segments (i.e. running with 5 segments) then sub-segment 2a has a specific aversion to repairs, segment 2b is happier to perform repairs, and segment 2c has a particular concern for a no-frills boat at a reasonable price.
+Segment 3: Scores below average, he wants a functional boat and is not concerned with aesthetic value.
+
+3. We tried with 10, 7, 5 and 3 factors. There is a trade-off between the specificity of the segment with its size. The more specific a segment is, the more you may be able to tailor your offering to their needs, but the downside would be a smaller segment. With fewer segments you risk aggregating customers to the point that not all of their desires are addressed accurately.
+
+4. We recommend that the company launches a boat targetting the premium status-driven customers. This is because we find this to be the largest (1019 members) and least price-sensitive segment, where likely the highest margins are. These customers place value on the brand of their boat so it may not be advisable to also simultaneously introduce a cheaper boat, as this could undermine the premium branding.
 
 <hr>\clearpage
 
@@ -634,16 +633,8 @@ CART_control = rpart.control(cp = CART_cp)
 
 **Answers**
 
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
+1. You would select these values based on how you want to reward the algorithm to optimise for correct positives or correct negatives (ie minimising false positives or false negatives). The profit matrix relates very closely to business decisions because it tells us which customers we expect to buy our boat vs which customers actually buy our boat. For example, if we predict that a customer will buy our boat and they do not, this was wasted marketing effort and we want to penalise our algorithm to correct for this. 
+2. If we increase the probability threshold we will have a lower absolute number of positives (we think only a few people will buy from us), but these positives will be more correct predictions. If we decrease the probability threshold we will get more false positives (we think more people will buy from us than actually do). This has implications for how we target our marketing spend - the very certain customers do not necessarily need to have marketing spend allocated to them, nor do the very unlikely customers.
 
 We will use two classification trees and logistic regression. You can select "complexity" control for one of the classification trees in the code chunk of the raw .Rmd file here
 
@@ -1051,9 +1042,8 @@ iprint.df(round(best_profits, 2))
 
 **Answers:**
 
-*
-*
-*
+1. The main purchase drivers are questions: 16 (brand equity), 2 (best in class customer service), 21 (offers boats that are easy to maintain), 17 (boat can handle rough weather), 22 (boat is easy to use), and 24 (low price). 
+2. 
 *
 *
 *
