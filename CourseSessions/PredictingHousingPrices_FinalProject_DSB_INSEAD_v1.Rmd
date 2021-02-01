@@ -1,6 +1,6 @@
 ---
 title: "DSB_Group1_FinalProjectProposal"
-author: "Marcelo De Rada Ocampo, Ollie Phillpot, Miguel Lucas, Prathamesh Dole, Harshul Lilani"
+author: "MEMES Marcelo De Rada Ocampo, Ollie Phillpot, Miguel Lucas, Prathamesh Dole, Harshul Lilani"
 output:
   html_document:
     css: ../AnalyticsStyles/default.css
