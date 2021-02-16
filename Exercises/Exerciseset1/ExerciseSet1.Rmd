@@ -43,6 +43,7 @@ We download daily prices (open, high, low, close, and adjusted close) and volume
 ```{r eval = TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
 source("helpersSet1.R")
 source("dataSet1.R")
+source("dataSet2.R")
 ```
 
 For more information on downloading finance data from the internet as well as on finance related R tools see these starting points (there is a lot more of course available):
@@ -57,12 +58,12 @@ For more information on downloading finance data from the internet as well as on
 
 #### Optional Question 
 
-1. Can you find some interesting finance related R package or github repository? 
-**Your Answers here:**
-<br>
-<br>
-
+1. Can you find some interesting finance related R package or github repository?
 <hr>
+1. *Several R finance package are interesting including:*<br>
+*- Rblpapi: a	R Interface to Bloomberg*<br>
+*- FinCal: a package to calculate the time Value of Money, the time Series Analysis and computational Finance*<br>
+*- jrvFinance: a basic finance tool to calculate NPV/IRR/Annuities/Bond-Pricing or Black Scholes*<br>
 <hr>
 
 ### Part I: Statistics of S&P Daily Returns
@@ -88,11 +89,16 @@ pnl_plot(SPY)
 
 **Your Answers here:**
 <br>
-<br>
-<br>
-<br>
 
 <hr>
+
+*line 96: *ExerciseSet1.Rmd:write.csv(StockReturns[1:20,c("SPY","**AAPL**")], file = "twentydays.csv", row.names = TRUE, col.names = TRUE)<br>
+*line 8: *dataSet1.R:mytickers = c("SPY", "**AAPL**")  # Other tickers for example are "GOOG", "GS", "TSLA", "FB", "MSFT", <br>
+
+<hr>
+*Cumulative returns:* `r round(100*sum(StockReturns[,2]),1)`%<br>
+*Average daily returns:* `r round(100*mean(StockReturns[,2]),3)`%<br>
+*Standard deviation of the daily returns of Apple:* `r round(100*sd(StockReturns[,2]),3)`%<br>
 <hr>
 
 ### Part II: Simple Matrix Manipulations
@@ -127,13 +133,15 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 1. What R commands can you use to get the number of rows and number of columns of the new matrix called transposedData?
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
-
 <hr>
+1. We can use `nrow(transposedData)` and `ncol(transposedData)`.
+2. I assume that we are asked to re-draw the plot using the transposed matrix:
+```{r eval=FALSE, echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
+portfolio2 = apply(transposedData,2,mean)
+names(portfolio2) <- colnames(transposedData)
+pnl_plot(portfolio2) 
+```
+
 <hr>
 
 ### Part III: Reproducibility and Customization
@@ -144,14 +152,8 @@ This is an important step and will get you to think about the overall process on
 
 1. We want to re-do all this analysis with data since 2001-01-01: what change do we need to make in the code (hint: all you need to change is one line - exactly 1 number! - in data.R file), and how can you get the new exercise set with the data since 2001-01-01? 
 2. *(Extra Exercise)*  Can you get the returns of a few companies and plot the returns of an equal weighted portfolio with those companies during some period you select? 
-
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
-
 <hr>
+All we need to change is the value allocated to the variable `startDate = "2001-01-01"` in Line 11.
 <hr>
 
 ###  Part IV: Read/Write .CSV files
@@ -179,13 +181,12 @@ Try it!
 myData + StockReturns[1:40,]
 ```
 
-**Your Answers here:**
-<br>
-<br>
-<br>
-<br>
-
 <hr>
+
+1. We get as output a number (20). Each row in myData is different from the corresponding row in StockReturns (hence the test is true and yields a result of 1). This makes senses because myData contains one row with a string whereas StockReturns containts three rows.
+However, if we use as separator in the read.csv function a comma instead of a semicolon, we end up with matrices of the same dimensions, but there is an offset of one row for some reason. THen we get a result of 60 (20x3). If we were able to resolve the offset issue, we'd get a result of zero, i.e. all the cells would match.
+2. We will get an error because we are summing matrices with different types of arguments.
+
 <hr>
 
 ### Extra Question
