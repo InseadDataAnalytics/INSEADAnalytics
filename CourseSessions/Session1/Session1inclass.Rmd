@@ -73,7 +73,7 @@ Notice also the [structure of the Session 1 directory](https://github.com/Insead
 
 #### Questions
 
-1. Please create a new directory within the "CourseSessions/Session1/" directory (e.g. call this directory "MyProject"), and populate it with a new .Rmd file (e.g. save it as "MyProject.Rmd"), a new .R file (e.g. save it as "library.r"), and a sub-directory (name it "data") where you add a .csv file (for example copy the Boads.csv file from the data directory in Session1).
+1. Please create a new directory within the "CourseSessions/Session1/" directory (e.g. call this directory "MyProject"), and populate it with a new .Rmd file (e.g. save it as "MyProject.Rmd"), a new .R file (e.g. save it as "library.r"), and a sub-directory (name it "data") where you add a .csv file (for example copy the Boats.csv file from the data directory in Session1).
 2. Please add this code chunk in your .Rmd file
 
 ```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='markup'}
