@@ -53,7 +53,7 @@ getDocumentOutputFormat <- function() {
 normalize.abs <- function(x, min=0, max=1, na.rm=FALSE) normalize(abs(x), min, max, na.rm)
 iprint.df <- function(df, scale=FALSE) {
   if (getDocumentOutputFormat() == "html") {
-    if (class(df) != "data.frame")
+    if (class(df)[1] != "data.frame")
       df <- as.data.frame(df)
     x <- lapply(colnames(df), function(col) {
       if (is.numeric(df[, col]))
