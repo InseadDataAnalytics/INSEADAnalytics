@@ -368,7 +368,7 @@ distance_used = "euclidean"
 # Please ENTER the hierarchical clustering method to use (options are:
 # "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median" or "centroid").
 # DEFAULT is "ward"
-hclust_method = "ward.D"
+hclust_method = "ward.D2"
 
 # Please ENTER the kmeans clustering method to use (options are:
 # "Hartigan-Wong", "Lloyd", "Forgy", "MacQueen").
