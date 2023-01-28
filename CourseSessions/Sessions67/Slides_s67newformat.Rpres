@@ -1,8 +1,7 @@
-Session 7-8, Discriminant Analysis and Classification (Technical Slides)
+Session 3-4, Introduction to Classification (Technical Slides)
 ========================================================
-author : T. Evgeniou, A. Ovchinnikov, INSEAD
-title : Data Analytics for Business
-
+author : T. Evgeniou, INSEAD
+title : Data Science for Business
 
 ```{r include=FALSE}
 local_directory <- "."
@@ -170,7 +169,7 @@ change[1]<-"Variables"
 colnames (dfnew)<-change
 #m1<-gvisTable(dfnew,options=list(showRowNumber=FALSE,width=960, height=440,allowHTML=TRUE,page='disable'))
 #print(m1,'chart')
-print(xtable(dfnew ,caption="Number of Observations per class in the Estimation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(dfnew ,caption="Number of Observations per class in the Estimation Sample", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 
@@ -297,7 +296,7 @@ formula_log=paste(colnames(estimation_data[,dependent_variable,drop=F]),paste(Re
 logreg_solution <- glm(formula_log, family=binomial(link="logit"),  data=estimation_data)
 
 log_coefficients = round(summary(logreg_solution)$coefficients,1)
-print(xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(log_coefficients,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -359,7 +358,7 @@ rownames(Importance_table) <- rownames(log_importance)
 #printing the result in a clean-slate table
 #cat(renderHeatmapX(Importance_table, border=1, center = 0, minvalue = 0))
 
-print(xtable(Importance_table,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(Importance_table,caption="Logistic Regression: Estimated Coefficients" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 
 ```
@@ -384,7 +383,7 @@ validation_hit_rates = rbind(
 colnames(validation_hit_rates) <- "Hit Ratio"
 rownames(validation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(validation_hit_rates ,caption="Validation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(validation_hit_rates ,caption="Validation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -409,7 +408,7 @@ estimation_hit_rates = rbind(
 colnames(estimation_hit_rates) <- "Hit Ratio"
 rownames(estimation_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(estimation_hit_rates ,caption="Estimation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(estimation_hit_rates ,caption="Estimation Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 ```
 </div>
 </div>
@@ -445,7 +444,7 @@ test_hit_rates = rbind(
 colnames(test_hit_rates) <- "Hit Ratio"
 rownames(test_hit_rates) <- c("First CART", "Second CART", "Logistic Regression")
 
-print(xtable(test_hit_rates ,caption="Test Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(test_hit_rates ,caption="Test Data Hit Ratios for different classifiers tested", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -469,7 +468,7 @@ conf_matrix = round(conf_matrix,2)
 colnames(conf_matrix) <- c("Predicted 1", "Predicted 0")
 rownames(conf_matrix) <- c("Actual 1", "Actual 0")
 
-print(xtable(conf_matrix ,caption="Confusion Matrix for test data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
+print(xtable::xtable(conf_matrix ,caption="Confusion Matrix for test data", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE)
 ```
 </div>
 </div>
@@ -580,7 +579,7 @@ Profit Matrix
 <div class="col-md-6">
 ```{r echo=FALSE, message=FALSE, prompt=FALSE, results='asis'}
 
-print(xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(Profit_Matrix ,caption="Assumed Profits and Costs", digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 ```
 </div>
@@ -773,7 +772,7 @@ for (i in sort(unique(cluster_ids))){
   }
 colnames(Log_Drivers) <- paste("Segment", 1:length(unique(cluster_ids)), sep = " ")
 #cat(renderHeatmapX(tail(Log_Drivers,-1), border=1, center = 0, minvalue = 0))
-print(xtable(tail(Log_Drivers,-1),caption="" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
+print(xtable::xtable(tail(Log_Drivers,-1),caption="" , digits=1,),type="html",html.table.attributes = "class='table table-striped table-hover table-bordered'",caption.placement="top",comment = FALSE,include.rownames = TRUE)
 
 
 ```
